@@ -36,7 +36,7 @@ struct bsg_job;
 struct blkcg_gq;
 
 #define BLKDEV_MIN_RQ	4
-#define BLKDEV_MAX_RQ	256	/* Default maximum */
+#define BLKDEV_MAX_RQ	128	/* Default maximum */
 
 /*
  * Maximum number of blkcg policies allowed to be registered concurrently.
@@ -473,7 +473,12 @@ struct request_queue {
 
 #define QUEUE_FLAG_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
 				 (1 << QUEUE_FLAG_STACKABLE)	|	\
+<<<<<<< HEAD
 				 (0 << QUEUE_FLAG_ADD_RANDOM))
+=======
+				 (1 << QUEUE_FLAG_SAME_COMP)	|	\
+				 (1 << QUEUE_FLAG_ADD_RANDOM))
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 
 static inline void queue_lockdep_assert_held(struct request_queue *q)
 {

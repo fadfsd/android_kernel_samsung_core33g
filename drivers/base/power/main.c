@@ -29,8 +29,6 @@
 #include <linux/async.h>
 #include <linux/suspend.h>
 #include <linux/cpuidle.h>
-#include <linux/timer.h>
-
 #include "../base.h"
 #include "power.h"
 
@@ -55,12 +53,6 @@ static LIST_HEAD(dpm_noirq_list);
 struct suspend_stats suspend_stats;
 static DEFINE_MUTEX(dpm_list_mtx);
 static pm_message_t pm_transition;
-
-struct dpm_watchdog {
-	struct device		*dev;
-	struct task_struct	*tsk;
-	struct timer_list	timer;
-};
 
 static int async_error;
 
@@ -392,56 +384,6 @@ static int dpm_run_callback(pm_callback_t cb, struct device *dev,
 	return error;
 }
 
-/**
- * dpm_wd_handler - Driver suspend / resume watchdog handler.
- *
- * Called when a driver has timed out suspending or resuming.
- * There's not much we can do here to recover so BUG() out for
- * a crash-dump
- */
-static void dpm_wd_handler(unsigned long data)
-{
-	struct dpm_watchdog *wd = (void *)data;
-	struct device *dev      = wd->dev;
-	struct task_struct *tsk = wd->tsk;
-
-	dev_emerg(dev, "**** DPM device timeout ****\n");
-	show_stack(tsk, NULL);
-
-	BUG();
-}
-
-/**
- * dpm_wd_set - Enable pm watchdog for given device.
- * @wd: Watchdog. Must be allocated on the stack.
- * @dev: Device to handle.
- */
-static void dpm_wd_set(struct dpm_watchdog *wd, struct device *dev)
-{
-	struct timer_list *timer = &wd->timer;
-
-	wd->dev = dev;
-	wd->tsk = get_current();
-
-	init_timer_on_stack(timer);
-	timer->expires = jiffies + HZ * 12;
-	timer->function = dpm_wd_handler;
-	timer->data = (unsigned long)wd;
-	add_timer(timer);
-}
-
-/**
- * dpm_wd_clear - Disable pm watchdog.
- * @wd: Watchdog to disable.
- */
-static void dpm_wd_clear(struct dpm_watchdog *wd)
-{
-	struct timer_list *timer = &wd->timer;
-
-	del_timer_sync(timer);
-	destroy_timer_on_stack(timer);
-}
-
 /*------------------------- Resume routines -------------------------*/
 
 /**
@@ -484,9 +426,6 @@ static int device_resume_noirq(struct device *dev, pm_message_t state)
 	}
 
 	error = dpm_run_callback(callback, dev, state, info);
-	if(callback){
-		//printk("-------- resume %s  %pf with %d\n", dev->kobj.name, callback, error);
-	}
 
  Out:
 	TRACE_RESUME(error);
@@ -569,9 +508,6 @@ static int device_resume_early(struct device *dev, pm_message_t state)
 	}
 
 	error = dpm_run_callback(callback, dev, state, info);
-	if(callback){
-		//printk("-------- resume %s %pf with %d\n", dev->kobj.name, callback, error);
-	}
 
  Out:
 	TRACE_RESUME(error);
@@ -634,7 +570,6 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	pm_callback_t callback = NULL;
 	char *info = NULL;
 	int error = 0;
-	struct dpm_watchdog wd;
 
 	TRACE_DEVICE(dev);
 	TRACE_RESUME(0);
@@ -650,7 +585,6 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	 * a resumed device, even if the device hasn't been completed yet.
 	 */
 	dev->power.is_prepared = false;
-	dpm_wd_set(&wd, dev);
 
 	if (!dev->power.is_suspended)
 		goto Unlock;
@@ -699,13 +633,9 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
  End:
 	error = dpm_run_callback(callback, dev, state, info);
 	dev->power.is_suspended = false;
-	if(callback){
-		//printk("-------- resume %s %pf with %d\n", dev->kobj.name, callback, error);
-	}
 
  Unlock:
 	device_unlock(dev);
-	dpm_wd_clear(&wd);
 
  Complete:
 	complete_all(&dev->power.completion);
@@ -911,7 +841,6 @@ static int device_suspend_noirq(struct device *dev, pm_message_t state)
 {
 	pm_callback_t callback = NULL;
 	char *info = NULL;
-	int error = 0;
 
 	if (dev->power.syscore)
 		return 0;
@@ -934,12 +863,8 @@ static int device_suspend_noirq(struct device *dev, pm_message_t state)
 		info = "noirq driver ";
 		callback = pm_noirq_op(dev->driver->pm, state);
 	}
-	error = dpm_run_callback(callback, dev, state, info);
-	if(callback){
-		//printk("-------- suspend %s %pf with %d\n", dev->kobj.name, callback, error);
-	}
 
-	return error;
+	return dpm_run_callback(callback, dev, state, info);
 }
 
 /**
@@ -1002,7 +927,6 @@ static int device_suspend_late(struct device *dev, pm_message_t state)
 {
 	pm_callback_t callback = NULL;
 	char *info = NULL;
-	int error = 0;
 
 	__pm_runtime_disable(dev, false);
 
@@ -1027,12 +951,8 @@ static int device_suspend_late(struct device *dev, pm_message_t state)
 		info = "late driver ";
 		callback = pm_late_early_op(dev->driver->pm, state);
 	}
-	error = dpm_run_callback(callback, dev, state, info);
-	if(callback){
-		//printk("-------- suspend %s %pf with %d\n", dev->kobj.name, callback, error);
-	}
 
-	return error;
+	return dpm_run_callback(callback, dev, state, info);
 }
 
 /**
@@ -1133,7 +1053,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	pm_callback_t callback = NULL;
 	char *info = NULL;
 	int error = 0;
-	struct dpm_watchdog wd;
 
 	dpm_wait_for_children(dev, async);
 
@@ -1156,8 +1075,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 
 	if (dev->power.syscore)
 		goto Complete;
-	
-	dpm_wd_set(&wd, dev);
 
 	device_lock(dev);
 
@@ -1203,9 +1120,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	}
 
 	error = dpm_run_callback(callback, dev, state, info);
-	if(callback){
-		//printk("-------- suspend %s %pf with %d\n", dev->kobj.name, callback, error);
-	}
 
  End:
 	if (!error) {
@@ -1216,8 +1130,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	}
 
 	device_unlock(dev);
-
-	dpm_wd_clear(&wd);
 
  Complete:
 	complete_all(&dev->power.completion);
@@ -1273,6 +1185,7 @@ int dpm_suspend(pm_message_t state)
 
 		get_device(dev);
 		mutex_unlock(&dpm_list_mtx);
+
 		error = device_suspend(dev);
 
 		mutex_lock(&dpm_list_mtx);

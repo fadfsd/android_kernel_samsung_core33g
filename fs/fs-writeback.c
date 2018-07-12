@@ -87,29 +87,16 @@ static inline struct inode *wb_inode(struct list_head *head)
 #define CREATE_TRACE_POINTS
 #include <trace/events/writeback.h>
 
-static void bdi_wakeup_thread(struct backing_dev_info *bdi)
-{
-	spin_lock_bh(&bdi->wb_lock);
-	if (test_bit(BDI_registered, &bdi->state))
-		mod_delayed_work(bdi_wq, &bdi->wb.dwork, 0);
-	spin_unlock_bh(&bdi->wb_lock);
-}
-
 static void bdi_queue_work(struct backing_dev_info *bdi,
 			   struct wb_writeback_work *work)
 {
 	trace_writeback_queue(bdi, work);
 
 	spin_lock_bh(&bdi->wb_lock);
-	if (!test_bit(BDI_registered, &bdi->state)) {
-		if (work->done)
-			complete(work->done);
-		goto out_unlock;
-	}
 	list_add_tail(&work->list, &bdi->work_list);
-	mod_delayed_work(bdi_wq, &bdi->wb.dwork, 0);
-out_unlock:
 	spin_unlock_bh(&bdi->wb_lock);
+
+	mod_delayed_work(bdi_wq, &bdi->wb.dwork, 0);
 }
 
 static void
@@ -125,7 +112,7 @@ __bdi_start_writeback(struct backing_dev_info *bdi, long nr_pages,
 	work = kzalloc(sizeof(*work), GFP_ATOMIC);
 	if (!work) {
 		trace_writeback_nowork(bdi);
-		bdi_wakeup_thread(bdi);
+		mod_delayed_work(bdi_wq, &bdi->wb.dwork, 0);
 		return;
 	}
 
@@ -172,7 +159,7 @@ void bdi_start_background_writeback(struct backing_dev_info *bdi)
 	 * writeback as soon as there is no other work to do.
 	 */
 	trace_writeback_wake_background(bdi);
-	bdi_wakeup_thread(bdi);
+	mod_delayed_work(bdi_wq, &bdi->wb.dwork, 0);
 }
 
 /*
@@ -1045,7 +1032,7 @@ void bdi_writeback_workfn(struct work_struct *work)
 	current->flags |= PF_SWAPWRITE;
 
 	if (likely(!current_is_workqueue_rescuer() ||
-		   !test_bit(BDI_registered, &bdi->state))) {
+		   list_empty(&bdi->bdi_list))) {
 		/*
 		 * The normal path.  Keep writing back @bdi until its
 		 * work_list is empty.  Note that this path is also taken
@@ -1067,10 +1054,10 @@ void bdi_writeback_workfn(struct work_struct *work)
 		trace_writeback_pages_written(pages_written);
 	}
 
-	if (!list_empty(&bdi->work_list))
-		mod_delayed_work(bdi_wq, &wb->dwork, 0);
-	else if (wb_has_dirty_io(wb) && dirty_writeback_interval)
-		bdi_wakeup_thread_delayed(bdi);
+	if (!list_empty(&bdi->work_list) ||
+	    (wb_has_dirty_io(wb) && dirty_writeback_interval))
+		queue_delayed_work(bdi_wq, &wb->dwork,
+			msecs_to_jiffies(dirty_writeback_interval * 10));
 
 	current->flags &= ~PF_SWAPWRITE;
 }
@@ -1170,7 +1157,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
 	if ((inode->i_state & flags) == flags)
 		return;
 
-	if (unlikely(block_dump > 1))
+	if (unlikely(block_dump))
 		block_dump___mark_inode_dirty(inode);
 
 	spin_lock(&inode->i_lock);

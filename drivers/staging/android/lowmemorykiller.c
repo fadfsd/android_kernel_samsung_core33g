@@ -38,7 +38,9 @@
 #include <linux/oom.h>
 #include <linux/sched.h>
 #include <linux/rcupdate.h>
+#include <linux/profile.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/mutex.h>
 #include <linux/delay.h>
 #include <linux/swap.h>
@@ -73,6 +75,8 @@ static uint32_t oom_count = 0;
 #ifdef MULTIPLE_OOM_KILLER
 #define OOM_DEPTH 7
 #endif
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 
 static uint32_t lowmem_debug_level = 1;
 static short lowmem_adj[6] = {
@@ -98,6 +102,7 @@ static unsigned long lowmem_deathpending_timeout;
 			pr_info(x);			\
 	} while (0)
 
+<<<<<<< HEAD
 static atomic_t shift_adj = ATOMIC_INIT(0);
 static short adj_max_shift = 353;
 
@@ -247,6 +252,8 @@ static int test_task_flag(struct task_struct *p, int flag)
 
 static DEFINE_MUTEX(scan_mutex);
 
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 {
 	struct task_struct *tsk;
@@ -254,6 +261,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	int rem = 0;
 	int tasksize;
 	int i;
+<<<<<<< HEAD
 	int ret = 0;
 	short min_score_adj = OOM_SCORE_ADJ_MAX + 1;
 	int minfree = 0;
@@ -287,22 +295,35 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 						total_swapcache_pages();
 	else
 		other_file = 0;
+=======
+	short min_score_adj = OOM_SCORE_ADJ_MAX + 1;
+	int selected_tasksize = 0;
+	short selected_oom_score_adj;
+	int array_size = ARRAY_SIZE(lowmem_adj);
+	int other_free = global_page_state(NR_FREE_PAGES) - totalreserve_pages;
+	int other_file = global_page_state(NR_FILE_PAGES) -
+						global_page_state(NR_SHMEM);
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 
 	if (lowmem_adj_size < array_size)
 		array_size = lowmem_adj_size;
 	if (lowmem_minfree_size < array_size)
 		array_size = lowmem_minfree_size;
 	for (i = 0; i < array_size; i++) {
-		minfree = lowmem_minfree[i];
-		if (other_free < minfree && other_file < minfree) {
+		if (other_free < lowmem_minfree[i] &&
+		    other_file < lowmem_minfree[i]) {
 			min_score_adj = lowmem_adj[i];
 			break;
 		}
 	}
+<<<<<<< HEAD
 	if (nr_to_scan > 0) {
 		ret = adjust_minadj(&min_score_adj);
+=======
+	if (sc->nr_to_scan > 0)
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 		lowmem_print(3, "lowmem_shrink %lu, %x, ofree %d %d, ma %hd\n",
-				nr_to_scan, sc->gfp_mask, other_free,
+				sc->nr_to_scan, sc->gfp_mask, other_free,
 				other_file, min_score_adj);
 	}
 
@@ -310,8 +331,9 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		global_page_state(NR_ACTIVE_FILE) +
 		global_page_state(NR_INACTIVE_ANON) +
 		global_page_state(NR_INACTIVE_FILE);
-	if (nr_to_scan <= 0 || min_score_adj == OOM_SCORE_ADJ_MAX + 1) {
+	if (sc->nr_to_scan <= 0 || min_score_adj == OOM_SCORE_ADJ_MAX + 1) {
 		lowmem_print(5, "lowmem_shrink %lu, %x, return %d\n",
+<<<<<<< HEAD
 			     nr_to_scan, sc->gfp_mask, rem);
 
 		if (nr_to_scan > 0)
@@ -321,6 +343,9 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			(nr_to_scan > 0))
 			trace_almk_shrink(0, ret, other_free, other_file, 0);
 
+=======
+			     sc->nr_to_scan, sc->gfp_mask, rem);
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 		return rem;
 	}
 	selected_oom_score_adj = min_score_adj;
@@ -334,6 +359,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			tsk->state & TASK_UNINTERRUPTIBLE)
 			continue;
 
+<<<<<<< HEAD
 		/* if task no longer has any memory ignore it */
 		if (test_task_flag(tsk, TIF_MM_RELEASED))
 			continue;
@@ -348,13 +374,16 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			}
 		}
 
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 		p = find_lock_task_mm(tsk);
 		if (!p)
 			continue;
 
-		oom_score_adj = p->signal->oom_score_adj;
-		if (oom_score_adj < min_score_adj) {
+		if (test_tsk_thread_flag(p, TIF_MEMDIE) &&
+		    time_before_eq(jiffies, lowmem_deathpending_timeout)) {
 			task_unlock(p);
+<<<<<<< HEAD
 			continue;
 		}
 		tasksize = get_mm_rss(p->mm);
@@ -529,6 +558,11 @@ static int android_oom_handler(struct notifier_block *nb,
 		if (!p)
 			continue;
 
+=======
+			rcu_read_unlock();
+			return 0;
+		}
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 		oom_score_adj = p->signal->oom_score_adj;
 		if (oom_score_adj < min_score_adj) {
 			task_unlock(p);
@@ -538,47 +572,6 @@ static int android_oom_handler(struct notifier_block *nb,
 		task_unlock(p);
 		if (tasksize <= 0)
 			continue;
-
-		lowmem_print(2, "oom: ------ %d (%s), adj %d, size %d\n",
-			     p->pid, p->comm, oom_score_adj, tasksize);
-#ifdef MULTIPLE_OOM_KILLER
-		if (all_selected_oom < OOM_DEPTH) {
-			for (i = 0; i < OOM_DEPTH; i++) {
-				if (!selected[i]) {
-					is_exist_oom_task = 1;
-					max_selected_oom_idx = i;
-					break;
-				}
-			}
-		} else if (selected_oom_score_adj[max_selected_oom_idx] < oom_score_adj ||
-			(selected_oom_score_adj[max_selected_oom_idx] == oom_score_adj &&
-			selected_tasksize[max_selected_oom_idx] < tasksize)) {
-			is_exist_oom_task = 1;
-		}
-
-		if (is_exist_oom_task) {
-			selected[max_selected_oom_idx] = p;
-			selected_tasksize[max_selected_oom_idx] = tasksize;
-			selected_oom_score_adj[max_selected_oom_idx] = oom_score_adj;
-
-			if (all_selected_oom < OOM_DEPTH)
-				all_selected_oom++;
-
-			if (all_selected_oom == OOM_DEPTH) {
-				for (i = 0; i < OOM_DEPTH; i++) {
-					if (selected_oom_score_adj[i] < selected_oom_score_adj[max_selected_oom_idx])
-						max_selected_oom_idx = i;
-					else if (selected_oom_score_adj[i] == selected_oom_score_adj[max_selected_oom_idx] &&
-						selected_tasksize[i] < selected_tasksize[max_selected_oom_idx])
-						max_selected_oom_idx = i;
-				}
-			}
-
-			lowmem_print(2, "oom: max_selected_oom_idx(%d) select %d (%s), adj %d, \
-					size %d, to kill\n",
-				max_selected_oom_idx, p->pid, p->comm, oom_score_adj, tasksize);
-		}
-#else
 		if (selected) {
 			if (oom_score_adj < selected_oom_score_adj)
 				continue;
@@ -589,8 +582,9 @@ static int android_oom_handler(struct notifier_block *nb,
 		selected = p;
 		selected_tasksize = tasksize;
 		selected_oom_score_adj = oom_score_adj;
-		lowmem_print(2, "oom: select %d (%s), adj %d, size %d, to kill\n",
+		lowmem_print(2, "select %d (%s), adj %hd, size %d, to kill\n",
 			     p->pid, p->comm, oom_score_adj, tasksize);
+<<<<<<< HEAD
 #endif
 	}
 #ifdef MULTIPLE_OOM_KILLER
@@ -608,31 +602,26 @@ static int android_oom_handler(struct notifier_block *nb,
 			oom_count++;
 #endif
 		}
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 	}
-#else
 	if (selected) {
-		lowmem_print(1, "oom: send sigkill to %d (%s), adj %d, size %d\n",
+		lowmem_print(1, "send sigkill to %d (%s), adj %hd, size %d\n",
 			     selected->pid, selected->comm,
 			     selected_oom_score_adj, selected_tasksize);
+<<<<<<< HEAD
+=======
+		lowmem_deathpending_timeout = jiffies + HZ;
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 		send_sig(SIGKILL, selected, 0);
 		set_tsk_thread_flag(selected, TIF_MEMDIE);
 		rem -= selected_tasksize;
-		*freed += (unsigned long)selected_tasksize;
-#ifdef OOM_COUNT_READ
-		oom_count++;
-#endif
 	}
-#endif
-	read_unlock(&tasklist_lock);
-
-	lowmem_print(2, "oom: get memory %lu", *freed);
+	lowmem_print(4, "lowmem_shrink %lu, %x, return %d\n",
+		     sc->nr_to_scan, sc->gfp_mask, rem);
+	rcu_read_unlock();
 	return rem;
 }
-
-static struct notifier_block android_oom_notifier = {
-	.notifier_call = android_oom_handler,
-};
-#endif /* CONFIG_SEC_OOM_KILLER */
 
 static struct shrinker lowmem_shrinker = {
 	.shrink = lowmem_shrink,
@@ -642,11 +631,14 @@ static struct shrinker lowmem_shrinker = {
 static int __init lowmem_init(void)
 {
 	register_shrinker(&lowmem_shrinker);
+<<<<<<< HEAD
 	vmpressure_notifier_register(&lmk_vmpr_nb);
 #ifdef CONFIG_SEC_OOM_KILLER
 	register_oom_notifier(&android_oom_notifier);
 #endif
 
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 	return 0;
 }
 
@@ -655,6 +647,7 @@ static void __exit lowmem_exit(void)
 	unregister_shrinker(&lowmem_shrinker);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ADAPTIVE_KSM
 int get_minfree_high_value(void)
 {
@@ -753,18 +746,23 @@ __module_param_call(MODULE_PARAM_PREFIX, adj,
 		    S_IRUGO | S_IWUSR, -1);
 __MODULE_PARM_TYPE(adj, "array of short");
 #else
+=======
+module_param_named(cost, lowmem_shrinker.seeks, int, S_IRUGO | S_IWUSR);
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 module_param_array_named(adj, lowmem_adj, short, &lowmem_adj_size,
 			 S_IRUGO | S_IWUSR);
-#endif
 module_param_array_named(minfree, lowmem_minfree, uint, &lowmem_minfree_size,
 			 S_IRUGO | S_IWUSR);
 module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
+<<<<<<< HEAD
 #ifdef LMK_COUNT_READ
 module_param_named(lmkcount, lmk_count, uint, S_IRUGO);
 #endif
 #ifdef OOM_COUNT_READ
 module_param_named(oomcount, oom_count, uint, S_IRUGO);
 #endif
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 
 module_init(lowmem_init);
 module_exit(lowmem_exit);

@@ -26,16 +26,6 @@
 #include <asm/system_info.h>
 #include <asm/tlbflush.h>
 
-#if defined(CONFIG_SPRD_DEBUG)
-/* For saving Fault status */
-#include <mach/sprd_debug.h>
-#endif
-
-#if defined(CONFIG_SEC_DEBUG)
-/* For saving Fault status */
-#include <mach/sec_debug.h>
-#endif
-
 #include "fault.h"
 
 #ifdef CONFIG_MMU
@@ -147,14 +137,6 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
 	 */
 	if (fixup_exception(regs))
 		return;
-#if defined(CONFIG_SPRD_DEBUG)
-	/* For saving Fault status */
-	sprd_debug_save_pte((void *)regs, (int)current);
-#endif
-#if defined(CONFIG_SEC_DEBUG)
-        /* For saving Fault status */
-        sec_debug_save_pte((void *)regs, (int)current);
-#endif
 
 	/*
 	 * No handler, we'll have to terminate things with extreme prejudice.
@@ -181,14 +163,6 @@ __do_user_fault(struct task_struct *tsk, unsigned long addr,
 		struct pt_regs *regs)
 {
 	struct siginfo si;
-#if defined(CONFIG_SPRD_DEBUG)
-	/* For saving Fault status */
-	sprd_debug_save_pte((void *)regs, (int)current);
-#endif
-#if defined(CONFIG_SEC_DEBUG)
-        /* For saving Fault status */
-        sec_debug_save_pte((void *)regs, (int)current);
-#endif
 
 #ifdef CONFIG_DEBUG_USER
 	if (((user_debug & UDBG_SEGV) && (sig == SIGSEGV)) ||
@@ -300,10 +274,10 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		local_irq_enable();
 
 	/*
-	 * If we're in an interrupt, or have no irqs, or have no user
+	 * If we're in an interrupt or have no user
 	 * context, we must not take the fault..
 	 */
-	if (in_atomic() || irqs_disabled() || !mm)
+	if (in_atomic() || !mm)
 		goto no_context;
 
 	if (user_mode(regs))

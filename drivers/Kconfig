@@ -2,8 +2,6 @@ menu "Device Drivers"
 
 source "drivers/base/Kconfig"
 
-source "drivers/battery/Kconfig"
-
 source "drivers/bus/Kconfig"
 
 source "drivers/connector/Kconfig"
@@ -102,8 +100,6 @@ source "drivers/memstick/Kconfig"
 
 source "drivers/leds/Kconfig"
 
-source "drivers/switch/Kconfig"
-
 source "drivers/accessibility/Kconfig"
 
 source "drivers/infiniband/Kconfig"
@@ -170,6 +166,7 @@ source "drivers/ipack/Kconfig"
 
 source "drivers/reset/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/sipc/Kconfig"
 
 source "drivers/android/Kconfig"
@@ -184,4 +181,6 @@ source "drivers/gpu/mali400/Kconfig"
 
 source "drivers/android/Kconfig"
 
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 endmenu

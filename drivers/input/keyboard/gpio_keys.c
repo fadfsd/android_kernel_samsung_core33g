@@ -37,11 +37,9 @@ struct gpio_button_data {
 	struct work_struct work;
 	unsigned int timer_debounce;	/* in msecs */
 	unsigned int irq;
-	unsigned long irqflags;
 	spinlock_t lock;
 	bool disabled;
 	bool key_pressed;
-	bool is_deepsleep;
 };
 
 struct gpio_keys_drvdata {
@@ -328,7 +326,6 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 {
 	const struct gpio_keys_button *button = bdata->button;
 	struct input_dev *input = bdata->input;
-	static int last_state = 0;
 	unsigned int type = button->type ?: EV_KEY;
 	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
 
@@ -336,14 +333,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 		if (state)
 			input_event(input, type, button->code, button->value);
 	} else {
-		/* raise the missing key event */
-		if (last_state == state) {
-			input_event(input, type, button->code, !state);
-		}
-
 		input_event(input, type, button->code, !!state);
-
-		last_state = state;
 	}
 	input_sync(input);
 }
@@ -372,14 +362,6 @@ static irqreturn_t gpio_keys_gpio_isr(int irq, void *dev_id)
 
 	BUG_ON(irq != bdata->irq);
 
-	if (irqd_get_trigger_type(irq_get_irq_data(irq)) != bdata->irqflags) {
-		pr_info("wake up cpu from deepsleep by gpio edge interrupt!");
-		irq_set_irq_type(bdata->irq, bdata->irqflags);
-	}
-
-	if (bdata->is_deepsleep) {
-		bdata->is_deepsleep = false;
-	}
 	if (bdata->button->wakeup)
 		pm_stay_awake(bdata->input->dev.parent);
 	if (bdata->timer_debounce)
@@ -457,6 +439,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 	spin_lock_init(&bdata->lock);
 
 	if (gpio_is_valid(button->gpio)) {
+
 		error = gpio_request_one(button->gpio, GPIOF_IN, desc);
 		if (error < 0) {
 			dev_err(dev, "Failed to request GPIO %d, error %d\n",
@@ -489,7 +472,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 
 		isr = gpio_keys_gpio_isr;
 		irqflags = IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING;
-		bdata->irqflags = irqflags;
+
 	} else {
 		if (!button->irq) {
 			dev_err(dev, "No IRQ specified\n");
@@ -519,8 +502,6 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
 	if (!button->can_disable)
 		irqflags |= IRQF_SHARED;
 
-	irqflags |= IRQF_NO_SUSPEND;
-
 	error = request_any_context_irq(bdata->irq, isr, irqflags, desc, bdata);
 	if (error < 0) {
 		dev_err(dev, "Unable to claim irq %d; error %d\n",
@@ -544,9 +525,8 @@ static void gpio_keys_report_state(struct gpio_keys_drvdata *ddata)
 
 	for (i = 0; i < ddata->pdata->nbuttons; i++) {
 		struct gpio_button_data *bdata = &ddata->data[i];
-		if (!bdata->is_deepsleep && gpio_is_valid(bdata->button->gpio)) {
+		if (gpio_is_valid(bdata->button->gpio))
 			gpio_keys_gpio_report_event(bdata);
-		}
 	}
 	input_sync(input);
 }
@@ -735,11 +715,8 @@ static int gpio_keys_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, ddata);
 	input_set_drvdata(input, ddata);
-#ifndef CONFIG_OF
+
 	input->name = pdata->name ? : pdev->name;
-#else
-	input->name = "gpio-keys";
-#endif
 	input->phys = "gpio-keys/input0";
 	input->dev.parent = &pdev->dev;
 	input->open = gpio_keys_open;
@@ -830,16 +807,7 @@ static int gpio_keys_suspend(struct device *dev)
 {
 	struct gpio_keys_drvdata *ddata = dev_get_drvdata(dev);
 	struct input_dev *input = ddata->input;
-	struct gpio_button_data *bdata = &ddata->data[0];
 	int i;
-
-	if (bdata->button->ds_irqflags)
-		irq_set_irq_type(bdata->irq, bdata->button->ds_irqflags);
-
-	for (i = 0; i < ddata->pdata->nbuttons; i++) {
-		struct gpio_button_data *bdata = &ddata->data[i];
-		bdata->is_deepsleep = true;
-	}
 
 	if (device_may_wakeup(dev)) {
 		for (i = 0; i < ddata->pdata->nbuttons; i++) {
@@ -861,12 +829,8 @@ static int gpio_keys_resume(struct device *dev)
 {
 	struct gpio_keys_drvdata *ddata = dev_get_drvdata(dev);
 	struct input_dev *input = ddata->input;
-	struct gpio_button_data *bdata = &ddata->data[0];
 	int error = 0;
 	int i;
-
-	if (bdata->button->ds_irqflags)
-		irq_set_irq_type(bdata->irq, bdata->irqflags);
 
 	if (device_may_wakeup(dev)) {
 		for (i = 0; i < ddata->pdata->nbuttons; i++) {
@@ -885,12 +849,6 @@ static int gpio_keys_resume(struct device *dev)
 		return error;
 
 	gpio_keys_report_state(ddata);
-
-	for (i = 0; i < ddata->pdata->nbuttons; i++) {
-		struct gpio_button_data *bdata = &ddata->data[i];
-		bdata->is_deepsleep = false;
-	}
-
 	return 0;
 }
 #endif

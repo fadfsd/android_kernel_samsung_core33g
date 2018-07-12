@@ -54,7 +54,6 @@
 #include <linux/atomic.h>
 #include <linux/fdtable.h>
 #include <linux/file.h>
-#include <linux/freezer.h>
 #include <linux/fs.h>
 #include <linux/list.h>
 #include <linux/miscdevice.h>
@@ -71,9 +70,12 @@
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
 #include <linux/pid_namespace.h>
+<<<<<<< HEAD:drivers/android/binder.c
 #include <linux/security.h>
 #include <linux/spinlock.h>
 #include <linux/ratelimit.h>
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource:drivers/staging/android/binder.c
 
 #ifdef CONFIG_ANDROID_BINDER_IPC_32BIT
 #define BINDER_IPC_32BIT 1
@@ -2241,10 +2243,6 @@ static void binder_transaction(struct binder_proc *proc,
 			return_error = BR_DEAD_REPLY;
 			goto err_dead_binder;
 		}
-		if (security_binder_transaction(proc->tsk, target_proc->tsk) < 0) {
-			return_error = BR_FAILED_REPLY;
-			goto err_invalid_target_handle;
-		}
 		if (!(tr->flags & TF_ONE_WAY) && thread->transaction_stack) {
 			struct binder_transaction *tmp;
 
@@ -2393,17 +2391,41 @@ static void binder_transaction(struct binder_proc *proc,
 		switch (hdr->type) {
 		case BINDER_TYPE_BINDER:
 		case BINDER_TYPE_WEAK_BINDER: {
+<<<<<<< HEAD:drivers/android/binder.c
 			struct flat_binder_object *fp;
 
 			fp = to_flat_binder_object(hdr);
 			ret = binder_translate_binder(fp, t, thread);
 			if (ret < 0) {
+=======
+			struct binder_ref *ref;
+			struct binder_node *node = binder_get_node(proc, fp->binder);
+			if (node == NULL) {
+				node = binder_new_node(proc, fp->binder, fp->cookie);
+				if (node == NULL) {
+					return_error = BR_FAILED_REPLY;
+					goto err_binder_new_node_failed;
+				}
+				node->min_priority = fp->flags & FLAT_BINDER_FLAG_PRIORITY_MASK;
+				node->accept_fds = !!(fp->flags & FLAT_BINDER_FLAG_ACCEPTS_FDS);
+			}
+			if (fp->cookie != node->cookie) {
+				binder_user_error("%d:%d sending u%p node %d, cookie mismatch %p != %p\n",
+					proc->pid, thread->pid,
+					fp->binder, node->debug_id,
+					fp->cookie, node->cookie);
+				goto err_binder_get_ref_for_node_failed;
+			}
+			ref = binder_get_ref_for_node(target_proc, node);
+			if (ref == NULL) {
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource:drivers/staging/android/binder.c
 				return_error = BR_FAILED_REPLY;
 				goto err_translate_failed;
 			}
 		} break;
 		case BINDER_TYPE_HANDLE:
 		case BINDER_TYPE_WEAK_HANDLE: {
+<<<<<<< HEAD:drivers/android/binder.c
 			struct flat_binder_object *fp;
 
 			fp = to_flat_binder_object(hdr);
@@ -2411,6 +2433,44 @@ static void binder_transaction(struct binder_proc *proc,
 			if (ret < 0) {
 				return_error = BR_FAILED_REPLY;
 				goto err_translate_failed;
+=======
+			struct binder_ref *ref = binder_get_ref(proc, fp->handle);
+			if (ref == NULL) {
+				binder_user_error("%d:%d got transaction with invalid handle, %ld\n",
+						proc->pid,
+						thread->pid, fp->handle);
+				return_error = BR_FAILED_REPLY;
+				goto err_binder_get_ref_failed;
+			}
+			if (ref->node->proc == target_proc) {
+				if (fp->type == BINDER_TYPE_HANDLE)
+					fp->type = BINDER_TYPE_BINDER;
+				else
+					fp->type = BINDER_TYPE_WEAK_BINDER;
+				fp->binder = ref->node->ptr;
+				fp->cookie = ref->node->cookie;
+				binder_inc_node(ref->node, fp->type == BINDER_TYPE_BINDER, 0, NULL);
+				trace_binder_transaction_ref_to_node(t, ref);
+				binder_debug(BINDER_DEBUG_TRANSACTION,
+					     "        ref %d desc %d -> node %d u%p\n",
+					     ref->debug_id, ref->desc, ref->node->debug_id,
+					     ref->node->ptr);
+			} else {
+				struct binder_ref *new_ref;
+				new_ref = binder_get_ref_for_node(target_proc, ref->node);
+				if (new_ref == NULL) {
+					return_error = BR_FAILED_REPLY;
+					goto err_binder_get_ref_for_node_failed;
+				}
+				fp->handle = new_ref->desc;
+				binder_inc_ref(new_ref, fp->type == BINDER_TYPE_HANDLE, NULL);
+				trace_binder_transaction_ref_to_ref(t, ref,
+								    new_ref);
+				binder_debug(BINDER_DEBUG_TRANSACTION,
+					     "        ref %d desc %d -> ref %d desc %d (node %d)\n",
+					     ref->debug_id, ref->desc, new_ref->debug_id,
+					     new_ref->desc, ref->node->debug_id);
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource:drivers/staging/android/binder.c
 			}
 		} break;
 
@@ -2439,6 +2499,7 @@ static void binder_transaction(struct binder_proc *proc,
 				return_error = BR_FAILED_REPLY;
 				goto err_bad_parent;
 			}
+<<<<<<< HEAD:drivers/android/binder.c
 			if (!binder_validate_fixup(t->buffer, off_start,
 						   parent, fda->parent_offset,
 						   last_fixup_obj,
@@ -2451,6 +2512,11 @@ static void binder_transaction(struct binder_proc *proc,
 			ret = binder_translate_fd_array(fda, parent, t, thread,
 							in_reply_to);
 			if (ret < 0) {
+=======
+			target_fd = task_get_unused_fd_flags(target_proc, O_CLOEXEC);
+			if (target_fd < 0) {
+				fput(file);
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource:drivers/staging/android/binder.c
 				return_error = BR_FAILED_REPLY;
 				goto err_translate_failed;
 			}
@@ -3045,13 +3111,13 @@ retry:
 			if (!binder_has_proc_work(proc, thread))
 				ret = -EAGAIN;
 		} else
-			ret = wait_event_freezable_exclusive(proc->wait, binder_has_proc_work(proc, thread));
+			ret = wait_event_interruptible_exclusive(proc->wait, binder_has_proc_work(proc, thread));
 	} else {
 		if (non_block) {
 			if (!binder_has_thread_work(thread))
 				ret = -EAGAIN;
 		} else
-			ret = wait_event_freezable(thread->wait, binder_has_thread_work(thread));
+			ret = wait_event_interruptible(thread->wait, binder_has_thread_work(thread));
 	}
 
 	binder_lock(proc->context, __func__);
@@ -3634,8 +3700,29 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		}
 		break;
 	case BINDER_SET_CONTEXT_MGR:
+<<<<<<< HEAD:drivers/android/binder.c
 		ret = binder_ioctl_set_ctx_mgr(filp);
 		if (ret)
+=======
+		if (binder_context_mgr_node != NULL) {
+			pr_err("BINDER_SET_CONTEXT_MGR already set\n");
+			ret = -EBUSY;
+			goto err;
+		}
+		if (uid_valid(binder_context_mgr_uid)) {
+			if (!uid_eq(binder_context_mgr_uid, current->cred->euid)) {
+				pr_err("BINDER_SET_CONTEXT_MGR bad uid %d != %d\n",
+				       from_kuid(&init_user_ns, current->cred->euid),
+				       from_kuid(&init_user_ns, binder_context_mgr_uid));
+				ret = -EPERM;
+				goto err;
+			}
+		} else
+			binder_context_mgr_uid = current->cred->euid;
+		binder_context_mgr_node = binder_new_node(proc, NULL, NULL);
+		if (binder_context_mgr_node == NULL) {
+			ret = -ENOMEM;
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource:drivers/staging/android/binder.c
 			goto err;
 		break;
 	case BINDER_THREAD_EXIT:

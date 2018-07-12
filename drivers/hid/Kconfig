@@ -592,7 +592,7 @@ config HID_SAITEK
 
 config HID_SAMSUNG
 	tristate "Samsung InfraRed remote control or keyboards"
-	depends on (USB_HID || BT_HIDP)
+	depends on HID
 	---help---
 	Support for Samsung InfraRed remote control or keyboards.
 
@@ -662,13 +662,6 @@ config SMARTJOYPLUS_FF
 	Say Y here if you have a SmartJoy PLUS PS2/USB adapter and want to
 	enable force feedback support for it.
 
-config HID_SYNAPTICS_BT
-	tristate "HID Synaptics"
-	depends on HID
-	default n
-	---help---
-	For a Bluetooth HID touchpad
-
 config HID_TIVO
 	tristate "TiVo Slide Bluetooth remote control support"
 	depends on HID
@@ -733,12 +726,6 @@ config HID_WIIMOTE_EXT
 	Support for extension controllers of the Nintendo Wii Remote. Say yes
 	here if you want to use the Nintendo Motion+, Nunchuck or Classic
 	extension controllers with your Wii Remote.
-
-config HID_ZAGG
-	tristate "ZAGG InfraRed remote control or keyboards"
-	depends on (USB_HID || BT_HIDP)
-	---help---
-	Support for ZAGG InfraRed remote control or keyboards.
 
 config HID_ZEROPLUS
 	tristate "Zeroplus based game controller support"

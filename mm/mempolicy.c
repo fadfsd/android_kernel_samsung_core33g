@@ -725,7 +725,11 @@ static int mbind_range(struct mm_struct *mm, unsigned long start,
 			((vmstart - vma->vm_start) >> PAGE_SHIFT);
 		prev = vma_merge(mm, prev, vmstart, vmend, vma->vm_flags,
 				  vma->anon_vma, vma->vm_file, pgoff,
+<<<<<<< HEAD
 				  new_pol, vma_get_anon_name(vma));
+=======
+				  new_pol);
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 		if (prev) {
 			vma = prev;
 			next = vma->vm_next;

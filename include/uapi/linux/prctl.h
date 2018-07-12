@@ -149,6 +149,7 @@
 
 #define PR_GET_TID_ADDRESS	40
 
+<<<<<<< HEAD
 /* Sets the timerslack for arbitrary threads
  * arg2 slack value, 0 means "use default"
  * arg3 pid of the thread whose timer slack needs to be set
@@ -165,4 +166,6 @@
 # define PR_CAP_AMBIENT_LOWER		3
 # define PR_CAP_AMBIENT_CLEAR_ALL	4
 
+=======
+>>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
 #endif /* _LINUX_PRCTL_H */

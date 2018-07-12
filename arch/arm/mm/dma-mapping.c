@@ -38,18 +38,6 @@
 
 #include "mm.h"
 
-#ifdef CONFIG_CMA_SIZE_MBYTES
-#define CMA_SIZE_MBYTES CONFIG_CMA_SIZE_MBYTES
-#else
-#define CMA_SIZE_MBYTES 0
-#endif
-
-#ifdef CONFIG_CMA_SIZE_PERCENTAGE
-#define CMA_SIZE_PERCENTAGE CONFIG_CMA_SIZE_PERCENTAGE
-#else
-#define CMA_SIZE_PERCENTAGE 0
-#endif
-
 /*
  * The DMA API is built upon the notion of "buffer ownership".  A buffer
  * is either exclusively owned by the CPU (and therefore may be accessed
@@ -370,8 +358,7 @@ static int __init atomic_pool_init(void)
 	if (!pages)
 		goto no_pages;
 
-	if (IS_ENABLED(CONFIG_CMA)
-			&& (CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0))
+	if (IS_ENABLED(CONFIG_CMA))
 		ptr = __alloc_from_contiguous(NULL, pool->size, prot, &page,
 					      atomic_pool_init);
 	else
@@ -692,8 +679,7 @@ static void *__dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 		addr = __alloc_simple_buffer(dev, size, gfp, &page);
 	else if (!(gfp & __GFP_WAIT))
 		addr = __alloc_from_pool(size, &page);
-	else if (!IS_ENABLED(CONFIG_CMA)
-			|| !(CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0))
+	else if (!IS_ENABLED(CONFIG_CMA))
 		addr = __alloc_remap_buffer(dev, size, gfp, prot, &page, caller);
 	else
 		addr = __alloc_from_contiguous(dev, size, prot, &page, caller);
@@ -782,8 +768,7 @@ static void __arm_dma_free(struct device *dev, size_t size, void *cpu_addr,
 		__dma_free_buffer(page, size);
 	} else if (__free_from_pool(cpu_addr, size)) {
 		return;
-	} else if (!IS_ENABLED(CONFIG_CMA)
-			|| !(CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0)) {
+	} else if (!IS_ENABLED(CONFIG_CMA)) {
 		__dma_free_remap(cpu_addr, size);
 		__dma_free_buffer(page, size);
 	} else {
@@ -1112,16 +1097,9 @@ static struct page **__iommu_alloc_buffer(struct device *dev, size_t size,
 		unsigned long order = get_order(size);
 		struct page *page;
 
-		if (IS_ENABLED(CONFIG_CMA)
-			&& (CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0)) {
-			page = dma_alloc_from_contiguous(dev, count, order);
-			if (!page)
-				goto error;
-		} else {
-			page = alloc_pages(gfp, order);
-			if (!page)
-				goto error;
-		}
+		page = dma_alloc_from_contiguous(dev, count, order);
+		if (!page)
+			goto error;
 
 		__dma_clear_buffer(page, size);
 
@@ -1177,11 +1155,7 @@ static int __iommu_free_buffer(struct device *dev, struct page **pages,
 	int i;
 
 	if (dma_get_attr(DMA_ATTR_FORCE_CONTIGUOUS, attrs)) {
-		if (IS_ENABLED(CONFIG_CMA)
-			&& (CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0))
-			dma_release_from_contiguous(dev, pages[0], count);
-		else
-			__free_pages(pages[0], get_order(size));
+		dma_release_from_contiguous(dev, pages[0], count);
 	} else {
 		for (i = 0; i < count; i++)
 			if (pages[i])
