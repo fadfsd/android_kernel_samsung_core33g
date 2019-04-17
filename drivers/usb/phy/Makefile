@@ -5,6 +5,10 @@
 ccflags-$(CONFIG_USB_DEBUG) := -DDEBUG
 
 obj-$(CONFIG_USB_PHY)			+= phy.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_USB_OTG_WAKELOCK)		+= otg-wakelock.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 # transceiver drivers, keep the list sorted
 

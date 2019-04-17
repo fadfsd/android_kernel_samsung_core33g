@@ -679,7 +679,11 @@ int snd_info_card_free(struct snd_card *card)
  * snd_info_get_line - read one line from the procfs buffer
  * @buffer: the procfs buffer
  * @line: the buffer to store
+<<<<<<< HEAD
  * @len: the max. buffer size
+=======
+ * @len: the max. buffer size - 1
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *
  * Reads one line from the buffer and stores the string.
  *
@@ -699,7 +703,11 @@ int snd_info_get_line(struct snd_info_buffer *buffer, char *line, int len)
 			buffer->stop = 1;
 		if (c == '\n')
 			break;
+<<<<<<< HEAD
 		if (len > 1) {
+=======
+		if (len) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			len--;
 			*line++ = c;
 		}

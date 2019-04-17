@@ -231,6 +231,7 @@ _GLOBAL(_rest32gpr_31_x)
 	mr	1,11
 	blr
 
+<<<<<<< HEAD
 #ifdef CONFIG_ALTIVEC
 /* Called with r0 pointing just beyond the end of the vector save area.  */
 
@@ -312,6 +313,8 @@ _GLOBAL(_restvr_31)
 
 #endif /* CONFIG_ALTIVEC */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else /* CONFIG_PPC64 */
 
 	.section ".text.save.restore","ax",@progbits
@@ -437,6 +440,7 @@ _restgpr0_31:
 	mtlr	r0
 	blr
 
+<<<<<<< HEAD
 #ifdef CONFIG_ALTIVEC
 /* Called with r0 pointing just beyond the end of the vector save area.  */
 
@@ -542,6 +546,8 @@ _restvr_31:
 
 #endif /* CONFIG_ALTIVEC */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* CONFIG_PPC64 */
 
 #endif

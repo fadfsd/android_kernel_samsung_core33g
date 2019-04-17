@@ -286,7 +286,11 @@ struct ak4113 {
 	ak4113_write_t *write;
 	ak4113_read_t *read;
 	void *private_data;
+<<<<<<< HEAD
 	atomic_t wq_processing;
+=======
+	unsigned int init:1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spinlock_t lock;
 	unsigned char regmap[AK4113_WRITABLE_REGS];
 	struct snd_kcontrol *kctls[AK4113_CONTROLS];

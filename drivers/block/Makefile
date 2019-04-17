@@ -41,7 +41,10 @@ obj-$(CONFIG_BLK_DEV_RBD)     += rbd.o
 obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
 
 obj-$(CONFIG_BLK_DEV_RSXX) += rsxx/
+<<<<<<< HEAD
 obj-$(CONFIG_ZRAM) += zram/
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 nvme-y		:= nvme-core.o nvme-scsi.o
 swim_mod-y	:= swim.o swim_asm.o

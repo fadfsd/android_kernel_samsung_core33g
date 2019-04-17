@@ -815,6 +815,13 @@ static int __init nbd_init(void)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	nbd_dev = kcalloc(nbds_max, sizeof(*nbd_dev), GFP_KERNEL);
+	if (!nbd_dev)
+		return -ENOMEM;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	part_shift = 0;
 	if (max_part > 0) {
 		part_shift = fls(max_part);
@@ -836,10 +843,13 @@ static int __init nbd_init(void)
 	if (nbds_max > 1UL << (MINORBITS - part_shift))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	nbd_dev = kcalloc(nbds_max, sizeof(*nbd_dev), GFP_KERNEL);
 	if (!nbd_dev)
 		return -ENOMEM;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (i = 0; i < nbds_max; i++) {
 		struct gendisk *disk = alloc_disk(1 << part_shift);
 		if (!disk)

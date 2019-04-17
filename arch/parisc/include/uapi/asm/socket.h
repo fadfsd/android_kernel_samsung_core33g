@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 #ifndef _UAPI_ASM_SOCKET_H
 #define _UAPI_ASM_SOCKET_H
+=======
+#ifndef _ASM_SOCKET_H
+#define _ASM_SOCKET_H
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/sockios.h>
 
@@ -73,4 +78,13 @@
 
 #define SO_SELECT_ERR_QUEUE	0x4026
 
+<<<<<<< HEAD
 #endif /* _UAPI_ASM_SOCKET_H */
+=======
+/* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
+ * have to define SOCK_NONBLOCK to a different value here.
+ */
+#define SOCK_NONBLOCK   0x40000000
+
+#endif /* _ASM_SOCKET_H */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

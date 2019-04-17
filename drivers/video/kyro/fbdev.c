@@ -625,6 +625,7 @@ static int kyrofb_ioctl(struct fb_info *info,
 		}
 		break;
 	case KYRO_IOCTL_UVSTRIDE:
+<<<<<<< HEAD
 		if (copy_to_user(argp, &deviceInfo.ulOverlayUVStride, sizeof(deviceInfo.ulOverlayUVStride)))
 			return -EFAULT;
 		break;
@@ -634,6 +635,17 @@ static int kyrofb_ioctl(struct fb_info *info,
 		break;
 	case KYRO_IOCTL_OVERLAY_OFFSET:
 		if (copy_to_user(argp, &deviceInfo.ulOverlayOffset, sizeof(deviceInfo.ulOverlayOffset)))
+=======
+		if (copy_to_user(argp, &deviceInfo.ulOverlayUVStride, sizeof(unsigned long)))
+			return -EFAULT;
+		break;
+	case KYRO_IOCTL_STRIDE:
+		if (copy_to_user(argp, &deviceInfo.ulOverlayStride, sizeof(unsigned long)))
+			return -EFAULT;
+		break;
+	case KYRO_IOCTL_OVERLAY_OFFSET:
+		if (copy_to_user(argp, &deviceInfo.ulOverlayOffset, sizeof(unsigned long)))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -EFAULT;
 		break;
 	}

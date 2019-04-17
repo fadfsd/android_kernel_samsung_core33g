@@ -258,7 +258,11 @@ static bool slice_scan_available(unsigned long addr,
 		slice = GET_HIGH_SLICE_INDEX(addr);
 		*boundary_addr = (slice + end) ?
 			((slice + end) << SLICE_HIGH_SHIFT) : SLICE_LOW_TOP;
+<<<<<<< HEAD
 		return !!(available.high_slices & (1ul << slice));
+=======
+		return !!(available.high_slices & (1u << slice));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 

@@ -147,7 +147,11 @@ struct thread_info {
 /* Only used for 64 bit */
 #define _TIF_DO_NOTIFY_MASK						\
 	(_TIF_SIGPENDING | _TIF_MCE_NOTIFY | _TIF_NOTIFY_RESUME |	\
+<<<<<<< HEAD
 	 _TIF_USER_RETURN_NOTIFY | _TIF_UPROBE)
+=======
+	 _TIF_USER_RETURN_NOTIFY)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* flags to check in __switch_to() */
 #define _TIF_WORK_CTXSW							\

@@ -769,7 +769,11 @@ int clk_prepare(struct clk *clk)
 }
 EXPORT_SYMBOL_GPL(clk_prepare);
 
+<<<<<<< HEAD
 static void __clk_disable(struct clk *clk)
+=======
+void __clk_disable(struct clk *clk)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	if (!clk)
 		return;
@@ -811,7 +815,11 @@ void clk_disable(struct clk *clk)
 }
 EXPORT_SYMBOL_GPL(clk_disable);
 
+<<<<<<< HEAD
 static int __clk_enable(struct clk *clk)
+=======
+int __clk_enable(struct clk *clk)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int ret = 0;
 
@@ -1630,7 +1638,12 @@ int __clk_init(struct device *dev, struct clk *clk)
 	 * this clock
 	 */
 	hlist_for_each_entry_safe(orphan, tmp2, &clk_orphan_list, child_node) {
+<<<<<<< HEAD
 		if (orphan->ops->get_parent) {
+=======
+		if (orphan->num_parents && orphan->ops->get_parent) {
+			printk("orphan %s \n", orphan->name);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			i = orphan->ops->get_parent(orphan->hw);
 			if (!strcmp(clk->name, orphan->parent_names[i]))
 				__clk_reparent(orphan, clk);
@@ -2084,12 +2097,15 @@ struct clk *of_clk_get_from_provider(struct of_phandle_args *clkspec)
 	return clk;
 }
 
+<<<<<<< HEAD
 int of_clk_get_parent_count(struct device_node *np)
 {
         return of_count_phandle_with_args(np, "clocks", "#clock-cells");
 }
 EXPORT_SYMBOL_GPL(of_clk_get_parent_count);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 const char *of_clk_get_parent_name(struct device_node *np, int index)
 {
 	struct of_phandle_args clkspec;

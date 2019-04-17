@@ -22,7 +22,10 @@
 #include <linux/io.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/of.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/irqchip.h>
 #include <linux/clk/tegra.h>
 
@@ -81,20 +84,26 @@ void tegra_assert_system_reset(char mode, const char *cmd)
 static void __init tegra_init_cache(void)
 {
 #ifdef CONFIG_CACHE_L2X0
+<<<<<<< HEAD
 	static const struct of_device_id pl310_ids[] __initconst = {
 		{ .compatible = "arm,pl310-cache",  },
 		{}
 	};
 
 	struct device_node *np;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret;
 	void __iomem *p = IO_ADDRESS(TEGRA_ARM_PERIF_BASE) + 0x3000;
 	u32 aux_ctrl, cache_type;
 
+<<<<<<< HEAD
 	np = of_find_matching_node(NULL, pl310_ids);
 	if (!np)
 		return;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cache_type = readl(p + L2X0_CACHE_TYPE);
 	aux_ctrl = (cache_type & 0x700) << (17-8);
 	aux_ctrl |= 0x7C400001;

@@ -1,7 +1,11 @@
 * Marvell Orion SATA
 
 Required Properties:
+<<<<<<< HEAD
 - compatibility : "marvell,orion-sata" or "marvell,armada-370-sata"
+=======
+- compatibility : "marvell,orion-sata"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 - reg           : Address range of controller
 - interrupts    : Interrupt controller is using
 - nr-ports      : Number of SATA ports in use.

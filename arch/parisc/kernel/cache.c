@@ -388,6 +388,7 @@ void flush_kernel_dcache_page_addr(void *addr)
 }
 EXPORT_SYMBOL(flush_kernel_dcache_page_addr);
 
+<<<<<<< HEAD
 void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
 	struct page *pg)
 {
@@ -395,13 +396,49 @@ void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
 	  kunmap) for the `to' page.  However, the `from' page needs to
 	  be flushed through a mapping equivalent to the user mapping
 	  before it can be accessed through the kernel mapping. */
+=======
+void clear_user_page(void *vto, unsigned long vaddr, struct page *page)
+{
+	clear_page_asm(vto);
+	if (!parisc_requires_coherency())
+		flush_kernel_dcache_page_asm(vto);
+}
+EXPORT_SYMBOL(clear_user_page);
+
+void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
+	struct page *pg)
+{
+	/* Copy using kernel mapping.  No coherency is needed
+	   (all in kmap/kunmap) on machines that don't support
+	   non-equivalent aliasing.  However, the `from' page
+	   needs to be flushed before it can be accessed through
+	   the kernel mapping. */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	preempt_disable();
 	flush_dcache_page_asm(__pa(vfrom), vaddr);
 	preempt_enable();
 	copy_page_asm(vto, vfrom);
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL(copy_user_page);
 
+=======
+	if (!parisc_requires_coherency())
+		flush_kernel_dcache_page_asm(vto);
+}
+EXPORT_SYMBOL(copy_user_page);
+
+#ifdef CONFIG_PA8X00
+
+void kunmap_parisc(void *addr)
+{
+	if (parisc_requires_coherency())
+		flush_kernel_dcache_page_addr(addr);
+}
+EXPORT_SYMBOL(kunmap_parisc);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void purge_tlb_entries(struct mm_struct *mm, unsigned long addr)
 {
 	unsigned long flags;

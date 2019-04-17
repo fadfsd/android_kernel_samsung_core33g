@@ -225,7 +225,11 @@ static void nuc900_nand_enable(struct nuc900_nand *nand)
 	val = __raw_readl(nand->reg + REG_FMICSR);
 
 	if (!(val & NAND_EN))
+<<<<<<< HEAD
 		__raw_writel(val | NAND_EN, nand->reg + REG_FMICSR);
+=======
+		__raw_writel(val | NAND_EN, REG_FMICSR);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	val = __raw_readl(nand->reg + REG_SMCSR);
 

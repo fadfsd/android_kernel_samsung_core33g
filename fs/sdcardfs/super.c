@@ -46,9 +46,12 @@ static void sdcardfs_put_super(struct super_block *sb)
 		path_put(&spd->obbpath);
 	}
 
+<<<<<<< HEAD
 	if(spd->options.label)
 		kfree(spd->options.label);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* decrement lower super references */
 	s = sdcardfs_lower_super(sb);
 	sdcardfs_set_lower_super(sb, NULL);
@@ -188,6 +191,7 @@ void sdcardfs_destroy_inode_cache(void)
 		kmem_cache_destroy(sdcardfs_inode_cachep);
 }
 
+<<<<<<< HEAD
 static long sdcardfs_propagate_lookup(struct super_block *sb, char* pathname) {
 	long ret = 0;
 	char *propagate_path = NULL;
@@ -238,6 +242,8 @@ static long sdcardfs_propagate_lookup(struct super_block *sb, char* pathname) {
 	return ret;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Used only in nfs, to kill any pending RPC tasks, so that subsequent
  * code can actually succeed and won't leave tasks that need handling.
@@ -257,6 +263,7 @@ static int sdcardfs_show_options(struct seq_file *m, struct dentry *root)
 	struct sdcardfs_mount_options *opts = &sbi->options;
 
 	if (opts->fs_low_uid != 0)
+<<<<<<< HEAD
 		seq_printf(m, ",low_uid=%u", opts->fs_low_uid);
 	if (opts->fs_low_gid != 0)
 		seq_printf(m, ",low_gid=%u", opts->fs_low_gid);
@@ -268,6 +275,19 @@ static int sdcardfs_show_options(struct seq_file *m, struct dentry *root)
 		seq_printf(m, ",multi_user");
 	if (opts->mask != 0)
 		seq_printf(m, ",mask=%04o", opts->mask);
+=======
+		seq_printf(m, ",uid=%u", opts->fs_low_uid);
+	if (opts->fs_low_gid != 0)
+		seq_printf(m, ",gid=%u", opts->fs_low_gid);
+
+	if (opts->derive == DERIVE_NONE)
+		seq_printf(m, ",derive=none");
+	else if (opts->derive == DERIVE_LEGACY)
+		seq_printf(m, ",derive=legacy");
+	else if (opts->derive == DERIVE_UNIFIED)
+		seq_printf(m, ",derive=unified");
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (opts->reserved_mb != 0)
 		seq_printf(m, ",reserved=%uMB", opts->reserved_mb);
 
@@ -285,6 +305,7 @@ const struct super_operations sdcardfs_sops = {
 	.destroy_inode	= sdcardfs_destroy_inode,
 	.drop_inode	= generic_delete_inode,
 };
+<<<<<<< HEAD
 
 const struct super_operations sdcardfs_multimount_sops = {
 	.put_super	= sdcardfs_put_super,
@@ -298,3 +319,5 @@ const struct super_operations sdcardfs_multimount_sops = {
 	.drop_inode	= generic_delete_inode,
 	.unlink_callback = sdcardfs_propagate_lookup,
 };
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

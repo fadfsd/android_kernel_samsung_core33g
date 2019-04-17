@@ -991,7 +991,12 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
 		if (ret)
 			goto done;
 
+<<<<<<< HEAD
 		if ((var->activate & FB_ACTIVATE_MASK) == FB_ACTIVATE_NOW) {
+=======
+		if ((var->activate & FB_ACTIVATE_MASK) == FB_ACTIVATE_NOW
+			|| (var->activate & FB_ACTIVATE_MASK) == FB_ACTIVATE_NODISP) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			struct fb_var_screeninfo old_var;
 			struct fb_videomode mode;
 
@@ -1017,7 +1022,14 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
 				}
 			}
 
+<<<<<<< HEAD
 			fb_pan_display(info, &info->var);
+=======
+			if((var->activate & FB_ACTIVATE_MASK) == FB_ACTIVATE_NOW) {
+				fb_pan_display(info, &info->var);
+			}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			fb_set_cmap(&info->cmap, info);
 			fb_var_to_videomode(&mode, &info->var);
 
@@ -1194,14 +1206,23 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		unlock_fb_info(info);
 		break;
 	default:
+<<<<<<< HEAD
 		if (!lock_fb_info(info))
 			return -ENODEV;
+=======
+		/*if (!lock_fb_info(info))
+			return -ENODEV;*/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		fb = info->fbops;
 		if (fb->fb_ioctl)
 			ret = fb->fb_ioctl(info, cmd, arg);
 		else
 			ret = -ENOTTY;
+<<<<<<< HEAD
 		unlock_fb_info(info);
+=======
+		/*unlock_fb_info(info);*/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return ret;
 }

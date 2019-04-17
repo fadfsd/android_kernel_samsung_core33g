@@ -92,7 +92,12 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
 	int code = SEGV_MAPERR;
 	int is_write = error_code & ESR_S;
 	int fault;
+<<<<<<< HEAD
 	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+					 (is_write ? FAULT_FLAG_WRITE : 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	regs->ear = address;
 	regs->esr = error_code;
@@ -120,9 +125,12 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
 		die("Weird page fault", regs, SIGSEGV);
 	}
 
+<<<<<<< HEAD
 	if (user_mode(regs))
 		flags |= FAULT_FLAG_USER;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* When running in the kernel we expect faults to occur only to
 	 * addresses in user space.  All other faults represent errors in the
 	 * kernel and should generate an OOPS.  Unfortunately, in the case of an
@@ -201,7 +209,10 @@ good_area:
 	if (unlikely(is_write)) {
 		if (unlikely(!(vma->vm_flags & VM_WRITE)))
 			goto bad_area;
+<<<<<<< HEAD
 		flags |= FAULT_FLAG_WRITE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* a read */
 	} else {
 		/* protection fault */
@@ -224,8 +235,11 @@ good_area:
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
+<<<<<<< HEAD
 		else if (fault & VM_FAULT_SIGSEGV)
 			goto bad_area;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else if (fault & VM_FAULT_SIGBUS)
 			goto do_sigbus;
 		BUG();

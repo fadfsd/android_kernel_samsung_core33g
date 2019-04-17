@@ -293,7 +293,11 @@ static void _rtl88ee_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 	u8 *psaddr;
 	__le16 fc;
 	u16 type, ufc;
+<<<<<<< HEAD
 	bool match_bssid, packet_toself, packet_beacon = false, addr;
+=======
+	bool match_bssid, packet_toself, packet_beacon, addr;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tmp_buf = skb->data + pstatus->rx_drvinfo_size + pstatus->rx_bufshift;
 

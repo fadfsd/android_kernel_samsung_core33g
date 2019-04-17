@@ -200,9 +200,17 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	raw_spin_unlock(&boot_lock);
 
 	/*
+<<<<<<< HEAD
 	 * Log the CPU info before it is marked online and might get read.
 	 */
 	cpuinfo_store_cpu();
+=======
+	 * Enable local interrupts.
+	 */
+	notify_cpu_starting(cpu);
+	local_irq_enable();
+	local_fiq_enable();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * OK, now it's safe to let the boot CPU continue.  Wait for
@@ -213,6 +221,7 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	complete(&cpu_running);
 
 	/*
+<<<<<<< HEAD
 	 * Enable GIC and timers.
 	 */
 	notify_cpu_starting(cpu);
@@ -221,6 +230,8 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	local_fiq_enable();
 
 	/*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * OK, it's off to the idle thread for us
 	 */
 	cpu_startup_entry(CPUHP_ONLINE);

@@ -74,8 +74,11 @@ static inline u32 __attribute_const__ read_cpuid_cachetype(void)
 	return read_cpuid(ID_CTR_EL0);
 }
 
+<<<<<<< HEAD
 void cpuinfo_store_cpu(void);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* __ASSEMBLY__ */
 
 #endif

@@ -381,6 +381,31 @@ config HMC6352
 	  This driver provides support for the Honeywell HMC6352 compass,
 	  providing configuration and heading data via sysfs.
 
+<<<<<<< HEAD
+=======
+config SENSORS_ST480
+	tristate "ST480 compass support"
+	default n
+	depends on I2C
+	help
+	  If you say yes here you get support for Senodia's
+	  orientation sensor ST480.
+
+config SENSORS_AK8963
+	tristate "AKM8963C compass support"
+	default n
+	depends on I2C
+	help
+	  If you say yes here you get support for Msensor AKM8963C.
+
+config AK8963_BYPASS_MODE
+	tristate "AKM8963C support bypass mode"
+	default n
+	depends on SENSORS_AK8963
+	help
+	  If you say yes here you will get support for bypass mode.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config EP93XX_PWM
 	tristate "EP93xx PWM support"
 	depends on ARCH_EP93XX
@@ -424,6 +449,13 @@ config TI_DAC7512
 	  This driver can also be built as a module. If so, the module
 	  will be called ti_dac7512.
 
+<<<<<<< HEAD
+=======
+config UID_STAT
+	bool "UID based statistics tracking exported to /proc/uid_stat"
+	default n
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config VMWARE_BALLOON
 	tristate "VMware Balloon Driver"
 	depends on X86 && HYPERVISOR_GUEST
@@ -518,6 +550,30 @@ config LATTICE_ECP3_CONFIG
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config BCM_BT_RFKILL
+	bool "BCM BT RFKILL driver support for Bluetooth"
+	depends on RFKILL
+	default n
+	help
+	  This driver adds RFKILL support for Broadcom
+	  Bluetooth. By default it should be set as N.
+	  Say Y here if you want to enable Broadcom
+	  Bluetooth RFKILL.
+
+config BCM_BT_LPM
+	bool "BCM BT Low Power support"
+	default n
+	help
+	  This driver adds Bluetooth low power mode line discipline
+	  support for Broadcom Bluetooth chips. By default it should
+	  be set as N. Say Y if you want to enable Low power mode
+	  functionality.
+	  If not sure, say N.
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config SRAM
 	bool "Generic on-chip SRAM driver"
 	depends on HAS_IOMEM
@@ -528,6 +584,9 @@ config SRAM
 	  areas found on many SoCs.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config SPRD_BOARD_TYPE
 	tristate "sprd board type support"
 	default n
@@ -555,6 +614,7 @@ source "drivers/misc/sprd_vsp/Kconfig"
 source "drivers/misc/sprd_jpg/Kconfig"
 source "drivers/misc/sprd_cproc/Kconfig"
 source "drivers/misc/sprd_2351/Kconfig"
+<<<<<<< HEAD
 source "drivers/misc/gpsip/Kconfig"
 source "drivers/misc/fm_2351/Kconfig"
 
@@ -566,6 +626,12 @@ config UID_CPUTIME
 
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+source "drivers/misc/sprd_simdet/Kconfig"
+source "drivers/misc/gpsip/Kconfig"
+source "drivers/misc/fm_2351/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
@@ -575,4 +641,15 @@ source "drivers/misc/carma/Kconfig"
 source "drivers/misc/altera-stapl/Kconfig"
 source "drivers/misc/mei/Kconfig"
 source "drivers/misc/vmw_vmci/Kconfig"
+<<<<<<< HEAD
+=======
+source "drivers/misc/benchmark/Kconfig"
+source "drivers/misc/bootperf/Kconfig"
+
+config SPRD_SRT_KO
+	tristate "sprd srt kernel module support"
+	depends on SPRD_SRT
+	default m
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endmenu

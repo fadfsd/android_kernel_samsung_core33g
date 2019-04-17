@@ -541,12 +541,15 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *adap,
 
 	ret = -EINVAL;
 	for (i = 0; i < num; i++) {
+<<<<<<< HEAD
 		/* This HW can't send STOP after address phase */
 		if (msgs[i].len == 0) {
 			ret = -EOPNOTSUPP;
 			break;
 		}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*-------------- spin lock -----------------*/
 		spin_lock_irqsave(&priv->lock, flags);
 
@@ -611,8 +614,12 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *adap,
 
 static u32 rcar_i2c_func(struct i2c_adapter *adap)
 {
+<<<<<<< HEAD
 	/* This HW can't do SMBUS_QUICK and NOSTART */
 	return I2C_FUNC_I2C | (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
+=======
+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static const struct i2c_algorithm rcar_i2c_algo = {

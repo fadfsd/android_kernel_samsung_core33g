@@ -1180,7 +1180,11 @@ static int max77693_muic_probe(struct platform_device *pdev)
 
 
 	/* Initialize MUIC register by using platform data or default data */
+<<<<<<< HEAD
 	if (pdata && pdata->muic_data) {
+=======
+	if (pdata->muic_data) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		init_data = pdata->muic_data->init_data;
 		num_init_data = pdata->muic_data->num_init_data;
 	} else {
@@ -1213,7 +1217,11 @@ static int max77693_muic_probe(struct platform_device *pdev)
 				= init_data[i].data;
 	}
 
+<<<<<<< HEAD
 	if (pdata && pdata->muic_data) {
+=======
+	if (pdata->muic_data) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		struct max77693_muic_platform_data *muic_pdata = pdata->muic_data;
 
 		/*

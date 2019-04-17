@@ -15,7 +15,10 @@ static inline void wr_fence(void)
 	volatile int *flushptr = (volatile int *) LINSYSEVENT_WR_FENCE;
 	barrier();
 	*flushptr = 0;
+<<<<<<< HEAD
 	barrier();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #else /* CONFIG_METAG_META21 */
@@ -36,7 +39,10 @@ static inline void wr_fence(void)
 	*flushptr = 0;
 	*flushptr = 0;
 	*flushptr = 0;
+<<<<<<< HEAD
 	barrier();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #endif /* !CONFIG_METAG_META21 */
@@ -70,7 +76,10 @@ static inline void fence(void)
 	volatile int *flushptr = (volatile int *) LINSYSEVENT_WR_ATOMIC_UNLOCK;
 	barrier();
 	*flushptr = 0;
+<<<<<<< HEAD
 	barrier();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #define smp_mb()        fence()
 #define smp_rmb()       fence()
@@ -85,6 +94,7 @@ static inline void fence(void)
 #define smp_read_barrier_depends()     do { } while (0)
 #define set_mb(var, value) do { var = value; smp_mb(); } while (0)
 
+<<<<<<< HEAD
 #define smp_store_release(p, v)						\
 do {									\
 	compiletime_assert_atomic_type(*p);				\
@@ -100,4 +110,6 @@ do {									\
 	___p1;								\
 })
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _ASM_METAG_BARRIER_H */

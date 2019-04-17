@@ -103,6 +103,10 @@ struct drm_tegra_submit {
 	__u32 num_waitchks;
 	__u32 waitchk_mask;
 	__u32 timeout;
+<<<<<<< HEAD
+=======
+	__u32 pad;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__u64 syncpts;
 	__u64 cmdbufs;
 	__u64 relocs;

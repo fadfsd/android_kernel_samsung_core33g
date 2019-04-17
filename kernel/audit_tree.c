@@ -154,7 +154,10 @@ static struct audit_chunk *alloc_chunk(int count)
 		chunk->owners[i].index = i;
 	}
 	fsnotify_init_mark(&chunk->mark, audit_tree_destroy_watch);
+<<<<<<< HEAD
 	chunk->mark.mask = FS_IN_IGNORED;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return chunk;
 }
 

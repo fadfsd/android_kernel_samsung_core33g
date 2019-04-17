@@ -87,8 +87,12 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 		init_pud = pud_offset(init_pgd, 0);
 		init_pmd = pmd_offset(init_pud, 0);
 		init_pte = pte_offset_map(init_pmd, 0);
+<<<<<<< HEAD
 		set_pte_ext(new_pte + 0, init_pte[0], 0);
 		set_pte_ext(new_pte + 1, init_pte[1], 0);
+=======
+		set_pte_ext(new_pte, *init_pte, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		pte_unmap(init_pte);
 		pte_unmap(new_pte);
 	}

@@ -40,6 +40,7 @@ DEFINE_PER_CPU_SHARED_ALIGNED(struct tss_struct, init_tss) = INIT_TSS;
 
 #ifdef CONFIG_X86_64
 static DEFINE_PER_CPU(unsigned char, is_idle);
+<<<<<<< HEAD
 static ATOMIC_NOTIFIER_HEAD(idle_notifier);
 
 void idle_notifier_register(struct notifier_block *n)
@@ -53,6 +54,8 @@ void idle_notifier_unregister(struct notifier_block *n)
 	atomic_notifier_chain_unregister(&idle_notifier, n);
 }
 EXPORT_SYMBOL_GPL(idle_notifier_unregister);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 struct kmem_cache *task_xstate_cachep;
@@ -257,14 +260,22 @@ static inline void play_dead(void)
 void enter_idle(void)
 {
 	this_cpu_write(is_idle, 1);
+<<<<<<< HEAD
 	atomic_notifier_call_chain(&idle_notifier, IDLE_START, NULL);
+=======
+	idle_notifier_call_chain(IDLE_START);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void __exit_idle(void)
 {
 	if (x86_test_and_clear_bit_percpu(0, is_idle) == 0)
 		return;
+<<<<<<< HEAD
 	atomic_notifier_call_chain(&idle_notifier, IDLE_END, NULL);
+=======
+	idle_notifier_call_chain(IDLE_END);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* Called from interrupts to signify idle end */
@@ -391,9 +402,15 @@ static void amd_e400_idle(void)
 		 * The switch back from broadcast mode needs to be
 		 * called with interrupts disabled.
 		 */
+<<<<<<< HEAD
 		local_irq_disable();
 		clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_EXIT, &cpu);
 		local_irq_enable();
+=======
+		 local_irq_disable();
+		 clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_EXIT, &cpu);
+		 local_irq_enable();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else
 		default_idle();
 }

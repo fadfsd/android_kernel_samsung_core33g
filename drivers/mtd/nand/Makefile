@@ -50,5 +50,12 @@ obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
 obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
 obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
 obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_MTD_NAND_SC8810)		+= sc8810_nand.o
+obj-$(CONFIG_MTD_NAND_SC8825)		+= sc8825_nand.o
+obj-$(CONFIG_MTD_NAND_DOLPHIN)		+= dolphin_nand.o
+obj-$(CONFIG_MTD_NAND_SC8830)		+= sc8830_nand.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 nand-objs := nand_base.o nand_bbt.o

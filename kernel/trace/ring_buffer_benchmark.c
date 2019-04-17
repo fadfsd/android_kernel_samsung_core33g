@@ -455,7 +455,11 @@ static int __init ring_buffer_benchmark_init(void)
 
 	if (producer_fifo >= 0) {
 		struct sched_param param = {
+<<<<<<< HEAD
 			.sched_priority = producer_fifo
+=======
+			.sched_priority = consumer_fifo
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		};
 		sched_setscheduler(producer, SCHED_FIFO, &param);
 	} else

@@ -2034,11 +2034,14 @@ static ssize_t target_core_alua_tg_pt_gp_store_attr_alua_access_state(
 			" tg_pt_gp ID: %hu\n", tg_pt_gp->tg_pt_gp_valid_id);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (!(dev->dev_flags & DF_CONFIGURED)) {
 		pr_err("Unable to set alua_access_state while device is"
 		       " not configured\n");
 		return -ENODEV;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ret = strict_strtoul(page, 0, &tmp);
 	if (ret < 0) {

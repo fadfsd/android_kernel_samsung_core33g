@@ -899,7 +899,11 @@ bio_pageinc(struct bio *bio)
 		 * but this has never been seen here.
 		 */
 		if (unlikely(PageCompound(page)))
+<<<<<<< HEAD
 			if (compound_head(page) != page) {
+=======
+			if (compound_trans_head(page) != page) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				pr_crit("page tail used for block I/O\n");
 				BUG();
 			}

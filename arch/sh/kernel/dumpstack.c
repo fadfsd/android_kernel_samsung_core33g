@@ -115,7 +115,11 @@ static int print_trace_stack(void *data, char *name)
  */
 static void print_trace_address(void *data, unsigned long addr, int reliable)
 {
+<<<<<<< HEAD
 	printk("%s", (char *)data);
+=======
+	printk(data);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	printk_address(addr, reliable);
 }
 

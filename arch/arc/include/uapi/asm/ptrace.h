@@ -11,7 +11,10 @@
 #ifndef _UAPI__ASM_ARC_PTRACE_H
 #define _UAPI__ASM_ARC_PTRACE_H
 
+<<<<<<< HEAD
 #define PTRACE_GET_THREAD_AREA	25
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifndef __ASSEMBLY__
 /*

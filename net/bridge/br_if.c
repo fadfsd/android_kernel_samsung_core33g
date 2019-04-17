@@ -172,8 +172,11 @@ void br_dev_delete(struct net_device *dev, struct list_head *head)
 		del_nbp(p);
 	}
 
+<<<<<<< HEAD
 	br_fdb_delete_by_port(br, NULL, 1);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	del_timer_sync(&br->gc_timer);
 
 	br_sysfs_delbr(br->dev);

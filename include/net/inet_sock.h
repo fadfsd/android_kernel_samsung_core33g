@@ -88,7 +88,10 @@ struct inet_request_sock {
 				acked	   : 1,
 				no_srccheck: 1;
 	kmemcheck_bitfield_end(flags);
+<<<<<<< HEAD
 	u32                     ir_mark;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct ip_options_rcu	*opt;
 };
 
@@ -97,6 +100,7 @@ static inline struct inet_request_sock *inet_rsk(const struct request_sock *sk)
 	return (struct inet_request_sock *)sk;
 }
 
+<<<<<<< HEAD
 static inline u32 inet_request_mark(struct sock *sk, struct sk_buff *skb)
 {
 	if (!sk->sk_mark && sock_net(sk)->ipv4.sysctl_tcp_fwmark_accept)
@@ -105,6 +109,8 @@ static inline u32 inet_request_mark(struct sock *sk, struct sk_buff *skb)
 	return sk->sk_mark;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct inet_cork {
 	unsigned int		flags;
 	__be32			addr;

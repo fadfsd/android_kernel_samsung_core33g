@@ -172,5 +172,9 @@ module_exit(ghash_mod_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("GHASH Message Digest Algorithm");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("ghash");
 MODULE_ALIAS_CRYPTO("ghash-generic");
+=======
+MODULE_ALIAS("ghash");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

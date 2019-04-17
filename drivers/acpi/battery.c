@@ -34,7 +34,10 @@
 #include <linux/dmi.h>
 #include <linux/slab.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/unaligned.h>
 
 #ifdef CONFIG_ACPI_PROCFS_POWER
@@ -69,7 +72,10 @@ MODULE_AUTHOR("Alexey Starikovskiy <astarikovskiy@suse.de>");
 MODULE_DESCRIPTION("ACPI Battery Driver");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int battery_bix_broken_package;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static unsigned int cache_time = 1000;
 module_param(cache_time, uint, 0644);
 MODULE_PARM_DESC(cache_time, "cache time in milliseconds");
@@ -445,12 +451,16 @@ static int acpi_battery_get_info(struct acpi_battery *battery)
 		ACPI_EXCEPTION((AE_INFO, status, "Evaluating %s", name));
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 
 	if (battery_bix_broken_package)
 		result = extract_package(battery, buffer.pointer,
 				extended_info_offsets + 1,
 				ARRAY_SIZE(extended_info_offsets) - 1);
 	else if (test_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags))
+=======
+	if (test_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		result = extract_package(battery, buffer.pointer,
 				extended_info_offsets,
 				ARRAY_SIZE(extended_info_offsets));
@@ -1071,6 +1081,7 @@ static int battery_notify(struct notifier_block *nb,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct dmi_system_id bat_dmi_table[] = {
 	{
 		.ident = "NEC LZ750/LS",
@@ -1104,6 +1115,8 @@ static int acpi_battery_update_retry(struct acpi_battery *battery)
 	return ret;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int acpi_battery_add(struct acpi_device *device)
 {
 	int result = 0;
@@ -1123,11 +1136,17 @@ static int acpi_battery_add(struct acpi_device *device)
 	if (ACPI_SUCCESS(acpi_get_handle(battery->device->handle,
 			"_BIX", &handle)))
 		set_bit(ACPI_BATTERY_XINFO_PRESENT, &battery->flags);
+<<<<<<< HEAD
 
 	result = acpi_battery_update_retry(battery);
 	if (result)
 		goto fail;
 
+=======
+	result = acpi_battery_update(battery);
+	if (result)
+		goto fail;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_ACPI_PROCFS_POWER
 	result = acpi_battery_add_fs(device);
 #endif
@@ -1216,8 +1235,11 @@ static void __init acpi_battery_init_async(void *unused, async_cookie_t cookie)
 	if (!acpi_battery_dir)
 		return;
 #endif
+<<<<<<< HEAD
 	if (dmi_check_system(bat_dmi_table))
 		battery_bix_broken_package = 1;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (acpi_bus_register_driver(&acpi_battery_driver) < 0) {
 #ifdef CONFIG_ACPI_PROCFS_POWER
 		acpi_unlock_battery_dir(acpi_battery_dir);

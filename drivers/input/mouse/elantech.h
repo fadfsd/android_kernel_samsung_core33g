@@ -129,7 +129,10 @@ struct elantech_data {
 	bool paritycheck;
 	bool jumpy_cursor;
 	bool reports_pressure;
+<<<<<<< HEAD
 	bool set_hw_resolution;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned char hw_version;
 	unsigned int fw_version;
 	unsigned int single_finger_reports;
@@ -138,7 +141,10 @@ struct elantech_data {
 	struct finger_pos mt[ETP_MAX_FINGERS];
 	unsigned char parity[256];
 	int (*send_cmd)(struct psmouse *psmouse, unsigned char c, unsigned char *param);
+<<<<<<< HEAD
 	void (*original_set_rate)(struct psmouse *psmouse, unsigned int rate);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 #ifdef CONFIG_MOUSE_PS2_ELANTECH

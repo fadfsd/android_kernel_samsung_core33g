@@ -658,7 +658,11 @@ void on_each_cpu_cond(bool (*cond_func)(int cpu, void *info),
 			if (cond_func(cpu, info)) {
 				ret = smp_call_function_single(cpu, func,
 								info, wait);
+<<<<<<< HEAD
 				WARN_ON_ONCE(ret);
+=======
+				WARN_ON_ONCE(!ret);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 		preempt_enable();
 	}

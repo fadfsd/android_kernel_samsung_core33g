@@ -37,7 +37,11 @@ static int mmc_prep_request(struct request_queue *q, struct request *req)
 		return BLKPREP_KILL;
 	}
 
+<<<<<<< HEAD
 	if (mq && (mmc_card_removed(mq->card) || mmc_access_rpmb(mq)))
+=======
+	if (mq && mmc_card_removed(mq->card))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return BLKPREP_KILL;
 
 	req->cmd_flags |= REQ_DONTPREP;

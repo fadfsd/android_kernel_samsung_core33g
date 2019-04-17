@@ -231,7 +231,11 @@ struct jffs2_tmp_dnode_info
 	uint32_t version;
 	uint32_t data_crc;
 	uint32_t partial_crc;
+<<<<<<< HEAD
 	uint32_t csize;
+=======
+	uint16_t csize;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	uint16_t overlapped;
 };
 

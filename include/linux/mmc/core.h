@@ -189,6 +189,10 @@ extern void mmc_release_host(struct mmc_host *host);
 extern int mmc_try_claim_host(struct mmc_host *host);
 
 extern int mmc_flush_cache(struct mmc_card *);
+<<<<<<< HEAD
+=======
+extern int mmc_bkops_enable(struct mmc_host *host, u8 value);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 extern int mmc_detect_card_removed(struct mmc_host *host);
 

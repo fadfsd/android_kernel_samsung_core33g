@@ -3,7 +3,10 @@
 
 #include <asm/page.h>   /* for __va, __pa */
 #include <arch/io.h>
+<<<<<<< HEAD
 #include <asm-generic/iomap.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/kernel.h>
 
 struct cris_io_operations

@@ -190,7 +190,11 @@ SYSCALL_SPU(getcwd)
 SYSCALL_SPU(capget)
 SYSCALL_SPU(capset)
 COMPAT_SYS(sigaltstack)
+<<<<<<< HEAD
 SYSX_SPU(sys_sendfile64,compat_sys_sendfile,sys_sendfile)
+=======
+COMPAT_SYS_SPU(sendfile)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 SYSCALL(ni_syscall)
 SYSCALL(ni_syscall)
 PPC_SYS(vfork)

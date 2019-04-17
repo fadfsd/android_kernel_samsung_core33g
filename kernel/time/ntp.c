@@ -475,7 +475,10 @@ static void sync_cmos_clock(struct work_struct *work)
 	 * called as close as possible to 500 ms before the new second starts.
 	 * This code is run on a timer.  If the clock is set, that timer
 	 * may not expire at the correct time.  Thus, we adjust...
+<<<<<<< HEAD
 	 * We want the clock to be within a couple of ticks from the target.
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 */
 	if (!ntp_synced()) {
 		/*
@@ -486,7 +489,11 @@ static void sync_cmos_clock(struct work_struct *work)
 	}
 
 	getnstimeofday(&now);
+<<<<<<< HEAD
 	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec * 5) {
+=======
+	if (abs(now.tv_nsec - (NSEC_PER_SEC / 2)) <= tick_nsec / 2) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		struct timespec adjust = now;
 
 		fail = -ENODEV;
@@ -631,6 +638,7 @@ int ntp_validate_timex(struct timex *txc)
 	if ((txc->modes & ADJ_SETOFFSET) && (!capable(CAP_SYS_TIME)))
 		return -EPERM;
 
+<<<<<<< HEAD
 	/*
 	 * Check for potential multiplication overflows that can
 	 * only happen on 64-bit systems:
@@ -642,6 +650,8 @@ int ntp_validate_timex(struct timex *txc)
 			return -EINVAL;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

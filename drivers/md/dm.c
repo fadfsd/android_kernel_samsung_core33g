@@ -184,8 +184,13 @@ struct mapped_device {
 	/* forced geometry settings */
 	struct hd_geometry geometry;
 
+<<<<<<< HEAD
 	/* kobject and completion */
 	struct dm_kobject_holder kobj_holder;
+=======
+	/* sysfs handle */
+	struct kobject kobj;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* zero-length flush that will be cloned and submitted to targets */
 	struct bio flush_bio;
@@ -1904,7 +1909,10 @@ static struct mapped_device *alloc_dev(int minor)
 	init_waitqueue_head(&md->wait);
 	INIT_WORK(&md->work, dm_wq_work);
 	init_waitqueue_head(&md->eventq);
+<<<<<<< HEAD
 	init_completion(&md->kobj_holder.completion);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	md->disk->major = _major;
 	md->disk->first_minor = minor;
@@ -2270,7 +2278,11 @@ int dm_setup_md_queue(struct mapped_device *md)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct mapped_device *dm_get_md(dev_t dev)
+=======
+static struct mapped_device *dm_find_md(dev_t dev)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct mapped_device *md;
 	unsigned minor = MINOR(dev);
@@ -2281,6 +2293,7 @@ struct mapped_device *dm_get_md(dev_t dev)
 	spin_lock(&_minor_lock);
 
 	md = idr_find(&_minor_idr, minor);
+<<<<<<< HEAD
 	if (md) {
 		if ((md == MINOR_ALLOCED ||
 		     (MINOR(disk_devt(dm_disk(md))) != minor) ||
@@ -2290,6 +2303,14 @@ struct mapped_device *dm_get_md(dev_t dev)
 			goto out;
 		}
 		dm_get(md);
+=======
+	if (md && (md == MINOR_ALLOCED ||
+		   (MINOR(disk_devt(dm_disk(md))) != minor) ||
+		   dm_deleting_md(md) ||
+		   test_bit(DMF_FREEING, &md->flags))) {
+		md = NULL;
+		goto out;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 out:
@@ -2297,6 +2318,19 @@ out:
 
 	return md;
 }
+<<<<<<< HEAD
+=======
+
+struct mapped_device *dm_get_md(dev_t dev)
+{
+	struct mapped_device *md = dm_find_md(dev);
+
+	if (md)
+		dm_get(md);
+
+	return md;
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 EXPORT_SYMBOL_GPL(dm_get_md);
 
 void *dm_get_mdptr(struct mapped_device *md)
@@ -2333,16 +2367,22 @@ static void __dm_destroy(struct mapped_device *md, bool wait)
 	set_bit(DMF_FREEING, &md->flags);
 	spin_unlock(&_minor_lock);
 
+<<<<<<< HEAD
 	/*
 	 * Take suspend_lock so that presuspend and postsuspend methods
 	 * do not race with internal suspend.
 	 */
 	mutex_lock(&md->suspend_lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!dm_suspended_md(md)) {
 		dm_table_presuspend_targets(map);
 		dm_table_postsuspend_targets(map);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&md->suspend_lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * Rare, but there may be I/O requests still going to complete,
@@ -2735,14 +2775,30 @@ struct gendisk *dm_disk(struct mapped_device *md)
 
 struct kobject *dm_kobject(struct mapped_device *md)
 {
+<<<<<<< HEAD
 	return &md->kobj_holder.kobj;
 }
 
+=======
+	return &md->kobj;
+}
+
+/*
+ * struct mapped_device should not be exported outside of dm.c
+ * so use this check to verify that kobj is part of md structure
+ */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct mapped_device *dm_get_from_kobject(struct kobject *kobj)
 {
 	struct mapped_device *md;
 
+<<<<<<< HEAD
 	md = container_of(kobj, struct mapped_device, kobj_holder.kobj);
+=======
+	md = container_of(kobj, struct mapped_device, kobj);
+	if (&md->kobj != kobj)
+		return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (test_bit(DMF_FREEING, &md->flags) ||
 	    dm_deleting_md(md))

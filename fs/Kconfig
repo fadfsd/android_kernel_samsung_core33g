@@ -13,6 +13,11 @@ if BLOCK
 source "fs/ext2/Kconfig"
 source "fs/ext3/Kconfig"
 source "fs/ext4/Kconfig"
+<<<<<<< HEAD
+=======
+source "fs/exfat/Kconfig"
+source "fs/sdcardfs/Kconfig"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 config FS_XIP
 # execute in place
@@ -61,8 +66,11 @@ config FILE_LOCKING
           for filesystems like NFS and for the flock() system
           call. Disabling this option saves about 11k.
 
+<<<<<<< HEAD
 source "fs/crypto/Kconfig"
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "fs/notify/Kconfig"
 
 source "fs/quota/Kconfig"

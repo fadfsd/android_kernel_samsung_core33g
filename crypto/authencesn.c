@@ -832,4 +832,7 @@ module_exit(crypto_authenc_esn_module_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Steffen Klassert <steffen.klassert@secunet.com>");
 MODULE_DESCRIPTION("AEAD wrapper for IPsec with extended sequence numbers");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("authencesn");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

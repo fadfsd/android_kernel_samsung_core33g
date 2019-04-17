@@ -347,8 +347,13 @@ static bool start_new_rx_buffer(int offset, unsigned long size, int head)
 	 * into multiple copies tend to give large frags their
 	 * own buffers as before.
 	 */
+<<<<<<< HEAD
 	BUG_ON(size > MAX_BUFFER_OFFSET);
 	if ((offset + size > MAX_BUFFER_OFFSET) && offset && !head)
+=======
+	if ((offset + size > MAX_BUFFER_OFFSET) &&
+	    (size <= MAX_BUFFER_OFFSET) && offset && !head)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return true;
 
 	return false;
@@ -1423,8 +1428,14 @@ out:
 
 static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 {
+<<<<<<< HEAD
 	u64 now = get_jiffies_64();
 	u64 next_credit = vif->credit_window_start +
+=======
+	unsigned long now = jiffies;
+	unsigned long next_credit =
+		vif->credit_timeout.expires +
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		msecs_to_jiffies(vif->credit_usec / 1000);
 
 	/* Timer could already be pending in rare cases. */
@@ -1432,8 +1443,13 @@ static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 		return true;
 
 	/* Passed the point where we can replenish credit? */
+<<<<<<< HEAD
 	if (time_after_eq64(now, next_credit)) {
 		vif->credit_window_start = now;
+=======
+	if (time_after_eq(now, next_credit)) {
+		vif->credit_timeout.expires = now;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tx_add_credit(vif);
 	}
 
@@ -1445,7 +1461,10 @@ static bool tx_credit_exceeded(struct xenvif *vif, unsigned size)
 			tx_credit_callback;
 		mod_timer(&vif->credit_timeout,
 			  next_credit);
+<<<<<<< HEAD
 		vif->credit_window_start = next_credit;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		return true;
 	}

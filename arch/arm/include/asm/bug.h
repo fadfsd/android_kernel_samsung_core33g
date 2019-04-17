@@ -2,8 +2,11 @@
 #define _ASMARM_BUG_H
 
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <asm/opcodes.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_BUG
 
@@ -14,10 +17,17 @@
  */
 #ifdef CONFIG_THUMB2_KERNEL
 #define BUG_INSTR_VALUE 0xde02
+<<<<<<< HEAD
 #define BUG_INSTR(__value) __inst_thumb16(__value)
 #else
 #define BUG_INSTR_VALUE 0xe7f001f2
 #define BUG_INSTR(__value) __inst_arm(__value)
+=======
+#define BUG_INSTR_TYPE ".hword "
+#else
+#define BUG_INSTR_VALUE 0xe7f001f2
+#define BUG_INSTR_TYPE ".word "
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 
@@ -35,7 +45,11 @@
 
 #define __BUG(__file, __line, __value)				\
 do {								\
+<<<<<<< HEAD
 	asm volatile("1:\t" BUG_INSTR(__value) "\n"  \
+=======
+	asm volatile("1:\t" BUG_INSTR_TYPE #__value "\n"	\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		".pushsection .rodata.str, \"aMS\", %progbits, 1\n" \
 		"2:\t.asciz " #__file "\n" 			\
 		".popsection\n" 				\
@@ -50,7 +64,11 @@ do {								\
 
 #define __BUG(__file, __line, __value)				\
 do {								\
+<<<<<<< HEAD
 	asm volatile(BUG_INSTR(__value) "\n");			\
+=======
+	asm volatile(BUG_INSTR_TYPE #__value);			\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unreachable();						\
 } while (0)
 #endif  /* CONFIG_DEBUG_BUGVERBOSE */

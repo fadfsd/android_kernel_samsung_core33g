@@ -52,7 +52,11 @@ NESTED(handle_sys, PT_SIZE, sp)
 
 stack_done:
 	lw	t0, TI_FLAGS($28)	# syscall tracing enabled?
+<<<<<<< HEAD
 	li	t1, _TIF_WORK_SYSCALL_ENTRY
+=======
+	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	and	t0, t1
 	bnez	t0, syscall_trace_entry # -> yes
 

@@ -37,9 +37,12 @@
     __asm__ ("" : "=r"(__ptr) : "0"(ptr));		\
     (typeof(ptr)) (__ptr + (off)); })
 
+<<<<<<< HEAD
 /* Make the optimizer believe the variable can be manipulated arbitrarily. */
 #define OPTIMIZER_HIDE_VAR(var) __asm__ ("" : "=r" (var) : "0" (var))
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef __CHECKER__
 #define __must_be_array(arr) 0
 #else
@@ -100,6 +103,7 @@
 #define __maybe_unused			__attribute__((unused))
 #define __always_unused			__attribute__((unused))
 
+<<<<<<< HEAD
 /* gcc version specific checks */
 
 #if GCC_VERSION < 30200
@@ -210,6 +214,12 @@
 #endif /* CONFIG_ARCH_USE_BUILTIN_BSWAP */
 
 #endif	/* gcc version >= 40000 specific checks */
+=======
+#define __gcc_header(x) #x
+#define _gcc_header(x) __gcc_header(linux/compiler-gcc##x.h)
+#define gcc_header(x) _gcc_header(x)
+#include gcc_header(__GNUC__)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #if !defined(__noclone)
 #define __noclone	/* not needed */

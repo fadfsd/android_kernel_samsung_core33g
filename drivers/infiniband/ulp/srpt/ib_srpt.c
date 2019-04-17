@@ -1078,7 +1078,10 @@ static void srpt_unmap_sg_to_ib_sge(struct srpt_rdma_ch *ch,
 static int srpt_map_sg_to_ib_sge(struct srpt_rdma_ch *ch,
 				 struct srpt_send_ioctx *ioctx)
 {
+<<<<<<< HEAD
 	struct ib_device *dev = ch->sport->sdev->device;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct se_cmd *cmd;
 	struct scatterlist *sg, *sg_orig;
 	int sg_cnt;
@@ -1125,7 +1128,11 @@ static int srpt_map_sg_to_ib_sge(struct srpt_rdma_ch *ch,
 
 	db = ioctx->rbufs;
 	tsize = cmd->data_length;
+<<<<<<< HEAD
 	dma_len = ib_sg_dma_len(dev, &sg[0]);
+=======
+	dma_len = sg_dma_len(&sg[0]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	riu = ioctx->rdma_ius;
 
 	/*
@@ -1156,8 +1163,12 @@ static int srpt_map_sg_to_ib_sge(struct srpt_rdma_ch *ch,
 					++j;
 					if (j < count) {
 						sg = sg_next(sg);
+<<<<<<< HEAD
 						dma_len = ib_sg_dma_len(
 								dev, sg);
+=======
+						dma_len = sg_dma_len(sg);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					}
 				}
 			} else {
@@ -1194,8 +1205,13 @@ static int srpt_map_sg_to_ib_sge(struct srpt_rdma_ch *ch,
 	tsize = cmd->data_length;
 	riu = ioctx->rdma_ius;
 	sg = sg_orig;
+<<<<<<< HEAD
 	dma_len = ib_sg_dma_len(dev, &sg[0]);
 	dma_addr = ib_sg_dma_address(dev, &sg[0]);
+=======
+	dma_len = sg_dma_len(&sg[0]);
+	dma_addr = sg_dma_address(&sg[0]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* this second loop is really mapped sg_addres to rdma_iu->ib_sge */
 	for (i = 0, j = 0;
@@ -1218,10 +1234,15 @@ static int srpt_map_sg_to_ib_sge(struct srpt_rdma_ch *ch,
 					++j;
 					if (j < count) {
 						sg = sg_next(sg);
+<<<<<<< HEAD
 						dma_len = ib_sg_dma_len(
 								dev, sg);
 						dma_addr = ib_sg_dma_address(
 								dev, sg);
+=======
+						dma_len = sg_dma_len(sg);
+						dma_addr = sg_dma_address(sg);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					}
 				}
 			} else {
@@ -2101,7 +2122,10 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
 	if (!qp_init)
 		goto out;
 
+<<<<<<< HEAD
 retry:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ch->cq = ib_create_cq(sdev->device, srpt_completion, NULL, ch,
 			      ch->rq_size + srp_sq_size, 0);
 	if (IS_ERR(ch->cq)) {
@@ -2125,6 +2149,7 @@ retry:
 	ch->qp = ib_create_qp(sdev->pd, qp_init);
 	if (IS_ERR(ch->qp)) {
 		ret = PTR_ERR(ch->qp);
+<<<<<<< HEAD
 		if (ret == -ENOMEM) {
 			srp_sq_size /= 2;
 			if (srp_sq_size >= MIN_SRPT_SQ_SIZE) {
@@ -2132,6 +2157,8 @@ retry:
 				goto retry;
 			}
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_ERR "failed to create_qp ret= %d\n", ret);
 		goto err_destroy_cq;
 	}

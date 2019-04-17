@@ -9,7 +9,13 @@
 
 #include <linux/mm.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/sections.h>
+=======
+
+/* References to section boundaries */
+extern const void __nosave_begin, __nosave_end;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  *	pfn_is_nosave - check if given pfn is in the 'nosave' section

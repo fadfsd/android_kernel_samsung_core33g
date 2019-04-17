@@ -199,10 +199,14 @@ int walk_page_range(unsigned long addr, unsigned long end,
 			 */
 			if ((vma->vm_start <= addr) &&
 			    (vma->vm_flags & VM_PFNMAP)) {
+<<<<<<< HEAD
 				if (walk->pte_hole)
 					err = walk->pte_hole(addr, next, walk);
 				if (err)
 					break;
+=======
+				next = vma->vm_end;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				pgd = pgd_offset(walk->mm, next);
 				continue;
 			}
@@ -245,7 +249,14 @@ int walk_page_range(unsigned long addr, unsigned long end,
 		if (err)
 			break;
 		pgd++;
+<<<<<<< HEAD
 	} while (addr = next, addr != end);
 
 	return err;
+=======
+	} while (addr = next, addr < end);
+
+	return err;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }

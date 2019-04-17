@@ -598,6 +598,18 @@ is completely unused; @cgrp->parent is still valid. (Note - can also
 be called for a newly-created cgroup if an error occurs after this
 subsystem's create() method has been called for the new cgroup).
 
+<<<<<<< HEAD
+=======
+int allow_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
+(cgroup_mutex held by caller)
+
+Called prior to moving a task into a cgroup; if the subsystem
+returns an error, this will abort the attach operation.  Used
+to extend the permission checks - if all subsystems in a cgroup
+return 0, the attach will be allowed to proceed, even if the
+default permission check (root or same user) fails.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int can_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 (cgroup_mutex held by caller)
 

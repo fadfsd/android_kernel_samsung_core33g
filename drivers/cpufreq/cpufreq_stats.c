@@ -81,7 +81,11 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
 	for (i = 0; i < stat->state_num; i++) {
 		len += sprintf(buf + len, "%u %llu\n", stat->freq_table[i],
 			(unsigned long long)
+<<<<<<< HEAD
 			jiffies_64_to_clock_t(stat->time_in_state[i]));
+=======
+			cputime64_to_clock_t(stat->time_in_state[i]));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return len;
 }
@@ -152,9 +156,17 @@ static struct attribute_group stats_attr_group = {
 static int freq_table_get_index(struct cpufreq_stats *stat, unsigned int freq)
 {
 	int index;
+<<<<<<< HEAD
 	for (index = 0; index < stat->max_state; index++)
 		if (stat->freq_table[index] == freq)
 			return index;
+=======
+	if (stat && stat->freq_table) {
+		for (index = 0; index < stat->max_state; index++)
+			if (stat->freq_table[index] == freq)
+				return index;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return -1;
 }
 
@@ -341,6 +353,30 @@ static int cpufreq_stat_notifier_trans(struct notifier_block *nb,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int cpufreq_stats_create_table_cpu(unsigned int cpu)
+{
+	struct cpufreq_policy *policy;
+	struct cpufreq_frequency_table *table;
+	int ret = -ENODEV;
+
+	policy = cpufreq_cpu_get(cpu);
+	if (!policy)
+		return -ENODEV;
+
+	table = cpufreq_frequency_get_table(cpu);
+	if (!table)
+		goto out;
+
+	ret = cpufreq_stats_create_table(policy, table);
+
+out:
+	cpufreq_cpu_put(policy);
+	return ret;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int __cpuinit cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 					       unsigned long action,
 					       void *hcpu)
@@ -360,6 +396,13 @@ static int __cpuinit cpufreq_stat_cpu_callback(struct notifier_block *nfb,
 	case CPU_DEAD_FROZEN:
 		cpufreq_stats_free_table(cpu);
 		break;
+<<<<<<< HEAD
+=======
+	case CPU_DOWN_FAILED:
+	case CPU_DOWN_FAILED_FROZEN:
+		cpufreq_stats_create_table_cpu(cpu);
+		break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return NOTIFY_OK;
 }

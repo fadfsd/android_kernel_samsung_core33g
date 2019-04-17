@@ -49,7 +49,10 @@ SECTIONS
 	}
 
 	. = ALIGN(16);
+<<<<<<< HEAD
 	_sdata =  .;			/* Start of data section */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	RODATA
 
 	EXCEPTION_TABLE(16)

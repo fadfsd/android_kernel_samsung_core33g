@@ -8045,8 +8045,13 @@ int saa7134_board_init2(struct saa7134_dev *dev)
 		break;
 	} /* switch() */
 
+<<<<<<< HEAD
 	/* initialize tuner (don't do this when resuming) */
 	if (!dev->insuspend && TUNER_ABSENT != dev->tuner_type) {
+=======
+	/* initialize tuner */
+	if (TUNER_ABSENT != dev->tuner_type) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		int has_demod = (dev->tda9887_conf & TDA9887_PRESENT);
 
 		/* Note: radio tuner address is always filled in,

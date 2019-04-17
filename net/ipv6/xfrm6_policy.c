@@ -284,7 +284,11 @@ static struct dst_ops xfrm6_dst_ops = {
 	.destroy =		xfrm6_dst_destroy,
 	.ifdown =		xfrm6_dst_ifdown,
 	.local_out =		__ip6_local_out,
+<<<<<<< HEAD
 	.gc_thresh =		32768,
+=======
+	.gc_thresh =		1024,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static struct xfrm_policy_afinfo xfrm6_policy_afinfo = {

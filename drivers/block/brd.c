@@ -545,7 +545,11 @@ static struct kobject *brd_probe(dev_t dev, int *part, void *data)
 
 	mutex_lock(&brd_devices_mutex);
 	brd = brd_init_one(MINOR(dev) >> part_shift);
+<<<<<<< HEAD
 	kobj = brd ? get_disk(brd->brd_disk) : NULL;
+=======
+	kobj = brd ? get_disk(brd->brd_disk) : ERR_PTR(-ENOMEM);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&brd_devices_mutex);
 
 	*part = 0;

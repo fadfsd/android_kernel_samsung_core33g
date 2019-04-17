@@ -513,6 +513,7 @@ static int get_rx_bufs(struct vhost_virtqueue *vq,
 			r = -ENOBUFS;
 			goto err;
 		}
+<<<<<<< HEAD
 		r = vhost_get_vq_desc(vq->dev, vq, vq->iov + seg,
 				      ARRAY_SIZE(vq->iov) - seg, &out,
 				      &in, log, log_num);
@@ -520,6 +521,11 @@ static int get_rx_bufs(struct vhost_virtqueue *vq,
 			goto err;
 
 		d = r;
+=======
+		d = vhost_get_vq_desc(vq->dev, vq, vq->iov + seg,
+				      ARRAY_SIZE(vq->iov) - seg, &out,
+				      &in, log, log_num);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (d == vq->num) {
 			r = 0;
 			goto err;
@@ -544,12 +550,15 @@ static int get_rx_bufs(struct vhost_virtqueue *vq,
 	*iovcount = seg;
 	if (unlikely(log))
 		*log_num = nlogs;
+<<<<<<< HEAD
 
 	/* Detect overrun */
 	if (unlikely(datalen > 0)) {
 		r = UIO_MAXIOV + 1;
 		goto err;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return headcount;
 err:
 	vhost_discard_vq_desc(vq, headcount);
@@ -605,6 +614,7 @@ static void handle_rx(struct vhost_net *net)
 		/* On error, stop handling until the next kick. */
 		if (unlikely(headcount < 0))
 			break;
+<<<<<<< HEAD
 		/* On overrun, truncate and discard */
 		if (unlikely(headcount > UIO_MAXIOV)) {
 			msg.msg_iovlen = 1;
@@ -613,6 +623,8 @@ static void handle_rx(struct vhost_net *net)
 			pr_debug("Discarded rx packet: len %zd\n", sock_len);
 			continue;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* OK, now we need to know about added descriptors. */
 		if (!headcount) {
 			if (unlikely(vhost_enable_notify(&net->dev, vq))) {

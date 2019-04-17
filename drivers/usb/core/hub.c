@@ -887,6 +887,7 @@ static int hub_usb3_port_disable(struct usb_hub *hub, int port1)
 	if (!hub_is_superspeed(hub->hdev))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ret = hub_port_status(hub, port1, &portstatus, &portchange);
 	if (ret < 0)
 		return ret;
@@ -906,6 +907,8 @@ static int hub_usb3_port_disable(struct usb_hub *hub, int port1)
 		return ret;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = hub_set_port_link_state(hub, port1, USB_SS_PORT_LS_SS_DISABLED);
 	if (ret)
 		return ret;
@@ -958,7 +961,15 @@ static int hub_port_disable(struct usb_hub *hub, int port1, int set_state)
  */
 static void hub_port_logical_disconnect(struct usb_hub *hub, int port1)
 {
+<<<<<<< HEAD
 	dev_dbg(hub->intfdev, "logical disconnect on port %d\n", port1);
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+	dev_info(hub->intfdev, "logical disconnect on port %d\n", port1);
+#else
+	dev_dbg(hub->intfdev, "logical disconnect on port %d\n", port1);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	hub_port_disable(hub, port1, 1);
 
 	/* FIXME let caller ask to power down the port:
@@ -1143,11 +1154,14 @@ static void hub_activate(struct usb_hub *hub, enum hub_activation_type type)
 			usb_clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_ENABLE);
 		}
+<<<<<<< HEAD
 		if (portchange & USB_PORT_STAT_C_RESET) {
 			need_debounce_delay = true;
 			usb_clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_RESET);
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if ((portchange & USB_PORT_STAT_C_BH_RESET) &&
 				hub_is_superspeed(hub->hdev)) {
 			need_debounce_delay = true;
@@ -1165,8 +1179,12 @@ static void hub_activate(struct usb_hub *hub, enum hub_activation_type type)
 			/* Tell khubd to disconnect the device or
 			 * check for a new connection
 			 */
+<<<<<<< HEAD
 			if (udev || (portstatus & USB_PORT_STAT_CONNECTION) ||
 			    (portstatus & USB_PORT_STAT_OVERCURRENT))
+=======
+			if (udev || (portstatus & USB_PORT_STAT_CONNECTION))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				set_bit(port1, hub->change_bits);
 
 		} else if (portstatus & USB_PORT_STAT_ENABLE) {
@@ -1582,6 +1600,7 @@ static int hub_configure(struct usb_hub *hub,
 	if (hub->has_indicators && blinkenlights)
 		hub->indicator [0] = INDICATOR_CYCLE;
 
+<<<<<<< HEAD
 	for (i = 0; i < hdev->maxchild; i++) {
 		ret = usb_hub_create_port_device(hub, i + 1);
 		if (ret < 0) {
@@ -1591,6 +1610,12 @@ static int hub_configure(struct usb_hub *hub,
 			goto fail_keep_maxchild;
 		}
 	}
+=======
+	for (i = 0; i < hdev->maxchild; i++)
+		if (usb_hub_create_port_device(hub, i + 1) < 0)
+			dev_err(hub->intfdev,
+				"couldn't create port%d device.\n", i + 1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	usb_hub_adjust_deviceremovable(hdev, hub->descriptor);
 
@@ -1598,8 +1623,11 @@ static int hub_configure(struct usb_hub *hub,
 	return 0;
 
 fail:
+<<<<<<< HEAD
 	hdev->maxchild = 0;
 fail_keep_maxchild:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	dev_err (hub_dev, "config failed, %s (err %d)\n",
 			message, ret);
 	/* hub_disconnect() frees urb and descriptor */
@@ -1620,7 +1648,11 @@ static void hub_disconnect(struct usb_interface *intf)
 {
 	struct usb_hub *hub = usb_get_intfdata(intf);
 	struct usb_device *hdev = interface_to_usbdev(intf);
+<<<<<<< HEAD
 	int port1;
+=======
+	int i;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Take the hub off the event list and don't let it be added again */
 	spin_lock_irq(&hub_event_lock);
@@ -1635,6 +1667,7 @@ static void hub_disconnect(struct usb_interface *intf)
 	hub->error = 0;
 	hub_quiesce(hub, HUB_DISCONNECT);
 
+<<<<<<< HEAD
 	/* Avoid races with recursively_mark_NOTATTACHED() */
 	spin_lock_irq(&device_state_lock);
 	port1 = hdev->maxchild;
@@ -1644,6 +1677,13 @@ static void hub_disconnect(struct usb_interface *intf)
 
 	for (; port1 > 0; --port1)
 		usb_hub_remove_port_device(hub, port1);
+=======
+	usb_set_intfdata (intf, NULL);
+
+	for (i = 0; i < hdev->maxchild; i++)
+		usb_hub_remove_port_device(hub, i + 1);
+	hub->hdev->maxchild = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (hub->hdev->speed == USB_SPEED_HIGH)
 		highspeed_hubs--;
@@ -1664,6 +1704,12 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	struct usb_endpoint_descriptor *endpoint;
 	struct usb_device *hdev;
 	struct usb_hub *hub;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_EXTERNAL_DETECT
+	struct usb_hcd *hcd;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	desc = intf->cur_altsetting;
 	hdev = interface_to_usbdev(intf);
@@ -1700,6 +1746,7 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	 * - Change autosuspend delay of hub can avoid unnecessary auto
 	 *   suspend timer for hub, also may decrease power consumption
 	 *   of USB bus.
+<<<<<<< HEAD
 	 *
 	 * - If user has indicated to prevent autosuspend by passing
 	 *   usbcore.autosuspend = -1 then keep autosuspend disabled.
@@ -1722,6 +1769,16 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
 		if (drv->bus_suspend && drv->bus_resume)
 			usb_enable_autosuspend(hdev);
 	}
+=======
+	 */
+	pm_runtime_set_autosuspend_delay(&hdev->dev, 0);
+#ifdef CONFIG_USB_EXTERNAL_DETECT
+	hcd = bus_to_hcd(hdev->bus);
+	if (!hcd->no_suspend)
+		/* Hubs have proper suspend/resume support. */
+		usb_enable_autosuspend(hdev);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (hdev->level == MAX_TOPO_LEVEL) {
 		dev_err(&intf->dev,
@@ -1951,10 +2008,15 @@ void usb_set_device_state(struct usb_device *udev,
 					|| new_state == USB_STATE_SUSPENDED)
 				;	/* No change to wakeup settings */
 			else if (new_state == USB_STATE_CONFIGURED)
+<<<<<<< HEAD
 				wakeup = (udev->quirks &
 					USB_QUIRK_IGNORE_REMOTE_WAKEUP) ? 0 :
 					udev->actconfig->desc.bmAttributes &
 					USB_CONFIG_ATT_WAKEUP;
+=======
+				wakeup = udev->actconfig->desc.bmAttributes
+					 & USB_CONFIG_ATT_WAKEUP;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			else
 				wakeup = 0;
 		}
@@ -2265,6 +2327,7 @@ static int usb_enumerate_device(struct usb_device *udev)
 			return err;
 		}
 	}
+<<<<<<< HEAD
 
 	/* read the standard strings and cache them if present */
 	udev->product = usb_cache_string(udev, udev->descriptor.iProduct);
@@ -2272,6 +2335,20 @@ static int usb_enumerate_device(struct usb_device *udev)
 					      udev->descriptor.iManufacturer);
 	udev->serial = usb_cache_string(udev, udev->descriptor.iSerialNumber);
 
+=======
+	if (udev->wusb == 1 && udev->authorized == 0) {
+		udev->product = kstrdup("n/a (unauthorized)", GFP_KERNEL);
+		udev->manufacturer = kstrdup("n/a (unauthorized)", GFP_KERNEL);
+		udev->serial = kstrdup("n/a (unauthorized)", GFP_KERNEL);
+	}
+	else {
+		/* read the standard strings and cache them if present */
+		udev->product = usb_cache_string(udev, udev->descriptor.iProduct);
+		udev->manufacturer = usb_cache_string(udev,
+						      udev->descriptor.iManufacturer);
+		udev->serial = usb_cache_string(udev, udev->descriptor.iSerialNumber);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	err = usb_enumerate_device_otg(udev);
 	if (err < 0)
 		return err;
@@ -2450,6 +2527,19 @@ int usb_deauthorize_device(struct usb_device *usb_dev)
 	usb_dev->authorized = 0;
 	usb_set_configuration(usb_dev, -1);
 
+<<<<<<< HEAD
+=======
+	kfree(usb_dev->product);
+	usb_dev->product = kstrdup("n/a (unauthorized)", GFP_KERNEL);
+	kfree(usb_dev->manufacturer);
+	usb_dev->manufacturer = kstrdup("n/a (unauthorized)", GFP_KERNEL);
+	kfree(usb_dev->serial);
+	usb_dev->serial = kstrdup("n/a (unauthorized)", GFP_KERNEL);
+
+	usb_destroy_configuration(usb_dev);
+	usb_dev->descriptor.bNumConfigurations = 0;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out_unauthorized:
 	usb_unlock_device(usb_dev);
 	return 0;
@@ -2477,7 +2567,21 @@ int usb_authorize_device(struct usb_device *usb_dev)
 		goto error_device_descriptor;
 	}
 
+<<<<<<< HEAD
 	usb_dev->authorized = 1;
+=======
+	kfree(usb_dev->product);
+	usb_dev->product = NULL;
+	kfree(usb_dev->manufacturer);
+	usb_dev->manufacturer = NULL;
+	kfree(usb_dev->serial);
+	usb_dev->serial = NULL;
+
+	usb_dev->authorized = 1;
+	result = usb_enumerate_device(usb_dev);
+	if (result < 0)
+		goto error_enumerate;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Choose and set the configuration.  This registers the interfaces
 	 * with the driver core and lets interface drivers bind to them.
 	 */
@@ -2493,6 +2597,10 @@ int usb_authorize_device(struct usb_device *usb_dev)
 	}
 	dev_info(&usb_dev->dev, "authorized to connect\n");
 
+<<<<<<< HEAD
+=======
+error_enumerate:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 error_device_descriptor:
 	usb_autosuspend_device(usb_dev);
 error_autoresume:
@@ -3175,6 +3283,7 @@ static int finish_port_resume(struct usb_device *udev)
 }
 
 /*
+<<<<<<< HEAD
  * There are some SS USB devices which take longer time for link training.
  * XHCI specs 4.19.4 says that when Link training is successful, port
  * sets CSC bit to 1. So if SW reads port status before successful link
@@ -3212,6 +3321,8 @@ static int wait_for_ss_port_enable(struct usb_device *udev,
 }
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * usb_port_resume - re-activate a suspended usb device's upstream port
  * @udev: device to re-activate, not a root hub
  * Context: must be able to sleep; device not locked; pm locks held
@@ -3282,10 +3393,17 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
 		dev_dbg(hub->intfdev, "can't resume port %d, status %d\n",
 				port1, status);
 	} else {
+<<<<<<< HEAD
 		/* drive resume for USB_RESUME_TIMEOUT msec */
 		dev_dbg(&udev->dev, "usb %sresume\n",
 				(PMSG_IS_AUTO(msg) ? "auto-" : ""));
 		msleep(USB_RESUME_TIMEOUT);
+=======
+		/* drive resume for at least 20 msec */
+		dev_dbg(&udev->dev, "usb %sresume\n",
+				(PMSG_IS_AUTO(msg) ? "auto-" : ""));
+		msleep(25);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* Virtual root hubs can trigger on GET_PORT_STATUS to
 		 * stop resume signaling.  Then finish the resume
@@ -3313,10 +3431,13 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
 
 	clear_bit(port1, hub->busy_bits);
 
+<<<<<<< HEAD
 	if (udev->persist_enabled && hub_is_superspeed(hub->hdev))
 		status = wait_for_ss_port_enable(udev, hub, &port1, &portchange,
 				&portstatus);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	status = check_port_resume_type(udev,
 			hub, port1, status, portchange, portstatus);
 	if (status == 0)
@@ -4400,11 +4521,23 @@ static void hub_port_connect_change(struct usb_hub *hub, int port1,
 	struct usb_device *udev;
 	int status, i;
 	unsigned unit_load;
+<<<<<<< HEAD
 
 	dev_dbg (hub_dev,
 		"port %d, status %04x, change %04x, %s\n",
 		port1, portstatus, portchange, portspeed(hub, portstatus));
 
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+	dev_info(hub_dev,
+		"port %d, status %04x, change %04x, %s\n",
+		port1, portstatus, portchange, portspeed(hub, portstatus));
+#else
+	dev_dbg(hub_dev,
+		"port %d, status %04x, change %04x, %s\n",
+		port1, portstatus, portchange, portspeed(hub, portstatus));
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (hub->has_indicators) {
 		set_port_led(hub, port1, HUB_LED_AUTO);
 		hub->indicator[port1-1] = INDICATOR_AUTO;
@@ -4705,10 +4838,16 @@ static void hub_events(void)
 
 		hub = list_entry(tmp, struct usb_hub, event_list);
 		kref_get(&hub->kref);
+<<<<<<< HEAD
 		hdev = hub->hdev;
 		usb_get_dev(hdev);
 		spin_unlock_irq(&hub_event_lock);
 
+=======
+		spin_unlock_irq(&hub_event_lock);
+
+		hdev = hub->hdev;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		hub_dev = hub->intfdev;
 		intf = to_usb_interface(hub_dev);
 		dev_dbg(hub_dev, "state %d ports %d chg %04x evt %04x\n",
@@ -4862,9 +5001,14 @@ static void hub_events(void)
 					hub->ports[i - 1]->child;
 
 				dev_dbg(hub_dev, "warm reset port %d\n", i);
+<<<<<<< HEAD
 				if (!udev ||
 				    !(portstatus & USB_PORT_STAT_CONNECTION) ||
 				    udev->state == USB_STATE_NOTATTACHED) {
+=======
+				if (!udev || !(portstatus &
+						USB_PORT_STAT_CONNECTION)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					status = hub_port_reset(hub, i,
 							NULL, HUB_BH_RESET_TIME,
 							true);
@@ -4923,7 +5067,10 @@ static void hub_events(void)
 		usb_autopm_put_interface(intf);
  loop_disconnected:
 		usb_unlock_device(hdev);
+<<<<<<< HEAD
 		usb_put_dev(hdev);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kref_put(&hub->kref, hub_release);
 
         } /* end while (1) */
@@ -5071,6 +5218,15 @@ static int descriptors_changed(struct usb_device *udev,
 	if (!changed && serial_len) {
 		length = usb_string(udev, udev->descriptor.iSerialNumber,
 				buf, serial_len);
+<<<<<<< HEAD
+=======
+		if(length < 0)
+		{
+			dev_err(&udev->dev, "usb_string return error\n");
+			kfree(buf);
+			return 1;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (length + 1 != serial_len) {
 			dev_dbg(&udev->dev, "serial string error %d\n",
 					length);
@@ -5334,11 +5490,18 @@ int usb_reset_device(struct usb_device *udev)
 				else if (cintf->condition ==
 						USB_INTERFACE_BOUND)
 					rebind = 1;
+<<<<<<< HEAD
 				if (rebind)
 					cintf->needs_binding = 1;
 			}
 		}
 		usb_unbind_and_rebind_marked_interfaces(udev);
+=======
+			}
+			if (ret == 0 && rebind)
+				usb_rebind_intf(cintf);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	usb_autosuspend_device(udev);

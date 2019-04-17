@@ -19,7 +19,19 @@ ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
 endif
 
 obj-$(CONFIG_VIDEO_DEV) += v4l2-core/
+<<<<<<< HEAD
 obj-$(CONFIG_DVB_CORE)  += dvb-core/
+=======
+obj-$(CONFIG_VIDEO_DCAM_SPRD) += sprd_dcam/
+obj-$(CONFIG_VIDEO_DCAM_SPRD) += sprd_scale/
+obj-$(CONFIG_VIDEO_DCAM_SPRD) += sprd_rotation/
+obj-$(CONFIG_VIDEO_GSP_SPRD)  += sprd_gsp/
+obj-$(CONFIG_VIDEO_DCAM_SPRD) += sprd_sensor/
+obj-$(CONFIG_VIDEO_DCAM_SPRD) += sprd_isp/
+obj-$(CONFIG_VIDEO_DCAM_SPRD) += sprd_dma_copy/
+obj-$(CONFIG_DVB_CORE)  += dvb-core/
+obj-$(CONFIG_MTV) += mtv/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 # There are both core and drivers at RC subtree - merge before drivers
 obj-y += rc/

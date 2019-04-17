@@ -215,8 +215,13 @@
 #define AH_WOW_BEACON_MISS		BIT(3)
 
 enum ath_hw_txq_subtype {
+<<<<<<< HEAD
 	ATH_TXQ_AC_BK = 0,
 	ATH_TXQ_AC_BE = 1,
+=======
+	ATH_TXQ_AC_BE = 0,
+	ATH_TXQ_AC_BK = 1,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ATH_TXQ_AC_VI = 2,
 	ATH_TXQ_AC_VO = 3,
 };

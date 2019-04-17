@@ -55,11 +55,14 @@
 #define AT91SAM9X5_BASE_USART2	0xf8024000
 
 /*
+<<<<<<< HEAD
  * System Peripherals
  */
 #define AT91SAM9X5_BASE_RTC	0xfffffeb0
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * Internal Memory.
  */
 #define AT91SAM9X5_SRAM_BASE	0x00300000	/* Internal SRAM base address */

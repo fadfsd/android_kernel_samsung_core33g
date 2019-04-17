@@ -343,9 +343,12 @@ early_idt_handlers:
 ENTRY(early_idt_handler)
 	cld
 
+<<<<<<< HEAD
 	cmpl $2,(%rsp)		# X86_TRAP_NMI
 	je is_nmi		# Ignore NMI
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cmpl $2,early_recursion_flag(%rip)
 	jz  1f
 	incl early_recursion_flag(%rip)
@@ -408,9 +411,14 @@ ENTRY(early_idt_handler)
 	popq %rdx
 	popq %rcx
 	popq %rax
+<<<<<<< HEAD
 	decl early_recursion_flag(%rip)
 is_nmi:
 	addq $16,%rsp		# drop vector number and error code
+=======
+	addq $16,%rsp		# drop vector number and error code
+	decl early_recursion_flag(%rip)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	INTERRUPT_RETURN
 ENDPROC(early_idt_handler)
 

@@ -31,9 +31,12 @@
 #include "itd1000.h"
 #include "itd1000_priv.h"
 
+<<<<<<< HEAD
 /* Max transfer size done by I2C transfer functions */
 #define MAX_XFER_SIZE  64
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int debug;
 module_param(debug, int, 0644);
 MODULE_PARM_DESC(debug, "Turn on/off debugging (default:off).");
@@ -55,6 +58,7 @@ MODULE_PARM_DESC(debug, "Turn on/off debugging (default:off).");
 /* don't write more than one byte with flexcop behind */
 static int itd1000_write_regs(struct itd1000_state *state, u8 reg, u8 v[], u8 len)
 {
+<<<<<<< HEAD
 	u8 buf[MAX_XFER_SIZE];
 	struct i2c_msg msg = {
 		.addr = state->cfg->i2c_address, .flags = 0, .buf = buf, .len = len+1
@@ -67,6 +71,12 @@ static int itd1000_write_regs(struct itd1000_state *state, u8 reg, u8 v[], u8 le
 		return -EINVAL;
 	}
 
+=======
+	u8 buf[1+len];
+	struct i2c_msg msg = {
+		.addr = state->cfg->i2c_address, .flags = 0, .buf = buf, .len = len+1
+	};
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	buf[0] = reg;
 	memcpy(&buf[1], v, len);
 

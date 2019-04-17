@@ -2,7 +2,11 @@
 # Input core configuration
 #
 menuconfig INPUT_KEYBOARD
+<<<<<<< HEAD
 	bool "Keyboards"
+=======
+	bool "Keyboards" if EXPERT || !X86
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	default y
 	help
 	  Say Y here, and a list of supported keyboards will be displayed.
@@ -67,7 +71,11 @@ config KEYBOARD_ATARI
 	  module will be called atakbd.
 
 config KEYBOARD_ATKBD
+<<<<<<< HEAD
 	tristate "AT keyboard"
+=======
+	tristate "AT keyboard" if EXPERT || !X86
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	default y
 	select SERIO
 	select SERIO_LIBPS2
@@ -641,4 +649,26 @@ config KEYBOARD_CROS_EC
 	  To compile this driver as a module, choose M here: the
 	  module will be called cros_ec_keyb.
 
+<<<<<<< HEAD
+=======
+config KEYBOARD_SC
+        tristate "Spreadtrum keypad support"
+        depends on ARCH_SC8825 || ARCH_SCX35
+        help
+          Say Y here if you want to use the sprd keypad.
+
+          To compile this driver as a module, choose M here: the 
+          module will be called tiger_keypad.
+
+config SUPPORT_TWOKEY_RESET
+	tristate "Keypad Support for Two Key Reset."
+	depends on INPUT
+	help
+	  Keypad Support for Two Key Reset. Volume Down + power Key, Which is connected to PMIC.
+
+config FLIPCOVER_HALLIC
+	bool "HALL"
+	help
+	  Say Y here to enable the HALL
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endif

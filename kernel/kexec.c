@@ -47,9 +47,12 @@ u32 vmcoreinfo_note[VMCOREINFO_NOTE_SIZE/4];
 size_t vmcoreinfo_size;
 size_t vmcoreinfo_max_size = sizeof(vmcoreinfo_data);
 
+<<<<<<< HEAD
 /* Flag to indicate we are going to kexec a new kernel */
 bool kexec_in_progress = false;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Location of the reserved area for the crash kernel */
 struct resource crashk_res = {
 	.name  = "Crash kernel",
@@ -1087,14 +1090,27 @@ void crash_kexec(struct pt_regs *regs)
 	 * sufficient.  But since I reuse the memory...
 	 */
 	if (mutex_trylock(&kexec_mutex)) {
+<<<<<<< HEAD
 		if (kexec_crash_image) {
+=======
+#ifndef CONFIG_SEC_DEBUG
+		if (kexec_crash_image) {
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			struct pt_regs fixed_regs;
 
 			crash_setup_regs(&fixed_regs, regs);
 			crash_save_vmcoreinfo();
 			machine_crash_shutdown(&fixed_regs);
+<<<<<<< HEAD
 			machine_kexec(kexec_crash_image);
 		}
+=======
+#ifndef CONFIG_SEC_DEBUG
+			machine_kexec(kexec_crash_image);
+		}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		mutex_unlock(&kexec_mutex);
 	}
 }
@@ -1681,7 +1697,10 @@ int kernel_kexec(void)
 	} else
 #endif
 	{
+<<<<<<< HEAD
 		kexec_in_progress = true;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kernel_restart_prepare(NULL);
 		printk(KERN_EMERG "Starting new kernel\n");
 		machine_shutdown();

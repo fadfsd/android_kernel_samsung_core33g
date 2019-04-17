@@ -229,7 +229,11 @@ armada_370_xp_handle_irq(struct pt_regs *regs)
 						ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS)
 				& IPI_DOORBELL_MASK;
 
+<<<<<<< HEAD
 			writel(~ipimask, per_cpu_int_base +
+=======
+			writel(~IPI_DOORBELL_MASK, per_cpu_int_base +
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS);
 
 			/* Handle all pending doorbells */

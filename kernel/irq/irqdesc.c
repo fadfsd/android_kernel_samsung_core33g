@@ -274,7 +274,10 @@ struct irq_desc *irq_to_desc(unsigned int irq)
 {
 	return (irq < NR_IRQS) ? irq_desc + irq : NULL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(irq_to_desc);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static void free_desc(unsigned int irq)
 {

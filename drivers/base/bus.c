@@ -242,15 +242,24 @@ static ssize_t store_drivers_probe(struct bus_type *bus,
 				   const char *buf, size_t count)
 {
 	struct device *dev;
+<<<<<<< HEAD
 	int err = -EINVAL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	dev = bus_find_device_by_name(bus, NULL, buf);
 	if (!dev)
 		return -ENODEV;
+<<<<<<< HEAD
 	if (bus_rescan_devices_helper(dev, NULL) == 0)
 		err = count;
 	put_device(dev);
 	return err;
+=======
+	if (bus_rescan_devices_helper(dev, NULL) != 0)
+		return -EINVAL;
+	return count;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct device *next_device(struct klist_iter *i)

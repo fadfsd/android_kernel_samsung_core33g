@@ -82,7 +82,11 @@ ext4_unaligned_aio(struct inode *inode, const struct iovec *iov,
 	size_t count = iov_length(iov, nr_segs);
 	loff_t final_size = pos + count;
 
+<<<<<<< HEAD
 	if (pos >= i_size_read(inode))
+=======
+	if (pos >= inode->i_size)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 
 	if ((pos & blockmask) || (final_size & blockmask))
@@ -100,7 +104,11 @@ ext4_file_dio_write(struct kiocb *iocb, const struct iovec *iov,
 	struct blk_plug plug;
 	int unaligned_aio = 0;
 	ssize_t ret;
+<<<<<<< HEAD
 	int *overwrite = iocb->private;
+=======
+	int overwrite = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	size_t length = iov_length(iov, nr_segs);
 
 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) &&
@@ -118,6 +126,11 @@ ext4_file_dio_write(struct kiocb *iocb, const struct iovec *iov,
 	mutex_lock(&inode->i_mutex);
 	blk_start_plug(&plug);
 
+<<<<<<< HEAD
+=======
+	iocb->private = &overwrite;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* check whether we do a DIO overwrite or not */
 	if (ext4_should_dioread_nolock(inode) && !unaligned_aio &&
 	    !file->f_mapping->nrpages && pos + length <= i_size_read(inode)) {
@@ -141,7 +154,11 @@ ext4_file_dio_write(struct kiocb *iocb, const struct iovec *iov,
 		 * So we should check these two conditions.
 		 */
 		if (err == len && (map.m_flags & EXT4_MAP_MAPPED))
+<<<<<<< HEAD
 			*overwrite = 1;
+=======
+			overwrite = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	ret = __generic_file_aio_write(iocb, iov, nr_segs, &iocb->ki_pos);
@@ -168,7 +185,10 @@ ext4_file_write(struct kiocb *iocb, const struct iovec *iov,
 {
 	struct inode *inode = file_inode(iocb->ki_filp);
 	ssize_t ret;
+<<<<<<< HEAD
 	int overwrite = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * If we have encountered a bitmap-format file, the size limit
@@ -189,7 +209,10 @@ ext4_file_write(struct kiocb *iocb, const struct iovec *iov,
 		}
 	}
 
+<<<<<<< HEAD
 	iocb->private = &overwrite;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(iocb->ki_filp->f_flags & O_DIRECT))
 		ret = ext4_file_dio_write(iocb, iov, nr_segs, pos);
 	else

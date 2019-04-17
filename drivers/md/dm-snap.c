@@ -66,6 +66,7 @@ struct dm_snapshot {
 
 	atomic_t pending_exceptions_count;
 
+<<<<<<< HEAD
 	/* Protected by "lock" */
 	sector_t exception_start_sequence;
 
@@ -78,6 +79,8 @@ struct dm_snapshot {
 	 */
 	struct list_head out_of_order_list;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mempool_t *pending_pool;
 
 	struct dm_exception_table pending;
@@ -185,6 +188,7 @@ struct dm_snap_pending_exception {
 	 */
 	int started;
 
+<<<<<<< HEAD
 	/* There was copying error. */
 	int copy_error;
 
@@ -193,6 +197,8 @@ struct dm_snap_pending_exception {
 
 	struct list_head out_of_order_entry;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * For writing a complete chunk, bypassing the copy.
 	 */
@@ -1114,9 +1120,12 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	s->valid = 1;
 	s->active = 0;
 	atomic_set(&s->pending_exceptions_count, 0);
+<<<<<<< HEAD
 	s->exception_start_sequence = 0;
 	s->exception_complete_sequence = 0;
 	INIT_LIST_HEAD(&s->out_of_order_list);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	init_rwsem(&s->lock);
 	INIT_LIST_HEAD(&s->list);
 	spin_lock_init(&s->pe_lock);
@@ -1439,6 +1448,11 @@ out:
 		full_bio->bi_end_io = pe->full_bio_end_io;
 		full_bio->bi_private = pe->full_bio_private;
 	}
+<<<<<<< HEAD
+=======
+	free_pending_exception(pe);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	increment_pending_exceptions_done_count();
 
 	up_write(&s->lock);
@@ -1455,8 +1469,11 @@ out:
 	}
 
 	retry_origin_bios(s, origin_bios);
+<<<<<<< HEAD
 
 	free_pending_exception(pe);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void commit_callback(void *context, int success)
@@ -1466,6 +1483,7 @@ static void commit_callback(void *context, int success)
 	pending_complete(pe, success);
 }
 
+<<<<<<< HEAD
 static void complete_exception(struct dm_snap_pending_exception *pe)
 {
 	struct dm_snapshot *s = pe->snap;
@@ -1479,6 +1497,8 @@ static void complete_exception(struct dm_snap_pending_exception *pe)
 						 commit_callback, pe);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Called when the copy I/O has finished.  kcopyd actually runs
  * this code so don't block.
@@ -1488,6 +1508,7 @@ static void copy_callback(int read_err, unsigned long write_err, void *context)
 	struct dm_snap_pending_exception *pe = context;
 	struct dm_snapshot *s = pe->snap;
 
+<<<<<<< HEAD
 	pe->copy_error = read_err || write_err;
 
 	if (pe->exception_sequence == s->exception_complete_sequence) {
@@ -1514,6 +1535,15 @@ static void copy_callback(int read_err, unsigned long write_err, void *context)
 		}
 		list_add(&pe->out_of_order_entry, lh);
 	}
+=======
+	if (read_err || write_err)
+		pending_complete(pe, 0);
+
+	else
+		/* Update the metadata if we are persistent */
+		s->store->type->commit_exception(s->store, &pe->e,
+						 commit_callback, pe);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -1608,8 +1638,11 @@ __find_pending_exception(struct dm_snapshot *s,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	pe->exception_sequence = s->exception_start_sequence++;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	dm_insert_exception(&s->pending, &pe->e);
 
 	return pe;
@@ -2249,7 +2282,11 @@ static struct target_type origin_target = {
 
 static struct target_type snapshot_target = {
 	.name    = "snapshot",
+<<<<<<< HEAD
 	.version = {1, 12, 0},
+=======
+	.version = {1, 11, 1},
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.module  = THIS_MODULE,
 	.ctr     = snapshot_ctr,
 	.dtr     = snapshot_dtr,

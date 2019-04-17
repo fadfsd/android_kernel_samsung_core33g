@@ -13,6 +13,10 @@
  */
 
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/uaccess.h>
 
 #include <asm/cacheflush.h>
@@ -63,6 +67,23 @@ static unsigned long adjust_address(struct dyn_ftrace *rec, unsigned long addr)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+int ftrace_arch_code_modify_prepare(void)
+{
+	set_kernel_text_rw();
+	set_all_modules_text_rw();
+	return 0;
+}
+
+int ftrace_arch_code_modify_post_process(void)
+{
+	set_all_modules_text_ro();
+	set_kernel_text_ro();
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
 {
 	return arm_gen_branch_link(pc, addr);

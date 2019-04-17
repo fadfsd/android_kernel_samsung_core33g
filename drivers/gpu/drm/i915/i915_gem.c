@@ -4449,7 +4449,11 @@ static bool mutex_is_locked_by(struct mutex *mutex, struct task_struct *task)
 	if (!mutex_is_locked(mutex))
 		return false;
 
+<<<<<<< HEAD
 #if defined(CONFIG_SMP) && !defined(CONFIG_DEBUG_MUTEXES)
+=======
+#if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_MUTEXES)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return mutex->owner == task;
 #else
 	/* Since UP may be pre-empted, we cannot assume that we own the lock */

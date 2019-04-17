@@ -60,7 +60,10 @@ static struct clocksource hyperv_cs = {
 	.rating		= 400, /* use this when running on Hyperv*/
 	.read		= read_hv_clock,
 	.mask		= CLOCKSOURCE_MASK(64),
+<<<<<<< HEAD
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static void __init ms_hyperv_init_platform(void)

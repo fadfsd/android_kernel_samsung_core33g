@@ -310,7 +310,10 @@ ieee80211_determine_chantype(struct ieee80211_sub_if_data *sdata,
 	switch (vht_oper->chan_width) {
 	case IEEE80211_VHT_CHANWIDTH_USE_HT:
 		vht_chandef.width = chandef->width;
+<<<<<<< HEAD
 		vht_chandef.center_freq1 = chandef->center_freq1;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	case IEEE80211_VHT_CHANWIDTH_80MHZ:
 		vht_chandef.width = NL80211_CHAN_WIDTH_80;
@@ -360,6 +363,7 @@ ieee80211_determine_chantype(struct ieee80211_sub_if_data *sdata,
 	ret = 0;
 
 out:
+<<<<<<< HEAD
 	/*
 	 * When tracking the current AP, don't do any further checks if the
 	 * new chandef is identical to the one we're currently using for the
@@ -382,6 +386,8 @@ out:
 	    cfg80211_chandef_identical(chandef, &sdata->vif.bss_conf.chandef))
 		return ret;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* don't print the message below for VHT mismatch if VHT is disabled */
 	if (ret & IEEE80211_STA_DISABLE_VHT)
 		vht_chandef = *chandef;
@@ -3754,6 +3760,7 @@ static void ieee80211_restart_sta_timer(struct ieee80211_sub_if_data *sdata)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 void ieee80211_mgd_quiesce(struct ieee80211_sub_if_data *sdata)
 {
 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
@@ -3780,6 +3787,8 @@ void ieee80211_mgd_quiesce(struct ieee80211_sub_if_data *sdata)
 	mutex_unlock(&ifmgd->mtx);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void ieee80211_sta_restart(struct ieee80211_sub_if_data *sdata)
 {
 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
@@ -4395,7 +4404,12 @@ int ieee80211_mgd_assoc(struct ieee80211_sub_if_data *sdata,
 	rcu_read_unlock();
 
 	if (bss->wmm_used && bss->uapsd_supported &&
+<<<<<<< HEAD
 	    (sdata->local->hw.flags & IEEE80211_HW_SUPPORTS_UAPSD)) {
+=======
+	    (sdata->local->hw.flags & IEEE80211_HW_SUPPORTS_UAPSD) &&
+	    sdata->wmm_acm != 0xff) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		assoc_data->uapsd = true;
 		ifmgd->flags |= IEEE80211_STA_UAPSD_ENABLED;
 	} else {

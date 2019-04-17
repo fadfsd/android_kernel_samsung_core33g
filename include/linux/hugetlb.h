@@ -31,7 +31,10 @@ struct hugepage_subpool *hugepage_new_subpool(long nr_blocks);
 void hugepage_put_subpool(struct hugepage_subpool *spool);
 
 int PageHuge(struct page *page);
+<<<<<<< HEAD
 int PageHeadHuge(struct page *page_head);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void reset_vma_resv_huge_pages(struct vm_area_struct *vma);
 int hugetlb_sysctl_handler(struct ctl_table *, int, void __user *, size_t *, loff_t *);
@@ -99,11 +102,14 @@ static inline int PageHuge(struct page *page)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int PageHeadHuge(struct page *page_head)
 {
 	return 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
 {
 }

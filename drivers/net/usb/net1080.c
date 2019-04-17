@@ -366,10 +366,13 @@ static int net1080_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 	struct nc_trailer	*trailer;
 	u16			hdr_len, packet_len;
 
+<<<<<<< HEAD
 	/* This check is no longer done by usbnet */
 	if (skb->len < dev->net->hard_header_len)
 		return 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!(skb->len & 0x01)) {
 		netdev_dbg(dev->net, "rx framesize %d range %d..%d mtu %d\n",
 			   skb->len, dev->net->hard_header_len, dev->hard_mtu,

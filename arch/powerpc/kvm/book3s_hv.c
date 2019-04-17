@@ -82,6 +82,7 @@ void kvmppc_fast_vcpu_kick(struct kvm_vcpu *vcpu)
 
 	/* CPU points to the first thread of the core */
 	if (cpu != me && cpu >= 0 && cpu < nr_cpu_ids) {
+<<<<<<< HEAD
 #ifdef CONFIG_KVM_XICS
 		int real_cpu = cpu + vcpu->arch.ptid;
 		if (paca[real_cpu].kvm_hstate.xics_phys)
@@ -89,6 +90,12 @@ void kvmppc_fast_vcpu_kick(struct kvm_vcpu *vcpu)
 		else
 #endif
 		if (cpu_online(cpu))
+=======
+		int real_cpu = cpu + vcpu->arch.ptid;
+		if (paca[real_cpu].kvm_hstate.xics_phys)
+			xics_wake_cpu(real_cpu);
+		else if (cpu_online(cpu))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			smp_send_reschedule(cpu);
 	}
 	put_cpu();
@@ -1093,9 +1100,13 @@ static void kvmppc_start_thread(struct kvm_vcpu *vcpu)
 	smp_wmb();
 #if defined(CONFIG_PPC_ICP_NATIVE) && defined(CONFIG_SMP)
 	if (vcpu->arch.ptid) {
+<<<<<<< HEAD
 #ifdef CONFIG_KVM_XICS
 		xics_wake_cpu(cpu);
 #endif
+=======
+		xics_wake_cpu(cpu);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		++vc->n_woken;
 	}
 #endif

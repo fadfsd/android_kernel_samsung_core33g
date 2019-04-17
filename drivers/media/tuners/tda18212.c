@@ -20,9 +20,12 @@
 
 #include "tda18212.h"
 
+<<<<<<< HEAD
 /* Max transfer size done by I2C transfer functions */
 #define MAX_XFER_SIZE  64
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct tda18212_priv {
 	struct tda18212_config *cfg;
 	struct i2c_adapter *i2c;
@@ -35,16 +38,25 @@ static int tda18212_wr_regs(struct tda18212_priv *priv, u8 reg, u8 *val,
 	int len)
 {
 	int ret;
+<<<<<<< HEAD
 	u8 buf[MAX_XFER_SIZE];
+=======
+	u8 buf[len+1];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct i2c_msg msg[1] = {
 		{
 			.addr = priv->cfg->i2c_address,
 			.flags = 0,
+<<<<<<< HEAD
 			.len = 1 + len,
+=======
+			.len = sizeof(buf),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			.buf = buf,
 		}
 	};
 
+<<<<<<< HEAD
 	if (1 + len > sizeof(buf)) {
 		dev_warn(&priv->i2c->dev,
 			 "%s: i2c wr reg=%04x: len=%d is too big!\n",
@@ -52,6 +64,8 @@ static int tda18212_wr_regs(struct tda18212_priv *priv, u8 reg, u8 *val,
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	buf[0] = reg;
 	memcpy(&buf[1], val, len);
 
@@ -71,7 +85,11 @@ static int tda18212_rd_regs(struct tda18212_priv *priv, u8 reg, u8 *val,
 	int len)
 {
 	int ret;
+<<<<<<< HEAD
 	u8 buf[MAX_XFER_SIZE];
+=======
+	u8 buf[len];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct i2c_msg msg[2] = {
 		{
 			.addr = priv->cfg->i2c_address,
@@ -81,11 +99,16 @@ static int tda18212_rd_regs(struct tda18212_priv *priv, u8 reg, u8 *val,
 		}, {
 			.addr = priv->cfg->i2c_address,
 			.flags = I2C_M_RD,
+<<<<<<< HEAD
 			.len = len,
+=======
+			.len = sizeof(buf),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			.buf = buf,
 		}
 	};
 
+<<<<<<< HEAD
 	if (len > sizeof(buf)) {
 		dev_warn(&priv->i2c->dev,
 			 "%s: i2c rd reg=%04x: len=%d is too big!\n",
@@ -93,6 +116,8 @@ static int tda18212_rd_regs(struct tda18212_priv *priv, u8 reg, u8 *val,
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = i2c_transfer(priv->i2c, msg, 2);
 	if (ret == 2) {
 		memcpy(val, buf, len);

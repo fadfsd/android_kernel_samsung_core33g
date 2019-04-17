@@ -19,7 +19,10 @@
 #include <linux/mutex.h>
 #include <linux/gfp.h>
 #include <linux/suspend.h>
+<<<<<<< HEAD
 #include <linux/lockdep.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "smpboot.h"
 
@@ -63,14 +66,18 @@ static struct {
 	 * an ongoing cpu hotplug operation.
 	 */
 	int refcount;
+<<<<<<< HEAD
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	struct lockdep_map dep_map;
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 } cpu_hotplug = {
 	.active_writer = NULL,
 	.lock = __MUTEX_INITIALIZER(cpu_hotplug.lock),
 	.refcount = 0,
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	.dep_map = {.name = "cpu_hotplug.lock" },
 #endif
@@ -81,12 +88,19 @@ static struct {
 #define cpuhp_lock_acquire()      lock_map_acquire(&cpu_hotplug.dep_map)
 #define cpuhp_lock_release()      lock_map_release(&cpu_hotplug.dep_map)
 
+=======
+};
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void get_online_cpus(void)
 {
 	might_sleep();
 	if (cpu_hotplug.active_writer == current)
 		return;
+<<<<<<< HEAD
 	cpuhp_lock_acquire_read();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_lock(&cpu_hotplug.lock);
 	cpu_hotplug.refcount++;
 	mutex_unlock(&cpu_hotplug.lock);
@@ -106,7 +120,10 @@ void put_online_cpus(void)
 	if (!--cpu_hotplug.refcount && unlikely(cpu_hotplug.active_writer))
 		wake_up_process(cpu_hotplug.active_writer);
 	mutex_unlock(&cpu_hotplug.lock);
+<<<<<<< HEAD
 	cpuhp_lock_release();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 }
 EXPORT_SYMBOL_GPL(put_online_cpus);
@@ -137,7 +154,10 @@ static void cpu_hotplug_begin(void)
 {
 	cpu_hotplug.active_writer = current;
 
+<<<<<<< HEAD
 	cpuhp_lock_acquire();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (;;) {
 		mutex_lock(&cpu_hotplug.lock);
 		if (likely(!cpu_hotplug.refcount))
@@ -152,7 +172,10 @@ static void cpu_hotplug_done(void)
 {
 	cpu_hotplug.active_writer = NULL;
 	mutex_unlock(&cpu_hotplug.lock);
+<<<<<<< HEAD
 	cpuhp_lock_release();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -610,6 +633,10 @@ static int
 cpu_hotplug_pm_callback(struct notifier_block *nb,
 			unsigned long action, void *ptr)
 {
+<<<<<<< HEAD
+=======
+	printk("*** %s, action:0x%x ***\n", __func__, action );
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	switch (action) {
 
 	case PM_SUSPEND_PREPARE:
@@ -625,6 +652,10 @@ cpu_hotplug_pm_callback(struct notifier_block *nb,
 	default:
 		return NOTIFY_DONE;
 	}
+<<<<<<< HEAD
+=======
+	printk("*** %s, action:0x%x done ***\n", __func__, action );
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return NOTIFY_OK;
 }
@@ -732,12 +763,19 @@ void set_cpu_present(unsigned int cpu, bool present)
 
 void set_cpu_online(unsigned int cpu, bool online)
 {
+<<<<<<< HEAD
 	if (online) {
 		cpumask_set_cpu(cpu, to_cpumask(cpu_online_bits));
 		cpumask_set_cpu(cpu, to_cpumask(cpu_active_bits));
 	} else {
 		cpumask_clear_cpu(cpu, to_cpumask(cpu_online_bits));
 	}
+=======
+	if (online)
+		cpumask_set_cpu(cpu, to_cpumask(cpu_online_bits));
+	else
+		cpumask_clear_cpu(cpu, to_cpumask(cpu_online_bits));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void set_cpu_active(unsigned int cpu, bool active)
@@ -762,3 +800,26 @@ void init_cpu_online(const struct cpumask *src)
 {
 	cpumask_copy(to_cpumask(cpu_online_bits), src);
 }
+<<<<<<< HEAD
+=======
+
+static ATOMIC_NOTIFIER_HEAD(idle_notifier);
+
+void idle_notifier_register(struct notifier_block *n)
+{
+	atomic_notifier_chain_register(&idle_notifier, n);
+}
+EXPORT_SYMBOL_GPL(idle_notifier_register);
+
+void idle_notifier_unregister(struct notifier_block *n)
+{
+	atomic_notifier_chain_unregister(&idle_notifier, n);
+}
+EXPORT_SYMBOL_GPL(idle_notifier_unregister);
+
+void idle_notifier_call_chain(unsigned long val)
+{
+	atomic_notifier_call_chain(&idle_notifier, val, NULL);
+}
+EXPORT_SYMBOL_GPL(idle_notifier_call_chain);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

@@ -1741,6 +1741,7 @@ vmxnet3_netpoll(struct net_device *netdev)
 {
 	struct vmxnet3_adapter *adapter = netdev_priv(netdev);
 
+<<<<<<< HEAD
 	switch (adapter->intr.type) {
 #ifdef CONFIG_PCI_MSI
 	case VMXNET3_IT_MSIX: {
@@ -1755,6 +1756,13 @@ vmxnet3_netpoll(struct net_device *netdev)
 		vmxnet3_intr(0, adapter->netdev);
 		break;
 	}
+=======
+	if (adapter->intr.mask_mode == VMXNET3_IMM_ACTIVE)
+		vmxnet3_disable_all_intrs(adapter);
+
+	vmxnet3_do_poll(adapter, adapter->rx_queue[0].rx_ring[0].size);
+	vmxnet3_enable_all_intrs(adapter);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 }
 #endif	/* CONFIG_NET_POLL_CONTROLLER */

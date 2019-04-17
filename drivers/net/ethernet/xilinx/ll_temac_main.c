@@ -1016,7 +1016,11 @@ static int temac_of_probe(struct platform_device *op)
 	dev_set_drvdata(&op->dev, ndev);
 	SET_NETDEV_DEV(ndev, &op->dev);
 	ndev->flags &= ~IFF_MULTICAST;  /* clear multicast */
+<<<<<<< HEAD
 	ndev->features = NETIF_F_SG;
+=======
+	ndev->features = NETIF_F_SG | NETIF_F_FRAGLIST;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ndev->netdev_ops = &temac_netdev_ops;
 	ndev->ethtool_ops = &temac_ethtool_ops;
 #if 0

@@ -270,12 +270,19 @@ process_start:
 		}
 	} while (true);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&adapter->main_proc_lock, flags);
 	if ((adapter->int_status) || IS_CARD_RX_RCVD(adapter)) {
 		spin_unlock_irqrestore(&adapter->main_proc_lock, flags);
 		goto process_start;
 	}
 
+=======
+	if ((adapter->int_status) || IS_CARD_RX_RCVD(adapter))
+		goto process_start;
+
+	spin_lock_irqsave(&adapter->main_proc_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	adapter->mwifiex_processing = false;
 	spin_unlock_irqrestore(&adapter->main_proc_lock, flags);
 
@@ -501,7 +508,10 @@ mwifiex_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	tx_info = MWIFIEX_SKB_TXCB(skb);
+<<<<<<< HEAD
 	memset(tx_info, 0, sizeof(*tx_info));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tx_info->bss_num = priv->bss_num;
 	tx_info->bss_type = priv->bss_type;
 

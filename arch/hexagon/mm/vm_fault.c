@@ -53,7 +53,12 @@ void do_page_fault(unsigned long address, long cause, struct pt_regs *regs)
 	int si_code = SEGV_MAPERR;
 	int fault;
 	const struct exception_table_entry *fixup;
+<<<<<<< HEAD
 	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+				 (cause > 0 ? FAULT_FLAG_WRITE : 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * If we're in an interrupt or have no user context,
@@ -64,8 +69,11 @@ void do_page_fault(unsigned long address, long cause, struct pt_regs *regs)
 
 	local_irq_enable();
 
+<<<<<<< HEAD
 	if (user_mode(regs))
 		flags |= FAULT_FLAG_USER;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 retry:
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
@@ -97,7 +105,10 @@ good_area:
 	case FLT_STORE:
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 		flags |= FAULT_FLAG_WRITE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	}
 

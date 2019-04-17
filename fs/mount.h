@@ -73,7 +73,11 @@ static inline int mnt_has_parent(struct mount *mnt)
 static inline int is_mounted(struct vfsmount *mnt)
 {
 	/* neither detached nor internal? */
+<<<<<<< HEAD
 	return !IS_ERR_OR_NULL(real_mount(mnt)->mnt_ns);
+=======
+	return !IS_ERR_OR_NULL(real_mount(mnt));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 extern struct mount *__lookup_mnt(struct vfsmount *, struct dentry *, int);

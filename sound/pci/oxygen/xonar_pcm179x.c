@@ -100,8 +100,13 @@
  */
 
 /*
+<<<<<<< HEAD
  * Xonar Essence ST (Deluxe)/STX (II)
  * ----------------------------------
+=======
+ * Xonar Essence ST (Deluxe)/STX
+ * -----------------------------
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *
  * CMI8788:
  *
@@ -1138,6 +1143,7 @@ int get_xonar_pcm179x_model(struct oxygen *chip,
 		chip->model.resume = xonar_stx_resume;
 		chip->model.set_dac_params = set_pcm1796_params;
 		break;
+<<<<<<< HEAD
 	case 0x85f4:
 		chip->model = model_xonar_st;
 		/* TODO: daughterboard support */
@@ -1146,6 +1152,8 @@ int get_xonar_pcm179x_model(struct oxygen *chip,
 		chip->model.resume = xonar_stx_resume;
 		chip->model.set_dac_params = set_pcm1796_params;
 		break;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	default:
 		return -EINVAL;
 	}

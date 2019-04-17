@@ -25,6 +25,7 @@ static struct blkcg_policy blkcg_policy_throtl;
 
 /* A workqueue to queue throttle related work */
 static struct workqueue_struct *kthrotld_workqueue;
+<<<<<<< HEAD
 
 /*
  * To implement hierarchical throttling, throtl_grps form a tree and bios
@@ -80,6 +81,20 @@ enum tg_state_flags {
 	THROTL_TG_PENDING	= 1 << 0,	/* on parent's pending tree */
 	THROTL_TG_WAS_EMPTY	= 1 << 1,	/* bio_lists[] became non-empty */
 };
+=======
+static void throtl_schedule_delayed_work(struct throtl_data *td,
+				unsigned long delay);
+
+struct throtl_rb_root {
+	struct rb_root rb;
+	struct rb_node *left;
+	unsigned int count;
+	unsigned long min_disptime;
+};
+
+#define THROTL_RB_ROOT	(struct throtl_rb_root) { .rb = RB_ROOT, .left = NULL, \
+			.count = 0, .min_disptime = 0}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define rb_entry_tg(node)	rb_entry((node), struct throtl_grp, rb_node)
 
@@ -95,6 +110,7 @@ struct throtl_grp {
 	/* must be the first member */
 	struct blkg_policy_data pd;
 
+<<<<<<< HEAD
 	/* active throtl group service_queue member */
 	struct rb_node rb_node;
 
@@ -115,6 +131,11 @@ struct throtl_grp {
 	struct throtl_qnode qnode_on_self[2];
 	struct throtl_qnode qnode_on_parent[2];
 
+=======
+	/* active throtl group service_tree member */
+	struct rb_node rb_node;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Dispatch time in jiffies. This is the estimated time when group
 	 * will unthrottle and is ready to dispatch more bio. It is used as
@@ -124,8 +145,16 @@ struct throtl_grp {
 
 	unsigned int flags;
 
+<<<<<<< HEAD
 	/* are there any throtl rules between this group and td? */
 	bool has_rules[2];
+=======
+	/* Two lists for READ and WRITE */
+	struct bio_list bio_lists[2];
+
+	/* Number of queued bios on READ and WRITE lists */
+	unsigned int nr_queued[2];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* bytes per second rate limits */
 	uint64_t bps[2];
@@ -142,6 +171,12 @@ struct throtl_grp {
 	unsigned long slice_start[2];
 	unsigned long slice_end[2];
 
+<<<<<<< HEAD
+=======
+	/* Some throttle limits got updated for the group */
+	int limits_changed;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Per cpu stats pointer */
 	struct tg_stats_cpu __percpu *stats_cpu;
 
@@ -152,7 +187,11 @@ struct throtl_grp {
 struct throtl_data
 {
 	/* service tree for active throtl groups */
+<<<<<<< HEAD
 	struct throtl_service_queue service_queue;
+=======
+	struct throtl_rb_root tg_service_tree;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct request_queue *queue;
 
@@ -165,7 +204,13 @@ struct throtl_data
 	unsigned int nr_undestroyed_grps;
 
 	/* Work for dispatching throttled bios */
+<<<<<<< HEAD
 	struct work_struct dispatch_work;
+=======
+	struct delayed_work throtl_work;
+
+	int limits_changed;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /* list and work item to allocate percpu group stats */
@@ -175,8 +220,11 @@ static LIST_HEAD(tg_stats_alloc_list);
 static void tg_stats_alloc_fn(struct work_struct *);
 static DECLARE_DELAYED_WORK(tg_stats_alloc_work, tg_stats_alloc_fn);
 
+<<<<<<< HEAD
 static void throtl_pending_timer_fn(unsigned long arg);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline struct throtl_grp *pd_to_tg(struct blkg_policy_data *pd)
 {
 	return pd ? container_of(pd, struct throtl_grp, pd) : NULL;
@@ -197,6 +245,7 @@ static inline struct throtl_grp *td_root_tg(struct throtl_data *td)
 	return blkg_to_tg(td->queue->root_blkg);
 }
 
+<<<<<<< HEAD
 /**
  * sq_to_tg - return the throl_grp the specified service queue belongs to
  * @sq: the throtl_service_queue of interest
@@ -256,6 +305,43 @@ static struct throtl_data *sq_to_td(struct throtl_service_queue *sq)
 	}								\
 } while (0)
 
+=======
+enum tg_state_flags {
+	THROTL_TG_FLAG_on_rr = 0,	/* on round-robin busy list */
+};
+
+#define THROTL_TG_FNS(name)						\
+static inline void throtl_mark_tg_##name(struct throtl_grp *tg)		\
+{									\
+	(tg)->flags |= (1 << THROTL_TG_FLAG_##name);			\
+}									\
+static inline void throtl_clear_tg_##name(struct throtl_grp *tg)	\
+{									\
+	(tg)->flags &= ~(1 << THROTL_TG_FLAG_##name);			\
+}									\
+static inline int throtl_tg_##name(const struct throtl_grp *tg)		\
+{									\
+	return ((tg)->flags & (1 << THROTL_TG_FLAG_##name)) != 0;	\
+}
+
+THROTL_TG_FNS(on_rr);
+
+#define throtl_log_tg(td, tg, fmt, args...)	do {			\
+	char __pbuf[128];						\
+									\
+	blkg_path(tg_to_blkg(tg), __pbuf, sizeof(__pbuf));		\
+	blk_add_trace_msg((td)->queue, "throtl %s " fmt, __pbuf, ##args); \
+} while (0)
+
+#define throtl_log(td, fmt, args...)	\
+	blk_add_trace_msg((td)->queue, "throtl " fmt, ##args)
+
+static inline unsigned int total_nr_queued(struct throtl_data *td)
+{
+	return td->nr_queued[0] + td->nr_queued[1];
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Worker for allocating per cpu stat for tgs. This is scheduled on the
  * system_wq once there are some groups on the alloc_list waiting for
@@ -293,6 +379,7 @@ alloc_stats:
 		goto alloc_stats;
 }
 
+<<<<<<< HEAD
 static void throtl_qnode_init(struct throtl_qnode *qn, struct throtl_grp *tg)
 {
 	INIT_LIST_HEAD(&qn->node);
@@ -428,6 +515,17 @@ static void throtl_pd_init(struct blkcg_gq *blkg)
 
 	RB_CLEAR_NODE(&tg->rb_node);
 	tg->td = td;
+=======
+static void throtl_pd_init(struct blkcg_gq *blkg)
+{
+	struct throtl_grp *tg = blkg_to_tg(blkg);
+	unsigned long flags;
+
+	RB_CLEAR_NODE(&tg->rb_node);
+	bio_list_init(&tg->bio_lists[0]);
+	bio_list_init(&tg->bio_lists[1]);
+	tg->limits_changed = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tg->bps[READ] = -1;
 	tg->bps[WRITE] = -1;
@@ -445,6 +543,7 @@ static void throtl_pd_init(struct blkcg_gq *blkg)
 	spin_unlock_irqrestore(&tg_stats_alloc_lock, flags);
 }
 
+<<<<<<< HEAD
 /*
  * Set has_rules[] if @tg or any of its parents have limits configured.
  * This doesn't require walking up to the top of the hierarchy as the
@@ -469,6 +568,8 @@ static void throtl_pd_online(struct blkcg_gq *blkg)
 	tg_update_has_rules(blkg_to_tg(blkg));
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void throtl_pd_exit(struct blkcg_gq *blkg)
 {
 	struct throtl_grp *tg = blkg_to_tg(blkg);
@@ -479,8 +580,11 @@ static void throtl_pd_exit(struct blkcg_gq *blkg)
 	spin_unlock_irqrestore(&tg_stats_alloc_lock, flags);
 
 	free_percpu(tg->stats_cpu);
+<<<<<<< HEAD
 
 	throtl_service_queue_exit(&tg->service_queue);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void throtl_pd_reset_stats(struct blkcg_gq *blkg)
@@ -539,6 +643,7 @@ static struct throtl_grp *throtl_lookup_create_tg(struct throtl_data *td,
 	return tg;
 }
 
+<<<<<<< HEAD
 static struct throtl_grp *
 throtl_rb_first(struct throtl_service_queue *parent_sq)
 {
@@ -551,6 +656,19 @@ throtl_rb_first(struct throtl_service_queue *parent_sq)
 
 	if (parent_sq->first_pending)
 		return rb_entry_tg(parent_sq->first_pending);
+=======
+static struct throtl_grp *throtl_rb_first(struct throtl_rb_root *root)
+{
+	/* Service tree is empty */
+	if (!root->count)
+		return NULL;
+
+	if (!root->left)
+		root->left = rb_first(&root->rb);
+
+	if (root->left)
+		return rb_entry_tg(root->left);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return NULL;
 }
@@ -561,6 +679,7 @@ static void rb_erase_init(struct rb_node *n, struct rb_root *root)
 	RB_CLEAR_NODE(n);
 }
 
+<<<<<<< HEAD
 static void throtl_rb_erase(struct rb_node *n,
 			    struct throtl_service_queue *parent_sq)
 {
@@ -585,6 +704,31 @@ static void tg_service_queue_add(struct throtl_grp *tg)
 {
 	struct throtl_service_queue *parent_sq = tg->service_queue.parent_sq;
 	struct rb_node **node = &parent_sq->pending_tree.rb_node;
+=======
+static void throtl_rb_erase(struct rb_node *n, struct throtl_rb_root *root)
+{
+	if (root->left == n)
+		root->left = NULL;
+	rb_erase_init(n, &root->rb);
+	--root->count;
+}
+
+static void update_min_dispatch_time(struct throtl_rb_root *st)
+{
+	struct throtl_grp *tg;
+
+	tg = throtl_rb_first(st);
+	if (!tg)
+		return;
+
+	st->min_disptime = tg->disptime;
+}
+
+static void
+tg_service_tree_add(struct throtl_rb_root *st, struct throtl_grp *tg)
+{
+	struct rb_node **node = &st->rb.rb_node;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct rb_node *parent = NULL;
 	struct throtl_grp *__tg;
 	unsigned long key = tg->disptime;
@@ -603,6 +747,7 @@ static void tg_service_queue_add(struct throtl_grp *tg)
 	}
 
 	if (left)
+<<<<<<< HEAD
 		parent_sq->first_pending = &tg->rb_node;
 
 	rb_link_node(&tg->rb_node, parent, node);
@@ -703,11 +848,69 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
 }
 
 static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
+=======
+		st->left = &tg->rb_node;
+
+	rb_link_node(&tg->rb_node, parent, node);
+	rb_insert_color(&tg->rb_node, &st->rb);
+}
+
+static void __throtl_enqueue_tg(struct throtl_data *td, struct throtl_grp *tg)
+{
+	struct throtl_rb_root *st = &td->tg_service_tree;
+
+	tg_service_tree_add(st, tg);
+	throtl_mark_tg_on_rr(tg);
+	st->count++;
+}
+
+static void throtl_enqueue_tg(struct throtl_data *td, struct throtl_grp *tg)
+{
+	if (!throtl_tg_on_rr(tg))
+		__throtl_enqueue_tg(td, tg);
+}
+
+static void __throtl_dequeue_tg(struct throtl_data *td, struct throtl_grp *tg)
+{
+	throtl_rb_erase(&tg->rb_node, &td->tg_service_tree);
+	throtl_clear_tg_on_rr(tg);
+}
+
+static void throtl_dequeue_tg(struct throtl_data *td, struct throtl_grp *tg)
+{
+	if (throtl_tg_on_rr(tg))
+		__throtl_dequeue_tg(td, tg);
+}
+
+static void throtl_schedule_next_dispatch(struct throtl_data *td)
+{
+	struct throtl_rb_root *st = &td->tg_service_tree;
+
+	/*
+	 * If there are more bios pending, schedule more work.
+	 */
+	if (!total_nr_queued(td))
+		return;
+
+	BUG_ON(!st->count);
+
+	update_min_dispatch_time(st);
+
+	if (time_before_eq(st->min_disptime, jiffies))
+		throtl_schedule_delayed_work(td, 0);
+	else
+		throtl_schedule_delayed_work(td, (st->min_disptime - jiffies));
+}
+
+static inline void
+throtl_start_new_slice(struct throtl_data *td, struct throtl_grp *tg, bool rw)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	tg->bytes_disp[rw] = 0;
 	tg->io_disp[rw] = 0;
 	tg->slice_start[rw] = jiffies;
 	tg->slice_end[rw] = jiffies + throtl_slice;
+<<<<<<< HEAD
 	throtl_log(&tg->service_queue,
 		   "[%c] new slice start=%lu end=%lu jiffies=%lu",
 		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
@@ -716,10 +919,20 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
 
 static inline void throtl_set_slice_end(struct throtl_grp *tg, bool rw,
 					unsigned long jiffy_end)
+=======
+	throtl_log_tg(td, tg, "[%c] new slice start=%lu end=%lu jiffies=%lu",
+			rw == READ ? 'R' : 'W', tg->slice_start[rw],
+			tg->slice_end[rw], jiffies);
+}
+
+static inline void throtl_set_slice_end(struct throtl_data *td,
+		struct throtl_grp *tg, bool rw, unsigned long jiffy_end)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	tg->slice_end[rw] = roundup(jiffy_end, throtl_slice);
 }
 
+<<<<<<< HEAD
 static inline void throtl_extend_slice(struct throtl_grp *tg, bool rw,
 				       unsigned long jiffy_end)
 {
@@ -732,6 +945,20 @@ static inline void throtl_extend_slice(struct throtl_grp *tg, bool rw,
 
 /* Determine if previously allocated or extended slice is complete or not */
 static bool throtl_slice_used(struct throtl_grp *tg, bool rw)
+=======
+static inline void throtl_extend_slice(struct throtl_data *td,
+		struct throtl_grp *tg, bool rw, unsigned long jiffy_end)
+{
+	tg->slice_end[rw] = roundup(jiffy_end, throtl_slice);
+	throtl_log_tg(td, tg, "[%c] extend slice start=%lu end=%lu jiffies=%lu",
+			rw == READ ? 'R' : 'W', tg->slice_start[rw],
+			tg->slice_end[rw], jiffies);
+}
+
+/* Determine if previously allocated or extended slice is complete or not */
+static bool
+throtl_slice_used(struct throtl_data *td, struct throtl_grp *tg, bool rw)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	if (time_in_range(jiffies, tg->slice_start[rw], tg->slice_end[rw]))
 		return 0;
@@ -740,7 +967,12 @@ static bool throtl_slice_used(struct throtl_grp *tg, bool rw)
 }
 
 /* Trim the used slices and adjust slice start accordingly */
+<<<<<<< HEAD
 static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
+=======
+static inline void
+throtl_trim_slice(struct throtl_data *td, struct throtl_grp *tg, bool rw)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned long nr_slices, time_elapsed, io_trim;
 	u64 bytes_trim, tmp;
@@ -752,7 +984,11 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
 	 * renewed. Don't try to trim the slice if slice is used. A new
 	 * slice will start when appropriate.
 	 */
+<<<<<<< HEAD
 	if (throtl_slice_used(tg, rw))
+=======
+	if (throtl_slice_used(td, tg, rw))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 
 	/*
@@ -763,7 +999,11 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
 	 * is bad because it does not allow new slice to start.
 	 */
 
+<<<<<<< HEAD
 	throtl_set_slice_end(tg, rw, jiffies + throtl_slice);
+=======
+	throtl_set_slice_end(td, tg, rw, jiffies + throtl_slice);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	time_elapsed = jiffies - tg->slice_start[rw];
 
@@ -792,6 +1032,7 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
 
 	tg->slice_start[rw] += nr_slices * throtl_slice;
 
+<<<<<<< HEAD
 	throtl_log(&tg->service_queue,
 		   "[%c] trim slice nr=%lu bytes=%llu io=%lu start=%lu end=%lu jiffies=%lu",
 		   rw == READ ? 'R' : 'W', nr_slices, bytes_trim, io_trim,
@@ -800,6 +1041,16 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
 
 static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
 				  unsigned long *wait)
+=======
+	throtl_log_tg(td, tg, "[%c] trim slice nr=%lu bytes=%llu io=%lu"
+			" start=%lu end=%lu jiffies=%lu",
+			rw == READ ? 'R' : 'W', nr_slices, bytes_trim, io_trim,
+			tg->slice_start[rw], tg->slice_end[rw], jiffies);
+}
+
+static bool tg_with_in_iops_limit(struct throtl_data *td, struct throtl_grp *tg,
+		struct bio *bio, unsigned long *wait)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	bool rw = bio_data_dir(bio);
 	unsigned int io_allowed;
@@ -848,8 +1099,13 @@ static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
 	return 0;
 }
 
+<<<<<<< HEAD
 static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
 				 unsigned long *wait)
+=======
+static bool tg_with_in_bps_limit(struct throtl_data *td, struct throtl_grp *tg,
+		struct bio *bio, unsigned long *wait)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	bool rw = bio_data_dir(bio);
 	u64 bytes_allowed, extra_bytes, tmp;
@@ -890,12 +1146,26 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static bool tg_no_rule_group(struct throtl_grp *tg, bool rw) {
+	if (tg->bps[rw] == -1 && tg->iops[rw] == -1)
+		return 1;
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Returns whether one can dispatch a bio or not. Also returns approx number
  * of jiffies to wait before this bio is with-in IO rate and can be dispatched
  */
+<<<<<<< HEAD
 static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
 			    unsigned long *wait)
+=======
+static bool tg_may_dispatch(struct throtl_data *td, struct throtl_grp *tg,
+				struct bio *bio, unsigned long *wait)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	bool rw = bio_data_dir(bio);
 	unsigned long bps_wait = 0, iops_wait = 0, max_wait = 0;
@@ -906,8 +1176,12 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
 	 * this function with a different bio if there are other bios
 	 * queued.
 	 */
+<<<<<<< HEAD
 	BUG_ON(tg->service_queue.nr_queued[rw] &&
 	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]));
+=======
+	BUG_ON(tg->nr_queued[rw] && bio != bio_list_peek(&tg->bio_lists[rw]));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* If tg->bps = -1, then BW is unlimited */
 	if (tg->bps[rw] == -1 && tg->iops[rw] == -1) {
@@ -921,6 +1195,7 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
 	 * existing slice to make sure it is at least throtl_slice interval
 	 * long since now.
 	 */
+<<<<<<< HEAD
 	if (throtl_slice_used(tg, rw))
 		throtl_start_new_slice(tg, rw);
 	else {
@@ -930,6 +1205,17 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
 
 	if (tg_with_in_bps_limit(tg, bio, &bps_wait) &&
 	    tg_with_in_iops_limit(tg, bio, &iops_wait)) {
+=======
+	if (throtl_slice_used(td, tg, rw))
+		throtl_start_new_slice(td, tg, rw);
+	else {
+		if (time_before(tg->slice_end[rw], jiffies + throtl_slice))
+			throtl_extend_slice(td, tg, rw, jiffies + throtl_slice);
+	}
+
+	if (tg_with_in_bps_limit(td, tg, bio, &bps_wait)
+	    && tg_with_in_iops_limit(td, tg, bio, &iops_wait)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (wait)
 			*wait = 0;
 		return 1;
@@ -941,7 +1227,11 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
 		*wait = max_wait;
 
 	if (time_before(tg->slice_end[rw], jiffies + max_wait))
+<<<<<<< HEAD
 		throtl_extend_slice(tg, rw, jiffies + max_wait);
+=======
+		throtl_extend_slice(td, tg, rw, jiffies + max_wait);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }
@@ -980,6 +1270,7 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
 	tg->bytes_disp[rw] += bio->bi_size;
 	tg->io_disp[rw]++;
 
+<<<<<<< HEAD
 	/*
 	 * REQ_THROTTLED is used to prevent the same bio to be throttled
 	 * more than once as a throttled bio will go through blk-throtl the
@@ -1042,11 +1333,40 @@ static void tg_update_disptime(struct throtl_grp *tg)
 
 	if ((bio = throtl_peek_queued(&sq->queued[WRITE])))
 		tg_may_dispatch(tg, bio, &write_wait);
+=======
+	throtl_update_dispatch_stats(tg_to_blkg(tg), bio->bi_size, bio->bi_rw);
+}
+
+static void throtl_add_bio_tg(struct throtl_data *td, struct throtl_grp *tg,
+			struct bio *bio)
+{
+	bool rw = bio_data_dir(bio);
+
+	bio_list_add(&tg->bio_lists[rw], bio);
+	/* Take a bio reference on tg */
+	blkg_get(tg_to_blkg(tg));
+	tg->nr_queued[rw]++;
+	td->nr_queued[rw]++;
+	throtl_enqueue_tg(td, tg);
+}
+
+static void tg_update_disptime(struct throtl_data *td, struct throtl_grp *tg)
+{
+	unsigned long read_wait = -1, write_wait = -1, min_wait = -1, disptime;
+	struct bio *bio;
+
+	if ((bio = bio_list_peek(&tg->bio_lists[READ])))
+		tg_may_dispatch(td, tg, bio, &read_wait);
+
+	if ((bio = bio_list_peek(&tg->bio_lists[WRITE])))
+		tg_may_dispatch(td, tg, bio, &write_wait);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	min_wait = min(read_wait, write_wait);
 	disptime = jiffies + min_wait;
 
 	/* Update dispatch time */
+<<<<<<< HEAD
 	throtl_dequeue_tg(tg);
 	tg->disptime = disptime;
 	throtl_enqueue_tg(tg);
@@ -1110,6 +1430,36 @@ static void tg_dispatch_one_bio(struct throtl_grp *tg, bool rw)
 static int throtl_dispatch_tg(struct throtl_grp *tg)
 {
 	struct throtl_service_queue *sq = &tg->service_queue;
+=======
+	throtl_dequeue_tg(td, tg);
+	tg->disptime = disptime;
+	throtl_enqueue_tg(td, tg);
+}
+
+static void tg_dispatch_one_bio(struct throtl_data *td, struct throtl_grp *tg,
+				bool rw, struct bio_list *bl)
+{
+	struct bio *bio;
+
+	bio = bio_list_pop(&tg->bio_lists[rw]);
+	tg->nr_queued[rw]--;
+	/* Drop bio reference on blkg */
+	blkg_put(tg_to_blkg(tg));
+
+	BUG_ON(td->nr_queued[rw] <= 0);
+	td->nr_queued[rw]--;
+
+	throtl_charge_bio(tg, bio);
+	bio_list_add(bl, bio);
+	bio->bi_rw |= REQ_THROTTLED;
+
+	throtl_trim_slice(td, tg, rw);
+}
+
+static int throtl_dispatch_tg(struct throtl_data *td, struct throtl_grp *tg,
+				struct bio_list *bl)
+{
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int nr_reads = 0, nr_writes = 0;
 	unsigned int max_nr_reads = throtl_grp_quantum*3/4;
 	unsigned int max_nr_writes = throtl_grp_quantum - max_nr_reads;
@@ -1117,20 +1467,34 @@ static int throtl_dispatch_tg(struct throtl_grp *tg)
 
 	/* Try to dispatch 75% READS and 25% WRITES */
 
+<<<<<<< HEAD
 	while ((bio = throtl_peek_queued(&sq->queued[READ])) &&
 	       tg_may_dispatch(tg, bio, NULL)) {
 
 		tg_dispatch_one_bio(tg, bio_data_dir(bio));
+=======
+	while ((bio = bio_list_peek(&tg->bio_lists[READ]))
+		&& tg_may_dispatch(td, tg, bio, NULL)) {
+
+		tg_dispatch_one_bio(td, tg, bio_data_dir(bio), bl);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		nr_reads++;
 
 		if (nr_reads >= max_nr_reads)
 			break;
 	}
 
+<<<<<<< HEAD
 	while ((bio = throtl_peek_queued(&sq->queued[WRITE])) &&
 	       tg_may_dispatch(tg, bio, NULL)) {
 
 		tg_dispatch_one_bio(tg, bio_data_dir(bio));
+=======
+	while ((bio = bio_list_peek(&tg->bio_lists[WRITE]))
+		&& tg_may_dispatch(td, tg, bio, NULL)) {
+
+		tg_dispatch_one_bio(td, tg, bio_data_dir(bio), bl);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		nr_writes++;
 
 		if (nr_writes >= max_nr_writes)
@@ -1140,6 +1504,7 @@ static int throtl_dispatch_tg(struct throtl_grp *tg)
 	return nr_reads + nr_writes;
 }
 
+<<<<<<< HEAD
 static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
 {
 	unsigned int nr_disp = 0;
@@ -1147,6 +1512,16 @@ static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
 	while (1) {
 		struct throtl_grp *tg = throtl_rb_first(parent_sq);
 		struct throtl_service_queue *sq = &tg->service_queue;
+=======
+static int throtl_select_dispatch(struct throtl_data *td, struct bio_list *bl)
+{
+	unsigned int nr_disp = 0;
+	struct throtl_grp *tg;
+	struct throtl_rb_root *st = &td->tg_service_tree;
+
+	while (1) {
+		tg = throtl_rb_first(st);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (!tg)
 			break;
@@ -1154,12 +1529,23 @@ static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
 		if (time_before(jiffies, tg->disptime))
 			break;
 
+<<<<<<< HEAD
 		throtl_dequeue_tg(tg);
 
 		nr_disp += throtl_dispatch_tg(tg);
 
 		if (sq->nr_queued[0] || sq->nr_queued[1])
 			tg_update_disptime(tg);
+=======
+		throtl_dequeue_tg(td, tg);
+
+		nr_disp += throtl_dispatch_tg(td, tg, bl);
+
+		if (tg->nr_queued[0] || tg->nr_queued[1]) {
+			tg_update_disptime(td, tg);
+			throtl_enqueue_tg(td, tg);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (nr_disp >= throtl_quantum)
 			break;
@@ -1168,6 +1554,7 @@ static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
 	return nr_disp;
 }
 
+<<<<<<< HEAD
 /**
  * throtl_pending_timer_fn - timer function for service_queue->pending_timer
  * @arg: the throtl_service_queue being serviced
@@ -1268,11 +1655,116 @@ void blk_throtl_dispatch_work_fn(struct work_struct *work)
 	spin_unlock_irq(q->queue_lock);
 
 	if (!bio_list_empty(&bio_list_on_stack)) {
+=======
+static void throtl_process_limit_change(struct throtl_data *td)
+{
+	struct request_queue *q = td->queue;
+	struct blkcg_gq *blkg, *n;
+
+	if (!td->limits_changed)
+		return;
+
+	xchg(&td->limits_changed, false);
+
+	throtl_log(td, "limits changed");
+
+	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
+		struct throtl_grp *tg = blkg_to_tg(blkg);
+
+		if (!tg->limits_changed)
+			continue;
+
+		if (!xchg(&tg->limits_changed, false))
+			continue;
+
+		throtl_log_tg(td, tg, "limit change rbps=%llu wbps=%llu"
+			" riops=%u wiops=%u", tg->bps[READ], tg->bps[WRITE],
+			tg->iops[READ], tg->iops[WRITE]);
+
+		/*
+		 * Restart the slices for both READ and WRITES. It
+		 * might happen that a group's limit are dropped
+		 * suddenly and we don't want to account recently
+		 * dispatched IO with new low rate
+		 */
+		throtl_start_new_slice(td, tg, 0);
+		throtl_start_new_slice(td, tg, 1);
+
+		if (throtl_tg_on_rr(tg))
+			tg_update_disptime(td, tg);
+	}
+}
+
+/* Dispatch throttled bios. Should be called without queue lock held. */
+static int throtl_dispatch(struct request_queue *q)
+{
+	struct throtl_data *td = q->td;
+	unsigned int nr_disp = 0;
+	struct bio_list bio_list_on_stack;
+	struct bio *bio;
+	struct blk_plug plug;
+
+	spin_lock_irq(q->queue_lock);
+
+	throtl_process_limit_change(td);
+
+	if (!total_nr_queued(td))
+		goto out;
+
+	bio_list_init(&bio_list_on_stack);
+
+	throtl_log(td, "dispatch nr_queued=%u read=%u write=%u",
+			total_nr_queued(td), td->nr_queued[READ],
+			td->nr_queued[WRITE]);
+
+	nr_disp = throtl_select_dispatch(td, &bio_list_on_stack);
+
+	if (nr_disp)
+		throtl_log(td, "bios disp=%u", nr_disp);
+
+	throtl_schedule_next_dispatch(td);
+out:
+	spin_unlock_irq(q->queue_lock);
+
+	/*
+	 * If we dispatched some requests, unplug the queue to make sure
+	 * immediate dispatch
+	 */
+	if (nr_disp) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		blk_start_plug(&plug);
 		while((bio = bio_list_pop(&bio_list_on_stack)))
 			generic_make_request(bio);
 		blk_finish_plug(&plug);
 	}
+<<<<<<< HEAD
+=======
+	return nr_disp;
+}
+
+void blk_throtl_work(struct work_struct *work)
+{
+	struct throtl_data *td = container_of(work, struct throtl_data,
+					throtl_work.work);
+	struct request_queue *q = td->queue;
+
+	throtl_dispatch(q);
+}
+
+/* Call with queue lock held */
+static void
+throtl_schedule_delayed_work(struct throtl_data *td, unsigned long delay)
+{
+
+	struct delayed_work *dwork = &td->throtl_work;
+
+	/* schedule work if limits changed even if no bio is queued */
+	if (total_nr_queued(td) || td->limits_changed) {
+		mod_delayed_work(kthrotld_workqueue, dwork, delay);
+		throtl_log(td, "schedule work. delay=%lu jiffies=%lu",
+				delay, jiffies);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static u64 tg_prfill_cpu_rwstat(struct seq_file *sf,
@@ -1282,9 +1774,12 @@ static u64 tg_prfill_cpu_rwstat(struct seq_file *sf,
 	struct blkg_rwstat rwstat = { }, tmp;
 	int i, cpu;
 
+<<<<<<< HEAD
 	if (tg->stats_cpu == NULL)
 		return 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for_each_possible_cpu(cpu) {
 		struct tg_stats_cpu *sc = per_cpu_ptr(tg->stats_cpu, cpu);
 
@@ -1350,9 +1845,13 @@ static int tg_set_conf(struct cgroup *cgrp, struct cftype *cft, const char *buf,
 	struct blkcg *blkcg = cgroup_to_blkcg(cgrp);
 	struct blkg_conf_ctx ctx;
 	struct throtl_grp *tg;
+<<<<<<< HEAD
 	struct throtl_service_queue *sq;
 	struct blkcg_gq *blkg;
 	struct cgroup *pos_cgrp;
+=======
+	struct throtl_data *td;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret;
 
 	ret = blkg_conf_prep(blkcg, &blkcg_policy_throtl, buf, &ctx);
@@ -1360,7 +1859,11 @@ static int tg_set_conf(struct cgroup *cgrp, struct cftype *cft, const char *buf,
 		return ret;
 
 	tg = blkg_to_tg(ctx.blkg);
+<<<<<<< HEAD
 	sq = &tg->service_queue;
+=======
+	td = ctx.blkg->q->td;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!ctx.v)
 		ctx.v = -1;
@@ -1370,6 +1873,7 @@ static int tg_set_conf(struct cgroup *cgrp, struct cftype *cft, const char *buf,
 	else
 		*(unsigned int *)((void *)tg + cft->private) = ctx.v;
 
+<<<<<<< HEAD
 	throtl_log(&tg->service_queue,
 		   "limit change rbps=%llu wbps=%llu riops=%u wiops=%u",
 		   tg->bps[READ], tg->bps[WRITE],
@@ -1401,6 +1905,12 @@ static int tg_set_conf(struct cgroup *cgrp, struct cftype *cft, const char *buf,
 		tg_update_disptime(tg);
 		throtl_schedule_next_dispatch(sq->parent_sq, true);
 	}
+=======
+	/* XXX: we don't need the following deferred processing */
+	xchg(&tg->limits_changed, true);
+	xchg(&td->limits_changed, true);
+	throtl_schedule_delayed_work(td, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	blkg_conf_finish(&ctx);
 	return 0;
@@ -1464,7 +1974,11 @@ static void throtl_shutdown_wq(struct request_queue *q)
 {
 	struct throtl_data *td = q->td;
 
+<<<<<<< HEAD
 	cancel_work_sync(&td->dispatch_work);
+=======
+	cancel_delayed_work_sync(&td->throtl_work);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct blkcg_policy blkcg_policy_throtl = {
@@ -1472,7 +1986,10 @@ static struct blkcg_policy blkcg_policy_throtl = {
 	.cftypes		= throtl_files,
 
 	.pd_init_fn		= throtl_pd_init,
+<<<<<<< HEAD
 	.pd_online_fn		= throtl_pd_online,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.pd_exit_fn		= throtl_pd_exit,
 	.pd_reset_stats_fn	= throtl_pd_reset_stats,
 };
@@ -1480,6 +1997,7 @@ static struct blkcg_policy blkcg_policy_throtl = {
 bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 {
 	struct throtl_data *td = q->td;
+<<<<<<< HEAD
 	struct throtl_qnode *qn = NULL;
 	struct throtl_grp *tg;
 	struct throtl_service_queue *sq;
@@ -1490,6 +2008,17 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 	/* see throtl_charge_bio() */
 	if (bio->bi_rw & REQ_THROTTLED)
 		goto out;
+=======
+	struct throtl_grp *tg;
+	bool rw = bio_data_dir(bio), update_disptime = true;
+	struct blkcg *blkcg;
+	bool throttled = false;
+
+	if (bio->bi_rw & REQ_THROTTLED) {
+		bio->bi_rw &= ~REQ_THROTTLED;
+		goto out;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * A throtl_grp pointer retrieved under rcu can be used to access
@@ -1500,7 +2029,11 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 	blkcg = bio_blkcg(bio);
 	tg = throtl_lookup_tg(td, blkcg);
 	if (tg) {
+<<<<<<< HEAD
 		if (!tg->has_rules[rw]) {
+=======
+		if (tg_no_rule_group(tg, rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			throtl_update_dispatch_stats(tg_to_blkg(tg),
 						     bio->bi_size, bio->bi_rw);
 			goto out_unlock_rcu;
@@ -1516,6 +2049,7 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 	if (unlikely(!tg))
 		goto out_unlock;
 
+<<<<<<< HEAD
 	sq = &tg->service_queue;
 
 	while (true) {
@@ -1528,6 +2062,20 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 			break;
 
 		/* within limits, let's charge and dispatch directly */
+=======
+	if (tg->nr_queued[rw]) {
+		/*
+		 * There is already another bio queued in same dir. No
+		 * need to update dispatch time.
+		 */
+		update_disptime = false;
+		goto queue_bio;
+
+	}
+
+	/* Bio is with-in rate limit of group */
+	if (tg_may_dispatch(td, tg, bio, NULL)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		throtl_charge_bio(tg, bio);
 
 		/*
@@ -1541,6 +2089,7 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 		 *
 		 * So keep on trimming slice even if bio is not queued.
 		 */
+<<<<<<< HEAD
 		throtl_trim_slice(tg, rw);
 
 		/*
@@ -1576,6 +2125,27 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 	if (tg->flags & THROTL_TG_WAS_EMPTY) {
 		tg_update_disptime(tg);
 		throtl_schedule_next_dispatch(tg->service_queue.parent_sq, true);
+=======
+		throtl_trim_slice(td, tg, rw);
+		goto out_unlock;
+	}
+
+queue_bio:
+	throtl_log_tg(td, tg, "[%c] bio. bdisp=%llu sz=%u bps=%llu"
+			" iodisp=%u iops=%u queued=%d/%d",
+			rw == READ ? 'R' : 'W',
+			tg->bytes_disp[rw], bio->bi_size, tg->bps[rw],
+			tg->io_disp[rw], tg->iops[rw],
+			tg->nr_queued[READ], tg->nr_queued[WRITE]);
+
+	bio_associate_current(bio);
+	throtl_add_bio_tg(q->td, tg, bio);
+	throttled = true;
+
+	if (update_disptime) {
+		tg_update_disptime(td, tg);
+		throtl_schedule_next_dispatch(td);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 out_unlock:
@@ -1583,6 +2153,7 @@ out_unlock:
 out_unlock_rcu:
 	rcu_read_unlock();
 out:
+<<<<<<< HEAD
 	/*
 	 * As multiple blk-throtls may stack in the same issue path, we
 	 * don't want bios to leave with the flag set.  Clear the flag if
@@ -1615,6 +2186,11 @@ static void tg_drain_bios(struct throtl_service_queue *parent_sq)
 	}
 }
 
+=======
+	return throttled;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * blk_throtl_drain - drain throttled bios
  * @q: request_queue to drain throttled bios for
@@ -1625,6 +2201,7 @@ void blk_throtl_drain(struct request_queue *q)
 	__releases(q->queue_lock) __acquires(q->queue_lock)
 {
 	struct throtl_data *td = q->td;
+<<<<<<< HEAD
 	struct blkcg_gq *blkg;
 	struct cgroup *pos_cgrp;
 	struct bio *bio;
@@ -1655,6 +2232,29 @@ void blk_throtl_drain(struct request_queue *q)
 		while ((bio = throtl_pop_queued(&td->service_queue.queued[rw],
 						NULL)))
 			generic_make_request(bio);
+=======
+	struct throtl_rb_root *st = &td->tg_service_tree;
+	struct throtl_grp *tg;
+	struct bio_list bl;
+	struct bio *bio;
+
+	queue_lockdep_assert_held(q);
+
+	bio_list_init(&bl);
+
+	while ((tg = throtl_rb_first(st))) {
+		throtl_dequeue_tg(td, tg);
+
+		while ((bio = bio_list_peek(&tg->bio_lists[READ])))
+			tg_dispatch_one_bio(td, tg, bio_data_dir(bio), &bl);
+		while ((bio = bio_list_peek(&tg->bio_lists[WRITE])))
+			tg_dispatch_one_bio(td, tg, bio_data_dir(bio), &bl);
+	}
+	spin_unlock_irq(q->queue_lock);
+
+	while ((bio = bio_list_pop(&bl)))
+		generic_make_request(bio);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_lock_irq(q->queue_lock);
 }
@@ -1668,8 +2268,14 @@ int blk_throtl_init(struct request_queue *q)
 	if (!td)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	INIT_WORK(&td->dispatch_work, blk_throtl_dispatch_work_fn);
 	throtl_service_queue_init(&td->service_queue, NULL);
+=======
+	td->tg_service_tree = THROTL_RB_ROOT;
+	td->limits_changed = false;
+	INIT_DELAYED_WORK(&td->throtl_work, blk_throtl_work);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	q->td = td;
 	td->queue = q;

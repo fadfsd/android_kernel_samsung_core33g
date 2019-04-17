@@ -1043,6 +1043,15 @@ static const struct inode_operations vfat_dir_inode_operations = {
 	.rename		= vfat_rename,
 	.setattr	= fat_setattr,
 	.getattr	= fat_getattr,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_FAT_VIRTUAL_XATTR
+	.setxattr	= fat_setxattr,
+	.getxattr	= fat_getxattr,
+	.listxattr	= fat_listxattr,
+	.removexattr	= fat_removexattr,
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static void setup(struct super_block *sb)

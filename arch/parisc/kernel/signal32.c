@@ -320,7 +320,11 @@ copy_siginfo_from_user32 (siginfo_t *to, compat_siginfo_t __user *from)
 }
 
 int
+<<<<<<< HEAD
 copy_siginfo_to_user32 (compat_siginfo_t __user *to, const siginfo_t *from)
+=======
+copy_siginfo_to_user32 (compat_siginfo_t __user *to, siginfo_t *from)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	compat_uptr_t addr;
 	compat_int_t val;

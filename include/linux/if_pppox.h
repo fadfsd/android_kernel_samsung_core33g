@@ -41,6 +41,29 @@ struct pptp_opt {
 	u32 seq_sent, seq_recv;
 	int ppp_flags;
 };
+<<<<<<< HEAD
+=======
+
+struct pppolac_opt {
+	__u32		local;
+	__u32		remote;
+	__u32		recv_sequence;
+	__u32		xmit_sequence;
+	atomic_t	sequencing;
+	int		(*backlog_rcv)(struct sock *sk_udp, struct sk_buff *skb);
+};
+
+struct pppopns_opt {
+	__u16		local;
+	__u16		remote;
+	__u32		recv_sequence;
+	__u32		xmit_sequence;
+	void		(*data_ready)(struct sock *sk_raw, int length);
+	int		(*backlog_rcv)(struct sock *sk_raw, struct sk_buff *skb);
+	int 		ppp_flags;
+};
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <net/sock.h>
 
 struct pppox_sock {
@@ -51,7 +74,15 @@ struct pppox_sock {
 	union {
 		struct pppoe_opt pppoe;
 		struct pptp_opt  pptp;
+<<<<<<< HEAD
 	} proto;
+=======
+		struct pppolac_opt lac;
+		struct pppopns_opt pns;
+	} proto;
+	struct timer_list recv_queue_timer;
+	spinlock_t recv_queue_lock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__be16			num;
 };
 #define pppoe_dev	proto.pppoe.dev

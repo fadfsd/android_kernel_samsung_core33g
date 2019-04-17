@@ -34,7 +34,11 @@ static void *alloc_fdmem(size_t size)
 	 * vmalloc() if the allocation size will be considered "large" by the VM.
 	 */
 	if (size <= (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER)) {
+<<<<<<< HEAD
 		void *data = kmalloc(size, GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY);
+=======
+		void *data = kmalloc(size, GFP_KERNEL|__GFP_NOWARN);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (data != NULL)
 			return data;
 	}
@@ -58,9 +62,12 @@ static void free_fdtable_rcu(struct rcu_head *rcu)
 	__free_fdtable(container_of(rcu, struct fdtable, rcu));
 }
 
+<<<<<<< HEAD
 #define BITBIT_NR(nr)	BITS_TO_LONGS(BITS_TO_LONGS(nr))
 #define BITBIT_SIZE(nr)	(BITBIT_NR(nr) * sizeof(long))
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Expand the fdset in the files_struct.  Called with the files spinlock
  * held for write.
@@ -82,11 +89,14 @@ static void copy_fdtable(struct fdtable *nfdt, struct fdtable *ofdt)
 	memset((char *)(nfdt->open_fds) + cpy, 0, set);
 	memcpy(nfdt->close_on_exec, ofdt->close_on_exec, cpy);
 	memset((char *)(nfdt->close_on_exec) + cpy, 0, set);
+<<<<<<< HEAD
 
 	cpy = BITBIT_SIZE(ofdt->max_fds);
 	set = BITBIT_SIZE(nfdt->max_fds) - cpy;
 	memcpy(nfdt->full_fds_bits, ofdt->full_fds_bits, cpy);
 	memset(cpy+(char *)nfdt->full_fds_bits, 0, set);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct fdtable * alloc_fdtable(unsigned int nr)
@@ -125,14 +135,21 @@ static struct fdtable * alloc_fdtable(unsigned int nr)
 	fdt->fd = data;
 
 	data = alloc_fdmem(max_t(size_t,
+<<<<<<< HEAD
 				 2 * nr / BITS_PER_BYTE + BITBIT_SIZE(nr), L1_CACHE_BYTES));
+=======
+				 2 * nr / BITS_PER_BYTE, L1_CACHE_BYTES));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!data)
 		goto out_arr;
 	fdt->open_fds = data;
 	data += nr / BITS_PER_BYTE;
 	fdt->close_on_exec = data;
+<<<<<<< HEAD
 	data += nr / BITS_PER_BYTE;
 	fdt->full_fds_bits = data;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return fdt;
 
@@ -221,6 +238,7 @@ static inline void __set_close_on_exec(int fd, struct fdtable *fdt)
 
 static inline void __clear_close_on_exec(int fd, struct fdtable *fdt)
 {
+<<<<<<< HEAD
 	if (test_bit(fd, fdt->close_on_exec))
 		__clear_bit(fd, fdt->close_on_exec);
 }
@@ -237,6 +255,19 @@ static inline void __clear_open_fd(unsigned int fd, struct fdtable *fdt)
 {
 	__clear_bit(fd, fdt->open_fds);
 	__clear_bit(fd / BITS_PER_LONG, fdt->full_fds_bits);
+=======
+	__clear_bit(fd, fdt->close_on_exec);
+}
+
+static inline void __set_open_fd(int fd, struct fdtable *fdt)
+{
+	__set_bit(fd, fdt->open_fds);
+}
+
+static inline void __clear_open_fd(int fd, struct fdtable *fdt)
+{
+	__clear_bit(fd, fdt->open_fds);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int count_open_files(struct fdtable *fdt)
@@ -278,7 +309,10 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
 	new_fdt->max_fds = NR_OPEN_DEFAULT;
 	new_fdt->close_on_exec = newf->close_on_exec_init;
 	new_fdt->open_fds = newf->open_fds_init;
+<<<<<<< HEAD
 	new_fdt->full_fds_bits = newf->full_fds_bits_init;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	new_fdt->fd = &newf->fd_array[0];
 
 	spin_lock(&oldf->file_lock);
@@ -322,7 +356,10 @@ struct files_struct *dup_fd(struct files_struct *oldf, int *errorp)
 
 	memcpy(new_fdt->open_fds, old_fdt->open_fds, open_files / 8);
 	memcpy(new_fdt->close_on_exec, old_fdt->close_on_exec, open_files / 8);
+<<<<<<< HEAD
 	memcpy(new_fdt->full_fds_bits, old_fdt->full_fds_bits, BITBIT_SIZE(open_files));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	for (i = open_files; i != 0; i--) {
 		struct file *f = *old_fds++;
@@ -468,11 +505,15 @@ struct files_struct init_files = {
 		.fd		= &init_files.fd_array[0],
 		.close_on_exec	= init_files.close_on_exec_init,
 		.open_fds	= init_files.open_fds_init,
+<<<<<<< HEAD
 		.full_fds_bits	= init_files.full_fds_bits_init,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 	.file_lock	= __SPIN_LOCK_UNLOCKED(init_files.file_lock),
 };
 
+<<<<<<< HEAD
 static unsigned long find_next_fd(struct fdtable *fdt, unsigned long start)
 {
 	unsigned long maxfd = fdt->max_fds;
@@ -487,6 +528,8 @@ static unsigned long find_next_fd(struct fdtable *fdt, unsigned long start)
 	return find_next_zero_bit(fdt->open_fds, maxfd, start);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * allocate a file descriptor, mark it busy.
  */
@@ -505,7 +548,11 @@ repeat:
 		fd = files->next_fd;
 
 	if (fd < fdt->max_fds)
+<<<<<<< HEAD
 		fd = find_next_fd(fdt, fd);
+=======
+		fd = find_next_zero_bit(fdt->open_fds, fdt->max_fds, fd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * N.B. For clone tasks sharing a files structure, this test

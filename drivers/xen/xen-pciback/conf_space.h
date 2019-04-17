@@ -64,8 +64,11 @@ struct config_field_entry {
 	void *data;
 };
 
+<<<<<<< HEAD
 extern bool permissive;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define OFFSET(cfg_entry) ((cfg_entry)->base_offset+(cfg_entry)->field->offset)
 
 /* Add fields to a device - the add_fields macro expects to get a pointer to

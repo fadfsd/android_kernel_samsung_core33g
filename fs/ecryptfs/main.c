@@ -39,6 +39,15 @@
 #include <linux/magic.h>
 #include "ecryptfs_kernel.h"
 
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_WTL_ENCRYPTION_FILTER
+#include <linux/ctype.h>
+#endif
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * Module parameter that defines the ecryptfs_verbosity level.
  */
@@ -177,6 +186,15 @@ enum { ecryptfs_opt_sig, ecryptfs_opt_ecryptfs_sig,
        ecryptfs_opt_fn_cipher, ecryptfs_opt_fn_cipher_key_bytes,
        ecryptfs_opt_unlink_sigs, ecryptfs_opt_mount_auth_tok_only,
        ecryptfs_opt_check_dev_ruid,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_WTL_ENCRYPTION_FILTER
+	ecryptfs_opt_enable_filtering,
+#endif
+#ifdef CONFIG_CRYPTO_FIPS
+	ecryptfs_opt_enable_cc,
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
        ecryptfs_opt_err };
 
 static const match_table_t tokens = {
@@ -194,6 +212,15 @@ static const match_table_t tokens = {
 	{ecryptfs_opt_unlink_sigs, "ecryptfs_unlink_sigs"},
 	{ecryptfs_opt_mount_auth_tok_only, "ecryptfs_mount_auth_tok_only"},
 	{ecryptfs_opt_check_dev_ruid, "ecryptfs_check_dev_ruid"},
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_WTL_ENCRYPTION_FILTER
+	{ecryptfs_opt_enable_filtering, "ecryptfs_enable_filtering=%s"},
+#endif
+#ifdef CONFIG_CRYPTO_FIPS
+	{ecryptfs_opt_enable_cc, "ecryptfs_enable_cc"},
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ecryptfs_opt_err, NULL}
 };
 
@@ -234,7 +261,61 @@ static void ecryptfs_init_mount_crypt_stat(
 	mutex_init(&mount_crypt_stat->global_auth_tok_list_mutex);
 	mount_crypt_stat->flags |= ECRYPTFS_MOUNT_CRYPT_STAT_INITIALIZED;
 }
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_WTL_ENCRYPTION_FILTER
+
+static int parse_enc_file_filter_parms(
+	struct ecryptfs_mount_crypt_stat *mcs, char *str)
+{
+	char *token = NULL;
+	int count = 0;
+	mcs->max_name_filter_len = 0;
+	while ((token = strsep(&str, "|")) != NULL) {
+		if (count >= ENC_NAME_FILTER_MAX_INSTANCE)
+			return -1;
+		strncpy(mcs->enc_filter_name[count++],
+			token, ENC_NAME_FILTER_MAX_LEN);
+		if (mcs->max_name_filter_len < strlen(token))
+			mcs->max_name_filter_len = strlen(token);
+	}
+	return 0;
+}
+
+
+static int parse_enc_ext_filter_parms(
+	struct ecryptfs_mount_crypt_stat *mcs, char *str)
+{
+	char *token = NULL;
+	int count = 0;
+	while ((token = strsep(&str, "|")) != NULL) {
+		if (count >= ENC_EXT_FILTER_MAX_INSTANCE)
+			return -1;
+		strncpy(mcs->enc_filter_ext[count++],
+			token, ENC_EXT_FILTER_MAX_LEN);
+	}
+	return 0;
+}
+
+static int parse_enc_filter_parms(
+	struct ecryptfs_mount_crypt_stat *mcs, char *str)
+{
+	char *token = NULL;
+	if (!strcmp("*", str)) {
+		mcs->flags |= ECRYPTFS_ENABLE_NEW_PASSTHROUGH;
+		return 0;
+	}
+	token = strsep(&str, ":");
+	if (token != NULL)
+		parse_enc_file_filter_parms(mcs, token);
+	token = strsep(&str, ":");
+	if (token != NULL)
+		parse_enc_ext_filter_parms(mcs, token);
+	return 0;
+}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * ecryptfs_parse_options
  * @sb: The ecryptfs super block
@@ -391,6 +472,27 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 		case ecryptfs_opt_check_dev_ruid:
 			*check_ruid = 1;
 			break;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_WTL_ENCRYPTION_FILTER
+		case ecryptfs_opt_enable_filtering:
+			rc = parse_enc_filter_parms(mount_crypt_stat,
+							 args[0].from);
+			if (rc) {
+				printk(KERN_ERR "Error attempting to parse encryption "
+							"filtering parameters.\n");
+				rc = -EINVAL;
+				goto out;
+			}
+			mount_crypt_stat->flags |= ECRYPTFS_ENABLE_FILTERING;
+			break;
+#endif
+#ifdef CONFIG_CRYPTO_FIPS
+		case ecryptfs_opt_enable_cc:
+            mount_crypt_stat->flags |= ECRYPTFS_ENABLE_CC;
+			break;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		case ecryptfs_opt_err:
 		default:
 			printk(KERN_WARNING
@@ -437,9 +539,22 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 	mutex_lock(&key_tfm_list_mutex);
 	if (!ecryptfs_tfm_exists(mount_crypt_stat->global_default_cipher_name,
 				 NULL)) {
+<<<<<<< HEAD
 		rc = ecryptfs_add_new_key_tfm(
 			NULL, mount_crypt_stat->global_default_cipher_name,
 			mount_crypt_stat->global_default_cipher_key_size);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+		rc = ecryptfs_add_new_key_tfm(
+			NULL, mount_crypt_stat->global_default_cipher_name,
+			mount_crypt_stat->global_default_cipher_key_size,
+			mount_crypt_stat->flags);
+#else
+		rc = ecryptfs_add_new_key_tfm(
+			NULL, mount_crypt_stat->global_default_cipher_name,
+			mount_crypt_stat->global_default_cipher_key_size);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (rc) {
 			printk(KERN_ERR "Error attempting to initialize "
 			       "cipher with name = [%s] and key size = [%td]; "
@@ -455,9 +570,22 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 	if ((mount_crypt_stat->flags & ECRYPTFS_GLOBAL_ENCRYPT_FILENAMES)
 	    && !ecryptfs_tfm_exists(
 		    mount_crypt_stat->global_default_fn_cipher_name, NULL)) {
+<<<<<<< HEAD
 		rc = ecryptfs_add_new_key_tfm(
 			NULL, mount_crypt_stat->global_default_fn_cipher_name,
 			mount_crypt_stat->global_default_fn_cipher_key_bytes);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+		rc = ecryptfs_add_new_key_tfm(
+			NULL, mount_crypt_stat->global_default_fn_cipher_name,
+			mount_crypt_stat->global_default_fn_cipher_key_bytes,
+			mount_crypt_stat->flags);
+#else
+		rc = ecryptfs_add_new_key_tfm(
+			NULL, mount_crypt_stat->global_default_fn_cipher_name,
+			mount_crypt_stat->global_default_fn_cipher_key_bytes);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (rc) {
 			printk(KERN_ERR "Error attempting to initialize "
 			       "cipher with name = [%s] and key size = [%td]; "
@@ -494,7 +622,10 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 {
 	struct super_block *s;
 	struct ecryptfs_sb_info *sbi;
+<<<<<<< HEAD
 	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct ecryptfs_dentry_info *root_info;
 	const char *err = "Getting sb failed";
 	struct inode *inode;
@@ -513,7 +644,10 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 		err = "Error parsing options";
 		goto out;
 	}
+<<<<<<< HEAD
 	mount_crypt_stat = &sbi->mount_crypt_stat;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	s = sget(fs_type, NULL, set_anon_super, flags, NULL);
 	if (IS_ERR(s)) {
@@ -560,6 +694,7 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 
 	/**
 	 * Set the POSIX ACL flag based on whether they're enabled in the lower
+<<<<<<< HEAD
 	 * mount.
 	 */
 	s->s_flags = flags & ~MS_POSIXACL;
@@ -573,6 +708,13 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 	if (path.dentry->d_sb->s_flags & MS_RDONLY ||
 	    mount_crypt_stat->flags & ECRYPTFS_ENCRYPTED_VIEW_ENABLED)
 		s->s_flags |= MS_RDONLY;
+=======
+	 * mount. Force a read-only eCryptfs mount if the lower mount is ro.
+	 * Allow a ro eCryptfs mount even when the lower mount is rw.
+	 */
+	s->s_flags = flags & ~MS_POSIXACL;
+	s->s_flags |= path.dentry->d_sb->s_flags & (MS_RDONLY | MS_POSIXACL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	s->s_maxbytes = path.dentry->d_sb->s_maxbytes;
 	s->s_blocksize = path.dentry->d_sb->s_blocksize;

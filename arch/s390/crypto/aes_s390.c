@@ -25,7 +25,10 @@
 #include <linux/err.h>
 #include <linux/module.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/spinlock.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include "crypt_s390.h"
 
 #define AES_KEYLEN_128		1
@@ -33,10 +36,17 @@
 #define AES_KEYLEN_256		4
 
 static u8 *ctrblk;
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(ctrblk_lock);
 static char keylen_flag;
 
 struct s390_aes_ctx {
+=======
+static char keylen_flag;
+
+struct s390_aes_ctx {
+	u8 iv[AES_BLOCK_SIZE];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u8 key[AES_MAX_KEY_SIZE];
 	long enc;
 	long dec;
@@ -57,7 +67,12 @@ struct pcc_param {
 
 struct s390_xts_ctx {
 	u8 key[32];
+<<<<<<< HEAD
 	u8 pcc_key[32];
+=======
+	u8 xts_param[16];
+	struct pcc_param pcc;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	long enc;
 	long dec;
 	int key_len;
@@ -441,6 +456,7 @@ static int cbc_aes_set_key(struct crypto_tfm *tfm, const u8 *in_key,
 	return aes_set_key(tfm, in_key, key_len);
 }
 
+<<<<<<< HEAD
 static int cbc_aes_crypt(struct blkcipher_desc *desc, long func,
 			 struct blkcipher_walk *walk)
 {
@@ -451,26 +467,45 @@ static int cbc_aes_crypt(struct blkcipher_desc *desc, long func,
 		u8 iv[AES_BLOCK_SIZE];
 		u8 key[AES_MAX_KEY_SIZE];
 	} param;
+=======
+static int cbc_aes_crypt(struct blkcipher_desc *desc, long func, void *param,
+			 struct blkcipher_walk *walk)
+{
+	int ret = blkcipher_walk_virt(desc, walk);
+	unsigned int nbytes = walk->nbytes;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!nbytes)
 		goto out;
 
+<<<<<<< HEAD
 	memcpy(param.iv, walk->iv, AES_BLOCK_SIZE);
 	memcpy(param.key, sctx->key, sctx->key_len);
+=======
+	memcpy(param, walk->iv, AES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	do {
 		/* only use complete blocks */
 		unsigned int n = nbytes & ~(AES_BLOCK_SIZE - 1);
 		u8 *out = walk->dst.virt.addr;
 		u8 *in = walk->src.virt.addr;
 
+<<<<<<< HEAD
 		ret = crypt_s390_kmc(func, &param, out, in, n);
+=======
+		ret = crypt_s390_kmc(func, param, out, in, n);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (ret < 0 || ret != n)
 			return -EIO;
 
 		nbytes &= AES_BLOCK_SIZE - 1;
 		ret = blkcipher_walk_done(desc, walk, nbytes);
 	} while ((nbytes = walk->nbytes));
+<<<<<<< HEAD
 	memcpy(walk->iv, param.iv, AES_BLOCK_SIZE);
+=======
+	memcpy(walk->iv, param, AES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 out:
 	return ret;
@@ -487,7 +522,11 @@ static int cbc_aes_encrypt(struct blkcipher_desc *desc,
 		return fallback_blk_enc(desc, dst, src, nbytes);
 
 	blkcipher_walk_init(&walk, dst, src, nbytes);
+<<<<<<< HEAD
 	return cbc_aes_crypt(desc, sctx->enc, &walk);
+=======
+	return cbc_aes_crypt(desc, sctx->enc, sctx->iv, &walk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int cbc_aes_decrypt(struct blkcipher_desc *desc,
@@ -501,7 +540,11 @@ static int cbc_aes_decrypt(struct blkcipher_desc *desc,
 		return fallback_blk_dec(desc, dst, src, nbytes);
 
 	blkcipher_walk_init(&walk, dst, src, nbytes);
+<<<<<<< HEAD
 	return cbc_aes_crypt(desc, sctx->dec, &walk);
+=======
+	return cbc_aes_crypt(desc, sctx->dec, sctx->iv, &walk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct crypto_alg cbc_aes_alg = {
@@ -592,7 +635,11 @@ static int xts_aes_set_key(struct crypto_tfm *tfm, const u8 *in_key,
 		xts_ctx->enc = KM_XTS_128_ENCRYPT;
 		xts_ctx->dec = KM_XTS_128_DECRYPT;
 		memcpy(xts_ctx->key + 16, in_key, 16);
+<<<<<<< HEAD
 		memcpy(xts_ctx->pcc_key + 16, in_key + 16, 16);
+=======
+		memcpy(xts_ctx->pcc.key + 16, in_key + 16, 16);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	case 48:
 		xts_ctx->enc = 0;
@@ -603,7 +650,11 @@ static int xts_aes_set_key(struct crypto_tfm *tfm, const u8 *in_key,
 		xts_ctx->enc = KM_XTS_256_ENCRYPT;
 		xts_ctx->dec = KM_XTS_256_DECRYPT;
 		memcpy(xts_ctx->key, in_key, 32);
+<<<<<<< HEAD
 		memcpy(xts_ctx->pcc_key, in_key + 32, 32);
+=======
+		memcpy(xts_ctx->pcc.key, in_key + 32, 32);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	default:
 		*flags |= CRYPTO_TFM_RES_BAD_KEY_LEN;
@@ -622,15 +673,20 @@ static int xts_aes_crypt(struct blkcipher_desc *desc, long func,
 	unsigned int nbytes = walk->nbytes;
 	unsigned int n;
 	u8 *in, *out;
+<<<<<<< HEAD
 	struct pcc_param pcc_param;
 	struct {
 		u8 key[32];
 		u8 init[16];
 	} xts_param;
+=======
+	void *param;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!nbytes)
 		goto out;
 
+<<<<<<< HEAD
 	memset(pcc_param.block, 0, sizeof(pcc_param.block));
 	memset(pcc_param.bit, 0, sizeof(pcc_param.bit));
 	memset(pcc_param.xts, 0, sizeof(pcc_param.xts));
@@ -642,13 +698,30 @@ static int xts_aes_crypt(struct blkcipher_desc *desc, long func,
 
 	memcpy(xts_param.key, xts_ctx->key, 32);
 	memcpy(xts_param.init, pcc_param.xts, 16);
+=======
+	memset(xts_ctx->pcc.block, 0, sizeof(xts_ctx->pcc.block));
+	memset(xts_ctx->pcc.bit, 0, sizeof(xts_ctx->pcc.bit));
+	memset(xts_ctx->pcc.xts, 0, sizeof(xts_ctx->pcc.xts));
+	memcpy(xts_ctx->pcc.tweak, walk->iv, sizeof(xts_ctx->pcc.tweak));
+	param = xts_ctx->pcc.key + offset;
+	ret = crypt_s390_pcc(func, param);
+	if (ret < 0)
+		return -EIO;
+
+	memcpy(xts_ctx->xts_param, xts_ctx->pcc.xts, 16);
+	param = xts_ctx->key + offset;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	do {
 		/* only use complete blocks */
 		n = nbytes & ~(AES_BLOCK_SIZE - 1);
 		out = walk->dst.virt.addr;
 		in = walk->src.virt.addr;
 
+<<<<<<< HEAD
 		ret = crypt_s390_km(func, &xts_param.key[offset], out, in, n);
+=======
+		ret = crypt_s390_km(func, param, out, in, n);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (ret < 0 || ret != n)
 			return -EIO;
 
@@ -758,6 +831,7 @@ static int ctr_aes_set_key(struct crypto_tfm *tfm, const u8 *in_key,
 	return aes_set_key(tfm, in_key, key_len);
 }
 
+<<<<<<< HEAD
 static unsigned int __ctrblk_init(u8 *ctrptr, unsigned int nbytes)
 {
 	unsigned int i, n;
@@ -772,25 +846,38 @@ static unsigned int __ctrblk_init(u8 *ctrptr, unsigned int nbytes)
 	return n;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int ctr_aes_crypt(struct blkcipher_desc *desc, long func,
 			 struct s390_aes_ctx *sctx, struct blkcipher_walk *walk)
 {
 	int ret = blkcipher_walk_virt_block(desc, walk, AES_BLOCK_SIZE);
+<<<<<<< HEAD
 	unsigned int n, nbytes;
 	u8 buf[AES_BLOCK_SIZE], ctrbuf[AES_BLOCK_SIZE];
 	u8 *out, *in, *ctrptr = ctrbuf;
+=======
+	unsigned int i, n, nbytes;
+	u8 buf[AES_BLOCK_SIZE];
+	u8 *out, *in;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!walk->nbytes)
 		return ret;
 
+<<<<<<< HEAD
 	if (spin_trylock(&ctrblk_lock))
 		ctrptr = ctrblk;
 
 	memcpy(ctrptr, walk->iv, AES_BLOCK_SIZE);
+=======
+	memcpy(ctrblk, walk->iv, AES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	while ((nbytes = walk->nbytes) >= AES_BLOCK_SIZE) {
 		out = walk->dst.virt.addr;
 		in = walk->src.virt.addr;
 		while (nbytes >= AES_BLOCK_SIZE) {
+<<<<<<< HEAD
 			if (ctrptr == ctrblk)
 				n = __ctrblk_init(ctrptr, nbytes);
 			else
@@ -806,12 +893,30 @@ static int ctr_aes_crypt(struct blkcipher_desc *desc, long func,
 				memcpy(ctrptr, ctrptr + n - AES_BLOCK_SIZE,
 				       AES_BLOCK_SIZE);
 			crypto_inc(ctrptr, AES_BLOCK_SIZE);
+=======
+			/* only use complete blocks, max. PAGE_SIZE */
+			n = (nbytes > PAGE_SIZE) ? PAGE_SIZE :
+						 nbytes & ~(AES_BLOCK_SIZE - 1);
+			for (i = AES_BLOCK_SIZE; i < n; i += AES_BLOCK_SIZE) {
+				memcpy(ctrblk + i, ctrblk + i - AES_BLOCK_SIZE,
+				       AES_BLOCK_SIZE);
+				crypto_inc(ctrblk + i, AES_BLOCK_SIZE);
+			}
+			ret = crypt_s390_kmctr(func, sctx->key, out, in, n, ctrblk);
+			if (ret < 0 || ret != n)
+				return -EIO;
+			if (n > AES_BLOCK_SIZE)
+				memcpy(ctrblk, ctrblk + n - AES_BLOCK_SIZE,
+				       AES_BLOCK_SIZE);
+			crypto_inc(ctrblk, AES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			out += n;
 			in += n;
 			nbytes -= n;
 		}
 		ret = blkcipher_walk_done(desc, walk, nbytes);
 	}
+<<<<<<< HEAD
 	if (ctrptr == ctrblk) {
 		if (nbytes)
 			memcpy(ctrbuf, ctrptr, AES_BLOCK_SIZE);
@@ -822,6 +927,8 @@ static int ctr_aes_crypt(struct blkcipher_desc *desc, long func,
 		if (!nbytes)
 			memcpy(walk->iv, ctrptr, AES_BLOCK_SIZE);
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * final block may be < AES_BLOCK_SIZE, copy only nbytes
 	 */
@@ -829,6 +936,7 @@ static int ctr_aes_crypt(struct blkcipher_desc *desc, long func,
 		out = walk->dst.virt.addr;
 		in = walk->src.virt.addr;
 		ret = crypt_s390_kmctr(func, sctx->key, buf, in,
+<<<<<<< HEAD
 				       AES_BLOCK_SIZE, ctrbuf);
 		if (ret < 0 || ret != AES_BLOCK_SIZE)
 			return -EIO;
@@ -838,6 +946,16 @@ static int ctr_aes_crypt(struct blkcipher_desc *desc, long func,
 		memcpy(walk->iv, ctrbuf, AES_BLOCK_SIZE);
 	}
 
+=======
+				       AES_BLOCK_SIZE, ctrblk);
+		if (ret < 0 || ret != AES_BLOCK_SIZE)
+			return -EIO;
+		memcpy(out, buf, nbytes);
+		crypto_inc(ctrblk, AES_BLOCK_SIZE);
+		ret = blkcipher_walk_done(desc, walk, 0);
+	}
+	memcpy(walk->iv, ctrblk, AES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 
@@ -970,7 +1088,11 @@ static void __exit aes_s390_fini(void)
 module_init(aes_s390_init);
 module_exit(aes_s390_fini);
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("aes-all");
+=======
+MODULE_ALIAS("aes-all");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 MODULE_DESCRIPTION("Rijndael (AES) Cipher Algorithm");
 MODULE_LICENSE("GPL");

@@ -4,9 +4,12 @@
 #include <linux/sched.h>
 #include <linux/device.h> /* for dev_warn */
 #include <linux/selection.h>
+<<<<<<< HEAD
 #include <linux/workqueue.h>
 #include <linux/tty.h>
 #include <asm/cmpxchg.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "speakup.h"
 
@@ -124,6 +127,7 @@ int speakup_set_selection(struct tty_struct *tty)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct speakup_paste_work {
 	struct work_struct work;
 	struct tty_struct *tty;
@@ -142,20 +146,41 @@ static void __speakup_paste_selection(struct work_struct *work)
 	ld = tty_ldisc_ref_wait(tty);
 
 	/* FIXME: this is completely unsafe */
+=======
+/* TODO: move to some helper thread, probably.  That'd fix having to check for
+ * in_atomic().  */
+int speakup_paste_selection(struct tty_struct *tty)
+{
+	struct vc_data *vc = (struct vc_data *) tty->driver_data;
+	int pasted = 0, count;
+	DECLARE_WAITQUEUE(wait, current);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	add_wait_queue(&vc->paste_wait, &wait);
 	while (sel_buffer && sel_buffer_lth > pasted) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (test_bit(TTY_THROTTLED, &tty->flags)) {
+<<<<<<< HEAD
+=======
+			if (in_atomic())
+				/* if we are in an interrupt handler, abort */
+				break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			schedule();
 			continue;
 		}
 		count = sel_buffer_lth - pasted;
 		count = min_t(int, count, tty->receive_room);
+<<<<<<< HEAD
 		ld->ops->receive_buf(tty, sel_buffer + pasted, NULL, count);
+=======
+		tty->ldisc->ops->receive_buf(tty, sel_buffer + pasted,
+			NULL, count);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		pasted += count;
 	}
 	remove_wait_queue(&vc->paste_wait, &wait);
 	current->state = TASK_RUNNING;
+<<<<<<< HEAD
 
 	tty_ldisc_deref(ld);
 	tty_kref_put(tty);
@@ -181,3 +206,8 @@ void speakup_cancel_paste(void)
 	cancel_work_sync(&speakup_paste_work.work);
 	tty_kref_put(speakup_paste_work.tty);
 }
+=======
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

@@ -508,12 +508,19 @@ static void giveback(struct pl022 *pl022)
 	pl022->cur_msg = NULL;
 	pl022->cur_transfer = NULL;
 	pl022->cur_chip = NULL;
+<<<<<<< HEAD
+=======
+	spi_finalize_current_message(pl022->master);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* disable the SPI/SSP operation */
 	writew((readw(SSP_CR1(pl022->virtbase)) &
 		(~SSP_CR1_MASK_SSE)), SSP_CR1(pl022->virtbase));
 
+<<<<<<< HEAD
 	spi_finalize_current_message(pl022->master);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -1080,7 +1087,11 @@ err_rxdesc:
 		     pl022->sgt_tx.nents, DMA_TO_DEVICE);
 err_tx_sgmap:
 	dma_unmap_sg(rxchan->device->dev, pl022->sgt_rx.sgl,
+<<<<<<< HEAD
 		     pl022->sgt_rx.nents, DMA_FROM_DEVICE);
+=======
+		     pl022->sgt_tx.nents, DMA_FROM_DEVICE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 err_rx_sgmap:
 	sg_free_table(&pl022->sgt_tx);
 err_alloc_tx_sg:

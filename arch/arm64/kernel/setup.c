@@ -41,7 +41,10 @@
 #include <linux/memblock.h>
 #include <linux/of_fdt.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/personality.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/cputype.h>
 #include <asm/elf.h>
@@ -98,6 +101,7 @@ void __init early_print(const char *str, ...)
 	printk("%s", buf);
 }
 
+<<<<<<< HEAD
 struct cpuinfo_arm64 {
 	struct cpu	cpu;
 	u32		reg_midr;
@@ -111,6 +115,8 @@ void cpuinfo_store_cpu(void)
 	info->reg_midr = read_cpuid_id();
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void __init setup_processor(void)
 {
 	struct cpu_info *cpu_info;
@@ -141,8 +147,11 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 	struct boot_param_header *devtree;
 	unsigned long dt_root;
 
+<<<<<<< HEAD
 	cpuinfo_store_cpu();
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Check we have a non-NULL DT pointer */
 	if (!dt_phys) {
 		early_print("\n"
@@ -306,12 +315,21 @@ static int __init arm64_device_init(void)
 }
 arch_initcall(arm64_device_init);
 
+<<<<<<< HEAD
+=======
+static DEFINE_PER_CPU(struct cpu, cpu_data);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int __init topology_init(void)
 {
 	int i;
 
 	for_each_possible_cpu(i) {
+<<<<<<< HEAD
 		struct cpu *cpu = &per_cpu(cpu_data.cpu, i);
+=======
+		struct cpu *cpu = &per_cpu(cpu_data, i);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		cpu->hotpluggable = 1;
 		register_cpu(cpu, i);
 	}
@@ -326,6 +344,7 @@ static const char *hwcap_str[] = {
 	NULL
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_COMPAT
 static const char *compat_hwcap_str[] = {
 	"swp",
@@ -361,6 +380,16 @@ static int c_show(struct seq_file *m, void *v)
 		struct cpuinfo_arm64 *cpuinfo = &per_cpu(cpu_data, i);
 		u32 midr = cpuinfo->reg_midr;
 
+=======
+static int c_show(struct seq_file *m, void *v)
+{
+	int i;
+
+	seq_printf(m, "Processor\t: %s rev %d (%s)\n",
+		   cpu_name, read_cpuid_id() & 15, ELF_PLATFORM);
+
+	for_each_online_cpu(i) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*
 		 * glibc reads /proc/cpuinfo to determine the number of
 		 * online processors, looking for lines beginning with
@@ -369,6 +398,7 @@ static int c_show(struct seq_file *m, void *v)
 #ifdef CONFIG_SMP
 		seq_printf(m, "processor\t: %d\n", i);
 #endif
+<<<<<<< HEAD
 		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n",
 			   loops_per_jiffy / (500000UL/HZ),
 			   loops_per_jiffy / (5000UL/HZ) % 100);
@@ -400,6 +430,30 @@ static int c_show(struct seq_file *m, void *v)
 		seq_printf(m, "CPU revision\t: %d\n\n", (midr & 0xf));
 	}
 
+=======
+		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n\n",
+			   loops_per_jiffy / (500000UL/HZ),
+			   loops_per_jiffy / (5000UL/HZ) % 100);
+	}
+
+	/* dump out the processor features */
+	seq_puts(m, "Features\t: ");
+
+	for (i = 0; hwcap_str[i]; i++)
+		if (elf_hwcap & (1 << i))
+			seq_printf(m, "%s ", hwcap_str[i]);
+
+	seq_printf(m, "\nCPU implementer\t: 0x%02x\n", read_cpuid_id() >> 24);
+	seq_printf(m, "CPU architecture: AArch64\n");
+	seq_printf(m, "CPU variant\t: 0x%x\n", (read_cpuid_id() >> 20) & 15);
+	seq_printf(m, "CPU part\t: 0x%03x\n", (read_cpuid_id() >> 4) & 0xfff);
+	seq_printf(m, "CPU revision\t: %d\n", read_cpuid_id() & 15);
+
+	seq_puts(m, "\n");
+
+	seq_printf(m, "Hardware\t: %s\n", machine_name);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

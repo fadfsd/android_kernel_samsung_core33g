@@ -78,14 +78,20 @@ static size_t copy_in_kernel(size_t count, void __user *to,
  * contains the (negative) exception code.
  */
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static unsigned long follow_table(struct mm_struct *mm,
 				  unsigned long address, int write)
 {
 	unsigned long *table = (unsigned long *)__pa(mm->pgd);
 
+<<<<<<< HEAD
 	if (unlikely(address > mm->context.asce_limit - 1))
 		return -0x38UL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	switch (mm->context.asce_bits & _ASCE_TYPE_MASK) {
 	case _ASCE_TYPE_REGION1:
 		table = table + ((address >> 53) & 0x7ff);

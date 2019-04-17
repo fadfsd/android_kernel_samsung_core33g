@@ -39,7 +39,10 @@
 #include <linux/hw_breakpoint.h>
 #include <linux/mm_types.h>
 #include <linux/cgroup.h>
+<<<<<<< HEAD
 #include <linux/compat.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "internal.h"
 
@@ -166,6 +169,7 @@ int sysctl_perf_event_mlock __read_mostly = 512 + (PAGE_SIZE / 1024); /* 'free' 
 /*
  * max perf event sample rate
  */
+<<<<<<< HEAD
 #define DEFAULT_MAX_SAMPLE_RATE		100000
 #define DEFAULT_SAMPLE_PERIOD_NS	(NSEC_PER_SEC / DEFAULT_MAX_SAMPLE_RATE)
 #define DEFAULT_CPU_TIME_MAX_PERCENT	25
@@ -186,11 +190,18 @@ void update_perf_cpu_limits(void)
 	do_div(tmp, 100);
 	atomic_set(&perf_sample_allowed_ns, tmp);
 }
+=======
+#define DEFAULT_MAX_SAMPLE_RATE 100000
+int sysctl_perf_event_sample_rate __read_mostly = DEFAULT_MAX_SAMPLE_RATE;
+static int max_samples_per_tick __read_mostly =
+	DIV_ROUND_UP(DEFAULT_MAX_SAMPLE_RATE, HZ);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 int perf_proc_update_handler(struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp,
 		loff_t *ppos)
 {
+<<<<<<< HEAD
 	int ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
 
 	if (ret || !write)
@@ -209,16 +220,23 @@ int perf_cpu_time_max_percent_handler(struct ctl_table *table, int write,
 				void __user *buffer, size_t *lenp,
 				loff_t *ppos)
 {
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret = proc_dointvec(table, write, buffer, lenp, ppos);
 
 	if (ret || !write)
 		return ret;
 
+<<<<<<< HEAD
 	update_perf_cpu_limits();
+=======
+	max_samples_per_tick = DIV_ROUND_UP(sysctl_perf_event_sample_rate, HZ);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * perf samples are done in some very critical code paths (NMIs).
  * If they take too much CPU time, the system can lock up and not
@@ -269,6 +287,8 @@ void perf_sample_event_took(u64 sample_len_ns)
 	update_perf_cpu_limits();
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static atomic64_t perf_event_id;
 
 static void cpu_ctx_sched_out(struct perf_cpu_context *cpuctx,
@@ -1322,11 +1342,14 @@ group_sched_out(struct perf_event *group_event,
 		cpuctx->exclusive = 0;
 }
 
+<<<<<<< HEAD
 struct remove_event {
 	struct perf_event *event;
 	bool detach_group;
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Cross CPU call to remove a performance event
  *
@@ -1335,15 +1358,22 @@ struct remove_event {
  */
 static int __perf_remove_from_context(void *info)
 {
+<<<<<<< HEAD
 	struct remove_event *re = info;
 	struct perf_event *event = re->event;
+=======
+	struct perf_event *event = info;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct perf_event_context *ctx = event->ctx;
 	struct perf_cpu_context *cpuctx = __get_cpu_context(ctx);
 
 	raw_spin_lock(&ctx->lock);
 	event_sched_out(event, cpuctx, ctx);
+<<<<<<< HEAD
 	if (re->detach_group)
 		perf_group_detach(event);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_del_event(event, ctx);
 	if (!ctx->nr_events && cpuctx->task_ctx == ctx) {
 		ctx->is_active = 0;
@@ -1368,6 +1398,7 @@ static int __perf_remove_from_context(void *info)
  * When called from perf_event_exit_task, it's OK because the
  * context has been detached from its task.
  */
+<<<<<<< HEAD
 static void perf_remove_from_context(struct perf_event *event, bool detach_group)
 {
 	struct perf_event_context *ctx = event->ctx;
@@ -1376,6 +1407,12 @@ static void perf_remove_from_context(struct perf_event *event, bool detach_group
 		.event = event,
 		.detach_group = detach_group,
 	};
+=======
+static void perf_remove_from_context(struct perf_event *event)
+{
+	struct perf_event_context *ctx = event->ctx;
+	struct task_struct *task = ctx->task;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	lockdep_assert_held(&ctx->mutex);
 
@@ -1384,12 +1421,20 @@ static void perf_remove_from_context(struct perf_event *event, bool detach_group
 		 * Per cpu events are removed via an smp call and
 		 * the removal is always successful.
 		 */
+<<<<<<< HEAD
 		cpu_function_call(event->cpu, __perf_remove_from_context, &re);
+=======
+		cpu_function_call(event->cpu, __perf_remove_from_context, event);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 	}
 
 retry:
+<<<<<<< HEAD
 	if (!task_function_call(task, __perf_remove_from_context, &re))
+=======
+	if (!task_function_call(task, __perf_remove_from_context, event))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 
 	raw_spin_lock_irq(&ctx->lock);
@@ -1399,11 +1444,14 @@ retry:
 	 */
 	if (ctx->is_active) {
 		raw_spin_unlock_irq(&ctx->lock);
+<<<<<<< HEAD
 		/*
 		 * Reload the task pointer, it might have been changed by
 		 * a concurrent perf_event_context_sched_out().
 		 */
 		task = ctx->task;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto retry;
 	}
 
@@ -1411,8 +1459,11 @@ retry:
 	 * Since the task isn't running, its safe to remove the event, us
 	 * holding the ctx->lock ensures the task won't get scheduled in.
 	 */
+<<<<<<< HEAD
 	if (detach_group)
 		perf_group_detach(event);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_del_event(event, ctx);
 	raw_spin_unlock_irq(&ctx->lock);
 }
@@ -1835,11 +1886,14 @@ retry:
 	 */
 	if (ctx->is_active) {
 		raw_spin_unlock_irq(&ctx->lock);
+<<<<<<< HEAD
 		/*
 		 * Reload the task pointer, it might have been changed by
 		 * a concurrent perf_event_context_sched_out().
 		 */
 		task = ctx->task;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto retry;
 	}
 
@@ -3124,7 +3178,14 @@ int perf_event_release_kernel(struct perf_event *event)
 	 *     to trigger the AB-BA case.
 	 */
 	mutex_lock_nested(&ctx->mutex, SINGLE_DEPTH_NESTING);
+<<<<<<< HEAD
 	perf_remove_from_context(event, true);
+=======
+	raw_spin_lock_irq(&ctx->lock);
+	perf_group_detach(event);
+	raw_spin_unlock_irq(&ctx->lock);
+	perf_remove_from_context(event);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&ctx->mutex);
 
 	free_event(event);
@@ -3491,6 +3552,7 @@ static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_COMPAT
 static long perf_compat_ioctl(struct file *file, unsigned int cmd,
 				unsigned long arg)
@@ -3510,6 +3572,8 @@ static long perf_compat_ioctl(struct file *file, unsigned int cmd,
 # define perf_compat_ioctl NULL
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int perf_event_task_enable(void)
 {
 	struct perf_event *event;
@@ -3981,7 +4045,11 @@ static const struct file_operations perf_fops = {
 	.read			= perf_read,
 	.poll			= perf_poll,
 	.unlocked_ioctl		= perf_ioctl,
+<<<<<<< HEAD
 	.compat_ioctl		= perf_compat_ioctl,
+=======
+	.compat_ioctl		= perf_ioctl,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.mmap			= perf_mmap,
 	.fasync			= perf_fasync,
 };
@@ -3993,6 +4061,7 @@ static const struct file_operations perf_fops = {
  * to user-space before waking everybody up.
  */
 
+<<<<<<< HEAD
 static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
 {
 	/* only the parent has fasync state */
@@ -4001,12 +4070,18 @@ static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
 	return &event->fasync;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void perf_event_wakeup(struct perf_event *event)
 {
 	ring_buffer_wakeup(event);
 
 	if (event->pending_kill) {
+<<<<<<< HEAD
 		kill_fasync(perf_event_fasync(event), SIGIO, event->pending_kill);
+=======
+		kill_fasync(&event->fasync, SIGIO, event->pending_kill);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		event->pending_kill = 0;
 	}
 }
@@ -4015,6 +4090,7 @@ static void perf_pending_event(struct irq_work *entry)
 {
 	struct perf_event *event = container_of(entry,
 			struct perf_event, pending);
+<<<<<<< HEAD
 	int rctx;
 
 	rctx = perf_swevent_get_recursion_context();
@@ -4022,6 +4098,8 @@ static void perf_pending_event(struct irq_work *entry)
 	 * If we 'fail' here, that's OK, it means recursion is already disabled
 	 * and we won't recurse 'further'.
 	 */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (event->pending_disable) {
 		event->pending_disable = 0;
@@ -4032,9 +4110,12 @@ static void perf_pending_event(struct irq_work *entry)
 		event->pending_wakeup = 0;
 		perf_event_wakeup(event);
 	}
+<<<<<<< HEAD
 
 	if (rctx >= 0)
 		perf_swevent_put_recursion_context(rctx);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -5161,7 +5242,11 @@ static int __perf_event_overflow(struct perf_event *event,
 	else
 		perf_event_output(event, data, regs);
 
+<<<<<<< HEAD
 	if (*perf_event_fasync(event) && event->pending_kill) {
+=======
+	if (event->fasync && event->pending_kill) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		event->pending_wakeup = 1;
 		irq_work_queue(&event->pending);
 	}
@@ -5187,9 +5272,12 @@ struct swevent_htable {
 
 	/* Recursion avoidance in each contexts */
 	int				recursion[PERF_NR_CONTEXTS];
+<<<<<<< HEAD
 
 	/* Keeps track of cpu being initialized/exited */
 	bool				online;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static DEFINE_PER_CPU(struct swevent_htable, swevent_htable);
@@ -5436,6 +5524,7 @@ static int perf_swevent_add(struct perf_event *event, int flags)
 	hwc->state = !(flags & PERF_EF_START);
 
 	head = find_swevent_head(swhash, event);
+<<<<<<< HEAD
 	if (!head) {
 		/*
 		 * We can race with cpu hotplug code. Do not
@@ -5444,6 +5533,10 @@ static int perf_swevent_add(struct perf_event *event, int flags)
 		WARN_ON_ONCE(swhash->online);
 		return -EINVAL;
 	}
+=======
+	if (WARN_ON_ONCE(!head))
+		return -EINVAL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	hlist_add_head_rcu(&event->hlist_entry, head);
 
@@ -6733,9 +6826,12 @@ SYSCALL_DEFINE5(perf_event_open,
 	if (attr.freq) {
 		if (attr.sample_freq > sysctl_perf_event_sample_rate)
 			return -EINVAL;
+<<<<<<< HEAD
 	} else {
 		if (attr.sample_period & (1ULL << 63))
 			return -EINVAL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/*
@@ -6882,7 +6978,11 @@ SYSCALL_DEFINE5(perf_event_open,
 		struct perf_event_context *gctx = group_leader->ctx;
 
 		mutex_lock(&gctx->mutex);
+<<<<<<< HEAD
 		perf_remove_from_context(group_leader, false);
+=======
+		perf_remove_from_context(group_leader);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/*
 		 * Removing from the context ends up with disabled
@@ -6892,7 +6992,11 @@ SYSCALL_DEFINE5(perf_event_open,
 		perf_event__state_init(group_leader);
 		list_for_each_entry(sibling, &group_leader->sibling_list,
 				    group_entry) {
+<<<<<<< HEAD
 			perf_remove_from_context(sibling, false);
+=======
+			perf_remove_from_context(sibling);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			perf_event__state_init(sibling);
 			put_ctx(gctx);
 		}
@@ -6905,11 +7009,19 @@ SYSCALL_DEFINE5(perf_event_open,
 
 	if (move_group) {
 		synchronize_rcu();
+<<<<<<< HEAD
 		perf_install_in_context(ctx, group_leader, group_leader->cpu);
 		get_ctx(ctx);
 		list_for_each_entry(sibling, &group_leader->sibling_list,
 				    group_entry) {
 			perf_install_in_context(ctx, sibling, sibling->cpu);
+=======
+		perf_install_in_context(ctx, group_leader, event->cpu);
+		get_ctx(ctx);
+		list_for_each_entry(sibling, &group_leader->sibling_list,
+				    group_entry) {
+			perf_install_in_context(ctx, sibling, event->cpu);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			get_ctx(ctx);
 		}
 	}
@@ -7022,7 +7134,11 @@ void perf_pmu_migrate_context(struct pmu *pmu, int src_cpu, int dst_cpu)
 	mutex_lock(&src_ctx->mutex);
 	list_for_each_entry_safe(event, tmp, &src_ctx->event_list,
 				 event_entry) {
+<<<<<<< HEAD
 		perf_remove_from_context(event, false);
+=======
+		perf_remove_from_context(event);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		put_ctx(src_ctx);
 		list_add(&event->event_entry, &events);
 	}
@@ -7082,7 +7198,17 @@ __perf_event_exit_task(struct perf_event *child_event,
 			 struct perf_event_context *child_ctx,
 			 struct task_struct *child)
 {
+<<<<<<< HEAD
 	perf_remove_from_context(child_event, !!child_event->parent);
+=======
+	if (child_event->parent) {
+		raw_spin_lock_irq(&child_ctx->lock);
+		perf_group_detach(child_event);
+		raw_spin_unlock_irq(&child_ctx->lock);
+	}
+
+	perf_remove_from_context(child_event);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * It can happen that the parent exits first, and has events
@@ -7520,10 +7646,15 @@ int perf_event_init_task(struct task_struct *child)
 
 	for_each_task_context_nr(ctxn) {
 		ret = perf_event_init_context(child, ctxn);
+<<<<<<< HEAD
 		if (ret) {
 			perf_event_free_task(child);
 			return ret;
 		}
+=======
+		if (ret)
+			return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	return 0;
@@ -7546,7 +7677,10 @@ static void __cpuinit perf_event_init_cpu(int cpu)
 	struct swevent_htable *swhash = &per_cpu(swevent_htable, cpu);
 
 	mutex_lock(&swhash->hlist_mutex);
+<<<<<<< HEAD
 	swhash->online = true;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (swhash->hlist_refcount > 0) {
 		struct swevent_hlist *hlist;
 
@@ -7569,6 +7703,7 @@ static void perf_pmu_rotate_stop(struct pmu *pmu)
 
 static void __perf_event_exit_context(void *__info)
 {
+<<<<<<< HEAD
 	struct remove_event re = { .detach_group = false };
 	struct perf_event_context *ctx = __info;
 
@@ -7578,6 +7713,17 @@ static void __perf_event_exit_context(void *__info)
 	list_for_each_entry_rcu(re.event, &ctx->event_list, event_entry)
 		__perf_remove_from_context(&re);
 	rcu_read_unlock();
+=======
+	struct perf_event_context *ctx = __info;
+	struct perf_event *event, *tmp;
+
+	perf_pmu_rotate_stop(ctx->pmu);
+
+	list_for_each_entry_safe(event, tmp, &ctx->pinned_groups, group_entry)
+		__perf_remove_from_context(event);
+	list_for_each_entry_safe(event, tmp, &ctx->flexible_groups, group_entry)
+		__perf_remove_from_context(event);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void perf_event_exit_cpu_context(int cpu)
@@ -7601,12 +7747,20 @@ static void perf_event_exit_cpu(int cpu)
 {
 	struct swevent_htable *swhash = &per_cpu(swevent_htable, cpu);
 
+<<<<<<< HEAD
 	perf_event_exit_cpu_context(cpu);
 
 	mutex_lock(&swhash->hlist_mutex);
 	swhash->online = false;
 	swevent_hlist_release(swhash);
 	mutex_unlock(&swhash->hlist_mutex);
+=======
+	mutex_lock(&swhash->hlist_mutex);
+	swevent_hlist_release(swhash);
+	mutex_unlock(&swhash->hlist_mutex);
+
+	perf_event_exit_cpu_context(cpu);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #else
 static inline void perf_event_exit_cpu(int cpu) { }

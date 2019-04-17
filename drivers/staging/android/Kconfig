@@ -8,6 +8,20 @@ config ANDROID
 
 if ANDROID
 
+<<<<<<< HEAD
+=======
+config ANDROID_BINDER_IPC
+	bool "Android Binder IPC Driver"
+	default n
+	---help---
+	  Binder is used in Android for both communication between processes,
+	  and remote method invocation.
+
+	  This means one Android process can call a method/routine in another
+	  Android process, using Binder to identify, invoke and pass arguments
+	  between said processes.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config ASHMEM
 	bool "Enable the Anonymous Shared Memory Subsystem"
 	default n
@@ -53,6 +67,9 @@ config ANDROID_LOW_MEMORY_KILLER
 	  Registers processes to be killed when memory is low
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config ANDROID_LOW_MEMORY_KILLER_AUTODETECT_OOM_ADJ_VALUES
 	bool "Android Low Memory Killer: detect oom_adj values"
 	depends on ANDROID_LOW_MEMORY_KILLER
@@ -85,6 +102,7 @@ config SEC_DEBUG_LMK_MEMINFO
 	help
 	  Show memory information when lmk kills process
 
+<<<<<<< HEAD
 config ANDROID_LMK_ADJ_RBTREE
 	bool "Use RBTREE for Android Low Memory Killer"
 	depends on ANDROID_LOW_MEMORY_KILLER
@@ -95,6 +113,8 @@ config ANDROID_LMK_ADJ_RBTREE
 
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config ANDROID_INTF_ALARM_DEV
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -131,6 +151,38 @@ config SW_SYNC_USER
 	  *WARNING* improper use of this can result in deadlocking kernel
 	  drivers from userspace.
 
+<<<<<<< HEAD
+=======
+config RUNTIME_COMPCACHE
+        bool "Android rtcc"
+        depends on ZRAM && ANDROID
+        default n
+        help
+          This option enables rtcc v3 for android
+
+config KSWAPD_NOSWAP
+        bool "Disable swap in kswapd"
+        depends on RUNTIME_COMPCACHE
+        default n
+        help
+          This option controls swap action in kswapd
+
+
+config RUNTIME_COMPCACHE
+	bool "Android rtcc v3"
+	depends on ZRAM && ANDROID
+	default n
+	help
+	  This option enables rtcc v3 for android
+
+config KSWAPD_NOSWAP
+	bool "Disable swap in kswapd"
+	depends on RUNTIME_COMPCACHE
+	default n
+	help
+	  This option controls swap action in kswapd
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endif # if ANDROID
 
 endmenu

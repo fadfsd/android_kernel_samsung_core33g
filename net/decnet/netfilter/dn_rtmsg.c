@@ -107,7 +107,11 @@ static inline void dnrmg_receive_user_skb(struct sk_buff *skb)
 	if (nlh->nlmsg_len < sizeof(*nlh) || skb->len < nlh->nlmsg_len)
 		return;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		RCV_SKB_FAIL(-EPERM);
 
 	/* Eventually we might send routing messages too */

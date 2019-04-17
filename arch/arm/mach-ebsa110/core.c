@@ -116,7 +116,11 @@ static void __init ebsa110_map_io(void)
 	iotable_init(ebsa110_io_desc, ARRAY_SIZE(ebsa110_io_desc));
 }
 
+<<<<<<< HEAD
 static void __iomem *ebsa110_ioremap_caller(phys_addr_t cookie, size_t size,
+=======
+static void __iomem *ebsa110_ioremap_caller(unsigned long cookie, size_t size,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					    unsigned int flags, void *caller)
 {
 	return (void __iomem *)cookie;

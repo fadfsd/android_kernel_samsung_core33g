@@ -154,7 +154,11 @@ unsigned long __init init_bootmem(unsigned long start, unsigned long pages)
  * down, but we are still initializing the system.  Pages are given directly
  * to the page allocator, no bootmem metadata is updated because it is gone.
  */
+<<<<<<< HEAD
 void free_bootmem_late(unsigned long physaddr, unsigned long size)
+=======
+void __init free_bootmem_late(unsigned long physaddr, unsigned long size)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned long cursor, end;
 
@@ -241,6 +245,7 @@ static unsigned long __init free_all_bootmem_core(bootmem_data_t *bdata)
 	return count;
 }
 
+<<<<<<< HEAD
 static int reset_managed_pages_done __initdata;
 
 static inline void __init reset_node_managed_pages(pg_data_t *pgdat)
@@ -261,6 +266,22 @@ void __init reset_all_zones_managed_pages(void)
 	for_each_online_pgdat(pgdat)
 		reset_node_managed_pages(pgdat);
 	reset_managed_pages_done = 1;
+=======
+static void reset_node_lowmem_managed_pages(pg_data_t *pgdat)
+{
+	struct zone *z;
+
+	/*
+	 * In free_area_init_core(), highmem zone's managed_pages is set to
+	 * present_pages, and bootmem allocator doesn't allocate from highmem
+	 * zones. So there's no need to recalculate managed_pages because all
+	 * highmem pages will be managed by the buddy system. Here highmem
+	 * zone also includes highmem movable zone.
+	 */
+	for (z = pgdat->node_zones; z < pgdat->node_zones + MAX_NR_ZONES; z++)
+		if (!is_highmem(z))
+			z->managed_pages = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -272,7 +293,11 @@ void __init reset_all_zones_managed_pages(void)
 unsigned long __init free_all_bootmem_node(pg_data_t *pgdat)
 {
 	register_page_bootmem_info_node(pgdat);
+<<<<<<< HEAD
 	reset_node_managed_pages(pgdat);
+=======
+	reset_node_lowmem_managed_pages(pgdat);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return free_all_bootmem_core(pgdat->bdata);
 }
 
@@ -285,8 +310,15 @@ unsigned long __init free_all_bootmem(void)
 {
 	unsigned long total_pages = 0;
 	bootmem_data_t *bdata;
+<<<<<<< HEAD
 
 	reset_all_zones_managed_pages();
+=======
+	struct pglist_data *pgdat;
+
+	for_each_online_pgdat(pgdat)
+		reset_node_lowmem_managed_pages(pgdat);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	list_for_each_entry(bdata, &bdata_list, list)
 		total_pages += free_all_bootmem_core(bdata);

@@ -711,7 +711,10 @@ static int pm860x_charger_probe(struct platform_device *pdev)
 	return 0;
 
 out_irq:
+<<<<<<< HEAD
 	power_supply_unregister(&info->usb);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	while (--i >= 0)
 		free_irq(info->irq[i], info);
 out:

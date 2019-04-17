@@ -312,7 +312,10 @@ struct sw_tx_bd {
 	u8		flags;
 /* Set on the first BD descriptor when there is a split BD */
 #define BNX2X_TSO_SPLIT_BD		(1<<0)
+<<<<<<< HEAD
 #define BNX2X_HAS_SECOND_PBD		(1<<1)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct sw_rx_page {

@@ -33,7 +33,11 @@ static int jffs2_rtime_compress(unsigned char *data_in,
 				unsigned char *cpage_out,
 				uint32_t *sourcelen, uint32_t *dstlen)
 {
+<<<<<<< HEAD
 	unsigned short positions[256];
+=======
+	short positions[256];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int outpos = 0;
 	int pos=0;
 
@@ -74,7 +78,11 @@ static int jffs2_rtime_decompress(unsigned char *data_in,
 				  unsigned char *cpage_out,
 				  uint32_t srclen, uint32_t destlen)
 {
+<<<<<<< HEAD
 	unsigned short positions[256];
+=======
+	short positions[256];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int outpos = 0;
 	int pos=0;
 

@@ -467,7 +467,10 @@ _STATIC(__after_prom_start)
 	mtctr	r8
 	bctr
 
+<<<<<<< HEAD
 .balign 8
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 p_end:	.llong	_end - _stext
 
 4:	/* Now copy the rest of the kernel up to _end */

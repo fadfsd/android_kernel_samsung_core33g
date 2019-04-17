@@ -89,7 +89,11 @@ static int crush_decode_tree_bucket(void **p, void *end,
 {
 	int j;
 	dout("crush_decode_tree_bucket %p to %p\n", *p, end);
+<<<<<<< HEAD
 	ceph_decode_8_safe(p, end, b->num_nodes, bad);
+=======
+	ceph_decode_32_safe(p, end, b->num_nodes, bad);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	b->node_weights = kcalloc(b->num_nodes, sizeof(u32), GFP_NOFS);
 	if (b->node_weights == NULL)
 		return -ENOMEM;

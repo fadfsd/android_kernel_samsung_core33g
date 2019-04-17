@@ -30,7 +30,11 @@
 #include <sound/compress_params.h>
 
 
+<<<<<<< HEAD
 #define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 2)
+=======
+#define SNDRV_COMPRESS_VERSION SNDRV_PROTOCOL_VERSION(0, 1, 1)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * struct snd_compressed_buffer: compressed buffer
  * @fragment_size: size of buffer fragment in bytes
@@ -67,8 +71,13 @@ struct snd_compr_params {
 struct snd_compr_tstamp {
 	__u32 byte_offset;
 	__u32 copied_total;
+<<<<<<< HEAD
 	__u32 pcm_frames;
 	__u32 pcm_io_frames;
+=======
+	snd_pcm_uframes_t pcm_frames;
+	snd_pcm_uframes_t pcm_io_frames;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__u32 sampling_rate;
 };
 
@@ -80,7 +89,11 @@ struct snd_compr_tstamp {
 struct snd_compr_avail {
 	__u64 avail;
 	struct snd_compr_tstamp tstamp;
+<<<<<<< HEAD
 } __attribute__((packed));
+=======
+};
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 enum snd_compr_direction {
 	SND_COMPRESS_PLAYBACK = 0,

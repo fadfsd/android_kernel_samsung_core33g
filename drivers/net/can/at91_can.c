@@ -1409,10 +1409,17 @@ static int at91_can_remove(struct platform_device *pdev)
 
 static const struct platform_device_id at91_can_id_table[] = {
 	{
+<<<<<<< HEAD
 		.name = "at91sam9x5_can",
 		.driver_data = (kernel_ulong_t)&at91_at91sam9x5_data,
 	}, {
 		.name = "at91_can",
+=======
+		.name = "at91_can",
+		.driver_data = (kernel_ulong_t)&at91_at91sam9x5_data,
+	}, {
+		.name = "at91sam9x5_can",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.driver_data = (kernel_ulong_t)&at91_at91sam9263_data,
 	}, {
 		/* sentinel */

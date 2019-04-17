@@ -72,6 +72,11 @@ source "drivers/staging/sep/Kconfig"
 
 source "drivers/staging/iio/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/staging/zram/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "drivers/staging/wlags49_h2/Kconfig"
 
 source "drivers/staging/wlags49_h25/Kconfig"
@@ -136,4 +141,9 @@ source "drivers/staging/netlogic/Kconfig"
 
 source "drivers/staging/dwc2/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/staging/vnswap/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endif # STAGING

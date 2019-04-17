@@ -1028,7 +1028,11 @@ static int set_pkeys(struct qib_devdata *dd, u8 port, u16 *pkeys)
 
 		event.event = IB_EVENT_PKEY_CHANGE;
 		event.device = &dd->verbs_dev.ibdev;
+<<<<<<< HEAD
 		event.element.port_num = port;
+=======
+		event.element.port_num = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ib_dispatch_event(&event);
 	}
 	return 0;

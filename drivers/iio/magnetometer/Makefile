@@ -1,4 +1,5 @@
 #
+<<<<<<< HEAD
 # Makefile for industrial I/O Magnetometer sensor drivers
 #
 
@@ -11,3 +12,10 @@ st_magn-$(CONFIG_IIO_BUFFER) += st_magn_buffer.o
 
 obj-$(CONFIG_IIO_ST_MAGN_I2C_3AXIS) += st_magn_i2c.o
 obj-$(CONFIG_IIO_ST_MAGN_SPI_3AXIS) += st_magn_spi.o
+=======
+# Makefile for the industrial I/O core.
+#
+
+obj-y += inv_compass/
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

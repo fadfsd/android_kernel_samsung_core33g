@@ -243,10 +243,14 @@ static int spidev_message(struct spidev_data *spidev,
 		k_tmp->len = u_tmp->len;
 
 		total += k_tmp->len;
+<<<<<<< HEAD
 		/* Check total length of transfers.  Also check each
 		 * transfer length to avoid arithmetic overflow.
 		 */
 		if (total > bufsiz || k_tmp->len > bufsiz) {
+=======
+		if (total > bufsiz) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			status = -EMSGSIZE;
 			goto done;
 		}

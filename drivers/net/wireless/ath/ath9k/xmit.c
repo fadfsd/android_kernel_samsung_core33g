@@ -1255,16 +1255,25 @@ void ath_tx_aggr_sleep(struct ieee80211_sta *sta, struct ath_softc *sc,
 	for (tidno = 0, tid = &an->tid[tidno];
 	     tidno < IEEE80211_NUM_TIDS; tidno++, tid++) {
 
+<<<<<<< HEAD
+=======
+		if (!tid->sched)
+			continue;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ac = tid->ac;
 		txq = ac->txq;
 
 		ath_txq_lock(sc, txq);
 
+<<<<<<< HEAD
 		if (!tid->sched) {
 			ath_txq_unlock(sc, txq);
 			continue;
 		}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		buffered = !skb_queue_empty(&tid->buf_q);
 
 		tid->sched = false;

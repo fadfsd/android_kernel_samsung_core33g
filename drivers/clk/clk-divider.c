@@ -87,7 +87,11 @@ static unsigned int _get_table_val(const struct clk_div_table *table,
 	return 0;
 }
 
+<<<<<<< HEAD
 static unsigned int _get_val(struct clk_divider *divider, unsigned int div)
+=======
+static unsigned int _get_val(struct clk_divider *divider, u8 div)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	if (divider->flags & CLK_DIVIDER_ONE_BASED)
 		return div;

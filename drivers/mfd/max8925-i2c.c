@@ -180,6 +180,7 @@ static int max8925_probe(struct i2c_client *client,
 	mutex_init(&chip->io_lock);
 
 	chip->rtc = i2c_new_dummy(chip->i2c->adapter, RTC_I2C_ADDR);
+<<<<<<< HEAD
 	if (!chip->rtc) {
 		dev_err(chip->dev, "Failed to allocate I2C device for RTC\n");
 		return -ENODEV;
@@ -192,6 +193,11 @@ static int max8925_probe(struct i2c_client *client,
 		i2c_unregister_device(chip->rtc);
 		return -ENODEV;
 	}
+=======
+	i2c_set_clientdata(chip->rtc, chip);
+
+	chip->adc = i2c_new_dummy(chip->i2c->adapter, ADC_I2C_ADDR);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	i2c_set_clientdata(chip->adc, chip);
 
 	device_init_wakeup(&client->dev, 1);

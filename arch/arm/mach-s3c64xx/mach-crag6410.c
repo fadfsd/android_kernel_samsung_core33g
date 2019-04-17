@@ -558,7 +558,10 @@ static struct wm831x_touch_pdata touch_pdata = {
 
 static struct wm831x_pdata crag_pmic_pdata = {
 	.wm831x_num = 1,
+<<<<<<< HEAD
 	.irq_base = BANFF_PMIC_IRQ_BASE,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.gpio_base = BANFF_PMIC_GPIO_BASE,
 	.soft_shutdown = true,
 

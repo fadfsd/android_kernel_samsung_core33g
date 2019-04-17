@@ -9,6 +9,10 @@
 enum alarmtimer_type {
 	ALARM_REALTIME,
 	ALARM_BOOTTIME,
+<<<<<<< HEAD
+=======
+	ALARM_POWEROFF,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ALARM_NUMTYPE,
 };
@@ -44,10 +48,20 @@ struct alarm {
 void alarm_init(struct alarm *alarm, enum alarmtimer_type type,
 		enum alarmtimer_restart (*function)(struct alarm *, ktime_t));
 int alarm_start(struct alarm *alarm, ktime_t start);
+<<<<<<< HEAD
+=======
+int alarm_start_relative(struct alarm *alarm, ktime_t start);
+void alarm_restart(struct alarm *alarm);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int alarm_try_to_cancel(struct alarm *alarm);
 int alarm_cancel(struct alarm *alarm);
 
 u64 alarm_forward(struct alarm *alarm, ktime_t now, ktime_t interval);
+<<<<<<< HEAD
+=======
+u64 alarm_forward_now(struct alarm *alarm, ktime_t interval);
+ktime_t alarm_expires_remaining(const struct alarm *alarm);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Provide way to access the rtc device being used by alarmtimers */
 struct rtc_device *alarmtimer_get_rtcdev(void);

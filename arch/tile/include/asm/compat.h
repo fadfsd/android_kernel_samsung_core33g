@@ -281,6 +281,10 @@ long compat_sys_pread64(unsigned int fd, char __user *ubuf, size_t count,
 			u32 dummy, u32 low, u32 high);
 long compat_sys_pwrite64(unsigned int fd, char __user *ubuf, size_t count,
 			 u32 dummy, u32 low, u32 high);
+<<<<<<< HEAD
+=======
+long compat_sys_lookup_dcookie(u32 low, u32 high, char __user *buf, size_t len);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 long compat_sys_sync_file_range2(int fd, unsigned int flags,
 				 u32 offset_lo, u32 offset_hi,
 				 u32 nbytes_lo, u32 nbytes_hi);

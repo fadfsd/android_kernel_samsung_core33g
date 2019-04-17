@@ -713,4 +713,7 @@ module_exit(vmac_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("VMAC hash algorithm");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("vmac");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

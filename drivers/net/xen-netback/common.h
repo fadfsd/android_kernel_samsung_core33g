@@ -88,7 +88,10 @@ struct xenvif {
 	unsigned long   credit_usec;
 	unsigned long   remaining_credit;
 	struct timer_list credit_timeout;
+<<<<<<< HEAD
 	u64 credit_window_start;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Statistics */
 	unsigned long rx_gso_checksum_fixup;
@@ -116,7 +119,10 @@ struct xenvif *xenvif_alloc(struct device *parent,
 int xenvif_connect(struct xenvif *vif, unsigned long tx_ring_ref,
 		   unsigned long rx_ring_ref, unsigned int evtchn);
 void xenvif_disconnect(struct xenvif *vif);
+<<<<<<< HEAD
 void xenvif_free(struct xenvif *vif);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void xenvif_get(struct xenvif *vif);
 void xenvif_put(struct xenvif *vif);

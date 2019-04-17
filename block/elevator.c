@@ -186,12 +186,15 @@ int elevator_init(struct request_queue *q, char *name)
 	struct elevator_type *e = NULL;
 	int err;
 
+<<<<<<< HEAD
 	/*
 	 * q->sysfs_lock must be held to provide mutual exclusion between
 	 * elevator_switch() and here.
 	 */
 	lockdep_assert_held(&q->sysfs_lock);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(q->elevator))
 		return 0;
 
@@ -575,6 +578,7 @@ void elv_requeue_request(struct request_queue *q, struct request *rq)
 	__elv_add_request(q, rq, ELEVATOR_INSERT_REQUEUE);
 }
 
+<<<<<<< HEAD
 /**
  * elv_reinsert_request() - Insert a request back to the scheduler
  * @q:		request queue where request should be inserted
@@ -610,6 +614,8 @@ int elv_reinsert_request(struct request_queue *q, struct request *rq)
 	return res;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void elv_drain_elevator(struct request_queue *q)
 {
 	static int printed;
@@ -786,11 +792,14 @@ void elv_completed_request(struct request_queue *q, struct request *rq)
 {
 	struct elevator_queue *e = q->elevator;
 
+<<<<<<< HEAD
 	if (rq->cmd_flags & REQ_URGENT) {
 		q->notified_urgent = false;
 		WARN_ON(!q->dispatched_urgent);
 		q->dispatched_urgent = false;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * request is released from the driver, io must be done
 	 */
@@ -866,8 +875,11 @@ int elv_register_queue(struct request_queue *q)
 		}
 		kobject_uevent(&e->kobj, KOBJ_ADD);
 		e->registered = 1;
+<<<<<<< HEAD
 		if (e->type->ops.elevator_registered_fn)
 			e->type->ops.elevator_registered_fn(q);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return error;
 }
@@ -1007,7 +1019,11 @@ fail_init:
 /*
  * Switch this queue to the given IO scheduler.
  */
+<<<<<<< HEAD
 static int __elevator_change(struct request_queue *q, const char *name)
+=======
+int elevator_change(struct request_queue *q, const char *name)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	char elevator_name[ELV_NAME_MAX];
 	struct elevator_type *e;
@@ -1029,6 +1045,7 @@ static int __elevator_change(struct request_queue *q, const char *name)
 
 	return elevator_switch(q, e);
 }
+<<<<<<< HEAD
 
 int elevator_change(struct request_queue *q, const char *name)
 {
@@ -1041,6 +1058,8 @@ int elevator_change(struct request_queue *q, const char *name)
 
 	return ret;
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 EXPORT_SYMBOL(elevator_change);
 
 ssize_t elv_iosched_store(struct request_queue *q, const char *name,
@@ -1051,7 +1070,11 @@ ssize_t elv_iosched_store(struct request_queue *q, const char *name,
 	if (!q->elevator)
 		return count;
 
+<<<<<<< HEAD
 	ret = __elevator_change(q, name);
+=======
+	ret = elevator_change(q, name);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!ret)
 		return count;
 

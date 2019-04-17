@@ -21,10 +21,17 @@ static void noop_merged_requests(struct request_queue *q, struct request *rq,
 static int noop_dispatch(struct request_queue *q, int force)
 {
 	struct noop_data *nd = q->elevator->elevator_data;
+<<<<<<< HEAD
 	struct request *rq;
 
 	rq = list_first_entry_or_null(&nd->queue, struct request, queuelist);
 	if (rq) {
+=======
+
+	if (!list_empty(&nd->queue)) {
+		struct request *rq;
+		rq = list_entry(nd->queue.next, struct request, queuelist);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		list_del_init(&rq->queuelist);
 		elv_dispatch_sort(q, rq);
 		return 1;
@@ -46,7 +53,11 @@ noop_former_request(struct request_queue *q, struct request *rq)
 
 	if (rq->queuelist.prev == &nd->queue)
 		return NULL;
+<<<<<<< HEAD
 	return list_prev_entry(rq, queuelist);
+=======
+	return list_entry(rq->queuelist.prev, struct request, queuelist);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct request *
@@ -56,7 +67,11 @@ noop_latter_request(struct request_queue *q, struct request *rq)
 
 	if (rq->queuelist.next == &nd->queue)
 		return NULL;
+<<<<<<< HEAD
 	return list_next_entry(rq, queuelist);
+=======
+	return list_entry(rq->queuelist.next, struct request, queuelist);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int noop_init_queue(struct request_queue *q, struct elevator_type *e)

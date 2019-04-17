@@ -177,9 +177,12 @@ sctp_chunk_length_valid(struct sctp_chunk *chunk,
 {
 	__u16 chunk_length = ntohs(chunk->chunk_hdr->length);
 
+<<<<<<< HEAD
 	/* Previously already marked? */
 	if (unlikely(chunk->pdiscard))
 		return 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(chunk_length < required_length))
 		return 0;
 
@@ -367,7 +370,11 @@ sctp_disposition_t sctp_sf_do_5_1B_init(struct net *net,
 
 	/* Verify the INIT chunk before processing it. */
 	err_chunk = NULL;
+<<<<<<< HEAD
 	if (!sctp_verify_init(net, ep, asoc, chunk->chunk_hdr->type,
+=======
+	if (!sctp_verify_init(net, asoc, chunk->chunk_hdr->type,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			      (sctp_init_chunk_t *)chunk->chunk_hdr, chunk,
 			      &err_chunk)) {
 		/* This chunk contains fatal error. It is to be discarded.
@@ -534,7 +541,11 @@ sctp_disposition_t sctp_sf_do_5_1C_ack(struct net *net,
 
 	/* Verify the INIT chunk before processing it. */
 	err_chunk = NULL;
+<<<<<<< HEAD
 	if (!sctp_verify_init(net, ep, asoc, chunk->chunk_hdr->type,
+=======
+	if (!sctp_verify_init(net, asoc, chunk->chunk_hdr->type,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			      (sctp_init_chunk_t *)chunk->chunk_hdr, chunk,
 			      &err_chunk)) {
 
@@ -768,12 +779,15 @@ sctp_disposition_t sctp_sf_do_5_1D_ce(struct net *net,
 		struct sctp_chunk auth;
 		sctp_ierror_t ret;
 
+<<<<<<< HEAD
 		/* Make sure that we and the peer are AUTH capable */
 		if (!net->sctp.auth_enable || !new_asoc->peer.auth_capable) {
 			sctp_association_free(new_asoc);
 			return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
 		}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* set-up our fake chunk so that we can process it */
 		auth.skb = chunk->auth_chunk;
 		auth.asoc = chunk->asoc;
@@ -784,6 +798,13 @@ sctp_disposition_t sctp_sf_do_5_1D_ce(struct net *net,
 		auth.transport = chunk->transport;
 
 		ret = sctp_sf_authenticate(net, ep, new_asoc, type, &auth);
+<<<<<<< HEAD
+=======
+
+		/* We can now safely free the auth_chunk clone */
+		kfree_skb(chunk->auth_chunk);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (ret != SCTP_IERROR_NO_ERROR) {
 			sctp_association_free(new_asoc);
 			return sctp_sf_pdiscard(net, ep, asoc, type, arg, commands);
@@ -1440,7 +1461,11 @@ static sctp_disposition_t sctp_sf_do_unexpected_init(
 
 	/* Verify the INIT chunk before processing it. */
 	err_chunk = NULL;
+<<<<<<< HEAD
 	if (!sctp_verify_init(net, ep, asoc, chunk->chunk_hdr->type,
+=======
+	if (!sctp_verify_init(net, asoc, chunk->chunk_hdr->type,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			      (sctp_init_chunk_t *)chunk->chunk_hdr, chunk,
 			      &err_chunk)) {
 		/* This chunk contains fatal error. It is to be discarded.
@@ -1785,6 +1810,7 @@ static sctp_disposition_t sctp_sf_do_dupcook_a(struct net *net,
 	/* Update the content of current association. */
 	sctp_add_cmd_sf(commands, SCTP_CMD_UPDATE_ASSOC, SCTP_ASOC(new_asoc));
 	sctp_add_cmd_sf(commands, SCTP_CMD_EVENT_ULP, SCTP_ULPEVENT(ev));
+<<<<<<< HEAD
 	if (sctp_state(asoc, SHUTDOWN_PENDING) &&
 	    (sctp_sstate(asoc->base.sk, CLOSING) ||
 	     sock_flag(asoc->base.sk, SOCK_DEAD))) {
@@ -1801,6 +1827,11 @@ static sctp_disposition_t sctp_sf_do_dupcook_a(struct net *net,
 				SCTP_STATE(SCTP_STATE_ESTABLISHED));
 		sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(repl));
 	}
+=======
+	sctp_add_cmd_sf(commands, SCTP_CMD_NEW_STATE,
+			SCTP_STATE(SCTP_STATE_ESTABLISHED));
+	sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(repl));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return SCTP_DISPOSITION_CONSUME;
 
 nomem_ev:

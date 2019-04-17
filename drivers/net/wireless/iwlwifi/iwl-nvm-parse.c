@@ -180,11 +180,14 @@ static int iwl_init_channel_map(struct device *dev, const struct iwl_cfg *cfg,
 
 	for (ch_idx = 0; ch_idx < IWL_NUM_CHANNELS; ch_idx++) {
 		ch_flags = __le16_to_cpup(nvm_ch_flags + ch_idx);
+<<<<<<< HEAD
 
 		if (ch_idx >= NUM_2GHZ_CHANNELS &&
 		    !data->sku_cap_band_52GHz_enable)
 			ch_flags &= ~NVM_CHANNEL_VALID;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (!(ch_flags & NVM_CHANNEL_VALID)) {
 			IWL_DEBUG_EEPROM(dev,
 					 "Ch. %d Flags %x [%sGHz] - No traffic\n",

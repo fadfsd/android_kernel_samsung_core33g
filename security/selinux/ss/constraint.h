@@ -48,7 +48,10 @@ struct constraint_expr {
 	u32 op;			/* operator */
 
 	struct ebitmap names;	/* names */
+<<<<<<< HEAD
 	struct type_set *type_names;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct constraint_expr *next;   /* next expression */
 };

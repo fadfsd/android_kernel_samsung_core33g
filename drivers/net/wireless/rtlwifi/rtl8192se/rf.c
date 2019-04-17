@@ -265,7 +265,11 @@ static void _rtl92s_get_txpower_writeval_byregulatory(struct ieee80211_hw *hw,
 				    rtlefuse->pwrgroup_ht40
 				    [RF90_PATH_A][chnl - 1]) {
 					pwrdiff_limit[i] =
+<<<<<<< HEAD
 					  rtlefuse->pwrgroup_ht40
+=======
+					  rtlefuse->pwrgroup_ht20
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					  [RF90_PATH_A][chnl - 1];
 				}
 			} else {

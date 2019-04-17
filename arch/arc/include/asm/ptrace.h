@@ -83,7 +83,11 @@ struct callee_regs {
 	long r13;
 };
 
+<<<<<<< HEAD
 #define instruction_pointer(regs)	(unsigned long)((regs)->ret)
+=======
+#define instruction_pointer(regs)	((regs)->ret)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define profile_pc(regs)		instruction_pointer(regs)
 
 /* return 1 if user mode or 0 if kernel mode */

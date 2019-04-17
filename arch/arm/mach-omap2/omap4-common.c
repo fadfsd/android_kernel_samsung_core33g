@@ -162,7 +162,10 @@ void __iomem *omap4_get_l2cache_base(void)
 
 static void omap4_l2x0_disable(void)
 {
+<<<<<<< HEAD
 	outer_flush_all();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Disable PL310 L2 Cache controller */
 	omap_smc1(0x102, 0x0);
 }

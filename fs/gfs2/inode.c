@@ -1536,6 +1536,7 @@ static int setattr_chown(struct inode *inode, struct iattr *attr)
 	if (!(attr->ia_valid & ATTR_GID) || gid_eq(ogid, ngid))
 		ogid = ngid = NO_GID_QUOTA_CHANGE;
 
+<<<<<<< HEAD
 	error = get_write_access(inode);
 	if (error)
 		return error;
@@ -1551,6 +1552,11 @@ static int setattr_chown(struct inode *inode, struct iattr *attr)
 	error = gfs2_quota_lock(ip, nuid, ngid);
 	if (error)
 		goto out;
+=======
+	error = gfs2_quota_lock(ip, nuid, ngid);
+	if (error)
+		return error;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!uid_eq(ouid, NO_UID_QUOTA_CHANGE) ||
 	    !gid_eq(ogid, NO_GID_QUOTA_CHANGE)) {
@@ -1578,8 +1584,11 @@ out_end_trans:
 	gfs2_trans_end(sdp);
 out_gunlock_q:
 	gfs2_quota_unlock(ip);
+<<<<<<< HEAD
 out:
 	put_write_access(inode);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return error;
 }
 

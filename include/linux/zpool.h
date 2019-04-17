@@ -36,10 +36,14 @@ enum zpool_mapmode {
 	ZPOOL_MM_DEFAULT = ZPOOL_MM_RW
 };
 
+<<<<<<< HEAD
 bool zpool_has_pool(char *type);
 
 struct zpool *zpool_create_pool(char *type, char *name,
 			gfp_t gfp, const struct zpool_ops *ops);
+=======
+struct zpool *zpool_create_pool(char *type, gfp_t gfp, struct zpool_ops *ops);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 char *zpool_get_type(struct zpool *pool);
 
@@ -83,8 +87,12 @@ struct zpool_driver {
 	atomic_t refcount;
 	struct list_head list;
 
+<<<<<<< HEAD
 	void *(*create)(char *name, gfp_t gfp, const struct zpool_ops *ops,
 			struct zpool *zpool);
+=======
+	void *(*create)(gfp_t gfp, struct zpool_ops *ops);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	void (*destroy)(void *pool);
 
 	int (*malloc)(void *pool, size_t size, gfp_t gfp,
@@ -105,4 +113,9 @@ void zpool_register_driver(struct zpool_driver *driver);
 
 int zpool_unregister_driver(struct zpool_driver *driver);
 
+<<<<<<< HEAD
+=======
+int zpool_evict(void *pool, unsigned long handle);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif

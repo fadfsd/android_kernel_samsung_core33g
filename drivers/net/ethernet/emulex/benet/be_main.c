@@ -1767,7 +1767,11 @@ static u16 be_tx_compl_process(struct be_adapter *adapter,
 		queue_tail_inc(txq);
 	} while (cur_index != last_index);
 
+<<<<<<< HEAD
 	dev_kfree_skb_any(sent_skb);
+=======
+	kfree_skb(sent_skb);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return num_wrbs;
 }
 
@@ -2663,7 +2667,11 @@ static int be_open(struct net_device *netdev)
 
 	for_all_evt_queues(adapter, eqo, i) {
 		napi_enable(&eqo->napi);
+<<<<<<< HEAD
 		be_eq_notify(adapter, eqo->q.id, true, true, 0);
+=======
+		be_eq_notify(adapter, eqo->q.id, true, false, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	adapter->flags |= BE_FLAGS_NAPI_ENABLED;
 

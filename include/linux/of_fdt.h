@@ -91,6 +91,7 @@ extern int of_flat_dt_is_compatible(unsigned long node, const char *name);
 extern int of_flat_dt_match(unsigned long node, const char *const *matches);
 extern unsigned long of_get_flat_dt_root(void);
 
+<<<<<<< HEAD
 /*
  * early_init_dt_scan_chosen - scan the device tree for ramdisk and bootargs
  *
@@ -112,6 +113,8 @@ extern unsigned long of_get_flat_dt_root(void);
  * - CMDLINE_FROM_BOOTLOADER=true, dt bootargs=empty, @data is empty string
  *     CONFIG_CMDLINE (or "" if that's not defined)
  */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern int early_init_dt_scan_chosen(unsigned long node, const char *uname,
 				     int depth, void *data);
 extern void early_init_dt_check_for_initrd(unsigned long node);

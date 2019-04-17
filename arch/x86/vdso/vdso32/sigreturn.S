@@ -17,7 +17,10 @@
 	.text
 	.globl __kernel_sigreturn
 	.type __kernel_sigreturn,@function
+<<<<<<< HEAD
 	nop /* this guy is needed for .LSTARTFDEDLSI1 below (watch for HACK) */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ALIGN
 __kernel_sigreturn:
 .LSTART_sigreturn:

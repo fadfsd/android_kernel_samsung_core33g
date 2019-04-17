@@ -1488,7 +1488,11 @@ static int isp116x_bus_resume(struct usb_hcd *hcd)
 	spin_unlock_irq(&isp116x->lock);
 
 	hcd->state = HC_STATE_RESUMING;
+<<<<<<< HEAD
 	msleep(USB_RESUME_TIMEOUT);
+=======
+	msleep(20);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Go operational */
 	spin_lock_irq(&isp116x->lock);

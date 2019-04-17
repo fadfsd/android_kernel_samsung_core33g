@@ -2,6 +2,16 @@ config SELECT_MEMORY_MODEL
 	def_bool y
 	depends on ARCH_SELECT_MEMORY_MODEL
 
+<<<<<<< HEAD
+=======
+config MEMBLOCK_RESERVE_DEBUG
+	bool "echo the reserved memblock name and size "
+	help
+	 SPARSEMEM_VMEMMAP uses a virtually mapped memmap to optimise
+	 pfn_to_page and page_to_pfn operations.  This is the most
+	 efficient option when sufficient kernel resources are available.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 choice
 	prompt "Memory model"
 	depends on SELECT_MEMORY_MODEL
@@ -131,6 +141,10 @@ config SPARSEMEM_VMEMMAP
 config HAVE_MEMBLOCK
 	boolean
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config HAVE_MEMBLOCK_NODE_MAP
 	boolean
 
@@ -316,6 +330,27 @@ config KSM
 	  until a program has madvised that an area is MADV_MERGEABLE, and
 	  root has set /sys/kernel/mm/ksm/run to 1 (if CONFIG_SYSFS is set).
 
+<<<<<<< HEAD
+=======
+config OPTIMIZE_KSM
+	bool "Enable Optimize KSM"
+	depends on KSM
+	help
+	  Enable Optimize KSM
+
+config ADAPTIVE_KSM
+	bool "Enable Adaptive KSM"
+	depends on KSM
+	help
+	  Enable Adaptive KSM
+
+config KSM_ASSEMBLY_MEMCMP
+	bool "Assembly function used for memcmp in KSM"
+	depends on KSM
+	help
+	  Using memcmp function this uses NEON only for KSM
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config DEFAULT_MMAP_MIN_ADDR
         int "Low address space to protect from user allocation"
 	depends on MMU
@@ -491,7 +526,11 @@ config ZBUD
 config ZSWAP
 	bool "Compressed cache for swap pages (EXPERIMENTAL)"
 	depends on FRONTSWAP && CRYPTO=y
+<<<<<<< HEAD
 	select CRYPTO_LZ4
+=======
+	select CRYPTO_LZO
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	select ZPOOL
 	default n
 	help
@@ -516,7 +555,11 @@ config ZPOOL
 	  zsmalloc.
 
 config ZSMALLOC
+<<<<<<< HEAD
 	bool "Memory allocator for compressed pages"
+=======
+	tristate "Memory allocator for compressed pages"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	depends on MMU
 	default n
 	help
@@ -537,6 +580,7 @@ config PGTABLE_MAPPING
 	  then you should select this. This causes zsmalloc to use page table
 	  mapping rather than copying for object mapping.
 
+<<<<<<< HEAD
 	  You can check speed with zsmalloc benchmark:
 	  https://github.com/spartacus06/zsmapbench
 
@@ -549,3 +593,48 @@ config ZSMALLOC_STAT
 	  statistics about whats happening in zsmalloc and exports that
 	  information to userspace via debugfs.
 	  If unsure, say N.
+=======
+	  You can check speed with zsmalloc benchmark[1].
+	  [1] https://github.com/spartacus06/zsmalloc
+
+config DIRECT_RECLAIM_FILE_PAGES_ONLY
+	bool "Reclaim file pages only on direct reclaim path"
+	depends on ZSWAP
+	default n
+
+config INCREASE_MAXIMUM_SWAPPINESS
+	bool "Allow swappiness to be set up to 200"
+	depends on ZSWAP
+	default n
+
+config FIX_INACTIVE_RATIO
+	bool "Fix active:inactive anon ratio to 1:1"
+	depends on ZSWAP
+	default n
+
+config TIGHT_PGDAT_BALANCE
+	bool "Set more tight balanced condition to kswapd"
+	depends on ZSWAP
+	default n
+
+config SWAP_ENABLE_READAHEAD
+	bool "Enable readahead on page swap in"
+	depends on SWAP
+	default y
+	help
+	  When a page fault occurs, adjacent pages of SWAP_CLUSTER_MAX are
+	  also paged in expecting those pages will be used in near future.
+	  This behaviour is good at disk-based system, but not on in-memory
+	  compression (e.g. zram).
+
+config MIN_DIRTY_THRESH_PAGES
+	int "The lower bound of VM dirty_thresh value in number of pages"
+	default 2560
+	help
+	  Setting this to certain positive number guaranttees
+	  the VM Dirty-Thresh valus is always larger than that value.
+	  It is only effective when dirty_ratio is used. (Setting dirty_bytes
+	  disables this option.)
+	  Do not use it if you unsure.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

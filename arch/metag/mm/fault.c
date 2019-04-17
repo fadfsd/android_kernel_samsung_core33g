@@ -53,7 +53,12 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
 	struct vm_area_struct *vma, *prev_vma;
 	siginfo_t info;
 	int fault;
+<<<<<<< HEAD
 	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+=======
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+				(write_access ? FAULT_FLAG_WRITE : 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tsk = current;
 
@@ -108,8 +113,11 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
 	if (in_atomic() || !mm)
 		goto no_context;
 
+<<<<<<< HEAD
 	if (user_mode(regs))
 		flags |= FAULT_FLAG_USER;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 retry:
 	down_read(&mm->mmap_sem);
 
@@ -122,7 +130,10 @@ good_area:
 	if (write_access) {
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 		flags |= FAULT_FLAG_WRITE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		if (!(vma->vm_flags & (VM_READ | VM_EXEC | VM_WRITE)))
 			goto bad_area;
@@ -141,8 +152,11 @@ good_area:
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
+<<<<<<< HEAD
 		else if (fault & VM_FAULT_SIGSEGV)
 			goto bad_area;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else if (fault & VM_FAULT_SIGBUS)
 			goto do_sigbus;
 		BUG();
@@ -228,10 +242,15 @@ do_sigbus:
 	 */
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (user_mode(regs)) {
 		pagefault_out_of_memory();
 		return 1;
 	}
+=======
+	if (user_mode(regs))
+		do_group_exit(SIGKILL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 no_context:
 	/* Are we prepared to handle this kernel fault?  */

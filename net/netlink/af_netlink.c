@@ -374,14 +374,22 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void netlink_frame_flush_dcache(const struct nl_mmap_hdr *hdr, unsigned int nm_len)
+=======
+static void netlink_frame_flush_dcache(const struct nl_mmap_hdr *hdr)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE == 1
 	struct page *p_start, *p_end;
 
 	/* First page is flushed through netlink_{get,set}_status */
 	p_start = pgvec_to_page(hdr + PAGE_SIZE);
+<<<<<<< HEAD
 	p_end   = pgvec_to_page((void *)hdr + NL_MMAP_HDRLEN + nm_len - 1);
+=======
+	p_end   = pgvec_to_page((void *)hdr + NL_MMAP_HDRLEN + hdr->nm_len - 1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	while (p_start <= p_end) {
 		flush_dcache_page(p_start);
 		p_start++;
@@ -399,9 +407,15 @@ static enum nl_mmap_status netlink_get_status(const struct nl_mmap_hdr *hdr)
 static void netlink_set_status(struct nl_mmap_hdr *hdr,
 			       enum nl_mmap_status status)
 {
+<<<<<<< HEAD
 	smp_mb();
 	hdr->nm_status = status;
 	flush_dcache_page(pgvec_to_page(hdr));
+=======
+	hdr->nm_status = status;
+	flush_dcache_page(pgvec_to_page(hdr));
+	smp_wmb();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct nl_mmap_hdr *
@@ -500,7 +514,11 @@ static unsigned int netlink_poll(struct file *file, struct socket *sock,
 		while (nlk->cb != NULL && netlink_dump_space(nlk)) {
 			err = netlink_dump(sk);
 			if (err < 0) {
+<<<<<<< HEAD
 				sk->sk_err = -err;
+=======
+				sk->sk_err = err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				sk->sk_error_report(sk);
 				break;
 			}
@@ -563,16 +581,34 @@ static int netlink_mmap_sendmsg(struct sock *sk, struct msghdr *msg,
 	struct nl_mmap_hdr *hdr;
 	struct sk_buff *skb;
 	unsigned int maxlen;
+<<<<<<< HEAD
 	int err = 0, len = 0;
 
+=======
+	bool excl = true;
+	int err = 0, len = 0;
+
+	/* Netlink messages are validated by the receiver before processing.
+	 * In order to avoid userspace changing the contents of the message
+	 * after validation, the socket and the ring may only be used by a
+	 * single process, otherwise we fall back to copying.
+	 */
+	if (atomic_long_read(&sk->sk_socket->file->f_count) > 2 ||
+	    atomic_read(&nlk->mapped) > 1)
+		excl = false;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_lock(&nlk->pg_vec_lock);
 
 	ring   = &nlk->tx_ring;
 	maxlen = ring->frame_size - NL_MMAP_HDRLEN;
 
 	do {
+<<<<<<< HEAD
 		unsigned int nm_len;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		hdr = netlink_current_frame(ring, NL_MMAP_STATUS_VALID);
 		if (hdr == NULL) {
 			if (!(msg->msg_flags & MSG_DONTWAIT) &&
@@ -580,13 +616,18 @@ static int netlink_mmap_sendmsg(struct sock *sk, struct msghdr *msg,
 				schedule();
 			continue;
 		}
+<<<<<<< HEAD
 
 		nm_len = ACCESS_ONCE(hdr->nm_len);
 		if (nm_len > maxlen) {
+=======
+		if (hdr->nm_len > maxlen) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			err = -EINVAL;
 			goto out;
 		}
 
+<<<<<<< HEAD
 		netlink_frame_flush_dcache(hdr, nm_len);
 
 		skb = alloc_skb(nm_len, GFP_KERNEL);
@@ -597,6 +638,32 @@ static int netlink_mmap_sendmsg(struct sock *sk, struct msghdr *msg,
 		__skb_put(skb, nm_len);
 		memcpy(skb->data, (void *)hdr + NL_MMAP_HDRLEN, nm_len);
 		netlink_set_status(hdr, NL_MMAP_STATUS_UNUSED);
+=======
+		netlink_frame_flush_dcache(hdr);
+
+		if (likely(dst_portid == 0 && dst_group == 0 && excl)) {
+			skb = alloc_skb_head(GFP_KERNEL);
+			if (skb == NULL) {
+				err = -ENOBUFS;
+				goto out;
+			}
+			sock_hold(sk);
+			netlink_ring_setup_skb(skb, sk, ring, hdr);
+			NETLINK_CB(skb).flags |= NETLINK_SKB_TX;
+			__skb_put(skb, hdr->nm_len);
+			netlink_set_status(hdr, NL_MMAP_STATUS_RESERVED);
+			atomic_inc(&ring->pending);
+		} else {
+			skb = alloc_skb(hdr->nm_len, GFP_KERNEL);
+			if (skb == NULL) {
+				err = -ENOBUFS;
+				goto out;
+			}
+			__skb_put(skb, hdr->nm_len);
+			memcpy(skb->data, (void *)hdr + NL_MMAP_HDRLEN, hdr->nm_len);
+			netlink_set_status(hdr, NL_MMAP_STATUS_UNUSED);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		netlink_increment_head(ring);
 
@@ -642,7 +709,11 @@ static void netlink_queue_mmaped_skb(struct sock *sk, struct sk_buff *skb)
 	hdr->nm_pid	= NETLINK_CB(skb).creds.pid;
 	hdr->nm_uid	= from_kuid(sk_user_ns(sk), NETLINK_CB(skb).creds.uid);
 	hdr->nm_gid	= from_kgid(sk_user_ns(sk), NETLINK_CB(skb).creds.gid);
+<<<<<<< HEAD
 	netlink_frame_flush_dcache(hdr, hdr->nm_len);
+=======
+	netlink_frame_flush_dcache(hdr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	netlink_set_status(hdr, NL_MMAP_STATUS_VALID);
 
 	NETLINK_CB(skb).flags |= NETLINK_SKB_DELIVERED;
@@ -1199,6 +1270,7 @@ retry:
 	return err;
 }
 
+<<<<<<< HEAD
 /**
  * __netlink_ns_capable - General netlink message capability test
  * @nsp: NETLINK_CB of the socket buffer holding a netlink command from userspace.
@@ -1267,6 +1339,9 @@ bool netlink_net_capable(const struct sk_buff *skb, int cap)
 EXPORT_SYMBOL(netlink_net_capable);
 
 static inline int netlink_allowed(const struct socket *sock, unsigned int flag)
+=======
+static inline int netlink_capable(const struct socket *sock, unsigned int flag)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	return (nl_table[sock->sk->sk_protocol].flags & flag) ||
 		ns_capable(sock_net(sock->sk)->user_ns, CAP_NET_ADMIN);
@@ -1334,7 +1409,11 @@ static int netlink_bind(struct socket *sock, struct sockaddr *addr,
 
 	/* Only superuser is allowed to listen multicasts */
 	if (nladdr->nl_groups) {
+<<<<<<< HEAD
 		if (!netlink_allowed(sock, NL_CFG_F_NONROOT_RECV))
+=======
+		if (!netlink_capable(sock, NL_CFG_F_NONROOT_RECV))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -EPERM;
 		err = netlink_realloc_groups(sk);
 		if (err)
@@ -1396,7 +1475,11 @@ static int netlink_connect(struct socket *sock, struct sockaddr *addr,
 		return -EINVAL;
 
 	/* Only superuser is allowed to send multicasts */
+<<<<<<< HEAD
 	if (nladdr->nl_groups && !netlink_allowed(sock, NL_CFG_F_NONROOT_SEND))
+=======
+	if (nladdr->nl_groups && !netlink_capable(sock, NL_CFG_F_NONROOT_SEND))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (!nlk->portid)
@@ -1968,7 +2051,11 @@ static int netlink_setsockopt(struct socket *sock, int level, int optname,
 		break;
 	case NETLINK_ADD_MEMBERSHIP:
 	case NETLINK_DROP_MEMBERSHIP: {
+<<<<<<< HEAD
 		if (!netlink_allowed(sock, NL_CFG_F_NONROOT_RECV))
+=======
+		if (!netlink_capable(sock, NL_CFG_F_NONROOT_RECV))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -EPERM;
 		err = netlink_realloc_groups(sk);
 		if (err)
@@ -2100,7 +2187,10 @@ static int netlink_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	struct sk_buff *skb;
 	int err;
 	struct scm_cookie scm;
+<<<<<<< HEAD
 	u32 netlink_skb_flags = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (msg->msg_flags&MSG_OOB)
 		return -EOPNOTSUPP;
@@ -2120,9 +2210,14 @@ static int netlink_sendmsg(struct kiocb *kiocb, struct socket *sock,
 		dst_group = ffs(addr->nl_groups);
 		err =  -EPERM;
 		if ((dst_group || dst_portid) &&
+<<<<<<< HEAD
 		    !netlink_allowed(sock, NL_CFG_F_NONROOT_SEND))
 			goto out;
 		netlink_skb_flags |= NETLINK_SKB_DST;
+=======
+		    !netlink_capable(sock, NL_CFG_F_NONROOT_SEND))
+			goto out;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		dst_portid = nlk->dst_portid;
 		dst_group = nlk->dst_group;
@@ -2152,7 +2247,10 @@ static int netlink_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	NETLINK_CB(skb).portid	= nlk->portid;
 	NETLINK_CB(skb).dst_group = dst_group;
 	NETLINK_CB(skb).creds	= siocb->scm->creds;
+<<<<<<< HEAD
 	NETLINK_CB(skb).flags	= netlink_skb_flags;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = -EFAULT;
 	if (memcpy_fromiovec(skb_put(skb, len), msg->msg_iov, len)) {
@@ -2218,6 +2316,11 @@ static int netlink_recvmsg(struct kiocb *kiocb, struct socket *sock,
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	msg->msg_namelen = 0;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	copied = data_skb->len;
 	if (len < copied) {
 		msg->msg_flags |= MSG_TRUNC;
@@ -2252,7 +2355,11 @@ static int netlink_recvmsg(struct kiocb *kiocb, struct socket *sock,
 	if (nlk->cb && atomic_read(&sk->sk_rmem_alloc) <= sk->sk_rcvbuf / 2) {
 		ret = netlink_dump(sk);
 		if (ret) {
+<<<<<<< HEAD
 			sk->sk_err = -ret;
+=======
+			sk->sk_err = ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			sk->sk_error_report(sk);
 		}
 	}
@@ -2810,7 +2917,11 @@ static int netlink_seq_show(struct seq_file *seq, void *v)
 		struct sock *s = v;
 		struct netlink_sock *nlk = nlk_sk(s);
 
+<<<<<<< HEAD
 		seq_printf(seq, "%pK %-3d %-6u %08x %-8d %-8d %pK %-8d %-8d %-8lu\n",
+=======
+		seq_printf(seq, "%pK %-3d %-6d %08x %-8d %-8d %pK %-8d %-8d %-8lu\n",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			   s,
 			   s->sk_protocol,
 			   nlk->portid,

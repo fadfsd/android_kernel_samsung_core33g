@@ -100,8 +100,11 @@ static inline void set_fs(mm_segment_t fs)
 extern int __get_user_1(void *);
 extern int __get_user_2(void *);
 extern int __get_user_4(void *);
+<<<<<<< HEAD
 extern int __get_user_lo8(void *);
 extern int __get_user_8(void *);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define __GUP_CLOBBER_1	"lr", "cc"
 #ifdef CONFIG_CPU_USE_DOMAINS
@@ -110,8 +113,11 @@ extern int __get_user_8(void *);
 #define __GUP_CLOBBER_2 "lr", "cc"
 #endif
 #define __GUP_CLOBBER_4	"lr", "cc"
+<<<<<<< HEAD
 #define __GUP_CLOBBER_lo8 "lr", "cc"
 #define __GUP_CLOBBER_8	"lr", "cc"
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define __get_user_x(__r2,__p,__e,__l,__s)				\
 	   __asm__ __volatile__ (					\
@@ -122,6 +128,7 @@ extern int __get_user_8(void *);
 		: "0" (__p), "r" (__l)					\
 		: __GUP_CLOBBER_##__s)
 
+<<<<<<< HEAD
 /* narrowing a double-word get into a single 32bit word register: */
 #ifdef __ARMEB__
 #define __get_user_xb(__r2, __p, __e, __l, __s)				\
@@ -130,11 +137,17 @@ extern int __get_user_8(void *);
 #define __get_user_xb __get_user_x
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define __get_user_check(x,p)							\
 	({								\
 		unsigned long __limit = current_thread_info()->addr_limit - 1; \
 		register const typeof(*(p)) __user *__p asm("r0") = (p);\
+<<<<<<< HEAD
 		register typeof(x) __r2 asm("r2");			\
+=======
+		register unsigned long __r2 asm("r2");			\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		register unsigned long __l asm("r1") = __limit;		\
 		register int __e asm("r0");				\
 		switch (sizeof(*(__p))) {				\
@@ -147,12 +160,15 @@ extern int __get_user_8(void *);
 		case 4:							\
 			__get_user_x(__r2, __p, __e, __l, 4);		\
 			break;						\
+<<<<<<< HEAD
 		case 8:							\
 			if (sizeof((x)) < 8)				\
 				__get_user_xb(__r2, __p, __e, __l, 4);	\
 			else						\
 				__get_user_x(__r2, __p, __e, __l, 8);	\
 			break;						\
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		default: __e = __get_user_bad(); break;			\
 		}							\
 		x = (typeof(*(p))) __r2;				\
@@ -182,9 +198,14 @@ extern int __put_user_8(void *, unsigned long long);
 #define __put_user_check(x,p)							\
 	({								\
 		unsigned long __limit = current_thread_info()->addr_limit - 1; \
+<<<<<<< HEAD
 		const typeof(*(p)) __user *__tmp_p = (p);		\
 		register const typeof(*(p)) __r2 asm("r2") = (x);	\
 		register const typeof(*(p)) __user *__p asm("r0") = __tmp_p; \
+=======
+		register const typeof(*(p)) __r2 asm("r2") = (x);	\
+		register const typeof(*(p)) __user *__p asm("r0") = (p);\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		register unsigned long __l asm("r1") = __limit;		\
 		register int __e asm("r0");				\
 		switch (sizeof(*(__p))) {				\

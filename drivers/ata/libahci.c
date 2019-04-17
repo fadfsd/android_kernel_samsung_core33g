@@ -1266,11 +1266,17 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 {
 	struct ata_port *ap = link->ap;
 	struct ahci_host_priv *hpriv = ap->host->private_data;
+<<<<<<< HEAD
 	struct ahci_port_priv *pp = ap->private_data;
 	const char *reason = NULL;
 	unsigned long now, msecs;
 	struct ata_taskfile tf;
 	bool fbs_disabled = false;
+=======
+	const char *reason = NULL;
+	unsigned long now, msecs;
+	struct ata_taskfile tf;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int rc;
 
 	DPRINTK("ENTER\n");
@@ -1280,6 +1286,7 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 	if (rc && rc != -EOPNOTSUPP)
 		ata_link_warn(link, "failed to reset engine (errno=%d)\n", rc);
 
+<<<<<<< HEAD
 	/*
 	 * According to AHCI-1.2 9.3.9: if FBS is enable, software shall
 	 * clear PxFBS.EN to '0' prior to issuing software reset to devices
@@ -1290,6 +1297,8 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 		fbs_disabled = true;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ata_tf_init(link->device, &tf);
 
 	/* issue the first D2H Register FIS */
@@ -1330,10 +1339,13 @@ int ahci_do_softreset(struct ata_link *link, unsigned int *class,
 	} else
 		*class = ahci_dev_classify(ap);
 
+<<<<<<< HEAD
 	/* re-enable FBS if disabled before */
 	if (fbs_disabled)
 		ahci_enable_fbs(ap);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	DPRINTK("EXIT, class=%u\n", *class);
 	return 0;
 
@@ -1684,7 +1696,12 @@ static void ahci_handle_port_interrupt(struct ata_port *ap,
 	if (unlikely(resetting))
 		status &= ~PORT_IRQ_BAD_PMP;
 
+<<<<<<< HEAD
 	if (sata_lpm_ignore_phy_events(&ap->link)) {
+=======
+	/* if LPM is enabled, PHYRDY doesn't mean anything */
+	if (ap->link.lpm_policy > ATA_LPM_MAX_POWER) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		status &= ~PORT_IRQ_PHYRDY;
 		ahci_scr_write(&ap->link, SCR_ERROR, SERR_PHYRDY_CHG);
 	}

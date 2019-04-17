@@ -7,7 +7,10 @@
 #include <linux/security.h>
 #include <linux/swap.h>
 #include <linux/swapops.h>
+<<<<<<< HEAD
 #include <linux/vmalloc.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/uaccess.h>
 
 #include "internal.h"
@@ -273,14 +276,27 @@ pid_t vm_is_stack(struct task_struct *task,
 
 	if (in_group) {
 		struct task_struct *t;
+<<<<<<< HEAD
 
 		rcu_read_lock();
 		for_each_thread(task, t) {
+=======
+		rcu_read_lock();
+		if (!pid_alive(task))
+			goto done;
+
+		t = task;
+		do {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (vm_is_stack_for_task(t, vma)) {
 				ret = t->pid;
 				goto done;
 			}
+<<<<<<< HEAD
 		}
+=======
+		} while_each_thread(task, t);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 done:
 		rcu_read_unlock();
 	}
@@ -293,6 +309,10 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 {
 	mm->mmap_base = TASK_UNMAPPED_BASE;
 	mm->get_unmapped_area = arch_get_unmapped_area;
+<<<<<<< HEAD
+=======
+	mm->unmap_area = arch_unmap_area;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #endif
 
@@ -381,6 +401,7 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
 }
 EXPORT_SYMBOL(vm_mmap);
 
+<<<<<<< HEAD
 void kvfree(const void *addr)
 {
 	if (is_vmalloc_addr(addr))
@@ -390,6 +411,8 @@ void kvfree(const void *addr)
 }
 EXPORT_SYMBOL(kvfree);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct address_space *page_mapping(struct page *page)
 {
 	struct address_space *mapping = page->mapping;

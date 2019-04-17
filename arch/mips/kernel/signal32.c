@@ -314,7 +314,11 @@ SYSCALL_DEFINE3(32_sigaction, long, sig, const struct compat_sigaction __user *,
 	return ret;
 }
 
+<<<<<<< HEAD
 int copy_siginfo_to_user32(compat_siginfo_t __user *to, const siginfo_t *from)
+=======
+int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int err;
 
@@ -368,6 +372,11 @@ int copy_siginfo_to_user32(compat_siginfo_t __user *to, const siginfo_t *from)
 
 int copy_siginfo_from_user32(siginfo_t *to, compat_siginfo_t __user *from)
 {
+<<<<<<< HEAD
+=======
+	memset(to, 0, sizeof *to);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (copy_from_user(to, from, 3*sizeof(int)) ||
 	    copy_from_user(to->_sifields._pad,
 			   from->_sifields._pad, SI_PAD_SIZE32))

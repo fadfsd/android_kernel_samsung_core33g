@@ -530,7 +530,11 @@ void __init kirkwood_init_early(void)
 
 	mvebu_mbus_init("marvell,kirkwood-mbus",
 			BRIDGE_WINS_BASE, BRIDGE_WINS_SZ,
+<<<<<<< HEAD
 			DDR_WINDOW_CPU_BASE, DDR_WINDOW_CPU_SZ, 0);
+=======
+			DDR_WINDOW_CPU_BASE, DDR_WINDOW_CPU_SZ);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 int kirkwood_tclk;

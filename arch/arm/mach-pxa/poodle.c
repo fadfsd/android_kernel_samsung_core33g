@@ -25,7 +25,10 @@
 #include <linux/gpio.h>
 #include <linux/i2c.h>
 #include <linux/i2c/pxa-i2c.h>
+<<<<<<< HEAD
 #include <linux/regulator/machine.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/spi/spi.h>
 #include <linux/spi/ads7846.h>
 #include <linux/spi/pxa2xx_spi.h>
@@ -453,7 +456,10 @@ static void __init poodle_init(void)
 	pxa_set_i2c_info(NULL);
 	i2c_register_board_info(0, ARRAY_AND_SIZE(poodle_i2c_devices));
 	poodle_init_spi();
+<<<<<<< HEAD
 	regulator_has_full_constraints();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void __init fixup_poodle(struct tag *tags, char **cmdline,

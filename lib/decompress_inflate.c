@@ -48,7 +48,11 @@ STATIC int INIT gunzip(unsigned char *buf, int len,
 		out_len = 0x8000; /* 32 K */
 		out_buf = malloc(out_len);
 	} else {
+<<<<<<< HEAD
 		out_len = ((size_t)~0) - (size_t)out_buf; /* no limit */
+=======
+		out_len = 0x7fffffff; /* no limit */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	if (!out_buf) {
 		error("Out of memory while allocating output buffer");

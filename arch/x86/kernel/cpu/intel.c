@@ -154,6 +154,7 @@ static void __cpuinit early_init_intel(struct cpuinfo_x86 *c)
 			setup_clear_cpu_cap(X86_FEATURE_ERMS);
 		}
 	}
+<<<<<<< HEAD
 
 	/*
 	 * Intel Quark Core DevMan_001.pdf section 6.4.11
@@ -169,6 +170,8 @@ static void __cpuinit early_init_intel(struct cpuinfo_x86 *c)
 		pr_info("Disabling PGE capability bit\n");
 		setup_clear_cpu_cap(X86_FEATURE_PGE);
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #ifdef CONFIG_X86_32
@@ -402,8 +405,12 @@ static void __cpuinit init_intel(struct cpuinfo_x86 *c)
 			set_cpu_cap(c, X86_FEATURE_PEBS);
 	}
 
+<<<<<<< HEAD
 	if (c->x86 == 6 && cpu_has_clflush &&
 	    (c->x86_model == 29 || c->x86_model == 46 || c->x86_model == 47))
+=======
+	if (c->x86 == 6 && c->x86_model == 29 && cpu_has_clflush)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		set_cpu_cap(c, X86_FEATURE_CLFLUSH_MONITOR);
 
 #ifdef CONFIG_X86_64
@@ -643,7 +650,11 @@ static void __cpuinit intel_tlb_flushall_shift_set(struct cpuinfo_x86 *c)
 		tlb_flushall_shift = 5;
 		break;
 	case 0x63a: /* Ivybridge */
+<<<<<<< HEAD
 		tlb_flushall_shift = 2;
+=======
+		tlb_flushall_shift = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	default:
 		tlb_flushall_shift = 6;

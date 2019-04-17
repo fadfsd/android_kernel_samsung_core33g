@@ -299,6 +299,7 @@ static int xen_initial_domain_console_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void xen_console_update_evtchn(struct xencons_info *info)
 {
 	if (xen_hvm_domain()) {
@@ -320,6 +321,13 @@ void xen_console_resume(void)
 			xen_console_update_evtchn(info);
 		rebind_evtchn_irq(info->evtchn, info->irq);
 	}
+=======
+void xen_console_resume(void)
+{
+	struct xencons_info *info = vtermno_to_xencons(HVC_COOKIE);
+	if (info != NULL && info->irq)
+		rebind_evtchn_irq(info->evtchn, info->irq);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void xencons_disconnect_backend(struct xencons_info *info)

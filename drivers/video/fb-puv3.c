@@ -18,10 +18,15 @@
 #include <linux/fb.h>
 #include <linux/init.h>
 #include <linux/console.h>
+<<<<<<< HEAD
 #include <linux/mm.h>
 
 #include <asm/sizes.h>
 #include <asm/pgtable.h>
+=======
+
+#include <asm/sizes.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <mach/hardware.h>
 
 /* Platform_data reserved for unifb registers. */

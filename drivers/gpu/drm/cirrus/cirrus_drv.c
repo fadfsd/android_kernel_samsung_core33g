@@ -11,7 +11,10 @@
 #include <linux/module.h>
 #include <linux/console.h>
 #include <drm/drmP.h>
+<<<<<<< HEAD
 #include <drm/drm_crtc_helper.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "cirrus_drv.h"
 
@@ -76,6 +79,7 @@ static void cirrus_pci_remove(struct pci_dev *pdev)
 	drm_put_dev(dev);
 }
 
+<<<<<<< HEAD
 static int cirrus_pm_suspend(struct device *dev)
 {
 	struct pci_dev *pdev = to_pci_dev(dev);
@@ -111,6 +115,8 @@ static int cirrus_pm_resume(struct device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static const struct file_operations cirrus_driver_fops = {
 	.owner = THIS_MODULE,
 	.open = drm_open,
@@ -141,17 +147,23 @@ static struct drm_driver driver = {
 	.dumb_destroy = cirrus_dumb_destroy,
 };
 
+<<<<<<< HEAD
 static const struct dev_pm_ops cirrus_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(cirrus_pm_suspend,
 				cirrus_pm_resume)
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static struct pci_driver cirrus_pci_driver = {
 	.name = DRIVER_NAME,
 	.id_table = pciidlist,
 	.probe = cirrus_pci_probe,
 	.remove = cirrus_pci_remove,
+<<<<<<< HEAD
 	.driver.pm = &cirrus_pm_ops,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static int __init cirrus_init(void)

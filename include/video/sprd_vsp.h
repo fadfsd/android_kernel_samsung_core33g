@@ -19,8 +19,11 @@
 //#include "__sprd_vsp_sc8830.h"
 /*40k vsp address space size*/
 #define SPRD_VSP_MAP_SIZE 0xA000
+<<<<<<< HEAD
 #define SPRD_VSP_CLK_LEVEL_NUM 4 //depend on chip design
 #define SPRD_VSP_CLK_LEVEL_NUM_PIKE 3 //depend on chip design
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define SPRD_VSP_IOCTL_MAGIC 'm'
 #define VSP_CONFIG_FREQ _IOW(SPRD_VSP_IOCTL_MAGIC, 1, unsigned int)
@@ -32,7 +35,11 @@
 #define VSP_COMPLETE       _IO(SPRD_VSP_IOCTL_MAGIC, 7)
 #define VSP_RESET       _IO(SPRD_VSP_IOCTL_MAGIC, 8)
 #define VSP_HW_INFO     _IO(SPRD_VSP_IOCTL_MAGIC, 9)
+<<<<<<< HEAD
 #define VSP_VERSION                  _IO(SPRD_VSP_IOCTL_MAGIC, 10)
+=======
+#define VSP_CAPABILITY                  _IO(SPRD_VSP_IOCTL_MAGIC, 10)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 enum sprd_vsp_frequency_e {
     VSP_FREQENCY_LEVEL_0 = 0,
@@ -41,6 +48,7 @@ enum sprd_vsp_frequency_e {
     VSP_FREQENCY_LEVEL_3 = 3
 };
 
+<<<<<<< HEAD
 typedef enum
 {
     SHARK = 0,
@@ -55,6 +63,8 @@ typedef enum
 }
 VSP_VERSION_E;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
 ioctl command description
 the VSP user must mmap the vsp address space to user-space to access

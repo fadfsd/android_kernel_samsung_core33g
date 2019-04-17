@@ -161,7 +161,11 @@ enum rq_flag_bits {
 				 * throttling rules. Don't do it again. */
 
 	/* request only flags */
+<<<<<<< HEAD
 	__REQ_SORTED = __REQ_RAHEAD, /* elevator knows about this request */
+=======
+	__REQ_SORTED,		/* elevator knows about this request */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__REQ_SOFTBARRIER,	/* may not be passed by ioscheduler */
 	__REQ_NOMERGE,		/* don't touch this for merging */
 	__REQ_STARTED,		/* drive already may have started this one */
@@ -170,9 +174,13 @@ enum rq_flag_bits {
 	__REQ_ELVPRIV,		/* elevator private data attached */
 	__REQ_FAILED,		/* set if the request failed */
 	__REQ_QUIET,		/* don't worry about errors */
+<<<<<<< HEAD
 	__REQ_PREEMPT,		/* set for "ide_preempt" requests and also
 				   for requests for which the SCSI "quiesce"
 				   state must be ignored. */
+=======
+	__REQ_PREEMPT,		/* set for "ide_preempt" requests */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__REQ_ALLOCED,		/* request came from our alloc pool */
 	__REQ_COPY_USER,	/* contains copies of user pages */
 	__REQ_FLUSH_SEQ,	/* request for flush sequence */
@@ -180,7 +188,10 @@ enum rq_flag_bits {
 	__REQ_MIXED_MERGE,	/* merge of different types, fail separately */
 	__REQ_KERNEL, 		/* direct IO to kernel pages */
 	__REQ_PM,		/* runtime pm request */
+<<<<<<< HEAD
 	__REQ_URGENT,		/* urgent request */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__REQ_NR_BITS,		/* stops here */
 };
 
@@ -193,7 +204,10 @@ enum rq_flag_bits {
 #define REQ_PRIO		(1 << __REQ_PRIO)
 #define REQ_DISCARD		(1 << __REQ_DISCARD)
 #define REQ_WRITE_SAME		(1 << __REQ_WRITE_SAME)
+<<<<<<< HEAD
 #define REQ_URGENT		(1 << __REQ_URGENT)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define REQ_NOIDLE		(1 << __REQ_NOIDLE)
 
 #define REQ_FAILFAST_MASK \

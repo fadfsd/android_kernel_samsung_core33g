@@ -147,7 +147,11 @@ static int nfnetlink_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 	const struct nfnetlink_subsystem *ss;
 	int type, err;
 
+<<<<<<< HEAD
 	if (!netlink_net_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	/* All the messages must at least contain nfgenmsg */

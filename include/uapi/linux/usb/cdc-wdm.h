@@ -9,8 +9,11 @@
 #ifndef _UAPI__LINUX_USB_CDC_WDM_H
 #define _UAPI__LINUX_USB_CDC_WDM_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * This IOCTL is used to retrieve the wMaxCommand for the device,
  * defining the message limit for both reading and writing.

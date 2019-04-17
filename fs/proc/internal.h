@@ -202,7 +202,10 @@ struct pde_opener {
 	int closing;
 	struct completion *c;
 };
+<<<<<<< HEAD
 extern const struct inode_operations proc_link_inode_operations;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 extern const struct inode_operations proc_pid_link_inode_operations;
 

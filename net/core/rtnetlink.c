@@ -714,8 +714,12 @@ static inline int rtnl_vfinfo_size(const struct net_device *dev,
 		return 0;
 }
 
+<<<<<<< HEAD
 static size_t rtnl_port_size(const struct net_device *dev,
 			     u32 ext_filter_mask)
+=======
+static size_t rtnl_port_size(const struct net_device *dev)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	size_t port_size = nla_total_size(4)		/* PORT_VF */
 		+ nla_total_size(PORT_PROFILE_MAX)	/* PORT_PROFILE */
@@ -731,8 +735,12 @@ static size_t rtnl_port_size(const struct net_device *dev,
 	size_t port_self_size = nla_total_size(sizeof(struct nlattr))
 		+ port_size;
 
+<<<<<<< HEAD
 	if (!dev->netdev_ops->ndo_get_vf_port || !dev->dev.parent ||
 	    !(ext_filter_mask & RTEXT_FILTER_VF))
+=======
+	if (!dev->netdev_ops->ndo_get_vf_port || !dev->dev.parent)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 	if (dev_num_vf(dev->dev.parent))
 		return port_self_size + vf_ports_size +
@@ -767,7 +775,11 @@ static noinline size_t if_nlmsg_size(const struct net_device *dev,
 	       + nla_total_size(ext_filter_mask
 			        & RTEXT_FILTER_VF ? 4 : 0) /* IFLA_NUM_VF */
 	       + rtnl_vfinfo_size(dev, ext_filter_mask) /* IFLA_VFINFO_LIST */
+<<<<<<< HEAD
 	       + rtnl_port_size(dev, ext_filter_mask) /* IFLA_VF_PORTS + IFLA_PORT_SELF */
+=======
+	       + rtnl_port_size(dev) /* IFLA_VF_PORTS + IFLA_PORT_SELF */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	       + rtnl_link_get_size(dev) /* IFLA_LINKINFO */
 	       + rtnl_link_get_af_size(dev); /* IFLA_AF_SPEC */
 }
@@ -828,6 +840,7 @@ static int rtnl_port_self_fill(struct sk_buff *skb, struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int rtnl_port_fill(struct sk_buff *skb, struct net_device *dev,
 			  u32 ext_filter_mask)
 {
@@ -835,6 +848,13 @@ static int rtnl_port_fill(struct sk_buff *skb, struct net_device *dev,
 
 	if (!dev->netdev_ops->ndo_get_vf_port || !dev->dev.parent ||
 	    !(ext_filter_mask & RTEXT_FILTER_VF))
+=======
+static int rtnl_port_fill(struct sk_buff *skb, struct net_device *dev)
+{
+	int err;
+
+	if (!dev->netdev_ops->ndo_get_vf_port || !dev->dev.parent)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 
 	err = rtnl_port_self_fill(skb, dev);
@@ -989,7 +1009,11 @@ static int rtnl_fill_ifinfo(struct sk_buff *skb, struct net_device *dev,
 		nla_nest_end(skb, vfinfo);
 	}
 
+<<<<<<< HEAD
 	if (rtnl_port_fill(skb, dev, ext_filter_mask))
+=======
+	if (rtnl_port_fill(skb, dev))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto nla_put_failure;
 
 	if (dev->rtnl_link_ops) {
@@ -1043,8 +1067,11 @@ static int rtnl_dump_ifinfo(struct sk_buff *skb, struct netlink_callback *cb)
 	struct hlist_head *head;
 	struct nlattr *tb[IFLA_MAX+1];
 	u32 ext_filter_mask = 0;
+<<<<<<< HEAD
 	int err;
 	int hdrlen;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	s_h = cb->args[0];
 	s_idx = cb->args[1];
@@ -1052,6 +1079,7 @@ static int rtnl_dump_ifinfo(struct sk_buff *skb, struct netlink_callback *cb)
 	rcu_read_lock();
 	cb->seq = net->dev_base_seq;
 
+<<<<<<< HEAD
 	/* A hack to preserve kernel<->userspace interface.
 	 * The correct header is ifinfomsg. It is consistent with rtnl_getlink.
 	 * However, before Linux v3.9 the code here assumed rtgenmsg and that's
@@ -1063,6 +1091,10 @@ static int rtnl_dump_ifinfo(struct sk_buff *skb, struct netlink_callback *cb)
 		 sizeof(struct rtgenmsg) : sizeof(struct ifinfomsg);
 
 	if (nlmsg_parse(cb->nlh, hdrlen, tb, IFLA_MAX, ifla_policy) >= 0) {
+=======
+	if (nlmsg_parse(cb->nlh, sizeof(struct ifinfomsg), tb, IFLA_MAX,
+			ifla_policy) >= 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (tb[IFLA_EXT_MASK])
 			ext_filter_mask = nla_get_u32(tb[IFLA_EXT_MASK]);
@@ -1074,6 +1106,7 @@ static int rtnl_dump_ifinfo(struct sk_buff *skb, struct netlink_callback *cb)
 		hlist_for_each_entry_rcu(dev, head, index_hlist) {
 			if (idx < s_idx)
 				goto cont;
+<<<<<<< HEAD
 			err = rtnl_fill_ifinfo(skb, dev, RTM_NEWLINK,
 					       NETLINK_CB(cb->skb).portid,
 					       cb->nlh->nlmsg_seq, 0,
@@ -1085,6 +1118,13 @@ static int rtnl_dump_ifinfo(struct sk_buff *skb, struct netlink_callback *cb)
 			WARN_ON((err == -EMSGSIZE) && (skb->len == 0));
 
 			if (err <= 0)
+=======
+			if (rtnl_fill_ifinfo(skb, dev, RTM_NEWLINK,
+					     NETLINK_CB(cb->skb).portid,
+					     cb->nlh->nlmsg_seq, 0,
+					     NLM_F_MULTI,
+					     ext_filter_mask) <= 0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				goto out;
 
 			nl_dump_check_consistent(cb, nlmsg_hdr(skb));
@@ -1138,10 +1178,21 @@ static const struct nla_policy ifla_vfinfo_policy[IFLA_VF_INFO_MAX+1] = {
 };
 
 static const struct nla_policy ifla_vf_policy[IFLA_VF_MAX+1] = {
+<<<<<<< HEAD
 	[IFLA_VF_MAC]		= { .len = sizeof(struct ifla_vf_mac) },
 	[IFLA_VF_VLAN]		= { .len = sizeof(struct ifla_vf_vlan) },
 	[IFLA_VF_TX_RATE]	= { .len = sizeof(struct ifla_vf_tx_rate) },
 	[IFLA_VF_SPOOFCHK]	= { .len = sizeof(struct ifla_vf_spoofchk) },
+=======
+	[IFLA_VF_MAC]		= { .type = NLA_BINARY,
+				    .len = sizeof(struct ifla_vf_mac) },
+	[IFLA_VF_VLAN]		= { .type = NLA_BINARY,
+				    .len = sizeof(struct ifla_vf_vlan) },
+	[IFLA_VF_TX_RATE]	= { .type = NLA_BINARY,
+				    .len = sizeof(struct ifla_vf_tx_rate) },
+	[IFLA_VF_SPOOFCHK]	= { .type = NLA_BINARY,
+				    .len = sizeof(struct ifla_vf_spoofchk) },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static const struct nla_policy ifla_port_policy[IFLA_PORT_MAX+1] = {
@@ -1300,8 +1351,12 @@ static int do_set_master(struct net_device *dev, int ifindex)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int do_setlink(const struct sk_buff *skb,
 		      struct net_device *dev, struct ifinfomsg *ifm,
+=======
+static int do_setlink(struct net_device *dev, struct ifinfomsg *ifm,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		      struct nlattr **tb, char *ifname, int modified)
 {
 	const struct net_device_ops *ops = dev->netdev_ops;
@@ -1313,8 +1368,12 @@ static int do_setlink(const struct sk_buff *skb,
 			err = PTR_ERR(net);
 			goto errout;
 		}
+<<<<<<< HEAD
 		if (!netlink_ns_capable(skb, net->user_ns, CAP_NET_ADMIN)) {
 			put_net(net);
+=======
+		if (!ns_capable(net->user_ns, CAP_NET_ADMIN)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			err = -EPERM;
 			goto errout;
 		}
@@ -1568,7 +1627,11 @@ static int rtnl_setlink(struct sk_buff *skb, struct nlmsghdr *nlh)
 	if (err < 0)
 		goto errout;
 
+<<<<<<< HEAD
 	err = do_setlink(skb, dev, ifm, tb, ifname, 0);
+=======
+	err = do_setlink(dev, ifm, tb, ifname, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 errout:
 	return err;
 }
@@ -1608,6 +1671,10 @@ static int rtnl_dellink(struct sk_buff *skb, struct nlmsghdr *nlh)
 
 	ops->dellink(dev, &list_kill);
 	unregister_netdevice_many(&list_kill);
+<<<<<<< HEAD
+=======
+	list_del(&list_kill);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -1685,8 +1752,12 @@ err:
 }
 EXPORT_SYMBOL(rtnl_create_link);
 
+<<<<<<< HEAD
 static int rtnl_group_changelink(const struct sk_buff *skb,
 		struct net *net, int group,
+=======
+static int rtnl_group_changelink(struct net *net, int group,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		struct ifinfomsg *ifm,
 		struct nlattr **tb)
 {
@@ -1695,7 +1766,11 @@ static int rtnl_group_changelink(const struct sk_buff *skb,
 
 	for_each_netdev(net, dev) {
 		if (dev->group == group) {
+<<<<<<< HEAD
 			err = do_setlink(skb, dev, ifm, tb, NULL, 0);
+=======
+			err = do_setlink(dev, ifm, tb, NULL, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (err < 0)
 				return err;
 		}
@@ -1797,12 +1872,20 @@ replay:
 				modified = 1;
 			}
 
+<<<<<<< HEAD
 			return do_setlink(skb, dev, ifm, tb, ifname, modified);
+=======
+			return do_setlink(dev, ifm, tb, ifname, modified);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 		if (!(nlh->nlmsg_flags & NLM_F_CREATE)) {
 			if (ifm->ifi_index == 0 && tb[IFLA_GROUP])
+<<<<<<< HEAD
 				return rtnl_group_changelink(skb, net,
+=======
+				return rtnl_group_changelink(net,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 						nla_get_u32(tb[IFLA_GROUP]),
 						ifm, tb);
 			return -ENODEV;
@@ -1851,6 +1934,7 @@ replay:
 			goto out;
 
 		err = rtnl_configure_link(dev, ifm);
+<<<<<<< HEAD
 		if (err < 0) {
 			if (ops->newlink) {
 				LIST_HEAD(list_kill);
@@ -1861,6 +1945,10 @@ replay:
 				unregister_netdevice(dev);
 			}
 		}
+=======
+		if (err < 0)
+			unregister_netdevice(dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out:
 		put_net(dest_net);
 		return err;
@@ -1922,6 +2010,7 @@ static u16 rtnl_calcit(struct sk_buff *skb, struct nlmsghdr *nlh)
 	struct nlattr *tb[IFLA_MAX+1];
 	u32 ext_filter_mask = 0;
 	u16 min_ifinfo_dump_size = 0;
+<<<<<<< HEAD
 	int hdrlen;
 
 	/* Same kernel<->userspace interface hack as in rtnl_dump_ifinfo. */
@@ -1929,6 +2018,11 @@ static u16 rtnl_calcit(struct sk_buff *skb, struct nlmsghdr *nlh)
 		 sizeof(struct rtgenmsg) : sizeof(struct ifinfomsg);
 
 	if (nlmsg_parse(nlh, hdrlen, tb, IFLA_MAX, ifla_policy) >= 0) {
+=======
+
+	if (nlmsg_parse(nlh, sizeof(struct ifinfomsg), tb, IFLA_MAX,
+			ifla_policy) >= 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (tb[IFLA_EXT_MASK])
 			ext_filter_mask = nla_get_u32(tb[IFLA_EXT_MASK]);
 	}
@@ -2004,13 +2098,21 @@ EXPORT_SYMBOL(rtmsg_ifinfo);
 static int nlmsg_populate_fdb_fill(struct sk_buff *skb,
 				   struct net_device *dev,
 				   u8 *addr, u32 pid, u32 seq,
+<<<<<<< HEAD
 				   int type, unsigned int flags,
 				   int nlflags)
+=======
+				   int type, unsigned int flags)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct nlmsghdr *nlh;
 	struct ndmsg *ndm;
 
+<<<<<<< HEAD
 	nlh = nlmsg_put(skb, pid, seq, type, sizeof(*ndm), nlflags);
+=======
+	nlh = nlmsg_put(skb, pid, seq, type, sizeof(*ndm), NLM_F_MULTI);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!nlh)
 		return -EMSGSIZE;
 
@@ -2048,7 +2150,11 @@ static void rtnl_fdb_notify(struct net_device *dev, u8 *addr, int type)
 	if (!skb)
 		goto errout;
 
+<<<<<<< HEAD
 	err = nlmsg_populate_fdb_fill(skb, dev, addr, 0, 0, type, NTF_SELF, 0);
+=======
+	err = nlmsg_populate_fdb_fill(skb, dev, addr, 0, 0, type, NTF_SELF);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (err < 0) {
 		kfree_skb(skb);
 		goto errout;
@@ -2199,7 +2305,11 @@ static int rtnl_fdb_del(struct sk_buff *skb, struct nlmsghdr *nlh)
 	int err = -EINVAL;
 	__u8 *addr;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	err = nlmsg_parse(nlh, sizeof(*ndm), tb, NDA_MAX, NULL);
@@ -2281,8 +2391,12 @@ static int nlmsg_populate_fdb(struct sk_buff *skb,
 
 		err = nlmsg_populate_fdb_fill(skb, dev, ha->addr,
 					      portid, seq,
+<<<<<<< HEAD
 					      RTM_NEWNEIGH, NTF_SELF,
 					      NLM_F_MULTI);
+=======
+					      RTM_NEWNEIGH, NTF_SELF);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (err < 0)
 			return err;
 skip:
@@ -2481,16 +2595,23 @@ static int rtnl_bridge_notify(struct net_device *dev, u16 flags)
 			goto errout;
 	}
 
+<<<<<<< HEAD
 	if (!skb->len)
 		goto errout;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
 	return 0;
 errout:
 	WARN_ON(err == -EMSGSIZE);
 	kfree_skb(skb);
+<<<<<<< HEAD
 	if (err)
 		rtnl_set_sk_err(net, RTNLGRP_LINK, err);
+=======
+	rtnl_set_sk_err(net, RTNLGRP_LINK, err);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return err;
 }
 
@@ -2659,7 +2780,11 @@ static int rtnetlink_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 	sz_idx = type>>2;
 	kind = type&3;
 
+<<<<<<< HEAD
 	if (kind != 2 && !netlink_net_capable(skb, CAP_NET_ADMIN))
+=======
+	if (kind != 2 && !ns_capable(net->user_ns, CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (kind == 2 && nlh->nlmsg_flags&NLM_F_DUMP) {

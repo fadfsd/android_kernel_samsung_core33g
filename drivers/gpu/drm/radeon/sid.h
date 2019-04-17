@@ -247,7 +247,11 @@
 #define		NOOFGROUPS_SHIFT				12
 #define		NOOFGROUPS_MASK					0x00001000
 
+<<<<<<< HEAD
 #define	MC_SEQ_TRAIN_WAKEUP_CNTL			0x28e8
+=======
+#define	MC_SEQ_TRAIN_WAKEUP_CNTL			0x2808
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define		TRAIN_DONE_D0      			(1 << 30)
 #define		TRAIN_DONE_D1      			(1 << 31)
 
@@ -394,7 +398,11 @@
 #       define GRPH_PFLIP_INT_MASK                      (1 << 0)
 #       define GRPH_PFLIP_INT_TYPE                      (1 << 8)
 
+<<<<<<< HEAD
 #define	DAC_AUTODETECT_INT_CONTROL			0x67c8
+=======
+#define	DACA_AUTODETECT_INT_CONTROL			0x66c8
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define DC_HPD1_INT_STATUS                              0x601c
 #define DC_HPD2_INT_STATUS                              0x6028

@@ -1,4 +1,5 @@
 #
+<<<<<<< HEAD
 # Makefile for Inertial Measurement Units
 #
 
@@ -13,3 +14,10 @@ adis_lib-$(CONFIG_IIO_ADIS_LIB_BUFFER) += adis_buffer.o
 obj-$(CONFIG_IIO_ADIS_LIB) += adis_lib.o
 
 obj-y += inv_mpu6050/
+=======
+# Makefile for the industrial I/O core.
+#
+
+obj-y += inv_mpu/
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

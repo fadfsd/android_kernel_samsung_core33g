@@ -457,7 +457,10 @@ void rbd_warn(struct rbd_device *rbd_dev, const char *fmt, ...)
 #  define rbd_assert(expr)	((void) 0)
 #endif /* !RBD_DEBUG */
 
+<<<<<<< HEAD
 static void rbd_osd_copyup_callback(struct rbd_obj_request *obj_request);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int rbd_img_obj_request_submit(struct rbd_obj_request *obj_request);
 static void rbd_img_parent_read(struct rbd_obj_request *obj_request);
 static void rbd_dev_remove_parent(struct rbd_device *rbd_dev);
@@ -938,6 +941,7 @@ static const char *rbd_dev_v1_snap_name(struct rbd_device *rbd_dev,
 					u64 snap_id)
 {
 	u32 which;
+<<<<<<< HEAD
 	const char *snap_name;
 
 	which = rbd_dev_snap_index(rbd_dev, snap_id);
@@ -946,6 +950,14 @@ static const char *rbd_dev_v1_snap_name(struct rbd_device *rbd_dev,
 
 	snap_name = _rbd_dev_v1_snap_name(rbd_dev, which);
 	return snap_name ? snap_name : ERR_PTR(-ENOMEM);
+=======
+
+	which = rbd_dev_snap_index(rbd_dev, snap_id);
+	if (which == BAD_SNAP_INDEX)
+		return NULL;
+
+	return _rbd_dev_v1_snap_name(rbd_dev, which);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static const char *rbd_snap_name(struct rbd_device *rbd_dev, u64 snap_id)
@@ -1129,7 +1141,10 @@ static void zero_bio_chain(struct bio *chain, int start_ofs)
 				buf = bvec_kmap_irq(bv, &flags);
 				memset(buf + remainder, 0,
 				       bv->bv_len - remainder);
+<<<<<<< HEAD
 				flush_dcache_page(bv->bv_page);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				bvec_kunmap_irq(buf, &flags);
 			}
 			pos += bv->bv_len;
@@ -1162,7 +1177,10 @@ static void zero_pages(struct page **pages, u64 offset, u64 end)
 		local_irq_save(flags);
 		kaddr = kmap_atomic(*page);
 		memset(kaddr + page_offset, 0, length);
+<<<<<<< HEAD
 		flush_dcache_page(*page);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kunmap_atomic(kaddr);
 		local_irq_restore(flags);
 
@@ -1386,6 +1404,7 @@ static bool obj_request_exists_test(struct rbd_obj_request *obj_request)
 	return test_bit(OBJ_REQ_EXISTS, &obj_request->flags) != 0;
 }
 
+<<<<<<< HEAD
 static bool obj_request_overlaps_parent(struct rbd_obj_request *obj_request)
 {
 	struct rbd_device *rbd_dev = obj_request->img_request->rbd_dev;
@@ -1394,6 +1413,8 @@ static bool obj_request_overlaps_parent(struct rbd_obj_request *obj_request)
 	    round_up(rbd_dev->parent_overlap, rbd_obj_bytes(&rbd_dev->header));
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void rbd_obj_request_get(struct rbd_obj_request *obj_request)
 {
 	dout("%s: obj %p (was %d)\n", __func__, obj_request,
@@ -1410,6 +1431,7 @@ static void rbd_obj_request_put(struct rbd_obj_request *obj_request)
 	kref_put(&obj_request->kref, rbd_obj_request_destroy);
 }
 
+<<<<<<< HEAD
 static void rbd_img_request_get(struct rbd_img_request *img_request)
 {
 	dout("%s: img %p (was %d)\n", __func__, img_request,
@@ -1417,6 +1439,8 @@ static void rbd_img_request_get(struct rbd_img_request *img_request)
 	kref_get(&img_request->kref);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static bool img_request_child_test(struct rbd_img_request *img_request);
 static void rbd_parent_request_destroy(struct kref *kref);
 static void rbd_img_request_destroy(struct kref *kref);
@@ -1671,6 +1695,7 @@ static void rbd_osd_stat_callback(struct rbd_obj_request *obj_request)
 	obj_request_done_set(obj_request);
 }
 
+<<<<<<< HEAD
 static void rbd_osd_call_callback(struct rbd_obj_request *obj_request)
 {
 	dout("%s: obj %p\n", __func__, obj_request);
@@ -1681,6 +1706,8 @@ static void rbd_osd_call_callback(struct rbd_obj_request *obj_request)
 		obj_request_done_set(obj_request);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void rbd_osd_req_callback(struct ceph_osd_request *osd_req,
 				struct ceph_msg *msg)
 {
@@ -1719,8 +1746,11 @@ static void rbd_osd_req_callback(struct ceph_osd_request *osd_req,
 		rbd_osd_stat_callback(obj_request);
 		break;
 	case CEPH_OSD_OP_CALL:
+<<<<<<< HEAD
 		rbd_osd_call_callback(obj_request);
 		break;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	case CEPH_OSD_OP_NOTIFY_ACK:
 	case CEPH_OSD_OP_WATCH:
 		rbd_osd_trivial_callback(obj_request);
@@ -1864,11 +1894,19 @@ static struct rbd_obj_request *rbd_obj_request_create(const char *object_name,
 	rbd_assert(obj_request_type_valid(type));
 
 	size = strlen(object_name) + 1;
+<<<<<<< HEAD
 	name = kmalloc(size, GFP_NOIO);
 	if (!name)
 		return NULL;
 
 	obj_request = kmem_cache_zalloc(rbd_obj_request_cache, GFP_NOIO);
+=======
+	name = kmalloc(size, GFP_KERNEL);
+	if (!name)
+		return NULL;
+
+	obj_request = kmem_cache_zalloc(rbd_obj_request_cache, GFP_KERNEL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!obj_request) {
 		kfree(name);
 		return NULL;
@@ -2128,11 +2166,14 @@ static bool rbd_img_obj_end_request(struct rbd_obj_request *obj_request)
 			result, xferred);
 		if (!img_request->result)
 			img_request->result = result;
+<<<<<<< HEAD
 		/*
 		 * Need to end I/O on the entire obj_request worth of
 		 * bytes in case of error.
 		 */
 		xferred = obj_request->length;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* Image object requests don't own their page array */
@@ -2167,6 +2208,10 @@ static void rbd_img_obj_callback(struct rbd_obj_request *obj_request)
 	rbd_assert(img_request->obj_request_count > 0);
 	rbd_assert(which != BAD_WHICH);
 	rbd_assert(which < img_request->obj_request_count);
+<<<<<<< HEAD
+=======
+	rbd_assert(which >= img_request->next_completion);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_lock_irq(&img_request->completion_lock);
 	if (which != img_request->next_completion)
@@ -2186,7 +2231,10 @@ static void rbd_img_obj_callback(struct rbd_obj_request *obj_request)
 	img_request->next_completion = which;
 out:
 	spin_unlock_irq(&img_request->completion_lock);
+<<<<<<< HEAD
 	rbd_img_request_put(img_request);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!more)
 		rbd_img_request_complete(img_request);
@@ -2208,9 +2256,15 @@ static int rbd_img_request_fill(struct rbd_img_request *img_request,
 	struct rbd_obj_request *obj_request = NULL;
 	struct rbd_obj_request *next_obj_request;
 	bool write_request = img_request_write_test(img_request);
+<<<<<<< HEAD
 	struct bio *bio_list = 0;
 	unsigned int bio_offset = 0;
 	struct page **pages = 0;
+=======
+	struct bio *bio_list;
+	unsigned int bio_offset = 0;
+	struct page **pages;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u64 img_offset;
 	u64 resid;
 	u16 opcode;
@@ -2248,11 +2302,14 @@ static int rbd_img_request_fill(struct rbd_img_request *img_request,
 		rbd_segment_name_free(object_name);
 		if (!obj_request)
 			goto out_unwind;
+<<<<<<< HEAD
 		/*
 		 * set obj_request->img_request before creating the
 		 * osd_request so that it gets the right snapc
 		 */
 		rbd_img_obj_request_add(img_request, obj_request);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (type == OBJ_REQUEST_BIO) {
 			unsigned int clone_size;
@@ -2283,7 +2340,10 @@ static int rbd_img_request_fill(struct rbd_img_request *img_request,
 			goto out_partial;
 		obj_request->osd_req = osd_req;
 		obj_request->callback = rbd_img_obj_callback;
+<<<<<<< HEAD
 		rbd_img_request_get(img_request);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		osd_req_op_extent_init(osd_req, 0, opcode, offset, length,
 						0, 0);
@@ -2295,6 +2355,14 @@ static int rbd_img_request_fill(struct rbd_img_request *img_request,
 					obj_request->pages, length,
 					offset & ~PAGE_MASK, false, false);
 
+<<<<<<< HEAD
+=======
+		/*
+		 * set obj_request->img_request before formatting
+		 * the osd_request so that it gets the right snapc
+		 */
+		rbd_img_obj_request_add(img_request, obj_request);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (write_request)
 			rbd_osd_req_format_write(obj_request);
 		else
@@ -2312,21 +2380,32 @@ out_partial:
 	rbd_obj_request_put(obj_request);
 out_unwind:
 	for_each_obj_request_safe(img_request, obj_request, next_obj_request)
+<<<<<<< HEAD
 		rbd_img_obj_request_del(img_request, obj_request);
+=======
+		rbd_obj_request_put(obj_request);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return -ENOMEM;
 }
 
 static void
+<<<<<<< HEAD
 rbd_osd_copyup_callback(struct rbd_obj_request *obj_request)
+=======
+rbd_img_obj_copyup_callback(struct rbd_obj_request *obj_request)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct rbd_img_request *img_request;
 	struct rbd_device *rbd_dev;
 	struct page **pages;
 	u32 page_count;
 
+<<<<<<< HEAD
 	dout("%s: obj %p\n", __func__, obj_request);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rbd_assert(obj_request->type == OBJ_REQUEST_BIO);
 	rbd_assert(obj_request_img_data_test(obj_request));
 	img_request = obj_request->img_request;
@@ -2352,7 +2431,13 @@ rbd_osd_copyup_callback(struct rbd_obj_request *obj_request)
 	if (!obj_request->result)
 		obj_request->xferred = obj_request->length;
 
+<<<<<<< HEAD
 	obj_request_done_set(obj_request);
+=======
+	/* Finish up with the normal image object callback */
+
+	rbd_img_obj_callback(obj_request);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void
@@ -2449,6 +2534,10 @@ rbd_img_obj_parent_read_full_callback(struct rbd_img_request *img_request)
 
 	/* All set, send it off. */
 
+<<<<<<< HEAD
+=======
+	orig_request->callback = rbd_img_obj_copyup_callback;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	osdc = &rbd_dev->rbd_client->client->osdc;
 	img_result = rbd_obj_request_submit(osdc, orig_request);
 	if (!img_result)
@@ -2706,7 +2795,11 @@ static int rbd_img_obj_request_submit(struct rbd_obj_request *obj_request)
 	 */
 	if (!img_request_write_test(img_request) ||
 		!img_request_layered_test(img_request) ||
+<<<<<<< HEAD
 		!obj_request_overlaps_parent(obj_request) ||
+=======
+		rbd_dev->parent_overlap <= obj_request->img_offset ||
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		((known = obj_request_known_test(obj_request)) &&
 			obj_request_exists_test(obj_request))) {
 
@@ -2854,7 +2947,11 @@ out_err:
 	obj_request_done_set(obj_request);
 }
 
+<<<<<<< HEAD
 static int rbd_obj_notify_ack_sync(struct rbd_device *rbd_dev, u64 notify_id)
+=======
+static int rbd_obj_notify_ack(struct rbd_device *rbd_dev, u64 notify_id)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct rbd_obj_request *obj_request;
 	struct ceph_osd_client *osdc = &rbd_dev->rbd_client->client->osdc;
@@ -2869,17 +2966,27 @@ static int rbd_obj_notify_ack_sync(struct rbd_device *rbd_dev, u64 notify_id)
 	obj_request->osd_req = rbd_osd_req_create(rbd_dev, false, obj_request);
 	if (!obj_request->osd_req)
 		goto out;
+<<<<<<< HEAD
+=======
+	obj_request->callback = rbd_obj_request_put;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	osd_req_op_watch_init(obj_request->osd_req, 0, CEPH_OSD_OP_NOTIFY_ACK,
 					notify_id, 0, 0);
 	rbd_osd_req_format_read(obj_request);
 
 	ret = rbd_obj_request_submit(osdc, obj_request);
+<<<<<<< HEAD
 	if (ret)
 		goto out;
 	ret = rbd_obj_request_wait(obj_request);
 out:
 	rbd_obj_request_put(obj_request);
+=======
+out:
+	if (ret)
+		rbd_obj_request_put(obj_request);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }
@@ -2899,7 +3006,11 @@ static void rbd_watch_cb(u64 ver, u64 notify_id, u8 opcode, void *data)
 	if (ret)
 		rbd_warn(rbd_dev, ": header refresh error (%d)\n", ret);
 
+<<<<<<< HEAD
 	rbd_obj_notify_ack_sync(rbd_dev, notify_id);
+=======
+	rbd_obj_notify_ack(rbd_dev, notify_id);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -3243,7 +3354,11 @@ static int rbd_obj_read_sync(struct rbd_device *rbd_dev,
 	page_count = (u32) calc_pages_for(offset, length);
 	pages = ceph_alloc_page_vector(page_count, GFP_KERNEL);
 	if (IS_ERR(pages))
+<<<<<<< HEAD
 		return PTR_ERR(pages);
+=======
+		ret = PTR_ERR(pages);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ret = -ENOMEM;
 	obj_request = rbd_obj_request_create(object_name, offset, length,
@@ -3371,6 +3486,7 @@ static void rbd_exists_validate(struct rbd_device *rbd_dev)
 		clear_bit(RBD_DEV_FLAG_EXISTS, &rbd_dev->flags);
 }
 
+<<<<<<< HEAD
 static void rbd_dev_update_size(struct rbd_device *rbd_dev)
 {
 	sector_t size;
@@ -3396,6 +3512,8 @@ static void rbd_dev_update_size(struct rbd_device *rbd_dev)
 	}
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int rbd_dev_refresh(struct rbd_device *rbd_dev)
 {
 	u64 mapping_size;
@@ -3414,7 +3532,16 @@ static int rbd_dev_refresh(struct rbd_device *rbd_dev)
 	rbd_exists_validate(rbd_dev);
 	mutex_unlock(&ctl_mutex);
 	if (mapping_size != rbd_dev->mapping.size) {
+<<<<<<< HEAD
 		rbd_dev_update_size(rbd_dev);
+=======
+		sector_t size;
+
+		size = (sector_t)rbd_dev->mapping.size / SECTOR_SIZE;
+		dout("setting size to %llu sectors", (unsigned long long)size);
+		set_capacity(rbd_dev->disk, size);
+		revalidate_disk(rbd_dev->disk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	return ret;
@@ -3768,6 +3895,7 @@ static int _rbd_dev_v2_snap_size(struct rbd_device *rbd_dev, u64 snap_id,
 	if (ret < sizeof (size_buf))
 		return -ERANGE;
 
+<<<<<<< HEAD
 	if (order) {
 		*order = size_buf.order;
 		dout("  order %u", (unsigned int)*order);
@@ -3776,6 +3904,14 @@ static int _rbd_dev_v2_snap_size(struct rbd_device *rbd_dev, u64 snap_id,
 
 	dout("  snap_id 0x%016llx snap_size = %llu\n",
 		(unsigned long long)snap_id,
+=======
+	if (order)
+		*order = size_buf.order;
+	*snap_size = le64_to_cpu(size_buf.size);
+
+	dout("  snap_id 0x%016llx order = %u, snap_size = %llu\n",
+		(unsigned long long)snap_id, (unsigned int)*order,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		(unsigned long long)*snap_size);
 
 	return 0;
@@ -4090,6 +4226,7 @@ static u64 rbd_v2_snap_id_by_name(struct rbd_device *rbd_dev, const char *name)
 
 		snap_id = snapc->snaps[which];
 		snap_name = rbd_dev_v2_snap_name(rbd_dev, snap_id);
+<<<<<<< HEAD
 		if (IS_ERR(snap_name)) {
 			/* ignore no-longer existing snapshots */
 			if (PTR_ERR(snap_name) == -ENOENT)
@@ -4097,6 +4234,10 @@ static u64 rbd_v2_snap_id_by_name(struct rbd_device *rbd_dev, const char *name)
 			else
 				break;
 		}
+=======
+		if (IS_ERR(snap_name))
+			break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		found = !strcmp(name, snap_name);
 		kfree(snap_name);
 	}
@@ -4175,8 +4316,13 @@ static int rbd_dev_spec_update(struct rbd_device *rbd_dev)
 	/* Look up the snapshot name, and make a copy */
 
 	snap_name = rbd_snap_name(rbd_dev, spec->snap_id);
+<<<<<<< HEAD
 	if (IS_ERR(snap_name)) {
 		ret = PTR_ERR(snap_name);
+=======
+	if (!snap_name) {
+		ret = -ENOMEM;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out_err;
 	}
 
@@ -5124,6 +5270,26 @@ err_out_module:
 	return (ssize_t)rc;
 }
 
+<<<<<<< HEAD
+=======
+static struct rbd_device *__rbd_get_dev(unsigned long dev_id)
+{
+	struct list_head *tmp;
+	struct rbd_device *rbd_dev;
+
+	spin_lock(&rbd_dev_list_lock);
+	list_for_each(tmp, &rbd_dev_list) {
+		rbd_dev = list_entry(tmp, struct rbd_device, node);
+		if (rbd_dev->dev_id == dev_id) {
+			spin_unlock(&rbd_dev_list_lock);
+			return rbd_dev;
+		}
+	}
+	spin_unlock(&rbd_dev_list_lock);
+	return NULL;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void rbd_dev_device_release(struct device *dev)
 {
 	struct rbd_device *rbd_dev = dev_to_rbd_dev(dev);
@@ -5168,10 +5334,15 @@ static ssize_t rbd_remove(struct bus_type *bus,
 			  size_t count)
 {
 	struct rbd_device *rbd_dev = NULL;
+<<<<<<< HEAD
 	struct list_head *tmp;
 	int dev_id;
 	unsigned long ul;
 	bool already = false;
+=======
+	int target_id;
+	unsigned long ul;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret;
 
 	ret = strict_strtoul(buf, 10, &ul);
@@ -5179,12 +5350,18 @@ static ssize_t rbd_remove(struct bus_type *bus,
 		return ret;
 
 	/* convert to int; abort if we lost anything in the conversion */
+<<<<<<< HEAD
 	dev_id = (int)ul;
 	if (dev_id != ul)
+=======
+	target_id = (int) ul;
+	if (target_id != ul)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 
 	mutex_lock_nested(&ctl_mutex, SINGLE_DEPTH_NESTING);
 
+<<<<<<< HEAD
 	ret = -ENOENT;
 	spin_lock(&rbd_dev_list_lock);
 	list_for_each(tmp, &rbd_dev_list) {
@@ -5224,6 +5401,26 @@ static ssize_t rbd_remove(struct bus_type *bus,
 	 * in a potential use after free of rbd_dev->disk or rbd_dev.
 	 */
 	rbd_bus_del_dev(rbd_dev);
+=======
+	rbd_dev = __rbd_get_dev(target_id);
+	if (!rbd_dev) {
+		ret = -ENOENT;
+		goto done;
+	}
+
+	spin_lock_irq(&rbd_dev->lock);
+	if (rbd_dev->open_count)
+		ret = -EBUSY;
+	else
+		set_bit(RBD_DEV_FLAG_REMOVING, &rbd_dev->flags);
+	spin_unlock_irq(&rbd_dev->lock);
+	if (ret < 0)
+		goto done;
+	rbd_bus_del_dev(rbd_dev);
+	ret = rbd_dev_header_watch_sync(rbd_dev, false);
+	if (ret)
+		rbd_warn(rbd_dev, "failed to cancel watch event (%d)\n", ret);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rbd_dev_image_release(rbd_dev);
 	module_put(THIS_MODULE);
 	ret = count;

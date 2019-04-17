@@ -38,6 +38,14 @@
 /* How many pages do we try to swap or page in/out together? */
 int page_cluster;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+#include <linux/cmainfo.h>
+static struct lruvec *lruvec_base = NULL;
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static DEFINE_PER_CPU(struct pagevec[NR_LRU_LISTS], lru_add_pvecs);
 static DEFINE_PER_CPU(struct pagevec, lru_rotate_pvecs);
 static DEFINE_PER_CPU(struct pagevec, lru_deactivate_pvecs);
@@ -79,9 +87,28 @@ static void __put_compound_page(struct page *page)
 
 static void put_compound_page(struct page *page)
 {
+<<<<<<< HEAD
 	if (unlikely(PageTail(page))) {
 		/* __split_huge_page_refcount can run under us */
 		struct page *page_head = compound_head(page);
+=======
+	/*
+	 * hugetlbfs pages cannot be split from under us.  If this is a
+	 * hugetlbfs page, check refcount on head page and release the page if
+	 * the refcount becomes zero.
+	 */
+	if (PageHuge(page)) {
+		page = compound_head(page);
+		if (put_page_testzero(page))
+			__put_compound_page(page);
+
+		return;
+	}
+
+	if (unlikely(PageTail(page))) {
+		/* __split_huge_page_refcount can run under us */
+		struct page *page_head = compound_trans_head(page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (likely(page != page_head &&
 			   get_page_unless_zero(page_head))) {
@@ -95,6 +122,7 @@ static void put_compound_page(struct page *page)
 			 * still hot on arches that do not support
 			 * this_cpu_cmpxchg_double().
 			 */
+<<<<<<< HEAD
 			if (PageSlab(page_head) || PageHeadHuge(page_head)) {
 				if (likely(PageTail(page))) {
 					/*
@@ -120,6 +148,16 @@ static void put_compound_page(struct page *page)
 					 * reallocated as slab on
 					 * x86).
 					 */
+=======
+			if (PageSlab(page_head)) {
+				if (PageTail(page)) {
+					if (put_page_testzero(page_head))
+						VM_BUG_ON(1);
+
+					atomic_dec(&page->_mapcount);
+					goto skip_lock_tail;
+				} else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					goto skip_lock;
 			}
 			/*
@@ -133,6 +171,7 @@ static void put_compound_page(struct page *page)
 				/* __split_huge_page_refcount run before us */
 				compound_unlock_irqrestore(page_head, flags);
 skip_lock:
+<<<<<<< HEAD
 				if (put_page_testzero(page_head)) {
 					/*
 					 * The head page may have been
@@ -154,6 +193,10 @@ skip_lock:
 					else
 						__put_single_page(page_head);
 				}
+=======
+				if (put_page_testzero(page_head))
+					__put_single_page(page_head);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out_put_single:
 				if (put_page_testzero(page))
 					__put_single_page(page);
@@ -175,6 +218,10 @@ out_put_single:
 			VM_BUG_ON(atomic_read(&page->_count) != 0);
 			compound_unlock_irqrestore(page_head, flags);
 
+<<<<<<< HEAD
+=======
+skip_lock_tail:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (put_page_testzero(page_head)) {
 				if (PageHead(page_head))
 					__put_compound_page(page_head);
@@ -217,6 +264,7 @@ bool __get_page_tail(struct page *page)
 	 * proper PT lock that already serializes against
 	 * split_huge_page().
 	 */
+<<<<<<< HEAD
 	unsigned long flags;
 	bool got = false;
 	struct page *page_head = compound_head(page);
@@ -263,6 +311,53 @@ bool __get_page_tail(struct page *page)
 		compound_unlock_irqrestore(page_head, flags);
 		if (unlikely(!got))
 			put_page(page_head);
+=======
+	bool got = false;
+	struct page *page_head;
+
+	/*
+	 * If this is a hugetlbfs page it cannot be split under us.  Simply
+	 * increment refcount for the head page.
+	 */
+	if (PageHuge(page)) {
+		page_head = compound_head(page);
+		atomic_inc(&page_head->_count);
+		got = true;
+	} else {
+		unsigned long flags;
+
+		page_head = compound_trans_head(page);
+		if (likely(page != page_head &&
+					get_page_unless_zero(page_head))) {
+
+			/* Ref to put_compound_page() comment. */
+			if (PageSlab(page_head)) {
+				if (likely(PageTail(page))) {
+					__get_page_tail_foll(page, false);
+					return true;
+				} else {
+					put_page(page_head);
+					return false;
+				}
+			}
+
+			/*
+			 * page_head wasn't a dangling pointer but it
+			 * may not be a head page anymore by the time
+			 * we obtain the lock. That is ok as long as it
+			 * can't be freed from under us.
+			 */
+			flags = compound_lock_irqsave(page_head);
+			/* here __split_huge_page_refcount won't run anymore */
+			if (likely(PageTail(page))) {
+				__get_page_tail_foll(page, false);
+				got = true;
+			}
+			compound_unlock_irqrestore(page_head, flags);
+			if (unlikely(!got))
+				put_page(page_head);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return got;
 }
@@ -426,6 +521,13 @@ static void update_page_reclaim_stat(struct lruvec *lruvec,
 static void __activate_page(struct page *page, struct lruvec *lruvec,
 			    void *arg)
 {
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_CMA
+	lruvec_base = lruvec;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
 		int file = page_is_file_cache(page);
 		int lru = page_lru_base_type(page);
@@ -439,6 +541,59 @@ static void __activate_page(struct page *page, struct lruvec *lruvec,
 		update_page_reclaim_stat(lruvec, file, 1);
 	}
 }
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+/*
+ * It uses the temp variable initialized to lru vector head to iterate
+ * through the active and inactive page list to find the
+ * corresponding active and inactive CMA anonymous and CMA file pages.
+ */
+void cma_page_type_det(cmainfo_t *cmainfo)
+{
+	int i, j;
+	struct page *pg_dat;
+	phys_addr_t pg;
+	struct list_head *curr;
+/* NR_LRU_LISTS = {	0: inactive anonymous pages
+ *			1: active anonymous pages
+ *			2: inactive file pages
+ *			3: active file pages}
+ * corresponding counters are incremented
+ */
+	for(i = 0; i < NR_LRU_LISTS; i++) {
+		list_for_each(curr, &lruvec_base->lists[i]){
+			pg_dat = list_entry(curr,struct page,lru);
+			pg = page_to_phys(pg_dat);
+
+			/* The cma global/dev start and end are the
+			 * physical addresses of the CMA declared.
+			 */
+			  for (j = 0; j < cmainfo->nr_cma_areas; j++) {
+				if((
+				  (cmainfo->cma_areas[j].cma_phy_start) <= pg)
+				  && ((cmainfo->cma_areas[j].cma_phy_end) >=pg)) {
+					switch(i){
+						case 0:
+						 cmainfo->cma_inactive_anon++;
+						 break;
+						case 1:
+						 cmainfo->cma_active_anon++;
+						 break;
+						case 2:
+						 cmainfo->cma_inactive_file++;
+						 break;
+						case 3:
+						 cmainfo->cma_active_file++;
+						 break;
+					}
+				}
+			}
+		}
+	}
+}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_SMP
 static DEFINE_PER_CPU(struct pagevec, activate_page_pvecs);

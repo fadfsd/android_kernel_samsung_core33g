@@ -46,6 +46,7 @@ void rtl_fw_cb(const struct firmware *firmware, void *context)
 			 "Firmware callback routine entered!\n");
 	complete(&rtlpriv->firmware_loading_complete);
 	if (!firmware) {
+<<<<<<< HEAD
 		if (rtlpriv->cfg->alt_fw_name) {
 			err = request_firmware(&firmware,
 					       rtlpriv->cfg->alt_fw_name,
@@ -55,11 +56,16 @@ void rtl_fw_cb(const struct firmware *firmware, void *context)
 			if (!err)
 				goto found_alt;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		pr_err("Firmware %s not available\n", rtlpriv->cfg->fw_name);
 		rtlpriv->max_fw_size = 0;
 		return;
 	}
+<<<<<<< HEAD
 found_alt:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (firmware->size > rtlpriv->max_fw_size) {
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 			 "Firmware is too big!\n");
@@ -194,7 +200,10 @@ static int rtl_op_add_interface(struct ieee80211_hw *hw,
 					rtlpriv->cfg->maps
 					[RTL_IBSS_INT_MASKS]);
 		}
+<<<<<<< HEAD
 		mac->link_state = MAC80211_LINKED;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	case NL80211_IFTYPE_ADHOC:
 		RT_TRACE(rtlpriv, COMP_MAC80211, DBG_LOUD,

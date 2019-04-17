@@ -1232,7 +1232,11 @@ static ssize_t sm501_dbg_regs(struct device *dev,
 }
 
 
+<<<<<<< HEAD
 static DEVICE_ATTR(dbg_regs, 0444, sm501_dbg_regs, NULL);
+=======
+static DEVICE_ATTR(dbg_regs, 0666, sm501_dbg_regs, NULL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* sm501_init_reg
  *

@@ -1334,7 +1334,11 @@ xfs_da3_fixhashpath(
 		node = blk->bp->b_addr;
 		xfs_da3_node_hdr_from_disk(&nodehdr, node);
 		btree = xfs_da3_node_tree_p(node);
+<<<<<<< HEAD
 		if (be32_to_cpu(btree[blk->index].hashval) == lasthash)
+=======
+		if (be32_to_cpu(btree->hashval) == lasthash)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			break;
 		blk->hashval = lasthash;
 		btree[blk->index].hashval = cpu_to_be32(lasthash);

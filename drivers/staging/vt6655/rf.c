@@ -966,7 +966,10 @@ bool RFbSetPower(
 		break;
 	case RATE_6M:
 	case RATE_9M:
+<<<<<<< HEAD
 	case RATE_12M:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	case RATE_18M:
 		byPwr = pDevice->abyOFDMPwrTbl[uCH];
 		if (pDevice->byRFType == RF_UW2452) {

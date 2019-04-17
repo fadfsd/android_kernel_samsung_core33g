@@ -46,7 +46,11 @@ USER(9f, strh	wzr, [x0], #2	)
 	sub	x1, x1, #2
 4:	adds	x1, x1, #1
 	b.mi	5f
+<<<<<<< HEAD
 USER(9f, strb	wzr, [x0]	)
+=======
+	strb	wzr, [x0]
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 5:	mov	x0, #0
 	ret
 ENDPROC(__clear_user)

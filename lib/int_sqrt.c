@@ -14,15 +14,22 @@
  *
  * A very rough approximation to the sqrt() function.
  */
+<<<<<<< HEAD
 inline unsigned long int_sqrt(unsigned long x)
 {
 	register unsigned long tmp;
 	register unsigned long place;
 	register unsigned long root = 0;
+=======
+unsigned long int_sqrt(unsigned long x)
+{
+	unsigned long b, m, y = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (x <= 1)
 		return x;
 
+<<<<<<< HEAD
 	place = 1UL << (BITS_PER_LONG - 2);
 
 	do{
@@ -45,3 +52,20 @@ inline unsigned long int_sqrt(unsigned long x)
 }
 EXPORT_SYMBOL(int_sqrt);
 
+=======
+	m = 1UL << (BITS_PER_LONG - 2);
+	while (m != 0) {
+		b = y + m;
+		y >>= 1;
+
+		if (x >= b) {
+			x -= b;
+			y += m;
+		}
+		m >>= 2;
+	}
+
+	return y;
+}
+EXPORT_SYMBOL(int_sqrt);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

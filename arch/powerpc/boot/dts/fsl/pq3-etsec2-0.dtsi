@@ -50,7 +50,10 @@ ethernet@b0000 {
 	fsl,num_tx_queues = <0x8>;
 	fsl,magic-packet;
 	local-mac-address = [ 00 00 00 00 00 00 ];
+<<<<<<< HEAD
 	ranges;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	queue-group@b0000 {
 		#address-cells = <1>;

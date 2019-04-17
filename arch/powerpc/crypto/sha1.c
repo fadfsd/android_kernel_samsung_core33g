@@ -154,5 +154,9 @@ module_exit(sha1_powerpc_mod_fini);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SHA1 Secure Hash Algorithm");
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("sha1");
 MODULE_ALIAS_CRYPTO("sha1-powerpc");
+=======
+MODULE_ALIAS("sha1-powerpc");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

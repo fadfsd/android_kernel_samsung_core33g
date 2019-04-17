@@ -107,7 +107,11 @@ static int icst_set_rate(struct clk_hw *hw, unsigned long rate,
 
 	vco = icst_hz_to_vco(icst->params, rate);
 	icst->rate = icst_hz(icst->params, vco);
+<<<<<<< HEAD
 	vco_set(icst->lockreg, icst->vcoreg, vco);
+=======
+	vco_set(icst->vcoreg, icst->lockreg, vco);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

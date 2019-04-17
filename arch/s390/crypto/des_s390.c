@@ -25,7 +25,10 @@
 #define DES3_KEY_SIZE	(3 * DES_KEY_SIZE)
 
 static u8 *ctrblk;
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(ctrblk_lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct s390_des_ctx {
 	u8 iv[DES_BLOCK_SIZE];
@@ -106,6 +109,7 @@ static int ecb_desall_crypt(struct blkcipher_desc *desc, long func,
 }
 
 static int cbc_desall_crypt(struct blkcipher_desc *desc, long func,
+<<<<<<< HEAD
 			    struct blkcipher_walk *walk)
 {
 	struct s390_des_ctx *ctx = crypto_blkcipher_ctx(desc->tfm);
@@ -115,26 +119,44 @@ static int cbc_desall_crypt(struct blkcipher_desc *desc, long func,
 		u8 iv[DES_BLOCK_SIZE];
 		u8 key[DES3_KEY_SIZE];
 	} param;
+=======
+			    u8 *iv, struct blkcipher_walk *walk)
+{
+	int ret = blkcipher_walk_virt(desc, walk);
+	unsigned int nbytes = walk->nbytes;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!nbytes)
 		goto out;
 
+<<<<<<< HEAD
 	memcpy(param.iv, walk->iv, DES_BLOCK_SIZE);
 	memcpy(param.key, ctx->key, DES3_KEY_SIZE);
+=======
+	memcpy(iv, walk->iv, DES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	do {
 		/* only use complete blocks */
 		unsigned int n = nbytes & ~(DES_BLOCK_SIZE - 1);
 		u8 *out = walk->dst.virt.addr;
 		u8 *in = walk->src.virt.addr;
 
+<<<<<<< HEAD
 		ret = crypt_s390_kmc(func, &param, out, in, n);
+=======
+		ret = crypt_s390_kmc(func, iv, out, in, n);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (ret < 0 || ret != n)
 			return -EIO;
 
 		nbytes &= DES_BLOCK_SIZE - 1;
 		ret = blkcipher_walk_done(desc, walk, nbytes);
 	} while ((nbytes = walk->nbytes));
+<<<<<<< HEAD
 	memcpy(walk->iv, param.iv, DES_BLOCK_SIZE);
+=======
+	memcpy(walk->iv, iv, DES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 out:
 	return ret;
@@ -186,20 +208,36 @@ static int cbc_des_encrypt(struct blkcipher_desc *desc,
 			   struct scatterlist *dst, struct scatterlist *src,
 			   unsigned int nbytes)
 {
+<<<<<<< HEAD
 	struct blkcipher_walk walk;
 
 	blkcipher_walk_init(&walk, dst, src, nbytes);
 	return cbc_desall_crypt(desc, KMC_DEA_ENCRYPT, &walk);
+=======
+	struct s390_des_ctx *ctx = crypto_blkcipher_ctx(desc->tfm);
+	struct blkcipher_walk walk;
+
+	blkcipher_walk_init(&walk, dst, src, nbytes);
+	return cbc_desall_crypt(desc, KMC_DEA_ENCRYPT, ctx->iv, &walk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int cbc_des_decrypt(struct blkcipher_desc *desc,
 			   struct scatterlist *dst, struct scatterlist *src,
 			   unsigned int nbytes)
 {
+<<<<<<< HEAD
 	struct blkcipher_walk walk;
 
 	blkcipher_walk_init(&walk, dst, src, nbytes);
 	return cbc_desall_crypt(desc, KMC_DEA_DECRYPT, &walk);
+=======
+	struct s390_des_ctx *ctx = crypto_blkcipher_ctx(desc->tfm);
+	struct blkcipher_walk walk;
+
+	blkcipher_walk_init(&walk, dst, src, nbytes);
+	return cbc_desall_crypt(desc, KMC_DEA_DECRYPT, ctx->iv, &walk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct crypto_alg cbc_des_alg = {
@@ -332,20 +370,36 @@ static int cbc_des3_encrypt(struct blkcipher_desc *desc,
 			    struct scatterlist *dst, struct scatterlist *src,
 			    unsigned int nbytes)
 {
+<<<<<<< HEAD
 	struct blkcipher_walk walk;
 
 	blkcipher_walk_init(&walk, dst, src, nbytes);
 	return cbc_desall_crypt(desc, KMC_TDEA_192_ENCRYPT, &walk);
+=======
+	struct s390_des_ctx *ctx = crypto_blkcipher_ctx(desc->tfm);
+	struct blkcipher_walk walk;
+
+	blkcipher_walk_init(&walk, dst, src, nbytes);
+	return cbc_desall_crypt(desc, KMC_TDEA_192_ENCRYPT, ctx->iv, &walk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int cbc_des3_decrypt(struct blkcipher_desc *desc,
 			    struct scatterlist *dst, struct scatterlist *src,
 			    unsigned int nbytes)
 {
+<<<<<<< HEAD
 	struct blkcipher_walk walk;
 
 	blkcipher_walk_init(&walk, dst, src, nbytes);
 	return cbc_desall_crypt(desc, KMC_TDEA_192_DECRYPT, &walk);
+=======
+	struct s390_des_ctx *ctx = crypto_blkcipher_ctx(desc->tfm);
+	struct blkcipher_walk walk;
+
+	blkcipher_walk_init(&walk, dst, src, nbytes);
+	return cbc_desall_crypt(desc, KMC_TDEA_192_DECRYPT, ctx->iv, &walk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct crypto_alg cbc_des3_alg = {
@@ -369,6 +423,7 @@ static struct crypto_alg cbc_des3_alg = {
 	}
 };
 
+<<<<<<< HEAD
 static unsigned int __ctrblk_init(u8 *ctrptr, unsigned int nbytes)
 {
 	unsigned int i, n;
@@ -398,10 +453,22 @@ static int ctr_desall_crypt(struct blkcipher_desc *desc, long func,
 		ctrptr = ctrblk;
 
 	memcpy(ctrptr, walk->iv, DES_BLOCK_SIZE);
+=======
+static int ctr_desall_crypt(struct blkcipher_desc *desc, long func,
+			    struct s390_des_ctx *ctx, struct blkcipher_walk *walk)
+{
+	int ret = blkcipher_walk_virt_block(desc, walk, DES_BLOCK_SIZE);
+	unsigned int i, n, nbytes;
+	u8 buf[DES_BLOCK_SIZE];
+	u8 *out, *in;
+
+	memcpy(ctrblk, walk->iv, DES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	while ((nbytes = walk->nbytes) >= DES_BLOCK_SIZE) {
 		out = walk->dst.virt.addr;
 		in = walk->src.virt.addr;
 		while (nbytes >= DES_BLOCK_SIZE) {
+<<<<<<< HEAD
 			if (ctrptr == ctrblk)
 				n = __ctrblk_init(ctrptr, nbytes);
 			else
@@ -417,12 +484,30 @@ static int ctr_desall_crypt(struct blkcipher_desc *desc, long func,
 				memcpy(ctrptr, ctrptr + n - DES_BLOCK_SIZE,
 				       DES_BLOCK_SIZE);
 			crypto_inc(ctrptr, DES_BLOCK_SIZE);
+=======
+			/* align to block size, max. PAGE_SIZE */
+			n = (nbytes > PAGE_SIZE) ? PAGE_SIZE :
+				nbytes & ~(DES_BLOCK_SIZE - 1);
+			for (i = DES_BLOCK_SIZE; i < n; i += DES_BLOCK_SIZE) {
+				memcpy(ctrblk + i, ctrblk + i - DES_BLOCK_SIZE,
+				       DES_BLOCK_SIZE);
+				crypto_inc(ctrblk + i, DES_BLOCK_SIZE);
+			}
+			ret = crypt_s390_kmctr(func, ctx->key, out, in, n, ctrblk);
+			if (ret < 0 || ret != n)
+				return -EIO;
+			if (n > DES_BLOCK_SIZE)
+				memcpy(ctrblk, ctrblk + n - DES_BLOCK_SIZE,
+				       DES_BLOCK_SIZE);
+			crypto_inc(ctrblk, DES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			out += n;
 			in += n;
 			nbytes -= n;
 		}
 		ret = blkcipher_walk_done(desc, walk, nbytes);
 	}
+<<<<<<< HEAD
 	if (ctrptr == ctrblk) {
 		if (nbytes)
 			memcpy(ctrbuf, ctrptr, DES_BLOCK_SIZE);
@@ -433,11 +518,15 @@ static int ctr_desall_crypt(struct blkcipher_desc *desc, long func,
 		if (!nbytes)
 			memcpy(walk->iv, ctrptr, DES_BLOCK_SIZE);
 	}
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* final block may be < DES_BLOCK_SIZE, copy only nbytes */
 	if (nbytes) {
 		out = walk->dst.virt.addr;
 		in = walk->src.virt.addr;
 		ret = crypt_s390_kmctr(func, ctx->key, buf, in,
+<<<<<<< HEAD
 				       DES_BLOCK_SIZE, ctrbuf);
 		if (ret < 0 || ret != DES_BLOCK_SIZE)
 			return -EIO;
@@ -446,6 +535,16 @@ static int ctr_desall_crypt(struct blkcipher_desc *desc, long func,
 		ret = blkcipher_walk_done(desc, walk, 0);
 		memcpy(walk->iv, ctrbuf, DES_BLOCK_SIZE);
 	}
+=======
+				       DES_BLOCK_SIZE, ctrblk);
+		if (ret < 0 || ret != DES_BLOCK_SIZE)
+			return -EIO;
+		memcpy(out, buf, nbytes);
+		crypto_inc(ctrblk, DES_BLOCK_SIZE);
+		ret = blkcipher_walk_done(desc, walk, 0);
+	}
+	memcpy(walk->iv, ctrblk, DES_BLOCK_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 
@@ -619,8 +718,13 @@ static void __exit des_s390_exit(void)
 module_init(des_s390_init);
 module_exit(des_s390_exit);
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("des");
 MODULE_ALIAS_CRYPTO("des3_ede");
+=======
+MODULE_ALIAS("des");
+MODULE_ALIAS("des3_ede");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("DES & Triple DES EDE Cipher Algorithms");

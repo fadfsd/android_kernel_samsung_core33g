@@ -77,7 +77,11 @@ scsi_nl_rcv_msg(struct sk_buff *skb)
 			goto next_msg;
 		}
 
+<<<<<<< HEAD
 		if (!netlink_capable(skb, CAP_SYS_ADMIN)) {
+=======
+		if (!capable(CAP_SYS_ADMIN)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			err = -EPERM;
 			goto next_msg;
 		}

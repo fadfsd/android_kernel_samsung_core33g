@@ -21,3 +21,7 @@ obj-y += frequency/
 obj-y += imu/
 obj-y += light/
 obj-y += magnetometer/
+<<<<<<< HEAD
+=======
+obj-y += inv_test/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

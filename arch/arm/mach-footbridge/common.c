@@ -15,7 +15,10 @@
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <video/vga.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/pgtable.h>
 #include <asm/page.h>
@@ -197,8 +200,11 @@ void __init footbridge_map_io(void)
 		iotable_init(ebsa285_host_io_desc, ARRAY_SIZE(ebsa285_host_io_desc));
 		pci_map_io_early(__phys_to_pfn(DC21285_PCI_IO));
 	}
+<<<<<<< HEAD
 
 	vga_base = PCIMEM_BASE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void footbridge_restart(char mode, const char *cmd)

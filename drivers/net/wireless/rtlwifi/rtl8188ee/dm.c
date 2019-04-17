@@ -1078,7 +1078,11 @@ static void rtl88e_dm_txpower_tracking_callback_thermalmeter(struct ieee80211_hw
 				rtldm->swing_flag_ofdm = true;
 			}
 
+<<<<<<< HEAD
 			if (rtldm->swing_idx_cck_cur != rtldm->swing_idx_cck) {
+=======
+			if (rtldm->swing_idx_cck != rtldm->swing_idx_cck) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				rtldm->swing_idx_cck_cur = rtldm->swing_idx_cck;
 				rtldm->swing_flag_cck = true;
 			}

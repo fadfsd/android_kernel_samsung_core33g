@@ -190,7 +190,11 @@ static int bind_get(int number, dev_t *dev)
 	struct raw_device_data *rawdev;
 	struct block_device *bdev;
 
+<<<<<<< HEAD
 	if (number <= 0 || number >= max_raw_minors)
+=======
+	if (number <= 0 || number >= MAX_RAW_MINORS)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 
 	rawdev = &raw_devices[number];

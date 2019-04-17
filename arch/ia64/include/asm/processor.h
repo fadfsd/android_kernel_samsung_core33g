@@ -319,7 +319,11 @@ struct thread_struct {
 	regs->loadrs = 0;									\
 	regs->r8 = get_dumpable(current->mm);	/* set "don't zap registers" flag */		\
 	regs->r12 = new_sp - 16;	/* allocate 16 byte scratch area */			\
+<<<<<<< HEAD
 	if (unlikely(get_dumpable(current->mm) != SUID_DUMP_USER)) {	\
+=======
+	if (unlikely(!get_dumpable(current->mm))) {							\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*										\
 		 * Zap scratch regs to avoid leaking bits between processes with different	\
 		 * uid/privileges.								\

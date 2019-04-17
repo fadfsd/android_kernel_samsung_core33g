@@ -45,9 +45,12 @@
 #include <linux/ratelimit.h>
 #include "multiuser.h"
 
+<<<<<<< HEAD
 /* the file system magic number */
 #define SDCARDFS_SUPER_MAGIC	0xb550ca10
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* the file system name */
 #define SDCARDFS_NAME "sdcardfs"
 
@@ -70,7 +73,17 @@
 #define AID_SDCARD_ALL    1035	/* access all users external storage */
 
 #define AID_PACKAGE_INFO  1027
+<<<<<<< HEAD
 #define AID_EVERYBODY     9997
+=======
+
+#define fix_derived_permission(x)	\
+	do {						\
+		(x)->i_uid = SDCARDFS_I(x)->d_uid;	\
+		(x)->i_gid = SDCARDFS_I(x)->d_gid;	\
+		(x)->i_mode = ((x)->i_mode & S_IFMT) | SDCARDFS_I(x)->d_mode;\
+	} while (0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* OVERRIDE_CRED() and REVERT_CRED() 
  * 	OVERRID_CRED() 
@@ -81,6 +94,7 @@
  * These two macro should be used in pair, and OVERRIDE_CRED() should be 
  * placed at the beginning of a function, right after variable declaration.
  */
+<<<<<<< HEAD
 #define OVERRIDE_CRED(sdcardfs_sbi, saved_cred)	\
 	saved_cred = override_fsids(sdcardfs_sbi->options.fs_low_uid, \
 								sdcardfs_sbi->options.fs_low_gid); \
@@ -95,6 +109,16 @@
 	saved_cred = override_fsids(0, 0); \
 	if (!saved_cred) { return -ENOMEM; }
 
+=======
+#define OVERRIDE_CRED(sdcardfs_sbi, saved_cred)		\
+	saved_cred = override_fsids(sdcardfs_sbi);	\
+	if (!saved_cred) { return -ENOMEM; }
+
+#define OVERRIDE_CRED_PTR(sdcardfs_sbi, saved_cred)	\
+	saved_cred = override_fsids(sdcardfs_sbi);	\
+	if (!saved_cred) { return ERR_PTR(-ENOMEM); }
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define REVERT_CRED(saved_cred)	revert_fsids(saved_cred)
 
 #define DEBUG_CRED()		\
@@ -103,6 +127,11 @@
 		(int)current->cred->fsuid, 		\
 		(int)current->cred->fsgid); 
 
+<<<<<<< HEAD
+=======
+/* Android 4.4 support */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Permission mode for a specific node. Controls how file permissions
  * are derived for children nodes. */
 typedef enum {
@@ -110,7 +139,11 @@ typedef enum {
 	PERM_INHERIT,
 	/* This node is one level above a normal root; used for legacy layouts
 	 * which use the first level to represent user_id. */
+<<<<<<< HEAD
 	PERM_PRE_ROOT,
+=======
+	PERM_LEGACY_PRE_ROOT,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* This node is "/" */
 	PERM_ROOT,
 	/* This node is "/Android" */
@@ -119,15 +152,30 @@ typedef enum {
 	PERM_ANDROID_DATA,
 	/* This node is "/Android/obb" */
 	PERM_ANDROID_OBB,
+<<<<<<< HEAD
 	/* This node is "/Android/media" */
 	PERM_ANDROID_MEDIA,
 } perm_t;
 
+=======
+	/* This node is "/Android/user" */
+	PERM_ANDROID_USER,
+} perm_t;
+
+/* Permissions structure to derive */
+typedef enum {
+	DERIVE_NONE,
+	DERIVE_LEGACY,
+	DERIVE_UNIFIED,
+} derive_t;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 typedef enum {
 	LOWER_FS_EXT4,
 	LOWER_FS_FAT,
 } lower_fs_t;
 
+<<<<<<< HEAD
 typedef enum {
 	TYPE_NONE,
 	TYPE_DEFAULT,
@@ -135,11 +183,17 @@ typedef enum {
 	TYPE_WRITE,
 } type_t;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct sdcardfs_sb_info;
 struct sdcardfs_mount_options;
 
 /* Do not directly use this function. Use OVERRIDE_CRED() instead. */
+<<<<<<< HEAD
 const struct cred * override_fsids(uid_t fsuid, gid_t fsgid);
+=======
+const struct cred * override_fsids(struct sdcardfs_sb_info* sbi);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Do not directly use this function, use REVERT_CRED() instead. */
 void revert_fsids(const struct cred * old_cred);
 
@@ -150,7 +204,10 @@ extern const struct inode_operations sdcardfs_main_iops;
 extern const struct inode_operations sdcardfs_dir_iops;
 extern const struct inode_operations sdcardfs_symlink_iops;
 extern const struct super_operations sdcardfs_sops;
+<<<<<<< HEAD
 extern const struct super_operations sdcardfs_multimount_sops;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern const struct dentry_operations sdcardfs_ci_dops;
 extern const struct address_space_operations sdcardfs_aops, sdcardfs_dummy_aops;
 extern const struct vm_operations_struct sdcardfs_vm_ops;
@@ -166,12 +223,15 @@ extern struct dentry *sdcardfs_lookup(struct inode *dir, struct dentry *dentry,
 extern int sdcardfs_interpose(struct dentry *dentry, struct super_block *sb,
 			    struct path *lower_path);
 
+<<<<<<< HEAD
 #ifdef SDCARD_FS_XATTR
 extern int sdcardfs_setxattr(struct dentry *dentry, const char *name, const void *value, size_t size, int flags);
 extern ssize_t sdcardfs_getxattr(struct dentry *dentry, const char *name, void *value, size_t size);
 extern ssize_t sdcardfs_listxattr(struct dentry *dentry, char *list, size_t size);
 extern int sdcardfs_removexattr(struct dentry *dentry, const char *name);
 #endif // SDCARD_FS_XATTR
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* file private data */
 struct sdcardfs_file_info {
 	struct file *lower_file;
@@ -182,12 +242,20 @@ struct sdcardfs_file_info {
 struct sdcardfs_inode_info {
 	struct inode *lower_inode;
 	/* state derived based on current position in hierachy
+<<<<<<< HEAD
+=======
+	 * caution: d_mode does not include file types
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 */
 	perm_t perm;
 	userid_t userid;
 	uid_t d_uid;
 	gid_t d_gid;
+<<<<<<< HEAD
 	bool under_android;
+=======
+	mode_t d_mode; 
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct inode vfs_inode;
 };
@@ -197,15 +265,19 @@ struct sdcardfs_dentry_info {
 	spinlock_t lock;	/* protects lower_path */
 	struct path lower_path;
 	struct path orig_path;
+<<<<<<< HEAD
 #ifdef CONFIG_SDP
 	int under_knox;
 	int userid;
 #endif	
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct sdcardfs_mount_options {
 	uid_t fs_low_uid;
 	gid_t fs_low_gid;
+<<<<<<< HEAD
 	gid_t gid;
 	userid_t userid;
 	lower_fs_t lower_fs;
@@ -214,6 +286,13 @@ struct sdcardfs_mount_options {
 	bool multi_user;
 	char *label;
 	type_t type;
+=======
+	gid_t write_gid;
+	int split_perms;
+	derive_t derive;
+	lower_fs_t lower_fs;
+	unsigned int reserved_mb;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /* sdcardfs super-block data in memory */
@@ -401,19 +480,33 @@ static inline void sdcardfs_put_real_lower(const struct dentry *dent,
 }
 
 /* for packagelist.c */
+<<<<<<< HEAD
 extern appid_t get_appid(void *pkgl_id, const char *app_name);
 extern int check_caller_access_to_name(struct inode *parent_node, const char* name);
 extern int open_flags_to_access_mode(int open_flags);
 extern void *packagelist_create(void);
+=======
+extern int get_caller_has_rw_locked(void *pkgl_id, derive_t derive);
+extern appid_t get_appid(void *pkgl_id, const char *app_name);
+extern int check_caller_access_to_name(struct inode *parent_node, const char* name,
+                                        derive_t derive, int w_ok, int has_rw);
+extern int open_flags_to_access_mode(int open_flags);
+extern void * packagelist_create(gid_t write_gid);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern void packagelist_destroy(void *pkgl_id);
 extern int packagelist_init(void);
 extern void packagelist_exit(void);
 
 /* for derived_perm.c */
 extern void setup_derived_state(struct inode *inode, perm_t perm, 
+<<<<<<< HEAD
 			userid_t userid, uid_t uid, gid_t gid, bool under_android);
 extern void get_derived_permission(struct dentry *parent, struct dentry *dentry);
 extern void fix_derived_permission(struct inode *inode);
+=======
+			userid_t userid, uid_t uid, gid_t gid, mode_t mode);
+extern void get_derived_permission(struct dentry *parent, struct dentry *dentry);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern void update_derived_permission(struct dentry *dentry);
 extern int need_graft_path(struct dentry *dentry);
 extern int is_base_obbpath(struct dentry *dentry);

@@ -56,8 +56,11 @@
 #define PAGE_OFFSET1	(PAGE_OFFSET + 0x10000000)
 #define PAGE_OFFSET2	(PAGE_OFFSET + 0x30000000)
 
+<<<<<<< HEAD
 #define PHYS_OFFSET PLAT_PHYS_OFFSET
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define __phys_to_virt(phys)						\
 	((phys) >= 0x80000000 ?	(phys) - 0x80000000 + PAGE_OFFSET2 :	\
 	 (phys) >= 0x20000000 ?	(phys) - 0x20000000 + PAGE_OFFSET1 :	\

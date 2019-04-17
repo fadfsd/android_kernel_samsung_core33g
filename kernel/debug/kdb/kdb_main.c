@@ -2532,7 +2532,11 @@ static int kdb_summary(int argc, const char **argv)
 #define K(x) ((x) << (PAGE_SHIFT - 10))
 	kdb_printf("\nMemTotal:       %8lu kB\nMemFree:        %8lu kB\n"
 		   "Buffers:        %8lu kB\n",
+<<<<<<< HEAD
 		   K(val.totalram), K(val.freeram), K(val.bufferram));
+=======
+		   val.totalram, val.freeram, val.bufferram);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

@@ -375,9 +375,12 @@ struct root_domain {
 	cpumask_var_t span;
 	cpumask_var_t online;
 
+<<<<<<< HEAD
 	/* Indicate more than one runnable task for any CPU */
 	bool overload;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * The "RT overload" flag: it gets set if a CPU has more than
 	 * one runnable RT task.
@@ -543,6 +546,7 @@ DECLARE_PER_CPU(struct rq, runqueues);
 #define cpu_curr(cpu)		(cpu_rq(cpu)->curr)
 #define raw_rq()		(&__raw_get_cpu_var(runqueues))
 
+<<<<<<< HEAD
 #ifdef CONFIG_INTELLI_PLUG
 struct nr_stats_s {
 	/* time-based average load */
@@ -564,6 +568,8 @@ struct nr_stats_s {
 DECLARE_PER_CPU(struct nr_stats_s, runqueue_stats);
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_SMP
 
 #define rcu_dereference_check_sched_domain(p) \
@@ -1072,12 +1078,18 @@ static inline void idle_balance(int cpu, struct rq *rq)
 
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SYSRQ_SCHED_DEBUG
 extern void sysrq_sched_debug_show(void);
 #endif
 extern void sched_init_granularity(void);
 extern void update_max_interval(void);
 extern int update_runtime(struct notifier_block *nfb, unsigned long action, void *hcpu);
+=======
+extern void sysrq_sched_debug_show(void);
+extern void sched_init_granularity(void);
+extern void update_max_interval(void);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern void init_sched_rt_class(void);
 extern void init_sched_fair_class(void);
 
@@ -1099,6 +1111,7 @@ static inline u64 steal_ticks(u64 steal)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_INTELLI_PLUG
 static inline unsigned int do_avg_nr_running(struct rq *rq)
 {
@@ -1146,17 +1159,31 @@ static inline void inc_nr_running(struct rq *rq)
 #endif
 
 #ifdef CONFIG_NO_HZ_FULL
+=======
+static inline void inc_nr_running(struct rq *rq)
+{
+	rq->nr_running++;
+
+#ifdef CONFIG_NO_HZ_FULL
+	if (rq->nr_running == 2) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (tick_nohz_full_cpu(rq->cpu)) {
 			/* Order rq->nr_running write against the IPI */
 			smp_wmb();
 			smp_send_reschedule(rq->cpu);
 		}
+<<<<<<< HEAD
 #endif
 	}
+=======
+       }
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void dec_nr_running(struct rq *rq)
 {
+<<<<<<< HEAD
 
 #ifdef CONFIG_INTELLI_PLUG
 	struct nr_stats_s *nr_stats = &per_cpu(runqueue_stats, rq->cpu);
@@ -1172,6 +1199,9 @@ static inline void dec_nr_running(struct rq *rq)
 	write_seqcount_end(&nr_stats->ave_seqcnt);
 #endif
 
+=======
+	rq->nr_running--;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void rq_last_tick_reset(struct rq *rq)
@@ -1399,8 +1429,12 @@ extern void print_rt_stats(struct seq_file *m, int cpu);
 extern void init_cfs_rq(struct cfs_rq *cfs_rq);
 extern void init_rt_rq(struct rt_rq *rt_rq, struct rq *rq);
 
+<<<<<<< HEAD
 extern void cfs_bandwidth_usage_inc(void);
 extern void cfs_bandwidth_usage_dec(void);
+=======
+extern void account_cfs_bandwidth_used(int enabled, int was_enabled);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_NO_HZ_COMMON
 enum rq_nohz_flag_bits {

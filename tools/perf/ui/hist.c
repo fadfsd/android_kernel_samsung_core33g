@@ -113,7 +113,11 @@ static u64 he_get_##_field(struct hist_entry *he)				\
 static int hpp__color_##_type(struct perf_hpp *hpp, struct hist_entry *he) 	\
 {										\
 	return __hpp__fmt(hpp, he, he_get_##_field, " %6.2f%%",			\
+<<<<<<< HEAD
 			  percent_color_snprintf, true);			\
+=======
+			  (hpp_snprint_fn)percent_color_snprintf, true);	\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #define __HPP_ENTRY_PERCENT_FN(_type, _field)					\

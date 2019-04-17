@@ -33,7 +33,13 @@
  * coalesce naturally under reasonable reclaim pressure and those which
  * will not.
  */
+<<<<<<< HEAD
 #define PAGE_ALLOC_COSTLY_ORDER 3
+=======
+/* Reduce the costly order to 2 from 3 for the platform with
+ * ultra low memory (<= 512MB) */
+#define PAGE_ALLOC_COSTLY_ORDER 2
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 enum {
 	MIGRATE_UNMOVABLE,
@@ -63,9 +69,25 @@ enum {
 	MIGRATE_TYPES
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_CMA
 #  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
 #else
+=======
+/*
+ * Returns a list which contains the migrate types on to which
+ * an allocation falls back when the free list for the migrate
+ * type mtype is depleted.
+ * The end of the list is delimited by the type MIGRATE_RESERVE.
+ */
+extern int *get_migratetype_fallbacks(int mtype);
+
+#ifdef CONFIG_CMA
+bool is_cma_pageblock(struct page *page);
+#  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
+#else
+#  define is_cma_pageblock(page) false
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #  define is_migrate_cma(migratetype) false
 #endif
 
@@ -220,6 +242,11 @@ struct lruvec {
 #define ISOLATE_ASYNC_MIGRATE	((__force isolate_mode_t)0x4)
 /* Isolate unevictable pages */
 #define ISOLATE_UNEVICTABLE	((__force isolate_mode_t)0x8)
+<<<<<<< HEAD
+=======
+/* Isolate non-CMA pages */
+#define ISOLATE_NO_CMA		((__force isolate_mode_t)0x10)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* LRU Isolation modes. */
 typedef unsigned __bitwise__ isolate_mode_t;
@@ -352,7 +379,10 @@ struct zone {
 	 * free areas of different sizes
 	 */
 	spinlock_t		lock;
+<<<<<<< HEAD
 	int                     all_unreclaimable; /* All pages pinned */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #if defined CONFIG_COMPACTION || defined CONFIG_CMA
 	/* Set to true when the PG_migrate_skip bits should be cleared */
 	bool			compact_blockskip_flush;
@@ -365,6 +395,12 @@ struct zone {
 	/* see spanned/present_pages for more description */
 	seqlock_t		span_seqlock;
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+	bool			cma_alloc;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct free_area	free_area[MAX_ORDER];
 
 #ifndef CONFIG_SPARSEMEM
@@ -474,6 +510,7 @@ struct zone {
 	 * frequently read in proximity to zone->lock.  It's good to
 	 * give them a chance of being in the same cacheline.
 	 *
+<<<<<<< HEAD
 	 * Write access to present_pages at runtime should be protected by
 	 * lock_memory_hotplug()/unlock_memory_hotplug().  Any reader who can't
 	 * tolerant drift of present_pages should hold memory hotplug lock to
@@ -484,6 +521,12 @@ struct zone {
 	 * protected by managed_page_count_lock at runtime. Idealy only
 	 * adjust_managed_page_count() should be used instead of directly
 	 * touching zone->managed_pages and totalram_pages.
+=======
+	 * Write access to present_pages and managed_pages at runtime should
+	 * be protected by lock_memory_hotplug()/unlock_memory_hotplug().
+	 * Any reader who can't tolerant drift of present_pages and
+	 * managed_pages should hold memory hotplug lock to get a stable value.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 */
 	unsigned long		spanned_pages;
 	unsigned long		present_pages;

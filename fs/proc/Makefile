@@ -3,6 +3,10 @@
 #
 
 obj-y   += proc.o
+<<<<<<< HEAD
+=======
+obj-y   += sprd_debug/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 proc-y			:= nommu.o task_nommu.o
 proc-$(CONFIG_MMU)	:= task_mmu.o
@@ -23,6 +27,10 @@ proc-y	+= version.o
 proc-y	+= softirqs.o
 proc-y	+= namespaces.o
 proc-y	+= self.o
+<<<<<<< HEAD
+=======
+proc-$(CONFIG_PROC_STLOG)	+= stlog.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 proc-$(CONFIG_PROC_SYSCTL)	+= proc_sysctl.o
 proc-$(CONFIG_NET)		+= proc_net.o
 proc-$(CONFIG_PROC_KCORE)	+= kcore.o
@@ -30,3 +38,8 @@ proc-$(CONFIG_PROC_VMCORE)	+= vmcore.o
 proc-$(CONFIG_PROC_DEVICETREE)	+= proc_devtree.o
 proc-$(CONFIG_PRINTK)	+= kmsg.o
 proc-$(CONFIG_PROC_PAGE_MONITOR)	+= page.o
+<<<<<<< HEAD
+=======
+proc-$(CONFIG_CMA)	+= cmainfo.o
+proc-$(CONFIG_CMA)	+= cmainfo_free.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

@@ -50,7 +50,11 @@ static void resume_irqs(bool want_early)
 		bool is_early = desc->action &&
 			desc->action->flags & IRQF_EARLY_RESUME;
 
+<<<<<<< HEAD
 		if (!is_early && want_early)
+=======
+		if (is_early != want_early)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;
 
 		raw_spin_lock_irqsave(&desc->lock, flags);
@@ -103,6 +107,7 @@ int check_wakeup_irqs(void)
 	int irq;
 
 	for_each_irq_desc(irq, desc) {
+<<<<<<< HEAD
 		/*
 		 * Only interrupts which are marked as wakeup source
 		 * and have not been disabled before the suspend check
@@ -111,6 +116,16 @@ int check_wakeup_irqs(void)
 		if (irqd_is_wakeup_set(&desc->irq_data)) {
 			if (desc->depth == 1 && desc->istate & IRQS_PENDING)
 				return -EBUSY;
+=======
+		if (irqd_is_wakeup_set(&desc->irq_data)) {
+			if (desc->istate & IRQS_PENDING) {
+				pr_info("Wakeup IRQ %d %s pending, suspend aborted\n",
+					irq,
+					desc->action && desc->action->name ?
+					desc->action->name : "");
+				return -EBUSY;
+			}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;
 		}
 		/*

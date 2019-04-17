@@ -30,6 +30,11 @@ void clmul_ghash_mul(char *dst, const be128 *shash);
 void clmul_ghash_update(char *dst, const char *src, unsigned int srclen,
 			const be128 *shash);
 
+<<<<<<< HEAD
+=======
+void clmul_ghash_setkey(be128 *shash, const u8 *key);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct ghash_async_ctx {
 	struct cryptd_ahash *cryptd_tfm;
 };
@@ -56,14 +61,18 @@ static int ghash_setkey(struct crypto_shash *tfm,
 			const u8 *key, unsigned int keylen)
 {
 	struct ghash_ctx *ctx = crypto_shash_ctx(tfm);
+<<<<<<< HEAD
 	be128 *x = (be128 *)key;
 	u64 a, b;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (keylen != GHASH_BLOCK_SIZE) {
 		crypto_shash_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* perform multiplication by 'x' in GF(2^128) */
 	a = be64_to_cpu(x->a);
 	b = be64_to_cpu(x->b);
@@ -73,6 +82,9 @@ static int ghash_setkey(struct crypto_shash *tfm,
 
 	if (a >> 63)
 		ctx->shash.b ^= cpu_to_be64(0xc2);
+=======
+	clmul_ghash_setkey(&ctx->shash, key);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }
@@ -291,7 +303,10 @@ static struct ahash_alg ghash_async_alg = {
 			.cra_name		= "ghash",
 			.cra_driver_name	= "ghash-clmulni",
 			.cra_priority		= 400,
+<<<<<<< HEAD
 			.cra_ctxsize		= sizeof(struct ghash_async_ctx),
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			.cra_flags		= CRYPTO_ALG_TYPE_AHASH | CRYPTO_ALG_ASYNC,
 			.cra_blocksize		= GHASH_BLOCK_SIZE,
 			.cra_type		= &crypto_ahash_type,
@@ -342,4 +357,8 @@ module_exit(ghash_pclmulqdqni_mod_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("GHASH Message Digest Algorithm, "
 		   "acclerated by PCLMULQDQ-NI");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("ghash");
+=======
+MODULE_ALIAS("ghash");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

@@ -2066,8 +2066,17 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
 			if (tty->ops->flush_chars)
 				tty->ops->flush_chars(tty);
 		} else {
+<<<<<<< HEAD
 			while (nr > 0) {
 				c = tty->ops->write(tty, b, nr);
+=======
+			struct n_tty_data *ldata = tty->disc_data;
+
+			while (nr > 0) {
+				mutex_lock(&ldata->output_lock);
+				c = tty->ops->write(tty, b, nr);
+				mutex_unlock(&ldata->output_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				if (c < 0) {
 					retval = c;
 					goto break_out;

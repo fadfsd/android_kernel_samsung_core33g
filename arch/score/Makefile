@@ -20,8 +20,13 @@ cflags-y += -G0 -pipe -mel -mnhwloop -D__SCOREEL__ \
 #
 KBUILD_AFLAGS += $(cflags-y)
 KBUILD_CFLAGS += $(cflags-y)
+<<<<<<< HEAD
 KBUILD_AFLAGS_MODULE +=
 KBUILD_CFLAGS_MODULE +=
+=======
+KBUILD_AFLAGS_MODULE += -mlong-calls
+KBUILD_CFLAGS_MODULE += -mlong-calls
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 LDFLAGS += --oformat elf32-littlescore
 LDFLAGS_vmlinux	+= -G0 -static -nostdlib
 

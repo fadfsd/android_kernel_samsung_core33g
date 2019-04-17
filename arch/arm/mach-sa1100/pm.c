@@ -81,7 +81,10 @@ static int sa11x0_pm_enter(suspend_state_t state)
 	/*
 	 * Ensure not to come back here if it wasn't intended
 	 */
+<<<<<<< HEAD
 	RCSR = RCSR_SMR;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	PSPR = 0;
 
 	/*

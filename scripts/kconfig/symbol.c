@@ -300,6 +300,17 @@ void sym_calc_value(struct symbol *sym)
 
 	if (sym->flags & SYMBOL_VALID)
 		return;
+<<<<<<< HEAD
+=======
+
+	if (sym_is_choice_value(sym) &&
+	    sym->flags & SYMBOL_NEED_SET_CHOICE_VALUES) {
+		sym->flags &= ~SYMBOL_NEED_SET_CHOICE_VALUES;
+		prop = sym_get_choice_prop(sym);
+		sym_calc_value(prop_get_symbol(prop));
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sym->flags |= SYMBOL_VALID;
 
 	oldval = sym->curr;
@@ -425,6 +436,12 @@ void sym_calc_value(struct symbol *sym)
 
 	if (sym->flags & SYMBOL_AUTO)
 		sym->flags &= ~SYMBOL_WRITE;
+<<<<<<< HEAD
+=======
+
+	if (sym->flags & SYMBOL_NEED_SET_CHOICE_VALUES)
+		set_all_choice_values(sym);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void sym_clear_all_valid(void)

@@ -89,6 +89,7 @@ static inline void lcd_unregister_fb(struct lcd_device *ld)
 }
 #endif /* CONFIG_FB */
 
+<<<<<<< HEAD
 static ssize_t lcd_show_power(struct device *dev, struct device_attribute *attr,
 		char *buf)
 {
@@ -176,6 +177,9 @@ static ssize_t lcd_show_max_contrast(struct device *dev,
 }
 
 static struct class *lcd_class;
+=======
+struct class *lcd_class;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static void lcd_device_release(struct device *dev)
 {
@@ -183,6 +187,7 @@ static void lcd_device_release(struct device *dev)
 	kfree(ld);
 }
 
+<<<<<<< HEAD
 static struct device_attribute lcd_device_attributes[] = {
 	__ATTR(lcd_power, 0644, lcd_show_power, lcd_store_power),
 	__ATTR(contrast, 0644, lcd_show_contrast, lcd_store_contrast),
@@ -190,6 +195,8 @@ static struct device_attribute lcd_device_attributes[] = {
 	__ATTR_NULL,
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * lcd_device_register - register a new object of lcd_device class.
  * @name: the name of the new object(must be the same as the name of the
@@ -273,8 +280,11 @@ static int __init lcd_class_init(void)
 			PTR_ERR(lcd_class));
 		return PTR_ERR(lcd_class);
 	}
+<<<<<<< HEAD
 
 	lcd_class->dev_attrs = lcd_device_attributes;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

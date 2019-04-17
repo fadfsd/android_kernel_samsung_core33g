@@ -401,10 +401,16 @@ handle_critical:
 	/* We should never get here... */
 bad_return:
 	sub	r12, pc, (. - 1f)
+<<<<<<< HEAD
 	lddpc	pc, 2f
 	.align	2
 1:	.asciz	"Return from critical exception!"
 2:	.long	panic
+=======
+	bral	panic
+	.align	2
+1:	.asciz	"Return from critical exception!"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	.align	1
 do_bus_error_write:

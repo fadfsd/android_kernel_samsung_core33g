@@ -438,6 +438,7 @@ static int br_validate(struct nlattr *tb[], struct nlattr *data[])
 	return 0;
 }
 
+<<<<<<< HEAD
 static int br_dev_newlink(struct net *src_net, struct net_device *dev,
 			  struct nlattr *tb[], struct nlattr *data[])
 {
@@ -452,6 +453,8 @@ static int br_dev_newlink(struct net *src_net, struct net_device *dev,
 	return register_netdevice(dev);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static size_t br_get_link_af_size(const struct net_device *dev)
 {
 	struct net_port_vlans *pv;
@@ -480,7 +483,10 @@ struct rtnl_link_ops br_link_ops __read_mostly = {
 	.priv_size	= sizeof(struct net_bridge),
 	.setup		= br_dev_setup,
 	.validate	= br_validate,
+<<<<<<< HEAD
 	.newlink	= br_dev_newlink,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.dellink	= br_dev_delete,
 };
 

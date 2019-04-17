@@ -583,7 +583,11 @@ static inline int needs_ilk_vtd_wa(void)
 	/* Query intel_iommu to see if we need the workaround. Presumably that
 	 * was loaded first.
 	 */
+<<<<<<< HEAD
 	if ((gpu_devid == PCI_DEVICE_ID_INTEL_IRONLAKE_D_IG ||
+=======
+	if ((gpu_devid == PCI_DEVICE_ID_INTEL_IRONLAKE_M_HB ||
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	     gpu_devid == PCI_DEVICE_ID_INTEL_IRONLAKE_M_IG) &&
 	     intel_iommu_gfx_mapped)
 		return 1;

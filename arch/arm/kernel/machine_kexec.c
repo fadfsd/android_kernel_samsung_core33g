@@ -14,11 +14,18 @@
 #include <asm/pgalloc.h>
 #include <asm/mmu_context.h>
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/fncpy.h>
 #include <asm/mach-types.h>
 #include <asm/system_misc.h>
 
 extern void relocate_new_kernel(void);
+=======
+#include <asm/mach-types.h>
+#include <asm/system_misc.h>
+
+extern const unsigned char relocate_new_kernel[];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern const unsigned int relocate_new_kernel_size;
 
 extern unsigned long kexec_start_address;
@@ -74,7 +81,10 @@ void machine_crash_nonpanic_core(void *unused)
 	crash_save_cpu(&regs, smp_processor_id());
 	flush_cache_all();
 
+<<<<<<< HEAD
 	set_cpu_online(smp_processor_id(), false);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	atomic_dec(&waiting_for_crash_ipi);
 	while (1)
 		cpu_relax();
@@ -134,8 +144,11 @@ void machine_kexec(struct kimage *image)
 {
 	unsigned long page_list;
 	unsigned long reboot_code_buffer_phys;
+<<<<<<< HEAD
 	unsigned long reboot_entry = (unsigned long)relocate_new_kernel;
 	unsigned long reboot_entry_phys;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	void *reboot_code_buffer;
 
 	if (num_online_cpus() > 1) {
@@ -159,17 +172,27 @@ void machine_kexec(struct kimage *image)
 
 
 	/* copy our kernel relocation code to the control code page */
+<<<<<<< HEAD
 	reboot_entry = fncpy(reboot_code_buffer,
 			     reboot_entry,
 			     relocate_new_kernel_size);
 	reboot_entry_phys = (unsigned long)reboot_entry +
 		(reboot_code_buffer_phys - (unsigned long)reboot_code_buffer);
 
+=======
+	memcpy(reboot_code_buffer,
+	       relocate_new_kernel, relocate_new_kernel_size);
+
+
+	flush_icache_range((unsigned long) reboot_code_buffer,
+			   (unsigned long) reboot_code_buffer + KEXEC_CONTROL_PAGE_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	printk(KERN_INFO "Bye!\n");
 
 	if (kexec_reinit)
 		kexec_reinit();
 
+<<<<<<< HEAD
 	soft_restart(reboot_entry_phys);
 }
 
@@ -178,4 +201,7 @@ void arch_crash_save_vmcoreinfo(void)
 #ifdef CONFIG_ARM_LPAE
 	VMCOREINFO_CONFIG(ARM_LPAE);
 #endif
+=======
+	soft_restart(reboot_code_buffer_phys);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }

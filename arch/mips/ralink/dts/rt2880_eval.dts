@@ -7,7 +7,10 @@
 	model = "Ralink RT2880 evaluation board";
 
 	memory@0 {
+<<<<<<< HEAD
 		device_type = "memory";
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		reg = <0x8000000 0x2000000>;
 	};
 

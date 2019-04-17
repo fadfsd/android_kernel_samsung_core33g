@@ -312,9 +312,13 @@ static void *pidns_get(struct task_struct *task)
 	struct pid_namespace *ns;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	ns = task_active_pid_ns(task);
 	if (ns)
 		get_pid_ns(ns);
+=======
+	ns = get_pid_ns(task_active_pid_ns(task));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rcu_read_unlock();
 
 	return ns;

@@ -22,9 +22,15 @@
 struct ibmvtpm_crq {
 	u8 valid;
 	u8 msg;
+<<<<<<< HEAD
 	__be16 len;
 	__be32 data;
 	__be64 reserved;
+=======
+	u16 len;
+	u32 data;
+	u64 reserved;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 } __attribute__((packed, aligned(8)));
 
 struct ibmvtpm_crq_queue {

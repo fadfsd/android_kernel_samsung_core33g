@@ -183,6 +183,10 @@ void radeon_atom_backlight_init(struct radeon_encoder *radeon_encoder,
 	struct backlight_properties props;
 	struct radeon_backlight_privdata *pdata;
 	struct radeon_encoder_atom_dig *dig;
+<<<<<<< HEAD
+=======
+	u8 backlight_level;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	char bl_name[16];
 
 	/* Mac laptops with multiple GPUs use the gmux driver for backlight
@@ -221,10 +225,16 @@ void radeon_atom_backlight_init(struct radeon_encoder *radeon_encoder,
 
 	pdata->encoder = radeon_encoder;
 
+<<<<<<< HEAD
+=======
+	backlight_level = radeon_atom_get_backlight_level_from_reg(rdev);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	dig = radeon_encoder->enc_priv;
 	dig->bl_dev = bd;
 
 	bd->props.brightness = radeon_atom_backlight_get_brightness(bd);
+<<<<<<< HEAD
 	/* Set a reasonable default here if the level is 0 otherwise
 	 * fbdev will attempt to turn the backlight on after console
 	 * unblanking and it will try and restore 0 which turns the backlight
@@ -232,6 +242,8 @@ void radeon_atom_backlight_init(struct radeon_encoder *radeon_encoder,
 	 */
 	if (bd->props.brightness == 0)
 		bd->props.brightness = RADEON_MAX_BL_LEVEL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	bd->props.power = FB_BLANK_UNBLANK;
 	backlight_update_status(bd);
 
@@ -1285,7 +1297,11 @@ atombios_dig_transmitter_setup(struct drm_encoder *encoder, int action, uint8_t 
 			}
 			if (is_dp)
 				args.v5.ucLaneNum = dp_lane_count;
+<<<<<<< HEAD
 			else if (radeon_dig_monitor_is_duallink(encoder, radeon_encoder->pixel_clock))
+=======
+			else if (radeon_encoder->pixel_clock > 165000)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				args.v5.ucLaneNum = 8;
 			else
 				args.v5.ucLaneNum = 4;
@@ -1645,7 +1661,11 @@ radeon_atom_encoder_dpms_dig(struct drm_encoder *encoder, int mode)
 			 * does the same thing and more.
 			 */
 			if ((rdev->family != CHIP_RV710) && (rdev->family != CHIP_RV730) &&
+<<<<<<< HEAD
 			    (rdev->family != CHIP_RS780) && (rdev->family != CHIP_RS880))
+=======
+			    (rdev->family != CHIP_RS880))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				atombios_dig_transmitter_setup(encoder, ATOM_TRANSMITTER_ACTION_ENABLE_OUTPUT, 0, 0);
 		}
 		if (ENCODER_MODE_IS_DP(atombios_get_encoder_mode(encoder)) && connector) {
@@ -1881,11 +1901,16 @@ atombios_set_encoder_crtc_source(struct drm_encoder *encoder)
 					args.v2.ucEncodeMode = ATOM_ENCODER_MODE_CRT;
 				else
 					args.v2.ucEncodeMode = atombios_get_encoder_mode(encoder);
+<<<<<<< HEAD
 			} else if (radeon_encoder->devices & (ATOM_DEVICE_LCD_SUPPORT)) {
 				args.v2.ucEncodeMode = ATOM_ENCODER_MODE_LVDS;
 			} else {
 				args.v2.ucEncodeMode = atombios_get_encoder_mode(encoder);
 			}
+=======
+			} else
+				args.v2.ucEncodeMode = atombios_get_encoder_mode(encoder);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			switch (radeon_encoder->encoder_id) {
 			case ENCODER_OBJECT_ID_INTERNAL_UNIPHY:
 			case ENCODER_OBJECT_ID_INTERNAL_UNIPHY1:

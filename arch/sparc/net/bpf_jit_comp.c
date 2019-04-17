@@ -83,9 +83,15 @@ static void bpf_flush_icache(void *start_, void *end_)
 #define BNE		(F2(0, 2) | CONDNE)
 
 #ifdef CONFIG_SPARC64
+<<<<<<< HEAD
 #define BE_PTR		(F2(0, 1) | CONDE | (2 << 20))
 #else
 #define BE_PTR		BE
+=======
+#define BNE_PTR		(F2(0, 1) | CONDNE | (2 << 20))
+#else
+#define BNE_PTR		BNE
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 #define SETHI(K, REG)	\
@@ -497,6 +503,7 @@ void bpf_jit_compile(struct sk_filter *fp)
 			case BPF_S_ALU_MUL_K:	/* A *= K */
 				emit_alu_K(MUL, K);
 				break;
+<<<<<<< HEAD
 			case BPF_S_ALU_DIV_K:	/* A /= K with K != 0*/
 				if (K == 1)
 					break;
@@ -511,6 +518,11 @@ void bpf_jit_compile(struct sk_filter *fp)
 				emit_nop();
 #endif
 				emit_alu_K(DIV, K);
+=======
+			case BPF_S_ALU_DIV_K:	/* A /= K */
+				emit_alu_K(MUL, K);
+				emit_read_y(r_A);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				break;
 			case BPF_S_ALU_DIV_X:	/* A /= X; */
 				emit_cmpi(r_X, 0);
@@ -600,7 +612,11 @@ void bpf_jit_compile(struct sk_filter *fp)
 			case BPF_S_ANC_IFINDEX:
 				emit_skb_loadptr(dev, r_A);
 				emit_cmpi(r_A, 0);
+<<<<<<< HEAD
 				emit_branch(BE_PTR, cleanup_addr + 4);
+=======
+				emit_branch(BNE_PTR, cleanup_addr + 4);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				emit_nop();
 				emit_load32(r_A, struct net_device, ifindex, r_A);
 				break;
@@ -613,7 +629,11 @@ void bpf_jit_compile(struct sk_filter *fp)
 			case BPF_S_ANC_HATYPE:
 				emit_skb_loadptr(dev, r_A);
 				emit_cmpi(r_A, 0);
+<<<<<<< HEAD
 				emit_branch(BE_PTR, cleanup_addr + 4);
+=======
+				emit_branch(BNE_PTR, cleanup_addr + 4);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				emit_nop();
 				emit_load16(r_A, struct net_device, type, r_A);
 				break;

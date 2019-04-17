@@ -138,7 +138,10 @@ enum {
 
 	/* Power */
 	POWER_TABLE_CMD = 0x77,
+<<<<<<< HEAD
 	LTR_CONFIG = 0xee,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Scanning */
 	SCAN_REQUEST_CMD = 0x80,

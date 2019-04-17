@@ -498,7 +498,10 @@ static void devpts_kill_sb(struct super_block *sb)
 {
 	struct pts_fs_info *fsi = DEVPTS_SB(sb);
 
+<<<<<<< HEAD
 	ida_destroy(&fsi->allocated_ptys);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kfree(fsi);
 	kill_litter_super(sb);
 }

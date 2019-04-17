@@ -30,15 +30,32 @@
 #include <trace/events/jbd2.h>
 
 /*
+<<<<<<< HEAD
  * Default IO end handler for temporary BJ_IO buffer_heads.
  */
 static void journal_end_buffer_io_sync(struct buffer_head *bh, int uptodate)
 {
+=======
+ *  IO end handler for temporary buffer_heads handling writes to the journal
+ */
+static void journal_end_buffer_io_sync(struct buffer_head *bh, int uptodate)
+{
+	struct buffer_head *orig_bh = bh->b_private;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	BUFFER_TRACE(bh, "");
 	if (uptodate)
 		set_buffer_uptodate(bh);
 	else
 		clear_buffer_uptodate(bh);
+<<<<<<< HEAD
+=======
+	if (orig_bh) {
+		clear_bit_unlock(BH_Shadow, &orig_bh->b_state);
+		smp_mb__after_clear_bit();
+		wake_up_bit(&orig_bh->b_state, BH_Shadow);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unlock_buffer(bh);
 }
 
@@ -85,8 +102,12 @@ nope:
 	__brelse(bh);
 }
 
+<<<<<<< HEAD
 static void jbd2_commit_block_csum_set(journal_t *j,
 				       struct journal_head *descriptor)
+=======
+static void jbd2_commit_block_csum_set(journal_t *j, struct buffer_head *bh)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct commit_header *h;
 	__u32 csum;
@@ -94,12 +115,20 @@ static void jbd2_commit_block_csum_set(journal_t *j,
 	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
 		return;
 
+<<<<<<< HEAD
 	h = (struct commit_header *)(jh2bh(descriptor)->b_data);
 	h->h_chksum_type = 0;
 	h->h_chksum_size = 0;
 	h->h_chksum[0] = 0;
 	csum = jbd2_chksum(j, j->j_csum_seed, jh2bh(descriptor)->b_data,
 			   j->j_blocksize);
+=======
+	h = (struct commit_header *)(bh->b_data);
+	h->h_chksum_type = 0;
+	h->h_chksum_size = 0;
+	h->h_chksum[0] = 0;
+	csum = jbd2_chksum(j, j->j_csum_seed, bh->b_data, j->j_blocksize);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	h->h_chksum[0] = cpu_to_be32(csum);
 }
 
@@ -116,7 +145,10 @@ static int journal_submit_commit_record(journal_t *journal,
 					struct buffer_head **cbh,
 					__u32 crc32_sum)
 {
+<<<<<<< HEAD
 	struct journal_head *descriptor;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct commit_header *tmp;
 	struct buffer_head *bh;
 	int ret;
@@ -127,12 +159,19 @@ static int journal_submit_commit_record(journal_t *journal,
 	if (is_journal_aborted(journal))
 		return 0;
 
+<<<<<<< HEAD
 	descriptor = jbd2_journal_get_descriptor_buffer(journal);
 	if (!descriptor)
 		return 1;
 
 	bh = jh2bh(descriptor);
 
+=======
+	bh = jbd2_journal_get_descriptor_buffer(journal);
+	if (!bh)
+		return 1;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tmp = (struct commit_header *)bh->b_data;
 	tmp->h_magic = cpu_to_be32(JBD2_MAGIC_NUMBER);
 	tmp->h_blocktype = cpu_to_be32(JBD2_COMMIT_BLOCK);
@@ -146,9 +185,15 @@ static int journal_submit_commit_record(journal_t *journal,
 		tmp->h_chksum_size 	= JBD2_CRC32_CHKSUM_SIZE;
 		tmp->h_chksum[0] 	= cpu_to_be32(crc32_sum);
 	}
+<<<<<<< HEAD
 	jbd2_commit_block_csum_set(journal, descriptor);
 
 	JBUFFER_TRACE(descriptor, "submit commit block");
+=======
+	jbd2_commit_block_csum_set(journal, bh);
+
+	BUFFER_TRACE(bh, "submit commit block");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	lock_buffer(bh);
 	clear_buffer_dirty(bh);
 	set_buffer_uptodate(bh);
@@ -180,7 +225,10 @@ static int journal_wait_on_commit_record(journal_t *journal,
 	if (unlikely(!buffer_uptodate(bh)))
 		ret = -EIO;
 	put_bh(bh);            /* One for getblk() */
+<<<<<<< HEAD
 	jbd2_journal_put_journal_head(bh2jh(bh));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }
@@ -321,7 +369,11 @@ static void write_tag_block(int tag_bytes, journal_block_tag_t *tag,
 }
 
 static void jbd2_descr_block_csum_set(journal_t *j,
+<<<<<<< HEAD
 				      struct journal_head *descriptor)
+=======
+				      struct buffer_head *bh)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct jbd2_journal_block_tail *tail;
 	__u32 csum;
@@ -329,12 +381,19 @@ static void jbd2_descr_block_csum_set(journal_t *j,
 	if (!JBD2_HAS_INCOMPAT_FEATURE(j, JBD2_FEATURE_INCOMPAT_CSUM_V2))
 		return;
 
+<<<<<<< HEAD
 	tail = (struct jbd2_journal_block_tail *)
 			(jh2bh(descriptor)->b_data + j->j_blocksize -
 			sizeof(struct jbd2_journal_block_tail));
 	tail->t_checksum = 0;
 	csum = jbd2_chksum(j, j->j_csum_seed, jh2bh(descriptor)->b_data,
 			   j->j_blocksize);
+=======
+	tail = (struct jbd2_journal_block_tail *)(bh->b_data + j->j_blocksize -
+			sizeof(struct jbd2_journal_block_tail));
+	tail->t_checksum = 0;
+	csum = jbd2_chksum(j, j->j_csum_seed, bh->b_data, j->j_blocksize);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tail->t_checksum = cpu_to_be32(csum);
 }
 
@@ -367,8 +426,14 @@ static void jbd2_block_tag_csum_set(journal_t *j, journal_block_tag_t *tag,
 void jbd2_journal_commit_transaction(journal_t *journal)
 {
 	struct transaction_stats_s stats;
+<<<<<<< HEAD
 	transaction_t *commit_transaction;
 	struct journal_head *jh, *new_jh, *descriptor;
+=======
+	transaction_t *commit_transaction;	
+	struct journal_head *jh;
+	struct buffer_head *descriptor;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct buffer_head **wbuf = journal->j_wbuf;
 	int bufs;
 	int flags;
@@ -392,6 +457,11 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 	tid_t first_tid;
 	int update_tail;
 	int csum_size = 0;
+<<<<<<< HEAD
+=======
+	LIST_HEAD(io_bufs);
+	LIST_HEAD(log_bufs);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (JBD2_HAS_INCOMPAT_FEATURE(journal, JBD2_FEATURE_INCOMPAT_CSUM_V2))
 		csum_size = sizeof(struct jbd2_journal_block_tail);
@@ -545,7 +615,11 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 
 	blk_start_plug(&plug);
 	jbd2_journal_write_revoke_records(journal, commit_transaction,
+<<<<<<< HEAD
 					  WRITE_SYNC);
+=======
+					  &log_bufs, WRITE_SYNC);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	blk_finish_plug(&plug);
 
 	jbd_debug(3, "JBD2: commit phase 2\n");
@@ -571,8 +645,13 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 		 atomic_read(&commit_transaction->t_outstanding_credits));
 
 	err = 0;
+<<<<<<< HEAD
 	descriptor = NULL;
 	bufs = 0;
+=======
+	bufs = 0;
+	descriptor = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	blk_start_plug(&plug);
 	while (commit_transaction->t_buffers) {
 
@@ -604,8 +683,11 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 		   record the metadata buffer. */
 
 		if (!descriptor) {
+<<<<<<< HEAD
 			struct buffer_head *bh;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			J_ASSERT (bufs == 0);
 
 			jbd_debug(4, "JBD2: get descriptor\n");
@@ -616,14 +698,22 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 				continue;
 			}
 
+<<<<<<< HEAD
 			bh = jh2bh(descriptor);
 			jbd_debug(4, "JBD2: got buffer %llu (%p)\n",
 				(unsigned long long)bh->b_blocknr, bh->b_data);
 			header = (journal_header_t *)&bh->b_data[0];
+=======
+			jbd_debug(4, "JBD2: got buffer %llu (%p)\n",
+					(unsigned long long)descriptor->b_blocknr,
+					descriptor->b_data);
+			header = (journal_header_t *)descriptor->b_data;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			header->h_magic     = cpu_to_be32(JBD2_MAGIC_NUMBER);
 			header->h_blocktype = cpu_to_be32(JBD2_DESCRIPTOR_BLOCK);
 			header->h_sequence  = cpu_to_be32(commit_transaction->t_tid);
 
+<<<<<<< HEAD
 			tagp = &bh->b_data[sizeof(journal_header_t)];
 			space_left = bh->b_size - sizeof(journal_header_t);
 			first_tag = 1;
@@ -636,6 +726,20 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 			BUFFER_TRACE(bh, "ph3: file as descriptor");
 			jbd2_journal_file_buffer(descriptor, commit_transaction,
 					BJ_LogCtl);
+=======
+			tagp = &descriptor->b_data[sizeof(journal_header_t)];
+			space_left = descriptor->b_size -
+				sizeof(journal_header_t);
+			first_tag = 1;
+			set_buffer_jwrite(descriptor);
+			set_buffer_dirty(descriptor);
+			wbuf[bufs++] = descriptor;
+
+			/* Record it so that we can wait for IO
+                           completion later */
+			BUFFER_TRACE(descriptor, "ph3: file as descriptor");
+			jbd2_file_log_bh(&log_bufs, descriptor);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 		/* Where is the buffer to be written? */
@@ -658,6 +762,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 
 		/* Bump b_count to prevent truncate from stumbling over
                    the shadowed buffer!  @@@ This can go if we ever get
+<<<<<<< HEAD
                    rid of the BJ_IO/BJ_Shadow pairing of buffers. */
 		atomic_inc(&jh2bh(jh)->b_count);
 
@@ -675,12 +780,30 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 		JBUFFER_TRACE(jh, "ph3: write metadata");
 		flags = jbd2_journal_write_metadata_buffer(commit_transaction,
 						      jh, &new_jh, blocknr);
+=======
+                   rid of the shadow pairing of buffers. */
+		atomic_inc(&jh2bh(jh)->b_count);
+
+		/*
+		 * Make a temporary IO buffer with which to write it out
+		 * (this will requeue the metadata buffer to BJ_Shadow).
+		 */
+		set_bit(BH_JWrite, &jh2bh(jh)->b_state);
+
+		JBUFFER_TRACE(jh, "ph3: write metadata");
+		flags = jbd2_journal_write_metadata_buffer(commit_transaction,
+						      jh, &wbuf[bufs], blocknr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (flags < 0) {
 			jbd2_journal_abort(journal, flags);
 			continue;
 		}
+<<<<<<< HEAD
 		set_bit(BH_JWrite, &jh2bh(new_jh)->b_state);
 		wbuf[bufs++] = jh2bh(new_jh);
+=======
+		jbd2_file_log_bh(&io_bufs, wbuf[bufs]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* Record the new block's tag in the current descriptor
                    buffer */
@@ -694,10 +817,18 @@ void jbd2_journal_commit_transaction(journal_t *journal)
 		tag = (journal_block_tag_t *) tagp;
 		write_tag_block(tag_bytes, tag, jh2bh(jh)->b_blocknr);
 		tag->t_flags = cpu_to_be16(tag_flag);
+<<<<<<< HEAD
 		jbd2_block_tag_csum_set(journal, tag, jh2bh(new_jh),
 					commit_transaction->t_tid);
 		tagp += tag_bytes;
 		space_left -= tag_bytes;
+=======
+		jbd2_block_tag_csum_set(journal, tag, wbuf[bufs],
+					commit_transaction->t_tid);
+		tagp += tag_bytes;
+		space_left -= tag_bytes;
+		bufs++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (first_tag) {
 			memcpy (tagp, journal->j_uuid, 16);
@@ -809,7 +940,11 @@ start_journal_io:
            the log.  Before we can commit it, wait for the IO so far to
            complete.  Control buffers being written are on the
            transaction's t_log_list queue, and metadata buffers are on
+<<<<<<< HEAD
            the t_iobuf_list queue.
+=======
+           the io_bufs list.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	   Wait for the buffers in reverse order.  That way we are
 	   less likely to be woken up until all IOs have completed, and
@@ -818,6 +953,7 @@ start_journal_io:
 
 	jbd_debug(3, "JBD2: commit phase 3\n");
 
+<<<<<<< HEAD
 	/*
 	 * akpm: these are BJ_IO, and j_list_lock is not needed.
 	 * See __journal_try_to_free_buffer.
@@ -849,10 +985,30 @@ wait_for_iobuf:
 		 */
 		BUFFER_TRACE(bh, "dumping temporary bh");
 		jbd2_journal_put_journal_head(jh);
+=======
+	while (!list_empty(&io_bufs)) {
+		struct buffer_head *bh = list_entry(io_bufs.prev,
+				struct buffer_head,
+				b_assoc_buffers);
+
+		wait_on_buffer(bh);
+		cond_resched();
+
+		if (unlikely(!buffer_uptodate(bh)))
+			err = -EIO;
+		jbd2_unfile_log_bh(bh);
+
+		/*
+		 * The list contains temporary buffer heads created by
+		 * jbd2_journal_write_metadata_buffer().
+		 */
+		BUFFER_TRACE(bh, "dumping temporary bh");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__brelse(bh);
 		J_ASSERT_BH(bh, atomic_read(&bh->b_count) == 0);
 		free_buffer_head(bh);
 
+<<<<<<< HEAD
 		/* We also have to unlock and free the corresponding
                    shadowed buffer */
 		jh = commit_transaction->t_shadow_list->b_tprev;
@@ -860,12 +1016,22 @@ wait_for_iobuf:
 		clear_bit(BH_JWrite, &bh->b_state);
 		J_ASSERT_BH(bh, buffer_jbddirty(bh));
 
+=======
+		/* We also have to refile the corresponding shadowed buffer */
+		jh = commit_transaction->t_shadow_list->b_tprev;
+		bh = jh2bh(jh);
+		clear_buffer_jwrite(bh);
+		J_ASSERT_BH(bh, buffer_jbddirty(bh));
+		J_ASSERT_BH(bh, !buffer_shadow(bh));
+		
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* The metadata is now released for reuse, but we need
                    to remember it against this transaction so that when
                    we finally commit, we can do any checkpointing
                    required. */
 		JBUFFER_TRACE(jh, "file as BJ_Forget");
 		jbd2_journal_file_buffer(jh, commit_transaction, BJ_Forget);
+<<<<<<< HEAD
 		/*
 		 * Wake up any transactions which were waiting for this IO to
 		 * complete. The barrier must be here so that changes by
@@ -874,6 +1040,8 @@ wait_for_iobuf:
 		 */
 		smp_mb();
 		wake_up_bit(&bh->b_state, BH_Unshadow);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		JBUFFER_TRACE(jh, "brelse shadowed buffer");
 		__brelse(bh);
 	}
@@ -883,6 +1051,7 @@ wait_for_iobuf:
 	jbd_debug(3, "JBD2: commit phase 4\n");
 
 	/* Here we wait for the revoke record and descriptor record buffers */
+<<<<<<< HEAD
  wait_for_ctlbuf:
 	while (commit_transaction->t_log_list != NULL) {
 		struct buffer_head *bh;
@@ -895,14 +1064,26 @@ wait_for_iobuf:
 		}
 		if (cond_resched())
 			goto wait_for_ctlbuf;
+=======
+	while (!list_empty(&log_bufs)) {
+		struct buffer_head *bh;
+
+		bh = list_entry(log_bufs.prev, struct buffer_head, b_assoc_buffers);
+		wait_on_buffer(bh);
+		cond_resched();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (unlikely(!buffer_uptodate(bh)))
 			err = -EIO;
 
 		BUFFER_TRACE(bh, "ph5: control buffer writeout done: unfile");
 		clear_buffer_jwrite(bh);
+<<<<<<< HEAD
 		jbd2_journal_unfile_buffer(journal, jh);
 		jbd2_journal_put_journal_head(jh);
+=======
+		jbd2_unfile_log_bh(bh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__brelse(bh);		/* One for getblk */
 		/* AKPM: bforget here */
 	}
@@ -952,9 +1133,13 @@ wait_for_iobuf:
 	J_ASSERT(list_empty(&commit_transaction->t_inode_list));
 	J_ASSERT(commit_transaction->t_buffers == NULL);
 	J_ASSERT(commit_transaction->t_checkpoint_list == NULL);
+<<<<<<< HEAD
 	J_ASSERT(commit_transaction->t_iobuf_list == NULL);
 	J_ASSERT(commit_transaction->t_shadow_list == NULL);
 	J_ASSERT(commit_transaction->t_log_list == NULL);
+=======
+	J_ASSERT(commit_transaction->t_shadow_list == NULL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 restart_loop:
 	/*

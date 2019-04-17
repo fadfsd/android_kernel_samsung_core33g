@@ -98,7 +98,10 @@ int sysctl_tcp_thin_dupack __read_mostly;
 
 int sysctl_tcp_moderate_rcvbuf __read_mostly = 1;
 int sysctl_tcp_early_retrans __read_mostly = 3;
+<<<<<<< HEAD
 int sysctl_tcp_default_init_rwnd __read_mostly = TCP_DEFAULT_INIT_RCVWND;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define FLAG_DATA		0x01 /* Incoming frame contained data.		*/
 #define FLAG_WIN_UPDATE		0x02 /* Incoming ACK was a window update.	*/
@@ -352,14 +355,22 @@ static void tcp_grow_window(struct sock *sk, const struct sk_buff *skb)
 static void tcp_fixup_rcvbuf(struct sock *sk)
 {
 	u32 mss = tcp_sk(sk)->advmss;
+<<<<<<< HEAD
 	u32 icwnd = sysctl_tcp_default_init_rwnd;
+=======
+	u32 icwnd = TCP_DEFAULT_INIT_RCVWND;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int rcvmem;
 
 	/* Limit to 10 segments if mss <= 1460,
 	 * or 14600/mss segments, with a minimum of two segments.
 	 */
 	if (mss > 1460)
+<<<<<<< HEAD
 		icwnd = max_t(u32, (1460 * icwnd) / mss, 2);
+=======
+		icwnd = max_t(u32, (1460 * TCP_DEFAULT_INIT_RCVWND) / mss, 2);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	rcvmem = SKB_TRUESIZE(mss + MAX_TCP_HEADER);
 	while (tcp_win_from_space(rcvmem) < mss)
@@ -700,6 +711,7 @@ static void tcp_rtt_estimator(struct sock *sk, const __u32 mrtt)
 	}
 }
 
+<<<<<<< HEAD
 /* Set the sk_pacing_rate to allow proper sizing of TSO packets.
  * Note: TCP stack does not yet implement pacing.
  * FQ packet scheduler can be used to implement cheap but effective
@@ -728,6 +740,8 @@ static void tcp_update_pacing_rate(struct sock *sk)
 	sk->sk_pacing_rate = min_t(u64, rate, ~0U);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Calculate rto without backoff.  This is the second half of Van Jacobson's
  * routine referred to above.
  */
@@ -1076,7 +1090,11 @@ static bool tcp_check_dsack(struct sock *sk, const struct sk_buff *ack_skb,
 	}
 
 	/* D-SACK for already forgotten data... Do dumb counting. */
+<<<<<<< HEAD
 	if (dup_sack && tp->undo_marker && tp->undo_retrans > 0 &&
+=======
+	if (dup_sack && tp->undo_marker && tp->undo_retrans &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	    !after(end_seq_0, prior_snd_una) &&
 	    after(end_seq_0, tp->undo_marker))
 		tp->undo_retrans--;
@@ -1131,7 +1149,11 @@ static int tcp_match_skb_to_sack(struct sock *sk, struct sk_buff *skb,
 			unsigned int new_len = (pkt_len / mss) * mss;
 			if (!in_sack && new_len < pkt_len) {
 				new_len += mss;
+<<<<<<< HEAD
 				if (new_len >= skb->len)
+=======
+				if (new_len > skb->len)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					return 0;
 			}
 			pkt_len = new_len;
@@ -1155,7 +1177,11 @@ static u8 tcp_sacktag_one(struct sock *sk,
 
 	/* Account D-SACK for retransmitted packet. */
 	if (dup_sack && (sacked & TCPCB_RETRANS)) {
+<<<<<<< HEAD
 		if (tp->undo_marker && tp->undo_retrans > 0 &&
+=======
+		if (tp->undo_marker && tp->undo_retrans &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		    after(end_seq, tp->undo_marker))
 			tp->undo_retrans--;
 		if (sacked & TCPCB_SACKED_ACKED)
@@ -1293,10 +1319,14 @@ static bool tcp_shifted_skb(struct sock *sk, struct sk_buff *skb,
 		tp->lost_cnt_hint -= tcp_skb_pcount(prev);
 	}
 
+<<<<<<< HEAD
 	TCP_SKB_CB(prev)->tcp_flags |= TCP_SKB_CB(skb)->tcp_flags;
 	if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
 		TCP_SKB_CB(prev)->end_seq++;
 
+=======
+	TCP_SKB_CB(skb)->tcp_flags |= TCP_SKB_CB(prev)->tcp_flags;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (skb == tcp_highest_sack(sk))
 		tcp_advance_highest_sack(sk, skb);
 
@@ -1851,7 +1881,11 @@ static void tcp_clear_retrans_partial(struct tcp_sock *tp)
 	tp->lost_out = 0;
 
 	tp->undo_marker = 0;
+<<<<<<< HEAD
 	tp->undo_retrans = -1;
+=======
+	tp->undo_retrans = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void tcp_clear_retrans(struct tcp_sock *tp)
@@ -2701,7 +2735,11 @@ static void tcp_enter_recovery(struct sock *sk, bool ece_ack)
 
 	tp->prior_ssthresh = 0;
 	tp->undo_marker = tp->snd_una;
+<<<<<<< HEAD
 	tp->undo_retrans = tp->retrans_out ? : -1;
+=======
+	tp->undo_retrans = tp->retrans_out;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (inet_csk(sk)->icsk_ca_state < TCP_CA_CWR) {
 		if (!ece_ack)
@@ -2721,12 +2759,22 @@ static void tcp_process_loss(struct sock *sk, int flag, bool is_dupack)
 	bool recovered = !before(tp->snd_una, tp->high_seq);
 
 	if (tp->frto) { /* F-RTO RFC5682 sec 3.1 (sack enhanced version). */
+<<<<<<< HEAD
 		/* Step 3.b. A timeout is spurious if not all data are
 		 * lost, i.e., never-retransmitted data are (s)acked.
 		 */
 		if (tcp_try_undo_loss(sk, flag & FLAG_ORIG_SACK_ACKED))
 			return;
 
+=======
+		if (flag & FLAG_ORIG_SACK_ACKED) {
+			/* Step 3.b. A timeout is spurious if not all data are
+			 * lost, i.e., never-retransmitted data are (s)acked.
+			 */
+			tcp_try_undo_loss(sk, true);
+			return;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (after(tp->snd_nxt, tp->high_seq) &&
 		    (flag & FLAG_DATA_SACKED || is_dupack)) {
 			tp->frto = 0; /* Loss was real: 2nd part of step 3.a */
@@ -3077,11 +3125,18 @@ static int tcp_clean_rtx_queue(struct sock *sk, int prior_fackets,
 			if (seq_rtt < 0) {
 				seq_rtt = ca_seq_rtt;
 			}
+<<<<<<< HEAD
 			if (!(sacked & TCPCB_SACKED_ACKED)) {
 				reord = min(pkts_acked, reord);
 				if (!after(scb->end_seq, tp->high_seq))
 					flag |= FLAG_ORIG_SACK_ACKED;
 			}
+=======
+			if (!(sacked & TCPCB_SACKED_ACKED))
+				reord = min(pkts_acked, reord);
+			if (!after(scb->end_seq, tp->high_seq))
+				flag |= FLAG_ORIG_SACK_ACKED;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 		if (sacked & TCPCB_SACKED_ACKED)
@@ -3346,7 +3401,11 @@ static void tcp_process_tlp_ack(struct sock *sk, u32 ack, int flag)
 			tcp_init_cwnd_reduction(sk, true);
 			tcp_set_ca_state(sk, TCP_CA_CWR);
 			tcp_end_cwnd_reduction(sk);
+<<<<<<< HEAD
 			tcp_try_keep_open(sk);
+=======
+			tcp_set_ca_state(sk, TCP_CA_Open);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			NET_INC_STATS_BH(sock_net(sk),
 					 LINUX_MIB_TCPLOSSPROBERECOVERY);
 		}
@@ -3362,7 +3421,11 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 	u32 ack_seq = TCP_SKB_CB(skb)->seq;
 	u32 ack = TCP_SKB_CB(skb)->ack_seq;
 	bool is_dupack = false;
+<<<<<<< HEAD
 	u32 prior_in_flight, prior_cwnd = tp->snd_cwnd, prior_rtt = tp->srtt;
+=======
+	u32 prior_in_flight;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u32 prior_fackets;
 	int prior_packets = tp->packets_out;
 	int prior_sacked = tp->sacked_out;
@@ -3470,8 +3533,11 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 
 	if (icsk->icsk_pending == ICSK_TIME_RETRANS)
 		tcp_schedule_loss_probe(sk);
+<<<<<<< HEAD
 	if (tp->srtt != prior_rtt || tp->snd_cwnd != prior_cwnd)
 		tcp_update_pacing_rate(sk);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 1;
 
 no_queue:
@@ -5770,8 +5836,11 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 				} else
 					tcp_init_metrics(sk);
 
+<<<<<<< HEAD
 				tcp_update_pacing_rate(sk);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				/* Prevent spurious tcp_cwnd_restart() on
 				 * first data packet.
 				 */

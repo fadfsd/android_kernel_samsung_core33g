@@ -442,12 +442,15 @@ static int save_user_regs(struct pt_regs *regs, struct mcontext __user *frame,
 #endif /* CONFIG_ALTIVEC */
 	if (copy_fpr_to_user(&frame->mc_fregs, current))
 		return 1;
+<<<<<<< HEAD
 
 	/*
 	 * Clear the MSR VSX bit to indicate there is no valid state attached
 	 * to this context, except in the specific case below where we set it.
 	 */
 	msr &= ~MSR_VSX;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_VSX
 	/*
 	 * Copy VSR 0-31 upper half from thread_struct to local
@@ -863,8 +866,11 @@ static long restore_tm_user_regs(struct pt_regs *regs,
 	 * transactional versions should be loaded.
 	 */
 	tm_enable();
+<<<<<<< HEAD
 	/* Make sure the transaction is marked as failed */
 	current->thread.tm_texasr |= TEXASR_FS;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* This loads the checkpointed FP/VEC state, if used */
 	tm_recheckpoint(&current->thread, msr);
 	/* Get the top half of the MSR */
@@ -890,7 +896,11 @@ static long restore_tm_user_regs(struct pt_regs *regs,
 #endif
 
 #ifdef CONFIG_PPC64
+<<<<<<< HEAD
 int copy_siginfo_to_user32(struct compat_siginfo __user *d, const siginfo_t *s)
+=======
+int copy_siginfo_to_user32(struct compat_siginfo __user *d, siginfo_t *s)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int err;
 
@@ -949,6 +959,11 @@ int copy_siginfo_to_user32(struct compat_siginfo __user *d, const siginfo_t *s)
 
 int copy_siginfo_from_user32(siginfo_t *to, struct compat_siginfo __user *from)
 {
+<<<<<<< HEAD
+=======
+	memset(to, 0, sizeof *to);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (copy_from_user(to, from, 3*sizeof(int)) ||
 	    copy_from_user(to->_sifields._pad,
 			   from->_sifields._pad, SI_PAD_SIZE32))

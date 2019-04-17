@@ -43,11 +43,16 @@
 #include <linux/version.h>
 #include <linux/ctype.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/mempolicy.h>
 #include <linux/sched.h>
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+#include <linux/mm.h>
+#include <linux/mempolicy.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <linux/compat.h>
 #include <linux/syscalls.h>
@@ -135,6 +140,57 @@ EXPORT_SYMBOL(cad_pid);
 
 void (*pm_power_off_prepare)(void);
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+int sec_check_execpath(struct mm_struct *mm, char *denypath);
+#if defined CONFIG_SEC_RESTRICT_ROOTING_LOG
+#define PRINT_LOG(...)	printk(KERN_ERR __VA_ARGS__)
+#else
+#define PRINT_LOG(...)
+#endif	// End of CONFIG_SEC_RESTRICT_ROOTING_LOG
+
+static int sec_restrict_uid(void)
+{
+	int ret = 0;
+	struct task_struct *parent_tsk;
+	const struct cred *parent_cred;
+
+	read_lock(&tasklist_lock);
+	parent_tsk = current->parent;
+	if (!parent_tsk) {
+		read_unlock(&tasklist_lock);
+		return 0;
+	}
+
+	get_task_struct(parent_tsk);
+	/* holding on to the task struct is enough so just release
+	 * the tasklist lock here */
+	read_unlock(&tasklist_lock);
+
+	parent_cred = get_task_cred(parent_tsk);
+	if (!parent_cred)
+		goto out;
+	if (parent_cred->euid == 0 || parent_tsk->pid == 1) {
+		ret = 0;
+	} else if (sec_check_execpath(current->mm, "/system/bin/pppd")) {
+		PRINT_LOG("VPN allowed to use root permission");
+		ret = 0;
+	} else {
+		PRINT_LOG("Restricted changing UID. PID = %d(%s) PPID = %d(%s)\n",
+			current->pid, current->comm,
+			parent_tsk->pid, parent_tsk->comm);
+		ret = 1;
+	}
+	put_cred(parent_cred);
+out:
+	put_task_struct(parent_tsk);
+
+	return ret;
+}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Returns true if current's euid is same as p's uid or euid,
  * or has CAP_SYS_NICE to p's user_ns.
@@ -409,6 +465,10 @@ void kernel_restart(char *cmd)
 	else
 		printk(KERN_EMERG "Restarting system with command '%s'.\n", cmd);
 	kmsg_dump(KMSG_DUMP_RESTART);
+<<<<<<< HEAD
+=======
+	preempt_disable();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	machine_restart(cmd);
 }
 EXPORT_SYMBOL_GPL(kernel_restart);
@@ -600,6 +660,17 @@ SYSCALL_DEFINE2(setregid, gid_t, rgid, gid_t, egid)
 	int retval;
 	kgid_t krgid, kegid;
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+	if(rgid == 0 || egid == 0)
+	{
+		if(sec_restrict_uid())
+			return -EACCES;
+	}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	krgid = make_kgid(ns, rgid);
 	kegid = make_kgid(ns, egid);
 
@@ -657,6 +728,17 @@ SYSCALL_DEFINE1(setgid, gid_t, gid)
 	int retval;
 	kgid_t kgid;
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+	if(gid == 0)
+	{
+		if(sec_restrict_uid())
+			return -EACCES;
+	}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kgid = make_kgid(ns, gid);
 	if (!gid_valid(kgid))
 		return -EINVAL;
@@ -733,6 +815,17 @@ SYSCALL_DEFINE2(setreuid, uid_t, ruid, uid_t, euid)
 	int retval;
 	kuid_t kruid, keuid;
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+	if(ruid == 0 || euid == 0)
+	{
+		if(sec_restrict_uid())
+			return -EACCES;
+	}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kruid = make_kuid(ns, ruid);
 	keuid = make_kuid(ns, euid);
 
@@ -804,6 +897,17 @@ SYSCALL_DEFINE1(setuid, uid_t, uid)
 	int retval;
 	kuid_t kuid;
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+	if(uid == 0)
+	{
+		if(sec_restrict_uid())
+			return -EACCES;
+	}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kuid = make_kuid(ns, uid);
 	if (!uid_valid(kuid))
 		return -EINVAL;
@@ -851,6 +955,18 @@ SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)
 	int retval;
 	kuid_t kruid, keuid, ksuid;
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+	if(ruid == 0 || euid == 0 || suid == 0)
+	{
+		if(sec_restrict_uid())
+			return -EACCES;
+	}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kruid = make_kuid(ns, ruid);
 	keuid = make_kuid(ns, euid);
 	ksuid = make_kuid(ns, suid);
@@ -936,6 +1052,17 @@ SYSCALL_DEFINE3(setresgid, gid_t, rgid, gid_t, egid, gid_t, sgid)
 	int retval;
 	kgid_t krgid, kegid, ksgid;
 
+<<<<<<< HEAD
+=======
+#if defined CONFIG_SEC_RESTRICT_SETUID
+	if(rgid == 0 || egid == 0 || sgid == 0)
+	{
+		if(sec_restrict_uid())
+			return -EACCES;
+	}
+#endif // End of CONFIG_SEC_RESTRICT_SETUID
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	krgid = make_kgid(ns, rgid);
 	kegid = make_kgid(ns, egid);
 	ksgid = make_kgid(ns, sgid);
@@ -2106,7 +2233,11 @@ static int prctl_get_tid_address(struct task_struct *me, int __user **tid_addr)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int prctl_update_vma_anon_name(struct vm_area_struct *vma,
 		struct vm_area_struct **prev,
 		unsigned long start, unsigned long end,
@@ -2191,7 +2322,11 @@ static int prctl_set_vma_anon_name(unsigned long start, unsigned long end,
 			tmp = end;
 
 		/* Here vma->vm_start <= start < tmp <= (end|vma->vm_end). */
+<<<<<<< HEAD
 		error = prctl_update_vma_anon_name(vma, &prev, start, tmp,
+=======
+		error = prctl_update_vma_anon_name(vma, &prev, start, end,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				(const char __user *)arg);
 		if (error)
 			return error;
@@ -2245,6 +2380,7 @@ static int prctl_set_vma(unsigned long opt, unsigned long start,
 
 	return error;
 }
+<<<<<<< HEAD
 #else /* CONFIG_MMU */
 static int prctl_set_vma(unsigned long opt, unsigned long start,
 		unsigned long len_in, unsigned long arg)
@@ -2255,11 +2391,17 @@ static int prctl_set_vma(unsigned long opt, unsigned long start,
 
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 		unsigned long, arg4, unsigned long, arg5)
 {
 	struct task_struct *me = current;
+<<<<<<< HEAD
 	struct task_struct *tsk;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned char comm[sizeof(me->comm)];
 	long error;
 
@@ -2383,6 +2525,12 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 			else
 				return -EINVAL;
 			break;
+<<<<<<< HEAD
+=======
+		case PR_SET_VMA:
+			error = prctl_set_vma(arg2, arg3, arg4, arg5);
+			break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		default:
 			return -EINVAL;
 		}
@@ -2402,6 +2550,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 	case PR_GET_TID_ADDRESS:
 		error = prctl_get_tid_address(me, (int __user **)arg2);
 		break;
+<<<<<<< HEAD
 	case PR_SET_TIMERSLACK_PID:
 		if (task_pid_vnr(current) != (pid_t)arg3 &&
 				!capable(CAP_SYS_NICE))
@@ -2422,6 +2571,8 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 		put_task_struct(tsk);
 		error = 0;
 		break;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	case PR_SET_CHILD_SUBREAPER:
 		me->signal->is_child_subreaper = !!arg2;
 		break;
@@ -2433,15 +2584,23 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
 		if (arg2 != 1 || arg3 || arg4 || arg5)
 			return -EINVAL;
 
+<<<<<<< HEAD
 		task_set_no_new_privs(current);
+=======
+		current->no_new_privs = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	case PR_GET_NO_NEW_PRIVS:
 		if (arg2 || arg3 || arg4 || arg5)
 			return -EINVAL;
+<<<<<<< HEAD
 		return task_no_new_privs(current) ? 1 : 0;
 	case PR_SET_VMA:
 		error = prctl_set_vma(arg2, arg3, arg4, arg5);
 		break;
+=======
+		return current->no_new_privs ? 1 : 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	default:
 		error = -EINVAL;
 		break;

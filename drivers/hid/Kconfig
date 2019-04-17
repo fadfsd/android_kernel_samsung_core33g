@@ -352,6 +352,7 @@ config LOGITECH_FF
 	  force feedback.
 
 config LOGIRUMBLEPAD2_FF
+<<<<<<< HEAD
 	bool "Logitech force feedback support (variant 2)"
 	depends on HID_LOGITECH
 	select INPUT_FF_MEMLESS
@@ -360,6 +361,14 @@ config LOGIRUMBLEPAD2_FF
 	  - Logitech RumblePad
 	  - Logitech Rumblepad 2
 	  - Logitech Formula Vibration Feedback Wheel
+=======
+	bool "Logitech RumblePad/Rumblepad 2 force feedback support"
+	depends on HID_LOGITECH
+	select INPUT_FF_MEMLESS
+	help
+	  Say Y here if you want to enable force feedback support for Logitech
+	  RumblePad and Rumblepad 2 devices.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 config LOGIG940_FF
 	bool "Logitech Flight System G940 force feedback support"
@@ -441,7 +450,10 @@ config HID_MULTITOUCH
 	  - Stantum multitouch panels
 	  - Touch International Panels
 	  - Unitec Panels
+<<<<<<< HEAD
 	  - Wistron optical touch panels
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	  - XAT optical touch panels
 	  - Xiroku optical touch panels
 	  - Zytronic touch panels
@@ -592,7 +604,11 @@ config HID_SAITEK
 
 config HID_SAMSUNG
 	tristate "Samsung InfraRed remote control or keyboards"
+<<<<<<< HEAD
 	depends on HID
+=======
+	depends on (USB_HID || BT_HIDP)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	---help---
 	Support for Samsung InfraRed remote control or keyboards.
 
@@ -662,6 +678,16 @@ config SMARTJOYPLUS_FF
 	Say Y here if you have a SmartJoy PLUS PS2/USB adapter and want to
 	enable force feedback support for it.
 
+<<<<<<< HEAD
+=======
+config HID_SYNAPTICS_BT
+	tristate "HID Synaptics"
+	depends on HID
+	default n
+	---help---
+	For a Bluetooth HID touchpad
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config HID_TIVO
 	tristate "TiVo Slide Bluetooth remote control support"
 	depends on HID
@@ -727,6 +753,15 @@ config HID_WIIMOTE_EXT
 	here if you want to use the Nintendo Motion+, Nunchuck or Classic
 	extension controllers with your Wii Remote.
 
+<<<<<<< HEAD
+=======
+config HID_ZAGG
+	tristate "ZAGG InfraRed remote control or keyboards"
+	depends on (USB_HID || BT_HIDP)
+	---help---
+	Support for ZAGG InfraRed remote control or keyboards.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config HID_ZEROPLUS
 	tristate "Zeroplus based game controller support"
 	depends on HID

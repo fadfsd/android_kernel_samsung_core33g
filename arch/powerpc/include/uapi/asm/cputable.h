@@ -41,6 +41,9 @@
 #define PPC_FEATURE2_EBB		0x10000000
 #define PPC_FEATURE2_ISEL		0x08000000
 #define PPC_FEATURE2_TAR		0x04000000
+<<<<<<< HEAD
 #define PPC_FEATURE2_VEC_CRYPTO		0x02000000
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #endif /* _UAPI__ASM_POWERPC_CPUTABLE_H */

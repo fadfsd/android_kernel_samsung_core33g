@@ -157,6 +157,7 @@ out:
 
 int ioprio_best(unsigned short aprio, unsigned short bprio)
 {
+<<<<<<< HEAD
 	unsigned short aclass;
 	unsigned short bclass;
 
@@ -167,6 +168,16 @@ int ioprio_best(unsigned short aprio, unsigned short bprio)
 
 	aclass = IOPRIO_PRIO_CLASS(aprio);
 	bclass = IOPRIO_PRIO_CLASS(bprio);
+=======
+	unsigned short aclass = IOPRIO_PRIO_CLASS(aprio);
+	unsigned short bclass = IOPRIO_PRIO_CLASS(bprio);
+
+	if (aclass == IOPRIO_CLASS_NONE)
+		aclass = IOPRIO_CLASS_BE;
+	if (bclass == IOPRIO_CLASS_NONE)
+		bclass = IOPRIO_CLASS_BE;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (aclass == bclass)
 		return min(aprio, bprio);
 	if (aclass > bclass)

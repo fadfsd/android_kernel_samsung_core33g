@@ -463,6 +463,7 @@ static bool radeon_atom_apply_quirks(struct drm_device *dev,
 		}
 	}
 
+<<<<<<< HEAD
 	/* Fujitsu D3003-S2 board lists DVI-I as DVI-I and VGA */
 	if ((dev->pdev->device == 0x9805) &&
 	    (dev->pdev->subsystem_vendor == 0x1734) &&
@@ -470,6 +471,8 @@ static bool radeon_atom_apply_quirks(struct drm_device *dev,
 		if (*connector_type == DRM_MODE_CONNECTOR_VGA)
 			return false;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return true;
 }
@@ -1915,7 +1918,11 @@ static const char *thermal_controller_names[] = {
 	"adm1032",
 	"adm1030",
 	"max6649",
+<<<<<<< HEAD
 	"lm63", /* lm64 */
+=======
+	"lm64",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	"f75375",
 	"asc7xxx",
 };
@@ -1926,7 +1933,11 @@ static const char *pp_lib_thermal_controller_names[] = {
 	"adm1032",
 	"adm1030",
 	"max6649",
+<<<<<<< HEAD
 	"lm63", /* lm64 */
+=======
+	"lm64",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	"f75375",
 	"RV6xx",
 	"RV770",
@@ -2933,10 +2944,13 @@ void radeon_atom_initialize_bios_scratch_regs(struct drm_device *dev)
 	/* tell the bios not to handle mode switching */
 	bios_6_scratch |= ATOM_S6_ACC_BLOCK_DISPLAY_SWITCH;
 
+<<<<<<< HEAD
 	/* clear the vbios dpms state */
 	if (ASIC_IS_DCE4(rdev))
 		bios_2_scratch &= ~ATOM_S2_DEVICE_DPMS_STATE;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rdev->family >= CHIP_R600) {
 		WREG32(R600_BIOS_2_SCRATCH, bios_2_scratch);
 		WREG32(R600_BIOS_6_SCRATCH, bios_6_scratch);

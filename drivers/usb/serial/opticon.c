@@ -219,7 +219,11 @@ static int opticon_write(struct tty_struct *tty, struct usb_serial_port *port,
 
 	/* The conncected devices do not have a bulk write endpoint,
 	 * to transmit data to de barcode device the control endpoint is used */
+<<<<<<< HEAD
 	dr = kmalloc(sizeof(struct usb_ctrlrequest), GFP_ATOMIC);
+=======
+	dr = kmalloc(sizeof(struct usb_ctrlrequest), GFP_NOIO);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!dr) {
 		dev_err(&port->dev, "out of memory\n");
 		count = -ENOMEM;

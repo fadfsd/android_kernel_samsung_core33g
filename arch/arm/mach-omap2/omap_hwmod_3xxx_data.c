@@ -1930,8 +1930,12 @@ static struct omap_hwmod_class_sysconfig omap3xxx_usb_host_hs_sysc = {
 	.syss_offs	= 0x0014,
 	.sysc_flags	= (SYSC_HAS_MIDLEMODE | SYSC_HAS_CLOCKACTIVITY |
 			   SYSC_HAS_SIDLEMODE | SYSC_HAS_ENAWAKEUP |
+<<<<<<< HEAD
 			   SYSC_HAS_SOFTRESET | SYSC_HAS_AUTOIDLE |
 			   SYSS_HAS_RESET_STATUS),
+=======
+			   SYSC_HAS_SOFTRESET | SYSC_HAS_AUTOIDLE),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.idlemodes	= (SIDLE_FORCE | SIDLE_NO | SIDLE_SMART |
 			   MSTANDBY_FORCE | MSTANDBY_NO | MSTANDBY_SMART),
 	.sysc_fields	= &omap_hwmod_sysc_type1,
@@ -1955,7 +1959,11 @@ static struct omap_hwmod_irq_info omap3xxx_usb_host_hs_irqs[] = {
 static struct omap_hwmod omap3xxx_usb_host_hs_hwmod = {
 	.name		= "usb_host_hs",
 	.class		= &omap3xxx_usb_host_hs_hwmod_class,
+<<<<<<< HEAD
 	.clkdm_name	= "usbhost_clkdm",
+=======
+	.clkdm_name	= "l3_init_clkdm",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.mpu_irqs	= omap3xxx_usb_host_hs_irqs,
 	.main_clk	= "usbhost_48m_fck",
 	.prcm = {
@@ -2009,7 +2017,19 @@ static struct omap_hwmod omap3xxx_usb_host_hs_hwmod = {
 	 * hence HWMOD_SWSUP_MSTANDBY
 	 */
 
+<<<<<<< HEAD
 	.flags		= HWMOD_SWSUP_SIDLE | HWMOD_SWSUP_MSTANDBY,
+=======
+	/*
+	 * During system boot; If the hwmod framework resets the module
+	 * the module will have smart idle settings; which can lead to deadlock
+	 * (above Errata Id:i660); so, dont reset the module during boot;
+	 * Use HWMOD_INIT_NO_RESET.
+	 */
+
+	.flags		= HWMOD_SWSUP_SIDLE | HWMOD_SWSUP_MSTANDBY |
+			  HWMOD_INIT_NO_RESET,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /*
@@ -2040,7 +2060,11 @@ static struct omap_hwmod_irq_info omap3xxx_usb_tll_hs_irqs[] = {
 static struct omap_hwmod omap3xxx_usb_tll_hs_hwmod = {
 	.name		= "usb_tll_hs",
 	.class		= &omap3xxx_usb_tll_hs_hwmod_class,
+<<<<<<< HEAD
 	.clkdm_name	= "core_l4_clkdm",
+=======
+	.clkdm_name	= "l3_init_clkdm",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.mpu_irqs	= omap3xxx_usb_tll_hs_irqs,
 	.main_clk	= "usbtll_fck",
 	.prcm = {
@@ -2152,7 +2176,11 @@ static struct omap_hwmod_class omap3xxx_gpmc_hwmod_class = {
 };
 
 static struct omap_hwmod_irq_info omap3xxx_gpmc_irqs[] = {
+<<<<<<< HEAD
 	{ .irq = 20 + OMAP_INTC_START, },
+=======
+	{ .irq = 20 },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ .irq = -1 }
 };
 
@@ -2986,7 +3014,11 @@ static struct omap_mmu_dev_attr mmu_isp_dev_attr = {
 
 static struct omap_hwmod omap3xxx_mmu_isp_hwmod;
 static struct omap_hwmod_irq_info omap3xxx_mmu_isp_irqs[] = {
+<<<<<<< HEAD
 	{ .irq = 24 + OMAP_INTC_START, },
+=======
+	{ .irq = 24 },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ .irq = -1 }
 };
 
@@ -3028,7 +3060,11 @@ static struct omap_mmu_dev_attr mmu_iva_dev_attr = {
 
 static struct omap_hwmod omap3xxx_mmu_iva_hwmod;
 static struct omap_hwmod_irq_info omap3xxx_mmu_iva_irqs[] = {
+<<<<<<< HEAD
 	{ .irq = 28 + OMAP_INTC_START, },
+=======
+	{ .irq = 28 },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ .irq = -1 }
 };
 

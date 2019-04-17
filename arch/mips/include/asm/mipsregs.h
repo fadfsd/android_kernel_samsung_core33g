@@ -14,7 +14,10 @@
 #define _ASM_MIPSREGS_H
 
 #include <linux/linkage.h>
+<<<<<<< HEAD
 #include <linux/types.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/hazards.h>
 #include <asm/war.h>
 

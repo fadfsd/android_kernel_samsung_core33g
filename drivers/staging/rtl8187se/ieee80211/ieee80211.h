@@ -1447,12 +1447,20 @@ extern void ieee80211_sta_ps_send_null_frame(struct ieee80211_device *ieee, shor
 
 extern const long ieee80211_wlan_frequencies[];
 
+<<<<<<< HEAD
 static inline void ieee80211_increment_scans(struct ieee80211_device *ieee)
+=======
+extern inline void ieee80211_increment_scans(struct ieee80211_device *ieee)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	ieee->scans++;
 }
 
+<<<<<<< HEAD
 static inline int ieee80211_get_scans(struct ieee80211_device *ieee)
+=======
+extern inline int ieee80211_get_scans(struct ieee80211_device *ieee)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	return ieee->scans;
 }

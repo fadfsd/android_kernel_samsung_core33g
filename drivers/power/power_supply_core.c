@@ -67,23 +67,57 @@ static int __power_supply_changed_work(struct device *dev, void *data)
 
 static void power_supply_changed_work(struct work_struct *work)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct power_supply *psy = container_of(work, struct power_supply,
 						changed_work);
 
 	dev_dbg(psy->dev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	class_for_each_device(power_supply_class, NULL, psy,
 			      __power_supply_changed_work);
 
 	power_supply_update_leds(psy);
 
 	kobject_uevent(&psy->dev->kobj, KOBJ_CHANGE);
+=======
+	spin_lock_irqsave(&psy->changed_lock, flags);
+	if (psy->changed) {
+		psy->changed = false;
+		spin_unlock_irqrestore(&psy->changed_lock, flags);
+
+		class_for_each_device(power_supply_class, NULL, psy,
+				      __power_supply_changed_work);
+
+		power_supply_update_leds(psy);
+
+		kobject_uevent(&psy->dev->kobj, KOBJ_CHANGE);
+		spin_lock_irqsave(&psy->changed_lock, flags);
+	}
+	if (!psy->changed)
+		pm_relax(psy->dev);
+	spin_unlock_irqrestore(&psy->changed_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void power_supply_changed(struct power_supply *psy)
 {
+<<<<<<< HEAD
 	dev_dbg(psy->dev, "%s\n", __func__);
 
+=======
+	unsigned long flags;
+
+	dev_dbg(psy->dev, "%s\n", __func__);
+
+	spin_lock_irqsave(&psy->changed_lock, flags);
+	psy->changed = true;
+	pm_stay_awake(psy->dev);
+	spin_unlock_irqrestore(&psy->changed_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	schedule_work(&psy->changed_work);
 }
 EXPORT_SYMBOL_GPL(power_supply_changed);
@@ -504,6 +538,14 @@ int power_supply_register(struct device *parent, struct power_supply *psy)
 	if (rc)
 		goto device_add_failed;
 
+<<<<<<< HEAD
+=======
+	spin_lock_init(&psy->changed_lock);
+	rc = device_init_wakeup(dev, true);
+	if (rc)
+		goto wakeup_init_failed;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rc = psy_register_thermal(psy);
 	if (rc)
 		goto register_thermal_failed;
@@ -525,6 +567,10 @@ create_triggers_failed:
 register_cooler_failed:
 	psy_unregister_thermal(psy);
 register_thermal_failed:
+<<<<<<< HEAD
+=======
+wakeup_init_failed:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	device_del(dev);
 kobject_set_name_failed:
 device_add_failed:

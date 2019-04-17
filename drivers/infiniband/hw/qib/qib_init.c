@@ -892,6 +892,10 @@ static void qib_shutdown_device(struct qib_devdata *dd)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	qib_update_eeprom_log(dd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**

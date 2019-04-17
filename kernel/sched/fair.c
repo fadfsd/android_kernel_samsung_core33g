@@ -936,6 +936,7 @@ void task_numa_work(struct callback_head *work)
 		if (vma->vm_end - vma->vm_start < HPAGE_SIZE)
 			continue;
 
+<<<<<<< HEAD
 		/*
 		 * Skip inaccessible VMAs to avoid any confusion between
 		 * PROT_NONE and NUMA hinting ptes
@@ -943,6 +944,8 @@ void task_numa_work(struct callback_head *work)
 		if (!(vma->vm_flags & (VM_READ | VM_EXEC | VM_WRITE)))
 			continue;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		do {
 			start = max(start, vma->vm_start);
 			end = ALIGN(start + (pages << PAGE_SHIFT), HPAGE_SIZE);
@@ -2029,6 +2032,7 @@ static inline bool cfs_bandwidth_used(void)
 	return static_key_false(&__cfs_bandwidth_used);
 }
 
+<<<<<<< HEAD
 void cfs_bandwidth_usage_inc(void)
 {
 	static_key_slow_inc(&__cfs_bandwidth_used);
@@ -2037,6 +2041,15 @@ void cfs_bandwidth_usage_inc(void)
 void cfs_bandwidth_usage_dec(void)
 {
 	static_key_slow_dec(&__cfs_bandwidth_used);
+=======
+void account_cfs_bandwidth_used(int enabled, int was_enabled)
+{
+	/* only need to count groups transitioning between enabled/!enabled */
+	if (enabled && !was_enabled)
+		static_key_slow_inc(&__cfs_bandwidth_used);
+	else if (!enabled && was_enabled)
+		static_key_slow_dec(&__cfs_bandwidth_used);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #else /* HAVE_JUMP_LABEL */
 static bool cfs_bandwidth_used(void)
@@ -2044,8 +2057,12 @@ static bool cfs_bandwidth_used(void)
 	return true;
 }
 
+<<<<<<< HEAD
 void cfs_bandwidth_usage_inc(void) {}
 void cfs_bandwidth_usage_dec(void) {}
+=======
+void account_cfs_bandwidth_used(int enabled, int was_enabled) {}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* HAVE_JUMP_LABEL */
 
 /*
@@ -2297,8 +2314,11 @@ static void throttle_cfs_rq(struct cfs_rq *cfs_rq)
 	cfs_rq->throttled_clock = rq->clock;
 	raw_spin_lock(&cfs_b->lock);
 	list_add_tail_rcu(&cfs_rq->throttled_list, &cfs_b->throttled_cfs_rq);
+<<<<<<< HEAD
 	if (!cfs_b->timer_active)
 		__start_cfs_bandwidth(cfs_b);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	raw_spin_unlock(&cfs_b->lock);
 }
 
@@ -2410,6 +2430,7 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun)
 	if (idle)
 		goto out_unlock;
 
+<<<<<<< HEAD
 	/*
 	 * if we have relooped after returning idle once, we need to update our
 	 * status as actually running, so that other cpus doing
@@ -2417,6 +2438,8 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun)
 	 */
 	cfs_b->timer_active = 1;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__refill_cfs_bandwidth_runtime(cfs_b);
 
 	if (!throttled) {
@@ -2477,6 +2500,7 @@ static const u64 min_bandwidth_expiration = 2 * NSEC_PER_MSEC;
 /* how long we wait to gather additional slack before distributing */
 static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
 
+<<<<<<< HEAD
 /*
  * Are we near the end of the current quota period?
  *
@@ -2484,6 +2508,9 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
  * hrtimer base being cleared by __hrtimer_start_range_ns. In the case of
  * migrate_hrtimers, base is never cleared, so we are fine.
  */
+=======
+/* are we near the end of the current quota period? */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
 {
 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
@@ -2559,12 +2586,19 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
 	u64 expires;
 
 	/* confirm we're still not at a refresh boundary */
+<<<<<<< HEAD
 	raw_spin_lock(&cfs_b->lock);
 	if (runtime_refresh_within(cfs_b, min_bandwidth_expiration)) {
 		raw_spin_unlock(&cfs_b->lock);
 		return;
 	}
 
+=======
+	if (runtime_refresh_within(cfs_b, min_bandwidth_expiration))
+		return;
+
+	raw_spin_lock(&cfs_b->lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (cfs_b->quota != RUNTIME_INF && cfs_b->runtime > slice) {
 		runtime = cfs_b->runtime;
 		cfs_b->runtime = 0;
@@ -2689,11 +2723,19 @@ void __start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
 	 * (timer_active==0 becomes visible before the hrtimer call-back
 	 * terminates).  In either case we ensure that it's re-programmed
 	 */
+<<<<<<< HEAD
 	while (unlikely(hrtimer_active(&cfs_b->period_timer)) &&
 	       hrtimer_try_to_cancel(&cfs_b->period_timer) < 0) {
 		/* bounce the lock to allow do_sched_cfs_period_timer to run */
 		raw_spin_unlock(&cfs_b->lock);
 		cpu_relax();
+=======
+	while (unlikely(hrtimer_active(&cfs_b->period_timer))) {
+		raw_spin_unlock(&cfs_b->lock);
+		/* ensure cfs_b->lock is available while we wait */
+		hrtimer_cancel(&cfs_b->period_timer);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		raw_spin_lock(&cfs_b->lock);
 		/* if someone else restarted the timer then we're done */
 		if (cfs_b->timer_active)
@@ -4458,7 +4500,11 @@ fix_small_capacity(struct sched_domain *sd, struct sched_group *group)
  */
 static inline void update_sg_lb_stats(struct lb_env *env,
 			struct sched_group *group, int load_idx,
+<<<<<<< HEAD
 			int local_group, int *balance, struct sg_lb_stats *sgs, bool *overload)
+=======
+			int local_group, int *balance, struct sg_lb_stats *sgs)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned long nr_running, max_nr_running, min_nr_running;
 	unsigned long load, max_cpu_load, min_cpu_load;
@@ -4505,10 +4551,13 @@ static inline void update_sg_lb_stats(struct lb_env *env,
 		sgs->group_load += load;
 		sgs->sum_nr_running += nr_running;
 		sgs->sum_weighted_load += weighted_cpuload(i);
+<<<<<<< HEAD
 
 		if (rq->nr_running > 1)
 		 *overload = true;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (idle_cpu(i))
 			sgs->idle_cpus++;
 	}
@@ -4613,7 +4662,10 @@ static inline void update_sd_lb_stats(struct lb_env *env,
 	struct sched_group *sg = env->sd->groups;
 	struct sg_lb_stats sgs;
 	int load_idx, prefer_sibling = 0;
+<<<<<<< HEAD
 	bool overload = false;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (child && child->flags & SD_PREFER_SIBLING)
 		prefer_sibling = 1;
@@ -4625,8 +4677,12 @@ static inline void update_sd_lb_stats(struct lb_env *env,
 
 		local_group = cpumask_test_cpu(env->dst_cpu, sched_group_cpus(sg));
 		memset(&sgs, 0, sizeof(sgs));
+<<<<<<< HEAD
 		update_sg_lb_stats(env, sg, load_idx, local_group, balance, &sgs,
  &overload);
+=======
+		update_sg_lb_stats(env, sg, load_idx, local_group, balance, &sgs);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (local_group && !(*balance))
 			return;
@@ -4668,6 +4724,7 @@ static inline void update_sd_lb_stats(struct lb_env *env,
 
 		sg = sg->next;
 	} while (sg != env->sd->groups);
+<<<<<<< HEAD
 
 if (!env->sd->parent) {
  /* update overload indicator if we are at root domain */
@@ -4675,6 +4732,8 @@ if (!env->sd->parent) {
  env->dst_rq->rd->overload = overload;
  }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -5052,7 +5111,11 @@ static int load_balance(int this_cpu, struct rq *this_rq,
 {
 	int ld_moved, cur_ld_moved, active_balance = 0;
 	struct sched_group *group;
+<<<<<<< HEAD
 	struct rq *busiest = NULL;
+=======
+	struct rq *busiest;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long flags;
 	struct cpumask *cpus = __get_cpu_var(load_balance_mask);
 
@@ -5268,11 +5331,14 @@ out_one_pinned:
 
 	ld_moved = 0;
 out:
+<<<<<<< HEAD
 	trace_sched_load_balance(this_cpu, idle, *balance,
 				 group ? group->cpumask[0] : 0,
 				 busiest ? busiest->nr_running : 0,
 				 env.imbalance, env.flags, ld_moved,
 				 sd->balance_interval);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ld_moved;
 }
 
@@ -5880,6 +5946,7 @@ static void switched_from_fair(struct rq *rq, struct task_struct *p)
 	struct cfs_rq *cfs_rq = cfs_rq_of(se);
 
 	/*
+<<<<<<< HEAD
 	 * Ensure the task's vruntime is normalized, so that when it's
 	 * switched back to the fair class the enqueue_entity(.flags=0) will
 	 * do the right thing.
@@ -5889,6 +5956,17 @@ static void switched_from_fair(struct rq *rq, struct task_struct *p)
 	 * the task is sleeping will it still have non-normalized vruntime.
 	 */
 	if (!p->on_rq && p->state != TASK_RUNNING) {
+=======
+	 * Ensure the task's vruntime is normalized, so that when its
+	 * switched back to the fair class the enqueue_entity(.flags=0) will
+	 * do the right thing.
+	 *
+	 * If it was on_rq, then the dequeue_entity(.flags=0) will already
+	 * have normalized the vruntime, if it was !on_rq, then only when
+	 * the task is sleeping will it still have non-normalized vruntime.
+	 */
+	if (!se->on_rq && p->state != TASK_RUNNING) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*
 		 * Fix up our vruntime so that the current sleep doesn't
 		 * cause 'unlimited' sleep bonus.
@@ -6109,8 +6187,12 @@ void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
 		se->cfs_rq = parent->my_q;
 
 	se->my_q = cfs_rq;
+<<<<<<< HEAD
 	/* guarantee group entities always have weight */
 	update_load_set(&se->load, NICE_0_LOAD);
+=======
+	update_load_set(&se->load, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	se->parent = parent;
 }
 

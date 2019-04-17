@@ -107,7 +107,10 @@ struct cpufreq_policy {
 	unsigned int		policy; /* see above */
 	struct cpufreq_governor	*governor; /* see below */
 	void			*governor_data;
+<<<<<<< HEAD
 	bool			governor_enabled; /* governor start/stop flag */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct work_struct	update; /* if update_policy() needs to be
 					 * called, but you're in IRQ context */
@@ -274,6 +277,10 @@ struct cpufreq_driver {
 					 * frequency transitions */
 #define CPUFREQ_PM_NO_WARN	0x04	/* don't warn on suspend/resume speed
 					 * mismatches */
+<<<<<<< HEAD
+=======
+#define CPUFREQ_SHARED	0x08	/* smp share same frequency */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 int cpufreq_register_driver(struct cpufreq_driver *driver_data);
 int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
@@ -395,6 +402,7 @@ extern struct cpufreq_governor cpufreq_gov_ondemand;
 extern struct cpufreq_governor cpufreq_gov_conservative;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_conservative)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE)
 extern struct cpufreq_governor cpufreq_gov_interactive;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_interactive)
@@ -406,6 +414,14 @@ extern struct cpufreq_governor cpufreq_gov_sprdemand;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_sprdemand)
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE)
+extern struct cpufreq_governor cpufreq_gov_interactive;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_interactive)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_SPRDEMAND)
+extern struct cpufreq_governor cpufreq_gov_sprdemand;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_sprdemand)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 

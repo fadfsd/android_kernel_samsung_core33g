@@ -176,6 +176,10 @@ module_exit(crc32c_sparc64_mod_fini);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("CRC32c (Castagnoli), sparc64 crc32c opcode accelerated");
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("crc32c");
+=======
+MODULE_ALIAS("crc32c");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "crop_devid.c"

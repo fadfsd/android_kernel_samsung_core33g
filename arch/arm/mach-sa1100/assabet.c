@@ -512,9 +512,12 @@ static void __init assabet_map_io(void)
 	 * Its called GPCLKR0 in my SA1110 manual.
 	 */
 	Ser1SDCR0 |= SDCR0_SUS;
+<<<<<<< HEAD
 	MSC1 = (MSC1 & ~0xffff) |
 		MSC_NonBrst | MSC_32BitStMem |
 		MSC_RdAcc(2) | MSC_WrAcc(2) | MSC_Rec(0);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!machine_has_neponset())
 		sa1100_register_uart_fns(&assabet_port_fns);

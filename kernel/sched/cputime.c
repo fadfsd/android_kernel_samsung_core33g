@@ -326,15 +326,22 @@ out:
  * softirq as those do not count in task exec_runtime any more.
  */
 static void irqtime_account_process_tick(struct task_struct *p, int user_tick,
+<<<<<<< HEAD
 					 struct rq *rq, int ticks)
 {
 	cputime_t scaled = cputime_to_scaled(cputime_one_jiffy);
 	u64 cputime = (__force u64) cputime_one_jiffy;
+=======
+						struct rq *rq)
+{
+	cputime_t one_jiffy_scaled = cputime_to_scaled(cputime_one_jiffy);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u64 *cpustat = kcpustat_this_cpu->cpustat;
 
 	if (steal_account_process_tick())
 		return;
 
+<<<<<<< HEAD
 	cputime *= ticks;
 	scaled *= ticks;
 
@@ -342,12 +349,19 @@ static void irqtime_account_process_tick(struct task_struct *p, int user_tick,
 		cpustat[CPUTIME_IRQ] += cputime;
 	} else if (irqtime_account_si_update()) {
 		cpustat[CPUTIME_SOFTIRQ] += cputime;
+=======
+	if (irqtime_account_hi_update()) {
+		cpustat[CPUTIME_IRQ] += (__force u64) cputime_one_jiffy;
+	} else if (irqtime_account_si_update()) {
+		cpustat[CPUTIME_SOFTIRQ] += (__force u64) cputime_one_jiffy;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else if (this_cpu_ksoftirqd() == p) {
 		/*
 		 * ksoftirqd time do not get accounted in cpu_softirq_time.
 		 * So, we have to handle it separately here.
 		 * Also, p->stime needs to be updated for ksoftirqd.
 		 */
+<<<<<<< HEAD
 		__account_system_time(p, cputime, scaled, CPUTIME_SOFTIRQ);
 	} else if (user_tick) {
 		account_user_time(p, cputime, scaled);
@@ -357,19 +371,44 @@ static void irqtime_account_process_tick(struct task_struct *p, int user_tick,
 		account_guest_time(p, cputime, scaled);
 	} else {
 		__account_system_time(p, cputime, scaled,	CPUTIME_SYSTEM);
+=======
+		__account_system_time(p, cputime_one_jiffy, one_jiffy_scaled,
+					CPUTIME_SOFTIRQ);
+	} else if (user_tick) {
+		account_user_time(p, cputime_one_jiffy, one_jiffy_scaled);
+	} else if (p == rq->idle) {
+		account_idle_time(cputime_one_jiffy);
+	} else if (p->flags & PF_VCPU) { /* System time or guest time */
+		account_guest_time(p, cputime_one_jiffy, one_jiffy_scaled);
+	} else {
+		__account_system_time(p, cputime_one_jiffy, one_jiffy_scaled,
+					CPUTIME_SYSTEM);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
 static void irqtime_account_idle_ticks(int ticks)
 {
+<<<<<<< HEAD
 	struct rq *rq = this_rq();
 
 	irqtime_account_process_tick(current, 0, rq, ticks);
+=======
+	int i;
+	struct rq *rq = this_rq();
+
+	for (i = 0; i < ticks; i++)
+		irqtime_account_process_tick(current, 0, rq);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #else /* CONFIG_IRQ_TIME_ACCOUNTING */
 static inline void irqtime_account_idle_ticks(int ticks) {}
 static inline void irqtime_account_process_tick(struct task_struct *p, int user_tick,
+<<<<<<< HEAD
 						struct rq *rq, int nr_ticks) {}
+=======
+						struct rq *rq) {}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
 
 /*
@@ -464,7 +503,11 @@ void account_process_tick(struct task_struct *p, int user_tick)
 		return;
 
 	if (sched_clock_irqtime) {
+<<<<<<< HEAD
 		irqtime_account_process_tick(p, user_tick, rq, 1);
+=======
+		irqtime_account_process_tick(p, user_tick, rq);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 	}
 

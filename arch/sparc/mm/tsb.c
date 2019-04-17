@@ -133,6 +133,7 @@ static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsign
 	mm->context.tsb_block[tsb_idx].tsb_nentries =
 		tsb_bytes / sizeof(struct tsb);
 
+<<<<<<< HEAD
 	switch (tsb_idx) {
 	case MM_TSB_BASE:
 		base = TSBMAP_8K_BASE;
@@ -146,6 +147,9 @@ static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsign
 		BUG();
 	}
 
+=======
+	base = TSBMAP_BASE;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tte = pgprot_val(PAGE_KERNEL_LOCKED);
 	tsb_paddr = __pa(mm->context.tsb_block[tsb_idx].tsb);
 	BUG_ON(tsb_paddr & (tsb_bytes - 1UL));

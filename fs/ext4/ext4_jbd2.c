@@ -223,6 +223,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 		if (WARN_ON_ONCE(err)) {
 			ext4_journal_abort_handle(where, line, __func__, bh,
 						  handle, err);
+<<<<<<< HEAD
 			ext4_error_inode(inode, where, line,
 					 bh->b_blocknr,
 					 "journal_dirty_metadata failed: "
@@ -232,6 +233,8 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
 					 handle->h_line_no,
 					 handle->h_requested_credits,
 					 handle->h_buffer_credits, err);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	} else {
 		if (inode)

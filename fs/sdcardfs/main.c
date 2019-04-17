@@ -26,6 +26,7 @@
 #include "../internal.h"
 
 enum {
+<<<<<<< HEAD
 	Opt_fsuid,
 	Opt_fsgid,
 	Opt_gid,
@@ -37,10 +38,21 @@ enum {
 	Opt_multiuser,
 	Opt_label,
 	Opt_type,
+=======
+	Opt_uid, 
+	Opt_gid, 
+	Opt_wgid, 
+	Opt_debug,
+	Opt_split,
+	Opt_derive,
+	Opt_lower_fs,
+	Opt_reserved_mb,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	Opt_err,
 };
 
 static const match_table_t sdcardfs_tokens = {
+<<<<<<< HEAD
 	{Opt_fsuid, "fsuid=%u"},
 	{Opt_fsgid, "fsgid=%u"},
 	{Opt_gid, "gid=%u"},
@@ -52,6 +64,16 @@ static const match_table_t sdcardfs_tokens = {
 	{Opt_multiuser, "multiuser"},
 	{Opt_label, "label=%s"},
 	{Opt_type, "type=%s"},
+=======
+	{Opt_uid, "uid=%u"},
+	{Opt_gid, "gid=%u"},
+	{Opt_wgid, "wgid=%u"},
+	{Opt_debug, "debug"},
+	{Opt_split, "split"},
+	{Opt_derive, "derive=%s"},
+	{Opt_lower_fs, "lower_fs=%s"},
+	{Opt_reserved_mb, "reserved_mb=%u"},
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{Opt_err, NULL}
 };
 
@@ -62,6 +84,7 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 	substring_t args[MAX_OPT_ARGS];
 	int option;
 	char *string_option;
+<<<<<<< HEAD
 	char *label;
 
 	/* by default, we use AID_MEDIA_RW as low_uid, low_gid */
@@ -70,16 +93,31 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 	/* by default, userid is 0, gid is AID_EVERYBODY */
 	opts->gid = AID_EVERYBODY;
 	opts->userid = 0;
+=======
+
+	/* by default, we use AID_MEDIA_RW as uid, gid */
+	opts->fs_low_uid = AID_MEDIA_RW;
+	opts->fs_low_gid = AID_MEDIA_RW;
+	/* by default, we use AID_SDCARD_RW as write_gid */
+	opts->write_gid = AID_SDCARD_RW;
+	/* default permission policy 
+	 * (DERIVE_NONE | DERIVE_LEGACY | DERIVE_UNIFIED) */
+	opts->derive = DERIVE_NONE;
+	opts->split_perms = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* by default, we use LOWER_FS_EXT4 as lower fs type */
 	opts->lower_fs = LOWER_FS_EXT4;
 	/* by default, 0MB is reserved */
 	opts->reserved_mb = 0;
+<<<<<<< HEAD
 	/* by default, mask is 0 */
 	opts->mask = 0;
 	/* by default, multi_user is false */
 	opts->multi_user = false;
 	opts->label = NULL;
 	opts->type = TYPE_NONE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	*debug = 0;
 
@@ -97,16 +135,25 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 		case Opt_debug:
 			*debug = 1;
 			break;
+<<<<<<< HEAD
 		case Opt_fsuid:
+=======
+		case Opt_uid:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (match_int(&args[0], &option))
 				return 0;
 			opts->fs_low_uid = option;
 			break;
+<<<<<<< HEAD
 		case Opt_fsgid:
+=======
+		case Opt_gid:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (match_int(&args[0], &option))
 				return 0;
 			opts->fs_low_gid = option;
 			break;
+<<<<<<< HEAD
 		case Opt_gid:
 			if (match_int(&args[0], &option))
 				goto invalid_option;
@@ -121,6 +168,32 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 			string_option = match_strdup(&args[0]);
 			if (!string_option)
 				return -ENOMEM;
+=======
+		case Opt_wgid:
+			if (match_int(&args[0], &option))
+				return 0;
+			opts->write_gid = option;
+			break;
+		case Opt_split:
+			opts->split_perms=1;
+			break;
+		case Opt_derive:
+			string_option = match_strdup(&args[0]);
+			if (!strcmp("none", string_option)) {
+				opts->derive = DERIVE_NONE;
+			} else if (!strcmp("legacy", string_option)) {
+				opts->derive = DERIVE_LEGACY;
+			} else if (!strcmp("unified", string_option)) {
+				opts->derive = DERIVE_UNIFIED;
+			} else {
+				kfree(string_option);
+				goto invalid_option;
+			}
+			kfree(string_option);
+			break;
+		case Opt_lower_fs:
+			string_option = match_strdup(&args[0]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (!strcmp("ext4", string_option)) {
 				opts->lower_fs = LOWER_FS_EXT4;
 			} else if (!strcmp("fat", string_option)) {
@@ -136,6 +209,7 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 				return 0;
 			opts->reserved_mb = option;
 			break;
+<<<<<<< HEAD
 		case Opt_mask:
 			if (match_int(&args[0], &option))
 				return 0;
@@ -166,6 +240,8 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 			}
 			kfree(string_option);
 			break;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* unknown option */
 		default:
 invalid_option:
@@ -261,6 +337,7 @@ static int sdcardfs_read_super(struct super_block *sb, const char *dev_name,
 	/* parse options */
 	err = parse_options(sb, raw_data, silent, &debug, &sb_info->options);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR	"sdcardfs: invalid options or out of memory\n");
 		goto out_freesbi;
 	}
@@ -270,6 +347,19 @@ static int sdcardfs_read_super(struct super_block *sb, const char *dev_name,
 		goto out_freesbi;
 	else
 		sb_info->pkgl_id = pkgl_id;
+=======
+		printk(KERN_ERR	"sdcardfs: invalid options\n");
+		goto out_freesbi;
+	}
+
+	if (sb_info->options.derive != DERIVE_NONE) {
+		pkgl_id = packagelist_create(sb_info->options.write_gid);
+		if(IS_ERR(pkgl_id))
+			goto out_freesbi;
+		else
+			sb_info->pkgl_id = pkgl_id;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* set the lower superblock field of upper superblock */
 	lower_sb = lower_path.dentry->d_sb;
@@ -286,10 +376,14 @@ static int sdcardfs_read_super(struct super_block *sb, const char *dev_name,
 	sb->s_time_gran = 1;
 
 	sb->s_magic = SDCARDFS_SUPER_MAGIC;
+<<<<<<< HEAD
 	if (sb_info->options.type != TYPE_NONE)
 		sb->s_op = &sdcardfs_multimount_sops;
 	else
 		sb->s_op = &sdcardfs_sops;
+=======
+	sb->s_op = &sdcardfs_sops;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* see comment next to the definition of sdcardfs_d_alloc_root */
 	sb->s_root = sdcardfs_d_alloc_root(sb);
@@ -311,6 +405,7 @@ static int sdcardfs_read_super(struct super_block *sb, const char *dev_name,
 	err = sdcardfs_interpose(sb->s_root, sb, &lower_path);
 	if (!err) {
 		/* setup permission policy */
+<<<<<<< HEAD
 		if(sb_info->options.multi_user){
 			setup_derived_state(sb->s_root->d_inode, 
 				PERM_PRE_ROOT, sb_info->options.userid, AID_ROOT, sb_info->options.gid, false);
@@ -324,12 +419,51 @@ static int sdcardfs_read_super(struct super_block *sb, const char *dev_name,
 				PERM_ROOT, sb_info->options.userid, AID_ROOT, sb_info->options.gid, false);
 			sb_info->obbpath_s = kzalloc(PATH_MAX, GFP_KERNEL);
 			snprintf(sb_info->obbpath_s, PATH_MAX, "%s/Android/obb", dev_name);
+=======
+		switch(sb_info->options.derive) {
+			case DERIVE_NONE:
+				setup_derived_state(sb->s_root->d_inode, 
+					PERM_ROOT, 0, AID_ROOT, AID_SDCARD_RW, 00775);
+				sb_info->obbpath_s = NULL;
+				break;
+			case DERIVE_LEGACY:
+				/* Legacy behavior used to support internal multiuser layout which
+				 * places user_id at the top directory level, with the actual roots
+				 * just below that. Shared OBB path is also at top level. */
+				setup_derived_state(sb->s_root->d_inode, 
+				        PERM_LEGACY_PRE_ROOT, 0, AID_ROOT, AID_SDCARD_R, 00771);
+				/* initialize the obbpath string and lookup the path 
+				 * sb_info->obb_path will be deactivated by path_put 
+				 * on sdcardfs_put_super */
+				sb_info->obbpath_s = kzalloc(PATH_MAX, GFP_KERNEL);
+				snprintf(sb_info->obbpath_s, PATH_MAX, "%s/obb", dev_name);
+				err =  prepare_dir(sb_info->obbpath_s, 
+							sb_info->options.fs_low_uid,
+							sb_info->options.fs_low_gid, 00755);
+				if(err)
+					printk(KERN_ERR "sdcardfs: %s: %d, error on creating %s\n", 
+							__func__,__LINE__, sb_info->obbpath_s);
+				break;
+			case DERIVE_UNIFIED:
+				/* Unified multiuser layout which places secondary user_id under
+				 * /Android/user and shared OBB path under /Android/obb. */
+				setup_derived_state(sb->s_root->d_inode, 
+						PERM_ROOT, 0, AID_ROOT, AID_SDCARD_R, 00771);
+				
+				sb_info->obbpath_s = kzalloc(PATH_MAX, GFP_KERNEL);
+				snprintf(sb_info->obbpath_s, PATH_MAX, "%s/Android/obb", dev_name);
+				break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 		fix_derived_permission(sb->s_root->d_inode);
 
 		sb_info->devpath = kzalloc(PATH_MAX, GFP_KERNEL);
 		if(sb_info->devpath && dev_name)
+<<<<<<< HEAD
 			strncpy(sb_info->devpath, dev_name, strlen(dev_name));
+=======
+			memcpy(sb_info->devpath, dev_name, PATH_MAX);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		
 		if (!silent && !err)
 			printk(KERN_INFO "sdcardfs: mounted on top of %s type %s\n",

@@ -57,7 +57,10 @@
 #include <linux/skbuff.h>
 #include <linux/can.h>
 #include <linux/can/core.h>
+<<<<<<< HEAD
 #include <linux/can/skb.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/ratelimit.h>
 #include <net/net_namespace.h>
 #include <net/sock.h>
@@ -262,9 +265,12 @@ int can_send(struct sk_buff *skb, int loop)
 		goto inval_skb;
 	}
 
+<<<<<<< HEAD
 	skb->ip_summed = CHECKSUM_UNNECESSARY;
 
 	skb_reset_mac_header(skb);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	skb_reset_network_header(skb);
 	skb_reset_transport_header(skb);
 
@@ -294,7 +300,11 @@ int can_send(struct sk_buff *skb, int loop)
 				return -ENOMEM;
 			}
 
+<<<<<<< HEAD
 			can_skb_set_owner(newskb, skb->sk);
+=======
+			newskb->sk = skb->sk;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			newskb->ip_summed = CHECKSUM_UNNECESSARY;
 			newskb->pkt_type = PACKET_BROADCAST;
 		}

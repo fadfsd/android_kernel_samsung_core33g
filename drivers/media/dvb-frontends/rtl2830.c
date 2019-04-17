@@ -27,23 +27,35 @@
 
 #include "rtl2830_priv.h"
 
+<<<<<<< HEAD
 /* Max transfer size done by I2C transfer functions */
 #define MAX_XFER_SIZE  64
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* write multiple hardware registers */
 static int rtl2830_wr(struct rtl2830_priv *priv, u8 reg, const u8 *val, int len)
 {
 	int ret;
+<<<<<<< HEAD
 	u8 buf[MAX_XFER_SIZE];
+=======
+	u8 buf[1+len];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct i2c_msg msg[1] = {
 		{
 			.addr = priv->cfg.i2c_addr,
 			.flags = 0,
+<<<<<<< HEAD
 			.len = 1 + len,
+=======
+			.len = 1+len,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			.buf = buf,
 		}
 	};
 
+<<<<<<< HEAD
 	if (1 + len > sizeof(buf)) {
 		dev_warn(&priv->i2c->dev,
 			 "%s: i2c wr reg=%04x: len=%d is too big!\n",
@@ -51,6 +63,8 @@ static int rtl2830_wr(struct rtl2830_priv *priv, u8 reg, const u8 *val, int len)
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	buf[0] = reg;
 	memcpy(&buf[1], val, len);
 

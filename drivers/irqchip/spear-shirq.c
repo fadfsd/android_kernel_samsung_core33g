@@ -125,7 +125,11 @@ static struct spear_shirq spear320_shirq_ras2 = {
 };
 
 static struct spear_shirq spear320_shirq_ras3 = {
+<<<<<<< HEAD
 	.irq_nr = 7,
+=======
+	.irq_nr = 3,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.irq_bit_off = 0,
 	.invalid_irq = 1,
 	.regs = {

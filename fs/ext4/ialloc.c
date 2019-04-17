@@ -315,8 +315,17 @@ out:
 		err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
 		if (!fatal)
 			fatal = err;
+<<<<<<< HEAD
 	} else
 		ext4_error(sb, "bit already cleared for inode %lu", ino);
+=======
+	} else {
+		/* for debugging, sangwoo2.lee */
+		print_bh(sb, bitmap_bh, 0, EXT4_BLOCK_SIZE(sb));
+		/* for debugging */
+		ext4_error(sb, "bit already cleared for inode %lu", ino);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 error_return:
 	brelse(bitmap_bh);
@@ -793,10 +802,13 @@ got:
 		struct buffer_head *block_bitmap_bh;
 
 		block_bitmap_bh = ext4_read_block_bitmap(sb, group);
+<<<<<<< HEAD
 		if (!block_bitmap_bh) {
 			err = -EIO;
 			goto out;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		BUFFER_TRACE(block_bitmap_bh, "get block bitmap access");
 		err = ext4_journal_get_write_access(handle, block_bitmap_bh);
 		if (err) {

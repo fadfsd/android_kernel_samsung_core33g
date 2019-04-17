@@ -12,8 +12,11 @@ enum {
 	ARM_SEC_CORE,
 	ARM_SEC_EXIT,
 	ARM_SEC_DEVEXIT,
+<<<<<<< HEAD
 	ARM_SEC_HOT,
 	ARM_SEC_UNLIKELY,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ARM_SEC_MAX,
 };
 

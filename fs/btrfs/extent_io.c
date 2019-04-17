@@ -1624,7 +1624,10 @@ again:
 		 * shortening the size of the delalloc range we're searching
 		 */
 		free_extent_state(cached_state);
+<<<<<<< HEAD
 		cached_state = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (!loops) {
 			unsigned long offset = (*start) & (PAGE_CACHE_SIZE - 1);
 			max_bytes = PAGE_CACHE_SIZE - offset;
@@ -2357,7 +2360,11 @@ int end_extent_writepage(struct page *page, int err, u64 start, u64 end)
 {
 	int uptodate = (err == 0);
 	struct extent_io_tree *tree;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+	int ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tree = &BTRFS_I(page->mapping->host)->io_tree;
 
@@ -2371,8 +2378,11 @@ int end_extent_writepage(struct page *page, int err, u64 start, u64 end)
 	if (!uptodate) {
 		ClearPageUptodate(page);
 		SetPageError(page);
+<<<<<<< HEAD
 		ret = ret < 0 ? ret : -EIO;
 		mapping_set_error(page->mapping, ret);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return 0;
 }
@@ -4080,11 +4090,16 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
 		}
 		ret = fiemap_fill_next_extent(fieinfo, em_start, disko,
 					      em_len, flags);
+<<<<<<< HEAD
 		if (ret) {
 			if (ret == 1)
 				ret = 0;
 			goto out_free;
 		}
+=======
+		if (ret)
+			goto out_free;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 out_free:
 	free_extent_map(em);

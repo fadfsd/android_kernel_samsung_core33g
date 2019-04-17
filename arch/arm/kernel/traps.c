@@ -35,6 +35,7 @@
 #include <asm/tls.h>
 #include <asm/system_misc.h>
 
+<<<<<<< HEAD
 static const char *handler[]= {
 	"prefetch abort",
 	"data abort",
@@ -42,6 +43,9 @@ static const char *handler[]= {
 	"interrupt",
 	"undefined instruction",
 };
+=======
+static const char *handler[]= { "prefetch abort", "data abort", "address exception", "interrupt" };
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void *vectors_page;
 
@@ -230,6 +234,14 @@ void show_stack(struct task_struct *tsk, unsigned long *sp)
 #define S_ISA " ARM"
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SEC_DEBUG
+extern void sec_debug_backup_ctx(struct pt_regs*); 
+extern unsigned int sec_debug_callstack_workaround;
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int __die(const char *str, int err, struct pt_regs *regs)
 {
 	struct task_struct *tsk = current;
@@ -246,12 +258,32 @@ static int __die(const char *str, int err, struct pt_regs *regs)
 
 	print_modules();
 	__show_regs(regs);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SEC_DEBUG
+	sec_debug_backup_ctx(regs);
+	sec_debug_callstack_workaround=0x12345678;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	printk(KERN_EMERG "Process %.*s (pid: %d, stack limit = 0x%p)\n",
 		TASK_COMM_LEN, tsk->comm, task_pid_nr(tsk), end_of_stack(tsk));
 
 	if (!user_mode(regs) || in_interrupt()) {
+<<<<<<< HEAD
 		dump_mem(KERN_EMERG, "Stack: ", regs->ARM_sp,
 			 THREAD_SIZE + (unsigned long)task_stack_page(tsk));
+=======
+		if(((unsigned long)regs->ARM_sp - (unsigned long)task_stack_page(tsk)) < THREAD_SIZE)
+		{
+			dump_mem(KERN_EMERG, "Stack: ", regs->ARM_sp,
+				 THREAD_SIZE + (unsigned long)task_stack_page(tsk));
+		}
+		else
+		{
+			dump_mem(KERN_EMERG, "Stack: ", (unsigned long)task_stack_page(tsk),
+				 THREAD_SIZE + (unsigned long)task_stack_page(tsk));
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		dump_backtrace(regs, tsk);
 		dump_instr(KERN_EMERG, regs);
 	}
@@ -286,10 +318,25 @@ static unsigned long oops_begin(void)
 	return flags;
 }
 
+<<<<<<< HEAD
 static void oops_end(unsigned long flags, struct pt_regs *regs, int signr)
 {
 	if (regs && kexec_should_crash(current))
 		crash_kexec(regs);
+=======
+#ifdef CONFIG_SPRD_SYSDUMP /* TODO: jianjun.he */
+	extern void sysdump_enter(int enter_id, const char *reason, struct pt_regs *regs);
+#endif
+static void oops_end(unsigned long flags, struct pt_regs *regs, int signr)
+{
+#ifdef CONFIG_SPRD_SYSDUMP /* TODO: jianjun.he */
+	sysdump_enter(1, "oops", regs);
+#endif
+#ifndef CONFIG_SEC_DEBUG
+	if (regs && kexec_should_crash(current))
+		crash_kexec(regs);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	bust_spinlocks(0);
 	die_owner = -1;
@@ -347,17 +394,27 @@ void arm_notify_die(const char *str, struct pt_regs *regs,
 int is_valid_bugaddr(unsigned long pc)
 {
 #ifdef CONFIG_THUMB2_KERNEL
+<<<<<<< HEAD
 	u16 bkpt;
 	u16 insn = __opcode_to_mem_thumb16(BUG_INSTR_VALUE);
 #else
 	u32 bkpt;
 	u32 insn = __opcode_to_mem_arm(BUG_INSTR_VALUE);
+=======
+	unsigned short bkpt;
+#else
+	unsigned long bkpt;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 	if (probe_kernel_address((unsigned *)pc, bkpt))
 		return 0;
 
+<<<<<<< HEAD
 	return bkpt == insn;
+=======
+	return bkpt == BUG_INSTR_VALUE;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #endif
@@ -801,6 +858,16 @@ void abort(void)
 }
 EXPORT_SYMBOL(abort);
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEC_DEBUG)
+void cp_abort(void *debug_info)
+{
+	panic("CP Crash : %s", debug_info);
+}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void __init trap_init(void)
 {
 	return;

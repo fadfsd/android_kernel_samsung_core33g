@@ -25,11 +25,19 @@ int __init ipv6_exthdrs_offload_init(void)
 	int ret;
 
 	ret = inet6_add_offload(&rthdr_offload, IPPROTO_ROUTING);
+<<<<<<< HEAD
 	if (ret)
 		goto out;
 
 	ret = inet6_add_offload(&dstopt_offload, IPPROTO_DSTOPTS);
 	if (ret)
+=======
+	if (!ret)
+		goto out;
+
+	ret = inet6_add_offload(&dstopt_offload, IPPROTO_DSTOPTS);
+	if (!ret)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out_rt;
 
 out:

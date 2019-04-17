@@ -485,13 +485,25 @@ static unsigned int clamp_align(unsigned int x, unsigned int min,
 	/* Bits that must be zero to be aligned */
 	unsigned int mask = ~((1 << align) - 1);
 
+<<<<<<< HEAD
 	/* Clamp to aligned min and max */
 	x = clamp(x, (min + ~mask) & mask, max & mask);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Round to nearest aligned value */
 	if (align)
 		x = (x + (1 << (align - 1))) & mask;
 
+<<<<<<< HEAD
+=======
+	/* Clamp to aligned value of min and max */
+	if (x < min)
+		x = (min + ~mask) & mask;
+	else if (x > max)
+		x = max & mask;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return x;
 }
 

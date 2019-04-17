@@ -1039,10 +1039,13 @@ static pg_data_t __ref *hotadd_new_pgdat(int nid, u64 start)
 			return NULL;
 
 		arch_refresh_nodedata(nid, pgdat);
+<<<<<<< HEAD
 	} else {
 		/* Reset the nr_zones and classzone_idx to 0 before reuse */
 		pgdat->nr_zones = 0;
 		pgdat->classzone_idx = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* we can use NODE_DATA(nid) from here */
@@ -1803,11 +1806,26 @@ void try_offline_node(int nid)
 		 * wait_table may be allocated from boot memory,
 		 * here only free if it's allocated by vmalloc.
 		 */
+<<<<<<< HEAD
 		if (is_vmalloc_addr(zone->wait_table)) {
 			vfree(zone->wait_table);
 			zone->wait_table = NULL;
 		}
 	}
+=======
+		if (is_vmalloc_addr(zone->wait_table))
+			vfree(zone->wait_table);
+	}
+
+	/*
+	 * Since there is no way to guarentee the address of pgdat/zone is not
+	 * on stack of any kernel threads or used by other kernel objects
+	 * without reference counting or other symchronizing method, do not
+	 * reset node_data and free pgdat here. Just reset it to 0 and reuse
+	 * the memory when the node is online again.
+	 */
+	memset(pgdat, 0, sizeof(*pgdat));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL(try_offline_node);
 

@@ -18,7 +18,11 @@
 #include <linux/types.h>
 
 /* Enable/disable SYSRQ support by default (0==no, 1==yes). */
+<<<<<<< HEAD
 #define SYSRQ_DEFAULT_ENABLE	1
+=======
+#define SYSRQ_DEFAULT_ENABLE	0
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Possible values of bitmask for enabling sysrq functions */
 /* 0x0001 is reserved for enable everything */

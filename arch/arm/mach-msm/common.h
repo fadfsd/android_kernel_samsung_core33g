@@ -23,7 +23,11 @@ extern void msm_map_msm8x60_io(void);
 extern void msm_map_msm8960_io(void);
 extern void msm_map_qsd8x50_io(void);
 
+<<<<<<< HEAD
 extern void __iomem *__msm_ioremap_caller(phys_addr_t phys_addr, size_t size,
+=======
+extern void __iomem *__msm_ioremap_caller(unsigned long phys_addr, size_t size,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					  unsigned int mtype, void *caller);
 
 extern struct smp_operations msm_smp_ops;

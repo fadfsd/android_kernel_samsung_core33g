@@ -1061,7 +1061,10 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 	i8042.notimeout	[HW] Ignore timeout condition signalled by controller
 	i8042.reset	[HW] Reset the controller during init and cleanup
 	i8042.unlock	[HW] Unlock (ignore) the keylock
+<<<<<<< HEAD
 	i8042.kbdreset  [HW] Reset device connected to KBD port
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	i810=		[HW,DRM]
 
@@ -1457,10 +1460,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 			* dump_id: dump IDENTIFY data.
 
+<<<<<<< HEAD
 			* atapi_dmadir: Enable ATAPI DMADIR bridge support
 
 			* disable: Disable this device.
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			If there are multiple matching configurations changing
 			the same attribute, the last one is used.
 

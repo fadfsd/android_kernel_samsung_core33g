@@ -34,6 +34,10 @@
 #include <linux/mutex.h>
 #include <linux/anon_inodes.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/freezer.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/mman.h>
@@ -1602,7 +1606,12 @@ fetch_events:
 			}
 
 			spin_unlock_irqrestore(&ep->lock, flags);
+<<<<<<< HEAD
 			if (!schedule_hrtimeout_range(to, slack, HRTIMER_MODE_ABS))
+=======
+			if (!freezable_schedule_hrtimeout_range(to, slack,
+								HRTIMER_MODE_ABS))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				timed_out = 1;
 
 			spin_lock_irqsave(&ep->lock, flags);

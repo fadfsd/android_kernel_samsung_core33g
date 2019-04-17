@@ -97,6 +97,7 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 
 static inline int arch_spin_trylock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long contended, res;
 	u32 slock;
 
@@ -113,6 +114,21 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 	} while (res);
 
 	if (!contended) {
+=======
+	unsigned long tmp;
+	u32 slock;
+
+	__asm__ __volatile__(
+"	ldrex	%0, [%2]\n"
+"	subs	%1, %0, %0, ror #16\n"
+"	addeq	%0, %0, %3\n"
+"	strexeq	%1, %0, [%2]"
+	: "=&r" (slock), "=&r" (tmp)
+	: "r" (&lock->slock), "I" (1 << TICKET_SHIFT)
+	: "cc");
+
+	if (tmp == 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		smp_mb();
 		return 1;
 	} else {
@@ -129,13 +145,21 @@ static inline void arch_spin_unlock(arch_spinlock_t *lock)
 
 static inline int arch_spin_is_locked(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	struct __raw_tickets tickets = READ_ONCE(lock->tickets);
+=======
+	struct __raw_tickets tickets = ACCESS_ONCE(lock->tickets);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return tickets.owner != tickets.next;
 }
 
 static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	struct __raw_tickets tickets = READ_ONCE(lock->tickets);
+=======
+	struct __raw_tickets tickets = ACCESS_ONCE(lock->tickets);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return (tickets.next - tickets.owner) > 1;
 }
 #define arch_spin_is_contended	arch_spin_is_contended
@@ -168,6 +192,7 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 
 static inline int arch_write_trylock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	unsigned long contended, res;
 
 	do {
@@ -182,6 +207,19 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
 	} while (res);
 
 	if (!contended) {
+=======
+	unsigned long tmp;
+
+	__asm__ __volatile__(
+"	ldrex	%0, [%1]\n"
+"	teq	%0, #0\n"
+"	strexeq	%0, %2, [%1]"
+	: "=&r" (tmp)
+	: "r" (&rw->lock), "r" (0x80000000)
+	: "cc");
+
+	if (tmp == 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		smp_mb();
 		return 1;
 	} else {
@@ -257,6 +295,7 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 
 static inline int arch_read_trylock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	unsigned long contended, res;
 
 	do {
@@ -277,6 +316,20 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
 	} else {
 		return 0;
 	}
+=======
+	unsigned long tmp, tmp2 = 1;
+
+	__asm__ __volatile__(
+"	ldrex	%0, [%2]\n"
+"	adds	%0, %0, #1\n"
+"	strexpl	%1, %0, [%2]\n"
+	: "=&r" (tmp), "+r" (tmp2)
+	: "r" (&rw->lock)
+	: "cc");
+
+	smp_mb();
+	return tmp2 == 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* read_can_lock - would read_trylock() succeed? */

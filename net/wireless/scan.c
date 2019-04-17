@@ -253,10 +253,17 @@ void __cfg80211_sched_scan_results(struct work_struct *wk)
 	rdev = container_of(wk, struct cfg80211_registered_device,
 			    sched_scan_results_wk);
 
+<<<<<<< HEAD
 	mutex_lock(&rdev->sched_scan_mtx);
 
 	request = rdev->sched_scan_req;
 
+=======
+	request = rdev->sched_scan_req;
+
+	mutex_lock(&rdev->sched_scan_mtx);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* we don't have sched_scan_req anymore if the scan is stopping */
 	if (request) {
 		if (request->flags & NL80211_SCAN_FLAG_FLUSH) {

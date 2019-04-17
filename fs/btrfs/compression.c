@@ -1009,8 +1009,11 @@ int btrfs_decompress_buf2page(char *buf, unsigned long buf_start,
 		bytes = min(bytes, working_bytes);
 		kaddr = kmap_atomic(page_out);
 		memcpy(kaddr + *pg_offset, buf + buf_offset, bytes);
+<<<<<<< HEAD
 		if (*pg_index == (vcnt - 1) && *pg_offset == 0)
 			memset(kaddr + bytes, 0, PAGE_CACHE_SIZE - bytes);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kunmap_atomic(kaddr);
 		flush_dcache_page(page_out);
 

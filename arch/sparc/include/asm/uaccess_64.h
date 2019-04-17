@@ -262,8 +262,13 @@ extern unsigned long __must_check __clear_user(void __user *, unsigned long);
 extern __must_check long strlen_user(const char __user *str);
 extern __must_check long strnlen_user(const char __user *str, long n);
 
+<<<<<<< HEAD
 #define __copy_to_user_inatomic __copy_to_user
 #define __copy_from_user_inatomic __copy_from_user
+=======
+#define __copy_to_user_inatomic ___copy_to_user
+#define __copy_from_user_inatomic ___copy_from_user
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct pt_regs;
 extern unsigned long compute_effective_address(struct pt_regs *,

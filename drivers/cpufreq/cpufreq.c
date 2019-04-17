@@ -46,7 +46,10 @@ static DEFINE_PER_CPU(struct cpufreq_policy *, cpufreq_cpu_data);
 static DEFINE_PER_CPU(char[CPUFREQ_NAME_LEN], cpufreq_cpu_governor);
 #endif
 static DEFINE_RWLOCK(cpufreq_driver_lock);
+<<<<<<< HEAD
 static DEFINE_MUTEX(cpufreq_governor_lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * cpu_policy_rwsem is a per CPU reader-writer semaphore designed to cure
@@ -92,6 +95,13 @@ static void unlock_policy_rwsem_##mode(int cpu)				\
 unlock_policy_rwsem(read, cpu);
 unlock_policy_rwsem(write, cpu);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_FREQ_LIMIT
+static atomic_t wait_cpufreq = ATOMIC_INIT(0); /*add atomic wait_cpufreq variable to prevent cpufreq_policy_cpu value being setting to -1*/
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* internal prototypes */
 static int __cpufreq_governor(struct cpufreq_policy *policy,
 		unsigned int event);
@@ -253,6 +263,16 @@ static inline void adjust_jiffies(unsigned long val, struct cpufreq_freqs *ci)
 void __cpufreq_notify_transition(struct cpufreq_policy *policy,
 		struct cpufreq_freqs *freqs, unsigned int state)
 {
+<<<<<<< HEAD
+=======
+
+	if(!policy) /*ignore to change freq when policy is NULL */
+	{
+		pr_debug("have not policy for transition notify");
+		return;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	BUG_ON(irqs_disabled());
 
 	if (cpufreq_disabled())
@@ -306,6 +326,16 @@ void __cpufreq_notify_transition(struct cpufreq_policy *policy,
 void cpufreq_notify_transition(struct cpufreq_policy *policy,
 		struct cpufreq_freqs *freqs, unsigned int state)
 {
+<<<<<<< HEAD
+=======
+
+	if(!policy) /*ignore to change freq when policy is NULL */
+	{
+		pr_debug("have not policy for transition notify");
+		return;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for_each_cpu(freqs->cpu, policy->cpus)
 		__cpufreq_notify_transition(policy, freqs, state);
 }
@@ -867,7 +897,10 @@ static int cpufreq_add_dev(struct device *dev, struct subsys_interface *sif)
 	if (cpu_is_offline(cpu))
 		return 0;
 
+<<<<<<< HEAD
 	pr_debug("adding CPU %u\n", cpu);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_SMP
 	/* check whether a different CPU already registered this
@@ -1100,9 +1133,16 @@ static int __cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif
 
 		free_cpumask_var(data->related_cpus);
 		free_cpumask_var(data->cpus);
+<<<<<<< HEAD
 		kfree(data);
 	} else {
 		pr_debug("%s: removing link, cpu: %d\n", __func__, cpu);
+=======
+		pr_debug("policy %d is freed\n",data->cpu);
+		kfree(data);
+	} else {
+		pr_debug("%s: removing link, cpu: %d policy[%d] %x\n", __func__, cpu,data->cpu,data);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		cpufreq_cpu_put(data);
 		if (cpufreq_driver->target) {
 			__cpufreq_governor(data, CPUFREQ_GOV_START);
@@ -1110,6 +1150,16 @@ static int __cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif
 		}
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_FREQ_LIMIT
+	while (atomic_read(&wait_cpufreq) != 0){
+		pr_warn("cpu %d offline thread should wait until TSP irq thread finish updating cpufreq policy \n",cpu);
+		msleep(1);
+	}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	per_cpu(cpufreq_policy_cpu, cpu) = -1;
 	return 0;
 }
@@ -1564,6 +1614,7 @@ static int __cpufreq_governor(struct cpufreq_policy *policy,
 
 	pr_debug("__cpufreq_governor for CPU %u, event %u\n",
 						policy->cpu, event);
+<<<<<<< HEAD
 
 	mutex_lock(&cpufreq_governor_lock);
 	if ((!policy->governor_enabled && (event == CPUFREQ_GOV_STOP)) ||
@@ -1579,6 +1630,8 @@ static int __cpufreq_governor(struct cpufreq_policy *policy,
 
 	mutex_unlock(&cpufreq_governor_lock);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = policy->governor->governor(policy, event);
 
 	if (!ret) {
@@ -1586,6 +1639,7 @@ static int __cpufreq_governor(struct cpufreq_policy *policy,
 			policy->governor->initialized++;
 		else if (event == CPUFREQ_GOV_POLICY_EXIT)
 			policy->governor->initialized--;
+<<<<<<< HEAD
 	} else {
 		/* Restore original values */
 		mutex_lock(&cpufreq_governor_lock);
@@ -1594,6 +1648,8 @@ static int __cpufreq_governor(struct cpufreq_policy *policy,
 		else if (event == CPUFREQ_GOV_START)
 			policy->governor_enabled = false;
 		mutex_unlock(&cpufreq_governor_lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* we keep one module reference alive for
@@ -1806,10 +1862,26 @@ error_out:
  */
 int cpufreq_update_policy(unsigned int cpu)
 {
+<<<<<<< HEAD
 	struct cpufreq_policy *data = cpufreq_cpu_get(cpu);
 	struct cpufreq_policy policy;
 	int ret;
 
+=======
+#ifdef CONFIG_CPU_FREQ_LIMIT
+	struct cpufreq_policy *data = NULL;
+#else
+	struct cpufreq_policy *data = cpufreq_cpu_get(cpu);
+#endif
+	struct cpufreq_policy policy;
+	int ret;
+
+#ifdef CONFIG_CPU_FREQ_LIMIT
+	atomic_inc(&wait_cpufreq);
+	data = cpufreq_cpu_get(cpu);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!data) {
 		ret = -ENODEV;
 		goto no_policy;
@@ -1848,6 +1920,14 @@ int cpufreq_update_policy(unsigned int cpu)
 fail:
 	cpufreq_cpu_put(data);
 no_policy:
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_CPU_FREQ_LIMIT
+	atomic_dec(&wait_cpufreq);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 EXPORT_SYMBOL(cpufreq_update_policy);

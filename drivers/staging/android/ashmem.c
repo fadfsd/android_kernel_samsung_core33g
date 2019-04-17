@@ -224,6 +224,7 @@ static ssize_t ashmem_read(struct file *file, char __user *buf,
 
 	/* If size is not set, or set to 0, always return EOF. */
 	if (asma->size == 0)
+<<<<<<< HEAD
 		goto out;
 
 	if (!asma->file) {
@@ -239,6 +240,31 @@ static ssize_t ashmem_read(struct file *file, char __user *buf,
 	asma->file->f_pos = *pos;
 
 out:
+=======
+		goto out_unlock;
+
+	if (!asma->file) {
+		ret = -EBADF;
+		goto out_unlock;
+	}
+
+	mutex_unlock(&ashmem_mutex);
+
+	/*
+	 * asma and asma->file are used outside the lock here.  We assume
+	 * once asma->file is set it will never be changed, and will not
+	 * be destroyed until all references to the file are dropped and
+	 * ashmem_release is called.
+	 */
+	ret = asma->file->f_op->read(asma->file, buf, len, pos);
+	if (ret >= 0) {
+		/** Update backing file pos, since f_ops->read() doesn't */
+		asma->file->f_pos = *pos;
+	}
+	return ret;
+
+out_unlock:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&ashmem_mutex);
 	return ret;
 }
@@ -317,6 +343,7 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 	}
 	get_file(asma->file);
 
+<<<<<<< HEAD
 	/*
 	 * XXX - Reworked to use shmem_zero_setup() instead of
 	 * shmem_set_file while we're in staging. -jstultz
@@ -333,6 +360,16 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 		fput(vma->vm_file);
 	vma->vm_file = asma->file;
 
+=======
+	if (vma->vm_flags & VM_SHARED)
+		shmem_set_file(vma, asma->file);
+	else {
+		if (vma->vm_file)
+			fput(vma->vm_file);
+		vma->vm_file = asma->file;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out:
 	mutex_unlock(&ashmem_mutex);
 	return ret;
@@ -363,7 +400,13 @@ static int ashmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	if (!sc->nr_to_scan)
 		return lru_count;
 
+<<<<<<< HEAD
 	mutex_lock(&ashmem_mutex);
+=======
+	if(!mutex_trylock(&ashmem_mutex))
+		return -1;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_for_each_entry_safe(range, next, &ashmem_lru_list, lru) {
 		loff_t start = range->pgstart * PAGE_SIZE;
 		loff_t end = (range->pgend + 1) * PAGE_SIZE;
@@ -413,6 +456,10 @@ out:
 
 static int set_name(struct ashmem_area *asma, void __user *name)
 {
+<<<<<<< HEAD
+=======
+	int len;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret = 0;
 	char local_name[ASHMEM_NAME_LEN];
 
@@ -425,6 +472,7 @@ static int set_name(struct ashmem_area *asma, void __user *name)
 	 * variable that does not need protection and later copy the local
 	 * variable to the structure member with lock held.
 	 */
+<<<<<<< HEAD
 	if (copy_from_user(local_name, name, ASHMEM_NAME_LEN))
 		return -EFAULT;
 
@@ -440,6 +488,21 @@ static int set_name(struct ashmem_area *asma, void __user *name)
 out:
 	mutex_unlock(&ashmem_mutex);
 
+=======
+	len = strncpy_from_user(local_name, name, ASHMEM_NAME_LEN);
+	if (len < 0)
+		return len;
+	if (len == ASHMEM_NAME_LEN)
+		local_name[ASHMEM_NAME_LEN - 1] = '\0';
+	mutex_lock(&ashmem_mutex);
+	/* cannot change an existing mapping's name */
+	if (unlikely(asma->file))
+		ret = -EINVAL;
+	else
+		strcpy(asma->name + ASHMEM_NAME_PREFIX_LEN, local_name);
+
+	mutex_unlock(&ashmem_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 

@@ -184,6 +184,7 @@ static inline __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
 				__wsum sum)
 {
 	__asm__ __volatile__(
+<<<<<<< HEAD
 		".set\tvolatile\t\t\t# csum_ipv6_magic\n\t"
 		"add\t%0, %0, %5\t\t\t# proto (long in network byte order)\n\t"
 		"cmp.c\t%5, %0\n\t"
@@ -235,6 +236,50 @@ static inline __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
 		"addi\t%0, 0x1\n\t"
 		"1:\n\t"
 		".set\toptimize"
+=======
+		".set\tnoreorder\t\t\t# csum_ipv6_magic\n\t"
+		".set\tnoat\n\t"
+		"addu\t%0, %5\t\t\t# proto (long in network byte order)\n\t"
+		"sltu\t$1, %0, %5\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %6\t\t\t# csum\n\t"
+		"sltu\t$1, %0, %6\n\t"
+		"lw\t%1, 0(%2)\t\t\t# four words source address\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 4(%2)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 8(%2)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 12(%2)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 0(%3)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 4(%3)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 8(%3)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"lw\t%1, 12(%3)\n\t"
+		"addu\t%0, $1\n\t"
+		"addu\t%0, %1\n\t"
+		"sltu\t$1, %0, %1\n\t"
+		"addu\t%0, $1\t\t\t# Add final carry\n\t"
+		".set\tnoat\n\t"
+		".set\tnoreorder"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		: "=r" (sum), "=r" (proto)
 		: "r" (saddr), "r" (daddr),
 		  "0" (htonl(len)), "1" (htonl(proto)), "r" (sum));

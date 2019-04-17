@@ -135,6 +135,11 @@ fw-shipped-$(CONFIG_USB_SERIAL_XIRCOM) += keyspan_pda/xircom_pgs.fw
 fw-shipped-$(CONFIG_USB_VICAM) += vicam/firmware.fw
 fw-shipped-$(CONFIG_VIDEO_CPIA2) += cpia2/stv0672_vp4.bin
 fw-shipped-$(CONFIG_YAM) += yam/1200.bin yam/9600.bin
+<<<<<<< HEAD
+=======
+fw-shipped-$(CONFIG_TOUCHSCREEN_MELFAS_MMS438) += melfas/melfas_mms400.fw
+fw-shipped-$(CONFIG_TOUCHSCREEN_MELFAS_MMS449) += melfas/melfas_mms400.fw
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 fw-shipped-all := $(fw-shipped-y) $(fw-shipped-m) $(fw-shipped-)
 

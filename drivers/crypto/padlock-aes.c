@@ -563,4 +563,8 @@ MODULE_DESCRIPTION("VIA PadLock AES algorithm support");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michal Ludvig");
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("aes");
+=======
+MODULE_ALIAS("aes");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

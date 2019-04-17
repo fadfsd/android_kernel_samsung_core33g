@@ -75,7 +75,11 @@ int spu_handle_mm_fault(struct mm_struct *mm, unsigned long ea,
 		if (*flt & VM_FAULT_OOM) {
 			ret = -ENOMEM;
 			goto out_unlock;
+<<<<<<< HEAD
 		} else if (*flt & (VM_FAULT_SIGBUS | VM_FAULT_SIGSEGV)) {
+=======
+		} else if (*flt & VM_FAULT_SIGBUS) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			ret = -EFAULT;
 			goto out_unlock;
 		}

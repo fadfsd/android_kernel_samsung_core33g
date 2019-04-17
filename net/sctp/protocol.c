@@ -498,6 +498,7 @@ static void sctp_v4_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 			continue;
 		if ((laddr->state == SCTP_ADDR_SRC) &&
 		    (AF_INET == laddr->a.sa.sa_family)) {
+<<<<<<< HEAD
 			fl4->fl4_sport = laddr->a.v4.sin_port;
 			flowi4_update_output(fl4,
 					     asoc->base.sk->sk_bound_dev_if,
@@ -505,6 +506,10 @@ static void sctp_v4_get_dst(struct sctp_transport *t, union sctp_addr *saddr,
 					     daddr->v4.sin_addr.s_addr,
 					     laddr->a.v4.sin_addr.s_addr);
 
+=======
+			fl4->saddr = laddr->a.v4.sin_addr.s_addr;
+			fl4->fl4_sport = laddr->a.v4.sin_port;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			rt = ip_route_output_key(sock_net(sk), fl4);
 			if (!IS_ERR(rt)) {
 				dst = &rt->dst;

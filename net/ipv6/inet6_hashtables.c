@@ -116,7 +116,11 @@ begintw:
 			}
 			if (unlikely(!INET6_TW_MATCH(sk, net, saddr, daddr,
 						     ports, dif))) {
+<<<<<<< HEAD
 				inet_twsk_put(inet_twsk(sk));
+=======
+				sock_put(sk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				goto begintw;
 			}
 			goto out;

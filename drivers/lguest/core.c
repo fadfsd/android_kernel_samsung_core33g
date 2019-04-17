@@ -42,7 +42,10 @@ DEFINE_MUTEX(lguest_lock);
 static __init int map_switcher(void)
 {
 	int i, err;
+<<<<<<< HEAD
 	struct page **pagep;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * Map the Switcher in to high memory.
@@ -110,11 +113,17 @@ static __init int map_switcher(void)
 	 * This code actually sets up the pages we've allocated to appear at
 	 * switcher_addr.  map_vm_area() takes the vma we allocated above, the
 	 * kind of pages we're mapping (kernel pages), and a pointer to our
+<<<<<<< HEAD
 	 * array of struct pages.  It increments that pointer, but we don't
 	 * care.
 	 */
 	pagep = lg_switcher_pages;
 	err = map_vm_area(switcher_vma, PAGE_KERNEL_EXEC, &pagep);
+=======
+	 * array of struct pages.
+	 */
+	err = map_vm_area(switcher_vma, PAGE_KERNEL_EXEC, lg_switcher_pages);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (err) {
 		printk("lguest: map_vm_area failed: %i\n", err);
 		goto free_vma;
@@ -176,7 +185,11 @@ static void unmap_switcher(void)
 bool lguest_address_ok(const struct lguest *lg,
 		       unsigned long addr, unsigned long len)
 {
+<<<<<<< HEAD
 	return addr+len <= lg->pfn_limit * PAGE_SIZE && (addr+len >= addr);
+=======
+	return (addr+len) / PAGE_SIZE < lg->pfn_limit && (addr+len >= addr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*

@@ -6,8 +6,11 @@
 
 /dts-v1/;
 
+<<<<<<< HEAD
 /memreserve/ 0x80000000 0x00010000;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 / {
 	model = "Foundation-v8A";
 	compatible = "arm,foundation-aarch64", "arm,vexpress";

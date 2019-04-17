@@ -264,6 +264,11 @@ static void dma_irq_callback(void *param)
 	struct gpmi_nand_data *this = param;
 	struct completion *dma_c = &this->dma_done;
 
+<<<<<<< HEAD
+=======
+	complete(dma_c);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	switch (this->dma_type) {
 	case DMA_FOR_COMMAND:
 		dma_unmap_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
@@ -288,8 +293,11 @@ static void dma_irq_callback(void *param)
 	default:
 		pr_err("in wrong DMA operation.\n");
 	}
+<<<<<<< HEAD
 
 	complete(dma_c);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 int start_dma_without_bch_irq(struct gpmi_nand_data *this,

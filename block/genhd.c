@@ -20,6 +20,15 @@
 #include <linux/log2.h>
 #include <linux/pm_runtime.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BLOCK_SUPPORT_STLOG
+#include <linux/stlog.h>
+#else
+#define ST_LOG(fmt,...)
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include "blk.h"
 
 static DEFINE_MUTEX(block_class_lock);
@@ -28,10 +37,17 @@ struct kobject *block_depr;
 /* for extended dynamic devt allocation, currently only one major is used */
 #define NR_EXT_DEVT		(1 << MINORBITS)
 
+<<<<<<< HEAD
 /* For extended devt allocation.  ext_devt_lock prevents look up
  * results from going away underneath its user.
  */
 static DEFINE_SPINLOCK(ext_devt_lock);
+=======
+/* For extended devt allocation.  ext_devt_mutex prevents look up
+ * results from going away underneath its user.
+ */
+static DEFINE_MUTEX(ext_devt_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static DEFINE_IDR(ext_devt_idr);
 
 static struct device_type disk_type;
@@ -420,6 +436,7 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 	}
 
 	/* allocate ext devt */
+<<<<<<< HEAD
 	idr_preload(GFP_KERNEL);
 
 	spin_lock_bh(&ext_devt_lock);
@@ -427,6 +444,11 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 	spin_unlock_bh(&ext_devt_lock);
 
 	idr_preload_end();
+=======
+	mutex_lock(&ext_devt_mutex);
+	idx = idr_alloc(&ext_devt_idr, part, 0, NR_EXT_DEVT, GFP_KERNEL);
+	mutex_unlock(&ext_devt_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (idx < 0)
 		return idx == -ENOSPC ? -EBUSY : idx;
 
@@ -445,13 +467,24 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
  */
 void blk_free_devt(dev_t devt)
 {
+<<<<<<< HEAD
+=======
+	might_sleep();
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (devt == MKDEV(0, 0))
 		return;
 
 	if (MAJOR(devt) == BLOCK_EXT_MAJOR) {
+<<<<<<< HEAD
 		spin_lock_bh(&ext_devt_lock);
 		idr_remove(&ext_devt_idr, blk_mangle_minor(MINOR(devt)));
 		spin_unlock_bh(&ext_devt_lock);
+=======
+		mutex_lock(&ext_devt_mutex);
+		idr_remove(&ext_devt_idr, blk_mangle_minor(MINOR(devt)));
+		mutex_unlock(&ext_devt_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -512,6 +545,14 @@ static void register_disk(struct gendisk *disk)
 	struct hd_struct *part;
 	int err;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BLOCK_SUPPORT_STLOG
+	int major 		= disk->major;
+	int first_minor 	= disk->first_minor;
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ddev->parent = disk->driverfs_dev;
 
 	dev_set_name(ddev, "%s", disk->disk_name);
@@ -562,11 +603,22 @@ exit:
 	/* announce disk after possible partitions are created */
 	dev_set_uevent_suppress(ddev, 0);
 	kobject_uevent(&ddev->kobj, KOBJ_ADD);
+<<<<<<< HEAD
 
 	/* announce possible partitions */
 	disk_part_iter_init(&piter, disk, 0);
 	while ((part = disk_part_iter_next(&piter)))
 		kobject_uevent(&part_to_dev(part)->kobj, KOBJ_ADD);
+=======
+	ST_LOG("<%s> KOBJ_ADD %d:%d",__func__,major,first_minor);
+
+	/* announce possible partitions */
+	disk_part_iter_init(&piter, disk, 0);
+	while ((part = disk_part_iter_next(&piter))){
+		kobject_uevent(&part_to_dev(part)->kobj, KOBJ_ADD);
+		ST_LOG("<%s> KOBJ_ADD %d:%d",__func__,major,first_minor+part->partno);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	disk_part_iter_exit(&piter);
 }
 
@@ -637,6 +689,13 @@ void del_gendisk(struct gendisk *disk)
 	struct disk_part_iter piter;
 	struct hd_struct *part;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BLOCK_SUPPORT_STLOG	
+	struct device *dev;
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	disk_del_events(disk);
 
 	/* invalidate stuff */
@@ -666,7 +725,17 @@ void del_gendisk(struct gendisk *disk)
 	if (!sysfs_deprecated)
 		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
 	pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
+<<<<<<< HEAD
 	device_del(disk_to_dev(disk));
+=======
+#ifdef CONFIG_BLOCK_SUPPORT_STLOG
+	dev=disk_to_dev(disk);
+	ST_LOG("<%s> KOBJ_REMOVE %d:%d %s",
+			__func__,MAJOR(dev->devt),MINOR(dev->devt),dev->kobj.name);
+#endif
+	device_del(disk_to_dev(disk));
+	blk_free_devt(disk_to_dev(disk)->devt);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL(del_gendisk);
 
@@ -691,13 +760,21 @@ struct gendisk *get_gendisk(dev_t devt, int *partno)
 	} else {
 		struct hd_struct *part;
 
+<<<<<<< HEAD
 		spin_lock_bh(&ext_devt_lock);
+=======
+		mutex_lock(&ext_devt_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		part = idr_find(&ext_devt_idr, blk_mangle_minor(MINOR(devt)));
 		if (part && get_disk(part_to_disk(part))) {
 			*partno = part->partno;
 			disk = part_to_disk(part);
 		}
+<<<<<<< HEAD
 		spin_unlock_bh(&ext_devt_lock);
+=======
+		mutex_unlock(&ext_devt_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	return disk;
@@ -1070,6 +1147,7 @@ int disk_expand_part_tbl(struct gendisk *disk, int partno)
 	struct disk_part_tbl *old_ptbl = disk->part_tbl;
 	struct disk_part_tbl *new_ptbl;
 	int len = old_ptbl ? old_ptbl->len : 0;
+<<<<<<< HEAD
 	int i, target;
 	size_t size;
 
@@ -1080,6 +1158,11 @@ int disk_expand_part_tbl(struct gendisk *disk, int partno)
 	target = partno + 1;
 	if (target < 0)
 		return -EINVAL;
+=======
+	int target = partno + 1;
+	size_t size;
+	int i;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* disk_max_parts() is zero during initialization, ignore if so */
 	if (disk_max_parts(disk) && target > disk_max_parts(disk))
@@ -1106,7 +1189,10 @@ static void disk_release(struct device *dev)
 {
 	struct gendisk *disk = dev_to_disk(dev);
 
+<<<<<<< HEAD
 	blk_free_devt(dev->devt);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	disk_release_events(disk);
 	kfree(disk->random);
 	disk_replace_part_tbl(disk, NULL);
@@ -1116,6 +1202,34 @@ static void disk_release(struct device *dev)
 		blk_put_queue(disk->queue);
 	kfree(disk);
 }
+<<<<<<< HEAD
+=======
+
+static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
+{
+	struct gendisk *disk = dev_to_disk(dev);
+	struct disk_part_iter piter;
+	struct hd_struct *part;
+	int cnt = 0;
+
+	disk_part_iter_init(&piter, disk, 0);
+	while((part = disk_part_iter_next(&piter)))
+		cnt++;
+	disk_part_iter_exit(&piter);
+	add_uevent_var(env, "NPARTS=%u", cnt);
+#ifdef CONFIG_USB_STORAGE_DETECT
+	if (disk->flags & GENHD_FL_IF_USB) {
+		add_uevent_var(env, "MEDIAPRST=%d",
+			(disk->flags & GENHD_FL_MEDIA_PRESENT) ? 1 : 0);
+		pr_info("%s %d, disk flag media_present=%d, cnt=%d\n",
+			__func__, __LINE__,
+			(disk->flags & GENHD_FL_MEDIA_PRESENT), cnt);
+	}
+#endif
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct class block_class = {
 	.name		= "block",
 };
@@ -1135,6 +1249,10 @@ static struct device_type disk_type = {
 	.groups		= disk_attr_groups,
 	.release	= disk_release,
 	.devnode	= block_devnode,
+<<<<<<< HEAD
+=======
+	.uevent		= disk_uevent,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 #ifdef CONFIG_PROC_FS
@@ -1624,8 +1742,20 @@ static void disk_check_events(struct disk_events *ev,
 	unsigned long intv;
 	int nr_events = 0, i;
 
+<<<<<<< HEAD
 	/* check events */
 	events = disk->fops->check_events(disk, clearing);
+=======
+#ifdef CONFIG_USB_STORAGE_DETECT
+	if (!(disk->flags & GENHD_FL_IF_USB))
+		/* check events */
+		events = disk->fops->check_events(disk, clearing);
+	else
+		events = 0;
+#else
+	events = disk->fops->check_events(disk, clearing);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* accumulate pending events and schedule next poll if necessary */
 	spin_lock_irq(&ev->lock);
@@ -1649,8 +1779,22 @@ static void disk_check_events(struct disk_events *ev,
 		if (events & disk->events & (1 << i))
 			envp[nr_events++] = disk_uevents[i];
 
+<<<<<<< HEAD
 	if (nr_events)
 		kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
+=======
+#ifdef CONFIG_USB_STORAGE_DETECT
+	if (!(disk->flags & GENHD_FL_IF_USB)) {
+		if (nr_events)
+			kobject_uevent_env(&disk_to_dev(disk)->kobj,
+					KOBJ_CHANGE, envp);
+	}
+#else
+	if (nr_events)
+		kobject_uevent_env(&disk_to_dev(disk)->kobj,
+				KOBJ_CHANGE, envp);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*

@@ -272,8 +272,11 @@ enum {
 	 * - memcg: use_hierarchy is on by default and the cgroup file for
 	 *   the flag is not created.
 	 *
+<<<<<<< HEAD
 	 * - blkcg: blk-throttle becomes properly hierarchical.
 	 *
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * The followings are planned changes.
 	 *
 	 * - release_agent will be disallowed once replacement notification
@@ -580,6 +583,10 @@ struct cgroup_subsys {
 	void (*css_offline)(struct cgroup *cgrp);
 	void (*css_free)(struct cgroup *cgrp);
 
+<<<<<<< HEAD
+=======
+	int (*allow_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int (*can_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
 	void (*cancel_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
 	void (*attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);

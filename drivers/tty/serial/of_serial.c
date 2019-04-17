@@ -262,6 +262,10 @@ static struct of_device_id of_platform_serial_table[] = {
 	{ .compatible = "ibm,qpace-nwp-serial",
 		.data = (void *)PORT_NWPSERIAL, },
 #endif
+<<<<<<< HEAD
+=======
+	{ .type = "serial",         .data = (void *)PORT_UNKNOWN, },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ /* end of list */ },
 };
 

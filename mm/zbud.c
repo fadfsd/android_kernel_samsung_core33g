@@ -97,10 +97,13 @@ struct zbud_pool {
 	struct list_head lru;
 	u64 pages_nr;
 	struct zbud_ops *ops;
+<<<<<<< HEAD
 #ifdef CONFIG_ZPOOL
 	struct zpool *zpool;
 	const struct zpool_ops *zpool_ops;
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /*
@@ -127,16 +130,21 @@ struct zbud_header {
 
 static int zbud_zpool_evict(struct zbud_pool *pool, unsigned long handle)
 {
+<<<<<<< HEAD
 	if (pool->zpool && pool->zpool_ops && pool->zpool_ops->evict)
 		return pool->zpool_ops->evict(pool->zpool, handle);
 	else
 		return -ENOENT;
+=======
+	return zpool_evict(pool, handle);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct zbud_ops zbud_zpool_ops = {
 	.evict =	zbud_zpool_evict
 };
 
+<<<<<<< HEAD
 static void *zbud_zpool_create(char *name, gfp_t gfp,
 			       const struct zpool_ops *zpool_ops,
 			       struct zpool *zpool)
@@ -149,6 +157,11 @@ static void *zbud_zpool_create(char *name, gfp_t gfp,
 		pool->zpool_ops = zpool_ops;
 	}
 	return pool;
+=======
+static void *zbud_zpool_create(gfp_t gfp, struct zpool_ops *zpool_ops)
+{
+	return zbud_create_pool(gfp, &zbud_zpool_ops);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void zbud_zpool_destroy(void *pool)
@@ -307,7 +320,11 @@ struct zbud_pool *zbud_create_pool(gfp_t gfp, struct zbud_ops *ops)
 	struct zbud_pool *pool;
 	int i;
 
+<<<<<<< HEAD
 	pool = kzalloc(sizeof(struct zbud_pool), gfp);
+=======
+	pool = kmalloc(sizeof(struct zbud_pool), gfp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!pool)
 		return NULL;
 	spin_lock_init(&pool->lock);
@@ -635,5 +652,9 @@ module_init(init_zbud);
 module_exit(exit_zbud);
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("Seth Jennings <sjennings@variantweb.net>");
+=======
+MODULE_AUTHOR("Seth Jennings <sjenning@linux.vnet.ibm.com>");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_DESCRIPTION("Buddy Allocator for Compressed Pages");

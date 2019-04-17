@@ -1022,6 +1022,7 @@ static int atmel_startup(struct uart_port *port)
 static void atmel_shutdown(struct uart_port *port)
 {
 	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
+<<<<<<< HEAD
 
 	/*
 	 * Clear out any scheduled tasklets before
@@ -1032,14 +1033,21 @@ static void atmel_shutdown(struct uart_port *port)
 	/*
 	 * Ensure everything is stopped and
 	 * disable all interrupts, port and break condition.
+=======
+	/*
+	 * Ensure everything is stopped.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 */
 	atmel_stop_rx(port);
 	atmel_stop_tx(port);
 
+<<<<<<< HEAD
 	UART_PUT_CR(port, ATMEL_US_RSTSTA);
 	UART_PUT_IDR(port, -1);
 
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Shut-down the DMA.
 	 */
@@ -1066,6 +1074,15 @@ static void atmel_shutdown(struct uart_port *port)
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Disable all interrupts, port and break condition.
+	 */
+	UART_PUT_CR(port, ATMEL_US_RSTSTA);
+	UART_PUT_IDR(port, -1);
+
+	/*
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * Free the interrupt
 	 */
 	free_irq(port->irq, port);

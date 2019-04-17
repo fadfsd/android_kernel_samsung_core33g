@@ -119,6 +119,10 @@ struct ade7758_state {
 	u8			*tx;
 	u8			*rx;
 	struct mutex		buf_lock;
+<<<<<<< HEAD
+=======
+	const struct iio_chan_spec *ade7758_ring_channels;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct spi_transfer	ring_xfer[4];
 	struct spi_message	ring_msg;
 	/*

@@ -212,8 +212,11 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 	    ipv6_addr_type(&ireq6->rmt_addr) & IPV6_ADDR_LINKLOCAL)
 		ireq6->iif = inet6_iif(skb);
 
+<<<<<<< HEAD
 	ireq->ir_mark = inet_request_mark(sk, skb);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	req->expires = 0UL;
 	req->num_retrans = 0;
 	ireq->ecn_ok		= ecn_ok;
@@ -240,7 +243,11 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
 		final_p = fl6_update_dst(&fl6, np->opt, &final);
 		fl6.saddr = ireq6->loc_addr;
 		fl6.flowi6_oif = sk->sk_bound_dev_if;
+<<<<<<< HEAD
 		fl6.flowi6_mark = ireq->ir_mark;
+=======
+		fl6.flowi6_mark = sk->sk_mark;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		fl6.fl6_dport = inet_rsk(req)->rmt_port;
 		fl6.fl6_sport = inet_sk(sk)->inet_sport;
 		security_req_classify_flow(req, flowi6_to_flowi(&fl6));

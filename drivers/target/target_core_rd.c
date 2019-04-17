@@ -174,7 +174,11 @@ static int rd_build_device_space(struct rd_dev *rd_dev)
 						- 1;
 
 		for (j = 0; j < sg_per_table; j++) {
+<<<<<<< HEAD
 			pg = alloc_pages(GFP_KERNEL | __GFP_ZERO, 0);
+=======
+			pg = alloc_pages(GFP_KERNEL, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (!pg) {
 				pr_err("Unable to allocate scatterlist"
 					" pages for struct rd_dev_sg_table\n");

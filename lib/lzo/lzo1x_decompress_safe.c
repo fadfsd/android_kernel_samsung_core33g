@@ -25,6 +25,7 @@
 #define NEED_OP(x)      if (!HAVE_OP(x)) goto output_overrun
 #define TEST_LB(m_pos)  if ((m_pos) < out) goto lookbehind_overrun
 
+<<<<<<< HEAD
 /* This MAX_255_COUNT is the maximum number of times we can add 255 to a base
  * count without overflowing an integer. The multiply will overflow when
  * multiplying 255 by more than MAXINT/255. The sum will overflow earlier
@@ -35,6 +36,8 @@
  */
 #define MAX_255_COUNT      ((((size_t)~0) / 255) - 2)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int lzo1x_decompress_safe(const unsigned char *in, size_t in_len,
 			  unsigned char *out, size_t *out_len)
 {
@@ -65,6 +68,7 @@ int lzo1x_decompress_safe(const unsigned char *in, size_t in_len,
 		if (t < 16) {
 			if (likely(state == 0)) {
 				if (unlikely(t == 0)) {
+<<<<<<< HEAD
 					size_t offset;
 					const unsigned char *ip_last = ip;
 
@@ -78,6 +82,14 @@ int lzo1x_decompress_safe(const unsigned char *in, size_t in_len,
 
 					offset = (offset << 8) - offset;
 					t += offset + 15 + *ip++;
+=======
+					while (unlikely(*ip == 0)) {
+						t += 255;
+						ip++;
+						NEED_IP(1);
+					}
+					t += 15 + *ip++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				}
 				t += 3;
 copy_literal_run:
@@ -133,6 +145,7 @@ copy_literal_run:
 		} else if (t >= 32) {
 			t = (t & 31) + (3 - 1);
 			if (unlikely(t == 2)) {
+<<<<<<< HEAD
 				size_t offset;
 				const unsigned char *ip_last = ip;
 
@@ -146,6 +159,14 @@ copy_literal_run:
 
 				offset = (offset << 8) - offset;
 				t += offset + 31 + *ip++;
+=======
+				while (unlikely(*ip == 0)) {
+					t += 255;
+					ip++;
+					NEED_IP(1);
+				}
+				t += 31 + *ip++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				NEED_IP(2);
 			}
 			m_pos = op - 1;
@@ -158,6 +179,7 @@ copy_literal_run:
 			m_pos -= (t & 8) << 11;
 			t = (t & 7) + (3 - 1);
 			if (unlikely(t == 2)) {
+<<<<<<< HEAD
 				size_t offset;
 				const unsigned char *ip_last = ip;
 
@@ -171,6 +193,14 @@ copy_literal_run:
 
 				offset = (offset << 8) - offset;
 				t += offset + 7 + *ip++;
+=======
+				while (unlikely(*ip == 0)) {
+					t += 255;
+					ip++;
+					NEED_IP(1);
+				}
+				t += 7 + *ip++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				NEED_IP(2);
 			}
 			next = get_unaligned_le16(ip);

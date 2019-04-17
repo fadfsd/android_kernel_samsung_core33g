@@ -66,8 +66,12 @@ static int hb_cpufreq_driver_init(void)
 	struct device_node *np;
 	int ret;
 
+<<<<<<< HEAD
 	if ((!of_machine_is_compatible("calxeda,highbank")) &&
 		(!of_machine_is_compatible("calxeda,ecx-2000")))
+=======
+	if (!of_machine_is_compatible("calxeda,highbank"))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -ENODEV;
 
 	for_each_child_of_node(of_find_node_by_path("/cpus"), np)

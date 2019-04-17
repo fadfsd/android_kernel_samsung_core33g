@@ -1793,10 +1793,17 @@ int l2cap_chan_connect(struct l2cap_chan *chan, __le16 psm, u16 cid,
 	auth_type = l2cap_get_auth_type(chan);
 
 	if (chan->dcid == L2CAP_CID_LE_DATA)
+<<<<<<< HEAD
 		hcon = hci_connect(hdev, LE_LINK, dst, dst_type,
 				   chan->sec_level, auth_type);
 	else
 		hcon = hci_connect(hdev, ACL_LINK, dst, dst_type,
+=======
+		hcon = hci_connect(hdev, LE_LINK, 0, dst, dst_type,
+				   chan->sec_level, auth_type);
+	else
+		hcon = hci_connect(hdev, ACL_LINK, 0, dst, dst_type,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				   chan->sec_level, auth_type);
 
 	if (IS_ERR(hcon)) {

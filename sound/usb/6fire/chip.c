@@ -101,7 +101,11 @@ static int usb6fire_chip_probe(struct usb_interface *intf,
 			usb_set_intfdata(intf, chips[i]);
 			mutex_unlock(&register_mutex);
 			return 0;
+<<<<<<< HEAD
 		} else if (!devices[i] && regidx < 0)
+=======
+		} else if (regidx < 0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			regidx = i;
 	}
 	if (regidx < 0) {

@@ -47,7 +47,11 @@ NESTED(handle_sysn32, PT_SIZE, sp)
 
 	sd	a3, PT_R26(sp)		# save a3 for syscall restarting
 
+<<<<<<< HEAD
 	li	t1, _TIF_WORK_SYSCALL_ENTRY
+=======
+	li	t1, _TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	LONG_L	t0, TI_FLAGS($28)	# syscall tracing enabled?
 	and	t0, t1, t0
 	bnez	t0, n32_syscall_trace_entry

@@ -236,7 +236,10 @@ FUNC_NAME:	/* %o0=dst, %o1=src, %o2=len */
 	 */
 	VISEntryHalf
 
+<<<<<<< HEAD
 	membar		#Sync
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	alignaddr	%o1, %g0, %g0
 
 	add		%o1, (64 - 1), %o4

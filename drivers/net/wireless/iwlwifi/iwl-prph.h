@@ -260,8 +260,11 @@ static inline unsigned int SCD_QUEUE_STATUS_BITS(unsigned int chnl)
 
 /*********************** END TX SCHEDULER *************************************/
 
+<<<<<<< HEAD
 /* Oscillator clock */
 #define OSC_CLK				(0xa04068)
 #define OSC_CLK_FORCE_CONTROL		(0x8)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif				/* __iwl_prph_h__ */

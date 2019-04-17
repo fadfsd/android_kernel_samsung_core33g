@@ -21,7 +21,10 @@
 #define BOOT_CPU_MODE_EL2	(0x0e12b007)
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * __boot_cpu_mode records what mode CPUs were booted in.
@@ -37,6 +40,7 @@ extern u32 __boot_cpu_mode[2];
 void __hyp_set_vectors(phys_addr_t phys_vector_base);
 phys_addr_t __hyp_get_vectors(void);
 
+<<<<<<< HEAD
 static inline void sync_boot_mode(void)
 {
 	/*
@@ -51,6 +55,11 @@ static inline void sync_boot_mode(void)
 static inline bool is_hyp_mode_available(void)
 {
 	sync_boot_mode();
+=======
+/* Reports the availability of HYP mode */
+static inline bool is_hyp_mode_available(void)
+{
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return (__boot_cpu_mode[0] == BOOT_CPU_MODE_EL2 &&
 		__boot_cpu_mode[1] == BOOT_CPU_MODE_EL2);
 }
@@ -58,7 +67,10 @@ static inline bool is_hyp_mode_available(void)
 /* Check if the bootloader has booted CPUs in different modes */
 static inline bool is_hyp_mode_mismatched(void)
 {
+<<<<<<< HEAD
 	sync_boot_mode();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return __boot_cpu_mode[0] != __boot_cpu_mode[1];
 }
 

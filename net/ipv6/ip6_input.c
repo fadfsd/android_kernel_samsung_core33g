@@ -49,7 +49,11 @@
 
 int ip6_rcv_finish(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	if (sysctl_ip_early_demux && !skb_dst(skb) && skb->sk == NULL) {
+=======
+	if (sysctl_ip_early_demux && !skb_dst(skb)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		const struct inet6_protocol *ipprot;
 
 		ipprot = rcu_dereference(inet6_protos[ipv6_hdr(skb)->nexthdr]);

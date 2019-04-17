@@ -204,6 +204,17 @@ config BATTERY_MAX17042
 	  with MAX17042. This driver also supports max17047/50 chips which are
 	  improved version of max17042.
 
+<<<<<<< HEAD
+=======
+config BATTERY_SAMSUNG
+	tristate "samsung battery driver"
+	help
+	 Say Y to include support for samsung battery driver
+	 This battery driver integrated all battery-related functions
+	 To see battery-related functions,
+	 refer to sec_charging_common.h
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config BATTERY_Z2
 	tristate "Z2 battery driver"
 	depends on I2C && MACH_ZIPIT2
@@ -228,6 +239,27 @@ config CHARGER_PCF50633
 	help
 	 Say Y to include support for NXP PCF50633 Main Battery Charger.
 
+<<<<<<< HEAD
+=======
+config CHARGER_RT5033
+	tristate "RT5033 charger driver"
+	depends on MFD_RT5033 && I2C
+	default n
+	help
+	 Say Y to include support
+	 for Richtek RT5033 charger driver..
+
+config FUELGAUGE_RT5033
+	tristate "RT5033 fuel gauge driver"
+	default n
+	depends on BATTERY_SAMSUNG
+	help
+	 Say Y to include support
+	 for RT5033 fuel gauge driver.
+	 This driver source code implemented
+	 all functions for RT5033 fuel gauge.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config BATTERY_JZ4740
 	tristate "Ingenic JZ4740 battery"
 	depends on MACH_JZ4740
@@ -355,6 +387,29 @@ config AB8500_BM
 	help
 	  Say Y to include support for AB8500 battery management.
 
+<<<<<<< HEAD
+=======
+config SPRD_2713_POWER
+       tristate "Spreadtrum sp2713 SoC's power supply& mesurement controller"
+       help
+        Say Y to include support for Spreadtrum SoC's power supply and
+        mesurement controller driver
+
+config SPRD_EXT_IC_POWER
+       tristate "Spreadtrum EXT_IC SoC's power supply& mesurement controller"
+       help
+        Say Y to include support for Spreadtrum SoC's power supply and
+        mesurement controller driver
+
+config SPRD_NOFGUCURRENT_CHG
+	bool "Spreadtrum sp2711 SoC's pulse charging driver featrue"
+	depends on SPRD_2713_POWER
+	default n
+	help
+	  Say Y to enable support charger driver, which allows board do not have
+	  current sense resistor( 20mohm,fgu current adc always is 0)  with 7715 chips.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config BATTERY_GOLDFISH
 	tristate "Goldfish battery driver"
 	depends on GENERIC_HARDIRQS

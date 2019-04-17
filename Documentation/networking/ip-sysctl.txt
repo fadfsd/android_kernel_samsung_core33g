@@ -22,6 +22,7 @@ ip_no_pmtu_disc - BOOLEAN
 min_pmtu - INTEGER
 	default 552 - minimum discovered Path MTU
 
+<<<<<<< HEAD
 fwmark_reflect - BOOLEAN
 	Controls the fwmark of kernel-generated IPv4 reply packets that are not
 	associated with a socket for example, TCP RSTs or ICMP echo replies).
@@ -31,6 +32,8 @@ fwmark_reflect - BOOLEAN
 	the ones used for Path MTU Discovery.
 	Default: 0
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 route/max_size - INTEGER
 	Maximum number of routes allowed in the kernel.  Increase
 	this when using large numbers of interfaces and/or routes.
@@ -477,6 +480,7 @@ tcp_fastopen - INTEGER
 
 	See include/net/tcp.h and the code for more details.
 
+<<<<<<< HEAD
 tcp_fwmark_accept - BOOLEAN
 	If set, incoming connections to listening sockets that do not have a
 	socket mark will set the mark of the accepting socket to the fwmark of
@@ -487,6 +491,8 @@ tcp_fwmark_accept - BOOLEAN
 	unaffected.
 	Default: 0
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 tcp_syn_retries - INTEGER
 	Number of times initial SYNs for an active TCP connection attempt
 	will be retransmitted. Should not be higher than 255. Default value
@@ -497,6 +503,7 @@ tcp_syn_retries - INTEGER
 tcp_timestamps - BOOLEAN
 	Enable timestamps as defined in RFC1323.
 
+<<<<<<< HEAD
 tcp_min_tso_segs - INTEGER
 	Minimal number of segments per TSO frame.
 	Since linux-3.12, TCP does an automatic sizing of TSO frames,
@@ -506,6 +513,8 @@ tcp_min_tso_segs - INTEGER
 	if available window is too small.
 	Default: 2
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 tcp_tso_win_divisor - INTEGER
 	This allows control over what percentage of the congestion window
 	can be consumed by a single TSO frame.
@@ -590,6 +599,12 @@ tcp_limit_output_bytes - INTEGER
 	typical pfifo_fast qdiscs.
 	tcp_limit_output_bytes limits the number of bytes on qdisc
 	or device to reduce artificial RTT/cwnd and reduce bufferbloat.
+<<<<<<< HEAD
+=======
+	Note: For GSO/TSO enabled flows, we try to have at least two
+	packets in flight. Reducing tcp_limit_output_bytes might also
+	reduce the size of individual GSO packet (64KB being the max)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	Default: 131072
 
 tcp_challenge_ack_limit - INTEGER
@@ -1112,6 +1127,7 @@ conf/all/forwarding - BOOLEAN
 proxy_ndp - BOOLEAN
 	Do proxy ndp.
 
+<<<<<<< HEAD
 fwmark_reflect - BOOLEAN
 	Controls the fwmark of kernel-generated IPv6 reply packets that are not
 	associated with a socket for example, TCP RSTs or ICMPv6 echo replies).
@@ -1121,6 +1137,8 @@ fwmark_reflect - BOOLEAN
 	the ones used for Path MTU Discovery.
 	Default: 0
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 conf/interface/*:
 	Change special settings per interface.
 

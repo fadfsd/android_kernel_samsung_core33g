@@ -37,7 +37,10 @@
 
 #include "irq.h"
 #include "i8254.h"
+<<<<<<< HEAD
 #include "x86.h"
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifndef CONFIG_X86_64
 #define mod_64(x, y) ((x) - (y) * div64_u64(x, y))
@@ -262,10 +265,15 @@ void __kvm_migrate_pit_timer(struct kvm_vcpu *vcpu)
 		return;
 
 	timer = &pit->pit_state.timer;
+<<<<<<< HEAD
 	mutex_lock(&pit->pit_state.lock);
 	if (hrtimer_cancel(timer))
 		hrtimer_start_expires(timer, HRTIMER_MODE_ABS);
 	mutex_unlock(&pit->pit_state.lock);
+=======
+	if (hrtimer_cancel(timer))
+		hrtimer_start_expires(timer, HRTIMER_MODE_ABS);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void destroy_pit_timer(struct kvm_pit *pit)
@@ -305,7 +313,11 @@ static void pit_do_work(struct kthread_work *work)
 		 * LVT0 to NMI delivery. Other PIC interrupts are just sent to
 		 * VCPU0, and only if its LVT0 is in EXTINT mode.
 		 */
+<<<<<<< HEAD
 		if (atomic_read(&kvm->arch.vapics_in_nmi_mode) > 0)
+=======
+		if (kvm->arch.vapics_in_nmi_mode > 0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			kvm_for_each_vcpu(i, vcpu, kvm)
 				kvm_apic_nmi_wd_deliver(vcpu);
 	}
@@ -352,6 +364,7 @@ static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 	atomic_set(&ps->pending, 0);
 	ps->irq_ack = 1;
 
+<<<<<<< HEAD
 	/*
 	 * Do not allow the guest to program periodic timers with small
 	 * interval, since the hrtimers are not throttled by the host
@@ -369,6 +382,8 @@ static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 		}
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	hrtimer_start(&ps->timer, ktime_add_ns(ktime_get(), interval),
 		      HRTIMER_MODE_ABS);
 }

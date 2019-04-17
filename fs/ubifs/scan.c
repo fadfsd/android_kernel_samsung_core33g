@@ -268,7 +268,11 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
 				  int offs, void *sbuf, int quiet)
 {
 	void *buf = sbuf + offs;
+<<<<<<< HEAD
 	int err, len = c->leb_size - offs;
+=======
+	int err, len = c->leb_size - offs, start = offs;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct ubifs_scan_leb *sleb;
 
 	sleb = ubifs_start_scan(c, lnum, offs, sbuf);
@@ -340,7 +344,14 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
 			if (!quiet)
 				ubifs_err("corrupt empty space at LEB %d:%d",
 					  lnum, offs);
+<<<<<<< HEAD
 			goto corrupted;
+=======
+			err = ubifs_fix_unclean_leb(c, sleb, start);
+			if (err)
+				goto corrupted;
+			break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 	return sleb;

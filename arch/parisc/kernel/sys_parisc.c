@@ -61,6 +61,7 @@ static int get_offset(struct address_space *mapping)
 	return (unsigned long) mapping >> 8;
 }
 
+<<<<<<< HEAD
 static unsigned long shared_align_offset(struct file *filp, unsigned long pgoff)
 {
 	struct address_space *mapping = filp ? filp->f_mapping : NULL;
@@ -70,6 +71,10 @@ static unsigned long shared_align_offset(struct file *filp, unsigned long pgoff)
 
 static unsigned long get_shared_area(struct file *filp, unsigned long addr,
 		unsigned long len, unsigned long pgoff)
+=======
+static unsigned long get_shared_area(struct address_space *mapping,
+		unsigned long addr, unsigned long len, unsigned long pgoff)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct vm_unmapped_area_info info;
 
@@ -78,7 +83,11 @@ static unsigned long get_shared_area(struct file *filp, unsigned long addr,
 	info.low_limit = PAGE_ALIGN(addr);
 	info.high_limit = TASK_SIZE;
 	info.align_mask = PAGE_MASK & (SHMLBA - 1);
+<<<<<<< HEAD
 	info.align_offset = shared_align_offset(filp, pgoff);
+=======
+	info.align_offset = (get_offset(mapping) + pgoff) << PAGE_SHIFT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return vm_unmapped_area(&info);
 }
 
@@ -89,18 +98,32 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
 		return -ENOMEM;
 	if (flags & MAP_FIXED) {
 		if ((flags & MAP_SHARED) &&
+<<<<<<< HEAD
 		    (addr - shared_align_offset(filp, pgoff)) & (SHMLBA - 1))
+=======
+		    (addr - (pgoff << PAGE_SHIFT)) & (SHMLBA - 1))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -EINVAL;
 		return addr;
 	}
 	if (!addr)
 		addr = TASK_UNMAPPED_BASE;
 
+<<<<<<< HEAD
 	if (filp || (flags & MAP_SHARED))
 		addr = get_shared_area(filp, addr, len, pgoff);
 	else
 		addr = get_unshared_area(addr, len);
 
+=======
+	if (filp) {
+		addr = get_shared_area(filp->f_mapping, addr, len, pgoff);
+	} else if(flags & MAP_SHARED) {
+		addr = get_shared_area(NULL, addr, len, pgoff);
+	} else {
+		addr = get_unshared_area(addr, len);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return addr;
 }
 

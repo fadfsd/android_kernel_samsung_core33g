@@ -55,12 +55,15 @@ struct sched_param {
 
 #include <asm/processor.h>
 
+<<<<<<< HEAD
 int  su_instances(void);
 bool su_running(void);
 bool su_visible(void);
 void su_exec(void);
 void su_exit(void);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct exec_domain;
 struct futex_pi_state;
 struct robust_list_head;
@@ -108,7 +111,13 @@ extern unsigned long nr_running(void);
 extern unsigned long nr_iowait(void);
 extern unsigned long nr_iowait_cpu(int cpu);
 extern unsigned long this_cpu_load(void);
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_RUNTIME_COMPCACHE
+extern unsigned long this_cpu_loadx(int i);
+#endif /* CONFIG_RUNTIME_COMPCACHE */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 extern void calc_global_load(unsigned long ticks);
 extern void update_cpu_load_nohz(void);
@@ -328,6 +337,11 @@ extern unsigned long
 arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
 			  unsigned long len, unsigned long pgoff,
 			  unsigned long flags);
+<<<<<<< HEAD
+=======
+extern void arch_unmap_area(struct mm_struct *, unsigned long);
+extern void arch_unmap_area_topdown(struct mm_struct *, unsigned long);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else
 static inline void arch_pick_mmap_layout(struct mm_struct *mm) {}
 #endif
@@ -336,10 +350,13 @@ static inline void arch_pick_mmap_layout(struct mm_struct *mm) {}
 extern void set_dumpable(struct mm_struct *mm, int value);
 extern int get_dumpable(struct mm_struct *mm);
 
+<<<<<<< HEAD
 #define SUID_DUMP_DISABLE	0	/* No setuid dumping */
 #define SUID_DUMP_USER		1	/* Dump as user of process */
 #define SUID_DUMP_ROOT		2	/* Dump as root */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* mm flags */
 /* dumpable bits */
 #define MMF_DUMPABLE      0  /* core dump is permitted */
@@ -484,7 +501,10 @@ struct signal_struct {
 	atomic_t		sigcnt;
 	atomic_t		live;
 	int			nr_threads;
+<<<<<<< HEAD
 	struct list_head	thread_head;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	wait_queue_head_t	wait_chldexit;	/* for wait4() */
 
@@ -1101,9 +1121,12 @@ struct task_struct {
 #endif
 
 	struct list_head tasks;
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_LMK_ADJ_RBTREE
 	struct rb_node adj_node;
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_SMP
 	struct plist_node pushable_tasks;
 #endif
@@ -1129,12 +1152,21 @@ struct task_struct {
 				 * execve */
 	unsigned in_iowait:1;
 
+<<<<<<< HEAD
+=======
+	/* task may not gain privileges */
+	unsigned no_new_privs:1;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Revert to default priority/policy when forking */
 	unsigned sched_reset_on_fork:1;
 	unsigned sched_contributes_to_load:1;
 
+<<<<<<< HEAD
 	unsigned long atomic_flags; /* Flags needing atomic access. */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pid_t pid;
 	pid_t tgid;
 
@@ -1167,7 +1199,10 @@ struct task_struct {
 	/* PID/PID hash table linkage. */
 	struct pid_link pids[PIDTYPE_MAX];
 	struct list_head thread_group;
+<<<<<<< HEAD
 	struct list_head thread_node;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct completion *vfork_done;		/* for vfork() */
 	int __user *set_child_tid;		/* CLONE_CHILD_SETTID */
@@ -1417,12 +1452,15 @@ struct task_struct {
 		unsigned long memsw_nr_pages; /* uncharged mem+swap usage */
 	} memcg_batch;
 	unsigned int memcg_kmem_skip_account;
+<<<<<<< HEAD
 	struct memcg_oom_info {
 		struct mem_cgroup *memcg;
 		gfp_t gfp_mask;
 		int order;
 		unsigned int may_oom:1;
 	} memcg_oom;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 	atomic_t ptrace_bp_refcnt;
@@ -1461,6 +1499,7 @@ static inline struct pid *task_tgid(struct task_struct *task)
 	return task->group_leader->pids[PIDTYPE_PID].pid;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_LMK_ADJ_RBTREE
 extern void add_2_adj_tree(struct task_struct *task);
 extern void delete_from_adj_tree(struct task_struct *task);
@@ -1469,6 +1508,8 @@ static inline void add_2_adj_tree(struct task_struct *task) { }
 static inline void delete_from_adj_tree(struct task_struct *task) { }
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Without tasklist or rcu lock it is not safe to dereference
  * the result of task_pgrp/task_session even if task == current,
@@ -1632,6 +1673,12 @@ static inline cputime_t task_gtime(struct task_struct *t)
 extern void task_cputime_adjusted(struct task_struct *p, cputime_t *ut, cputime_t *st);
 extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut, cputime_t *st);
 
+<<<<<<< HEAD
+=======
+extern int task_free_register(struct notifier_block *n);
+extern int task_free_unregister(struct notifier_block *n);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Per process flags
  */
@@ -1665,8 +1712,11 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut, 
 #define PF_MUTEX_TESTER	0x20000000	/* Thread belongs to the rt mutex tester */
 #define PF_FREEZER_SKIP	0x40000000	/* Freezer should not count it as freezable */
 
+<<<<<<< HEAD
 #define PF_SU		0x80000000      /* task is su */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Only the _current_ task can read/write to tsk->flags, but other
  * tasks can access tsk->flags in readonly mode for example
@@ -1692,6 +1742,7 @@ extern void thread_group_cputime_adjusted(struct task_struct *p, cputime_t *ut, 
 #define tsk_used_math(p) ((p)->flags & PF_USED_MATH)
 #define used_math() tsk_used_math(current)
 
+<<<<<<< HEAD
 /* __GFP_IO isn't allowed if PF_MEMALLOC_NOIO is set in current->flags
  * __GFP_FS is also cleared as it implies __GFP_IO.
  */
@@ -1699,6 +1750,13 @@ static inline gfp_t memalloc_noio_flags(gfp_t flags)
 {
 	if (unlikely(current->flags & PF_MEMALLOC_NOIO))
 		flags &= ~(__GFP_IO | __GFP_FS);
+=======
+/* __GFP_IO isn't allowed if PF_MEMALLOC_NOIO is set in current->flags */
+static inline gfp_t memalloc_noio_flags(gfp_t flags)
+{
+	if (unlikely(current->flags & PF_MEMALLOC_NOIO))
+		flags &= ~__GFP_IO;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return flags;
 }
 
@@ -1714,6 +1772,7 @@ static inline void memalloc_noio_restore(unsigned int flags)
 	current->flags = (current->flags & ~PF_MEMALLOC_NOIO) | flags;
 }
 
+<<<<<<< HEAD
 /* Per-process atomic flags. */
 #define PFA_NO_NEW_PRIVS 0x00000001	/* May not gain new privileges. */
 
@@ -1727,6 +1786,8 @@ static inline void task_set_no_new_privs(struct task_struct *p)
 	set_bit(PFA_NO_NEW_PRIVS, &p->atomic_flags);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * task->jobctl flags
  */
@@ -2136,7 +2197,11 @@ static inline void mmdrop(struct mm_struct * mm)
 }
 
 /* mmput gets rid of the mappings and all user-space */
+<<<<<<< HEAD
 extern void mmput(struct mm_struct *);
+=======
+extern int mmput(struct mm_struct *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Grab a reference to a task's mm, if it is not already going away */
 extern struct mm_struct *get_task_mm(struct task_struct *task);
 /*
@@ -2206,6 +2271,7 @@ extern bool current_is_single_threaded(void);
 #define while_each_thread(g, t) \
 	while ((t = next_thread(t)) != g)
 
+<<<<<<< HEAD
 #define __for_each_thread(signal, t)	\
 	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node)
 
@@ -2216,6 +2282,8 @@ extern bool current_is_single_threaded(void);
 #define for_each_process_thread(p, t)	\
 	for_each_process(p) for_each_thread(p, t)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline int get_nr_threads(struct task_struct *tsk)
 {
 	return tsk->signal->nr_threads;
@@ -2232,6 +2300,7 @@ static inline bool thread_group_leader(struct task_struct *p)
  * all we care about is that we have a task with the appropriate
  * pid, we don't actually care if we have the right task.
  */
+<<<<<<< HEAD
 static inline bool has_group_leader_pid(struct task_struct *p)
 {
 	return task_pid(p) == p->signal->leader_pid;
@@ -2241,6 +2310,17 @@ static inline
 bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
 {
 	return p1->signal == p2->signal;
+=======
+static inline int has_group_leader_pid(struct task_struct *p)
+{
+	return p->pid == p->tgid;
+}
+
+static inline
+int same_thread_group(struct task_struct *p1, struct task_struct *p2)
+{
+	return p1->tgid == p2->tgid;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline struct task_struct *next_thread(const struct task_struct *p)
@@ -2522,11 +2602,16 @@ static inline int tsk_is_polling(struct task_struct *p)
 {
 	return task_thread_info(p)->status & TS_POLLING;
 }
+<<<<<<< HEAD
 static inline void __current_set_polling(void)
+=======
+static inline void current_set_polling(void)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	current_thread_info()->status |= TS_POLLING;
 }
 
+<<<<<<< HEAD
 static inline bool __must_check current_set_polling_and_test(void)
 {
 	__current_set_polling();
@@ -2556,18 +2641,29 @@ static inline bool __must_check current_clr_polling_and_test(void)
 	smp_mb();
 
 	return unlikely(tif_need_resched());
+=======
+static inline void current_clr_polling(void)
+{
+	current_thread_info()->status &= ~TS_POLLING;
+	smp_mb__after_clear_bit();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #elif defined(TIF_POLLING_NRFLAG)
 static inline int tsk_is_polling(struct task_struct *p)
 {
 	return test_tsk_thread_flag(p, TIF_POLLING_NRFLAG);
 }
+<<<<<<< HEAD
 
 static inline void __current_set_polling(void)
+=======
+static inline void current_set_polling(void)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	set_thread_flag(TIF_POLLING_NRFLAG);
 }
 
+<<<<<<< HEAD
 static inline bool __must_check current_set_polling_and_test(void)
 {
 	__current_set_polling();
@@ -2614,6 +2710,16 @@ static inline bool __must_check current_clr_polling_and_test(void)
 {
 	return unlikely(tif_need_resched());
 }
+=======
+static inline void current_clr_polling(void)
+{
+	clear_thread_flag(TIF_POLLING_NRFLAG);
+}
+#else
+static inline int tsk_is_polling(struct task_struct *p) { return 0; }
+static inline void current_set_polling(void) { }
+static inline void current_clr_polling(void) { }
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 /*

@@ -129,7 +129,11 @@ static inline notrace unsigned long arch_local_irq_save(void)
 
 #define PARAVIRT_ADJUST_EXCEPTION_FRAME	/*  */
 
+<<<<<<< HEAD
 #define INTERRUPT_RETURN	jmp native_iret
+=======
+#define INTERRUPT_RETURN	iretq
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define USERGS_SYSRET64				\
 	swapgs;					\
 	sysretq;

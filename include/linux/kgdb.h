@@ -283,7 +283,11 @@ struct kgdb_io {
 
 extern struct kgdb_arch		arch_kgdb_ops;
 
+<<<<<<< HEAD
 extern unsigned long kgdb_arch_pc(int exception, struct pt_regs *regs);
+=======
+extern unsigned long __weak kgdb_arch_pc(int exception, struct pt_regs *regs);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_SERIAL_KGDB_NMI
 extern int kgdb_register_nmi_console(void);

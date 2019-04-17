@@ -39,7 +39,11 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
 	if (!csize)
 		return 0;
 
+<<<<<<< HEAD
 	vaddr = ioremap(__pfn_to_phys(pfn), PAGE_SIZE);
+=======
+	vaddr = ioremap(pfn << PAGE_SHIFT, PAGE_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!vaddr)
 		return -ENOMEM;
 

@@ -24,10 +24,17 @@
 #include <linux/compiler.h>
 
 #ifndef CONFIG_ARM64_64K_PAGES
+<<<<<<< HEAD
 #define THREAD_SIZE_ORDER	2
 #endif
 
 #define THREAD_SIZE		16384
+=======
+#define THREAD_SIZE_ORDER	1
+#endif
+
+#define THREAD_SIZE		8192
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define THREAD_START_SP		(THREAD_SIZE - 16)
 
 #ifndef __ASSEMBLY__

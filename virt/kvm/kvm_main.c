@@ -52,7 +52,10 @@
 
 #include <asm/processor.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/ioctl.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 
@@ -106,12 +109,20 @@ bool kvm_is_mmio_pfn(pfn_t pfn)
 	if (pfn_valid(pfn)) {
 		int reserved;
 		struct page *tail = pfn_to_page(pfn);
+<<<<<<< HEAD
 		struct page *head = compound_head(tail);
+=======
+		struct page *head = compound_trans_head(tail);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		reserved = PageReserved(head);
 		if (head != tail) {
 			/*
 			 * "head" is not a dangling pointer
+<<<<<<< HEAD
 			 * (compound_head takes care of that)
+=======
+			 * (compound_trans_head takes care of that)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			 * but the hugepage may have been splitted
 			 * from under us (and we may not hold a
 			 * reference count on the head page so it can
@@ -1549,8 +1560,13 @@ int kvm_gfn_to_hva_cache_init(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
 	ghc->generation = slots->generation;
 	ghc->len = len;
 	ghc->memslot = gfn_to_memslot(kvm, start_gfn);
+<<<<<<< HEAD
 	ghc->hva = gfn_to_hva_many(ghc->memslot, start_gfn, NULL);
 	if (!kvm_is_error_hva(ghc->hva) && nr_pages_needed <= 1) {
+=======
+	ghc->hva = gfn_to_hva_many(ghc->memslot, start_gfn, &nr_pages_avail);
+	if (!kvm_is_error_hva(ghc->hva) && nr_pages_avail >= nr_pages_needed) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ghc->hva += offset;
 	} else {
 		/*
@@ -1905,9 +1921,12 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
 	int r;
 	struct kvm_vcpu *vcpu, *v;
 
+<<<<<<< HEAD
 	if (id >= KVM_MAX_VCPUS)
 		return -EINVAL;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	vcpu = kvm_arch_vcpu_create(kvm, id);
 	if (IS_ERR(vcpu))
 		return PTR_ERR(vcpu);
@@ -1982,9 +2001,12 @@ static long kvm_vcpu_ioctl(struct file *filp,
 	if (vcpu->kvm->mm != current->mm)
 		return -EIO;
 
+<<<<<<< HEAD
 	if (unlikely(_IOC_TYPE(ioctl) != KVMIO))
 		return -EINVAL;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #if defined(CONFIG_S390) || defined(CONFIG_PPC) || defined(CONFIG_MIPS)
 	/*
 	 * Special cases: vcpu ioctls that are asynchronous to vcpu execution,

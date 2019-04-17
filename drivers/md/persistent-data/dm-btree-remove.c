@@ -309,8 +309,13 @@ static void redistribute3(struct dm_btree_info *info, struct btree_node *parent,
 
 		if (s < 0 && nr_center < -s) {
 			/* not enough in central node */
+<<<<<<< HEAD
 			shift(left, center, -nr_center);
 			s += nr_center;
+=======
+			shift(left, center, nr_center);
+			s = nr_center - target;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			shift(left, right, s);
 			nr_right += s;
 		} else
@@ -323,7 +328,11 @@ static void redistribute3(struct dm_btree_info *info, struct btree_node *parent,
 		if (s > 0 && nr_center < s) {
 			/* not enough in central node */
 			shift(center, right, nr_center);
+<<<<<<< HEAD
 			s -= nr_center;
+=======
+			s = target - nr_center;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			shift(left, right, s);
 			nr_left -= s;
 		} else

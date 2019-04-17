@@ -7,10 +7,16 @@
 #include <linux/moduleparam.h>
 #include <linux/scatterlist.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/timer.h>
 #include <linux/usb.h>
 
 #define SIMPLE_IO_TIMEOUT	10000	/* in milliseconds */
+=======
+
+#include <linux/usb.h>
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*-------------------------------------------------------------------------*/
 
@@ -367,7 +373,10 @@ static int simple_io(
 	int			max = urb->transfer_buffer_length;
 	struct completion	completion;
 	int			retval = 0;
+<<<<<<< HEAD
 	unsigned long		expire;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	urb->context = &completion;
 	while (retval == 0 && iterations-- > 0) {
@@ -380,6 +389,7 @@ static int simple_io(
 		if (retval != 0)
 			break;
 
+<<<<<<< HEAD
 		expire = msecs_to_jiffies(SIMPLE_IO_TIMEOUT);
 		if (!wait_for_completion_timeout(&completion, expire)) {
 			usb_kill_urb(urb);
@@ -389,6 +399,11 @@ static int simple_io(
 			retval = urb->status;
 		}
 
+=======
+		/* NOTE:  no timeouts; can't be broken out of by interrupt */
+		wait_for_completion(&completion);
+		retval = urb->status;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		urb->dev = udev;
 		if (retval == 0 && usb_pipein(urb->pipe))
 			retval = simple_check_buf(tdev, urb);
@@ -484,6 +499,7 @@ alloc_sglist(int nents, int max, int vary)
 	return sg;
 }
 
+<<<<<<< HEAD
 static void sg_timeout(unsigned long _req)
 {
 	struct usb_sg_request	*req = (struct usb_sg_request *) _req;
@@ -492,6 +508,8 @@ static void sg_timeout(unsigned long _req)
 	usb_sg_cancel(req);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int perform_sglist(
 	struct usbtest_dev	*tdev,
 	unsigned		iterations,
@@ -503,9 +521,12 @@ static int perform_sglist(
 {
 	struct usb_device	*udev = testdev_to_usbdev(tdev);
 	int			retval = 0;
+<<<<<<< HEAD
 	struct timer_list	sg_timer;
 
 	setup_timer_on_stack(&sg_timer, sg_timeout, (unsigned long) req);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	while (retval == 0 && iterations-- > 0) {
 		retval = usb_sg_init(req, udev, pipe,
@@ -516,10 +537,14 @@ static int perform_sglist(
 
 		if (retval)
 			break;
+<<<<<<< HEAD
 		mod_timer(&sg_timer, jiffies +
 				msecs_to_jiffies(SIMPLE_IO_TIMEOUT));
 		usb_sg_wait(req);
 		del_timer_sync(&sg_timer);
+=======
+		usb_sg_wait(req);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		retval = req->status;
 
 		/* FIXME check resulting data pattern */
@@ -1171,11 +1196,14 @@ static int unlink1(struct usbtest_dev *dev, int pipe, int size, int async)
 	urb->context = &completion;
 	urb->complete = unlink1_callback;
 
+<<<<<<< HEAD
 	if (usb_pipeout(urb->pipe)) {
 		simple_fill_buf(urb);
 		urb->transfer_flags |= URB_ZERO_PACKET;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* keep the endpoint busy.  there are lots of hc/hcd-internal
 	 * states, and testing should get to all of them over time.
 	 *
@@ -1306,11 +1334,14 @@ static int unlink_queued(struct usbtest_dev *dev, int pipe, unsigned num,
 				unlink_queued_callback, &ctx);
 		ctx.urbs[i]->transfer_dma = buf_dma;
 		ctx.urbs[i]->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+<<<<<<< HEAD
 
 		if (usb_pipeout(ctx.urbs[i]->pipe)) {
 			simple_fill_buf(ctx.urbs[i]);
 			ctx.urbs[i]->transfer_flags |= URB_ZERO_PACKET;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* Submit all the URBs and then unlink URBs num - 4 and num - 2. */

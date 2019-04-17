@@ -284,6 +284,12 @@ static int interpret_urb_result(struct us_data *us, unsigned int pipe,
 		 * a failed command */
 		if (usb_pipecontrol(pipe)) {
 			usb_stor_dbg(us, "-- stall on control pipe\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+			printk(KERN_ERR "usb storage -- stall on control pipe\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return USB_STOR_XFER_STALLED;
 		}
 
@@ -297,26 +303,56 @@ static int interpret_urb_result(struct us_data *us, unsigned int pipe,
 	/* babble - the device tried to send more than we wanted to read */
 	case -EOVERFLOW:
 		usb_stor_dbg(us, "-- babble\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- babble\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return USB_STOR_XFER_LONG;
 
 	/* the transfer was cancelled by abort, disconnect, or timeout */
 	case -ECONNRESET:
 		usb_stor_dbg(us, "-- transfer cancelled\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- transfer cancelled\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return USB_STOR_XFER_ERROR;
 
 	/* short scatter-gather read transfer */
 	case -EREMOTEIO:
 		usb_stor_dbg(us, "-- short read transfer\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- short read transfer\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return USB_STOR_XFER_SHORT;
 
 	/* abort or disconnect in progress */
 	case -EIO:
 		usb_stor_dbg(us, "-- abort or disconnect in progress\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- abort or disconnect in progress\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return USB_STOR_XFER_ERROR;
 
 	/* the catch-all error case */
 	default:
 		usb_stor_dbg(us, "-- unknown error\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- unknown error %d\n", result);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return USB_STOR_XFER_ERROR;
 	}
 }
@@ -608,6 +644,12 @@ void usb_stor_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 	 */
 	if (test_bit(US_FLIDX_TIMED_OUT, &us->dflags)) {
 		usb_stor_dbg(us, "-- command was aborted\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- command was aborted\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		srb->result = DID_ABORT << 16;
 		goto Handle_Errors;
 	}
@@ -615,6 +657,12 @@ void usb_stor_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 	/* if there is a transport error, reset and don't auto-sense */
 	if (result == USB_STOR_TRANSPORT_ERROR) {
 		usb_stor_dbg(us, "-- transport indicates error, resetting\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+		printk(KERN_ERR "usb storage -- transport indicates error, resetting\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		srb->result = DID_ERROR << 16;
 		goto Handle_Errors;
 	}
@@ -718,6 +766,12 @@ Retry_Sense:
 
 		if (test_bit(US_FLIDX_TIMED_OUT, &us->dflags)) {
 			usb_stor_dbg(us, "-- auto-sense aborted\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+			printk(KERN_ERR "usb storage -- auto-sense aborted\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			srb->result = DID_ABORT << 16;
 
 			/* If SANE_SENSE caused this problem, disable it */
@@ -745,6 +799,12 @@ Retry_Sense:
 		/* Other failures */
 		if (temp_result != USB_STOR_TRANSPORT_GOOD) {
 			usb_stor_dbg(us, "-- auto-sense failure\n");
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_DEBUG_DETAILED_LOG
+			printk(KERN_ERR "usb storage -- auto-sense failure\n");
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 			/* we skip the reset if this happens to be a
 			 * multi-target device, since failure of an
@@ -1118,6 +1178,7 @@ int usb_stor_Bulk_transport(struct scsi_cmnd *srb, struct us_data *us)
 		 */
 		if (result == USB_STOR_XFER_LONG)
 			fake_sense = 1;
+<<<<<<< HEAD
 
 		/*
 		 * Sometimes a device will mistakenly skip the data phase
@@ -1143,6 +1204,8 @@ int usb_stor_Bulk_transport(struct scsi_cmnd *srb, struct us_data *us)
 				goto skipped_data_phase;
 			}
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* See flow chart on pg 15 of the Bulk Only Transport spec for
@@ -1178,7 +1241,10 @@ int usb_stor_Bulk_transport(struct scsi_cmnd *srb, struct us_data *us)
 	if (result != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
 
+<<<<<<< HEAD
  skipped_data_phase:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* check bulk status */
 	residue = le32_to_cpu(bcs->Residue);
 	usb_stor_dbg(us, "Bulk Status S 0x%x T 0x%x R %u Stat 0x%x\n",

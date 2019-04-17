@@ -93,7 +93,11 @@ void inet_frags_init(struct inet_frags *f)
 	}
 	rwlock_init(&f->lock);
 
+<<<<<<< HEAD
 	f->rnd = (u32) ((totalram_pages ^ (totalram_pages >> 7)) ^
+=======
+	f->rnd = (u32) ((num_physpages ^ (num_physpages>>7)) ^
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				   (jiffies ^ (jiffies >> 6)));
 
 	setup_timer(&f->secret_timer, inet_frag_secret_rebuild,
@@ -211,7 +215,11 @@ int inet_frag_evictor(struct netns_frags *nf, struct inet_frags *f, bool force)
 	}
 
 	work = frag_mem_limit(nf) - nf->low_thresh;
+<<<<<<< HEAD
 	while (work > 0 || force) {
+=======
+	while (work > 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		spin_lock(&nf->lru_lock);
 
 		if (list_empty(&nf->lru_list)) {
@@ -283,10 +291,16 @@ static struct inet_frag_queue *inet_frag_intern(struct netns_frags *nf,
 
 	atomic_inc(&qp->refcnt);
 	hlist_add_head(&qp->list, &hb->chain);
+<<<<<<< HEAD
 	inet_frag_lru_add(nf, qp);
 	spin_unlock(&hb->chain_lock);
 	read_unlock(&f->lock);
 
+=======
+	spin_unlock(&hb->chain_lock);
+	read_unlock(&f->lock);
+	inet_frag_lru_add(nf, qp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return qp;
 }
 

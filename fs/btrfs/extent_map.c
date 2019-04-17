@@ -263,6 +263,11 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
 	if (!em)
 		goto out;
 
+<<<<<<< HEAD
+=======
+	if (!test_bit(EXTENT_FLAG_LOGGING, &em->flags))
+		list_move(&em->list, &tree->modified_extents);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	em->generation = gen;
 	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
 	em->mod_start = em->start;

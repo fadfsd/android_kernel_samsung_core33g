@@ -967,11 +967,16 @@ again:
 					need_check = false;
 					list_add_tail(&edge->list[UPPER],
 						      &list);
+<<<<<<< HEAD
 				} else {
 					if (upper->checked)
 						need_check = true;
 					INIT_LIST_HEAD(&edge->list[UPPER]);
 				}
+=======
+				} else
+					INIT_LIST_HEAD(&edge->list[UPPER]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			} else {
 				upper = rb_entry(rb_node, struct backref_node,
 						 rb_node);

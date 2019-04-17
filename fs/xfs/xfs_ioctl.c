@@ -409,8 +409,12 @@ xfs_attrlist_by_handle(
 		return -XFS_ERROR(EPERM);
 	if (copy_from_user(&al_hreq, arg, sizeof(xfs_fsop_attrlist_handlereq_t)))
 		return -XFS_ERROR(EFAULT);
+<<<<<<< HEAD
 	if (al_hreq.buflen < sizeof(struct attrlist) ||
 	    al_hreq.buflen > XATTR_LIST_MAX)
+=======
+	if (al_hreq.buflen > XATTR_LIST_MAX)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -XFS_ERROR(EINVAL);
 
 	/*
@@ -1613,12 +1617,15 @@ xfs_file_ioctl(
 	case XFS_IOC_FREE_EOFBLOCKS: {
 		struct xfs_eofblocks eofb;
 
+<<<<<<< HEAD
 		if (!capable(CAP_SYS_ADMIN))
 			return -EPERM;
 
 		if (mp->m_flags & XFS_MOUNT_RDONLY)
 			return -XFS_ERROR(EROFS);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (copy_from_user(&eofb, arg, sizeof(eofb)))
 			return -XFS_ERROR(EFAULT);
 

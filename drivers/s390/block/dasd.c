@@ -2879,12 +2879,21 @@ static int dasd_alloc_queue(struct dasd_block *block)
 
 	elevator_exit(block->request_queue->elevator);
 	block->request_queue->elevator = NULL;
+<<<<<<< HEAD
 	mutex_lock(&block->request_queue->sysfs_lock);
 	rc = elevator_init(block->request_queue, "deadline");
 	if (rc)
 		blk_cleanup_queue(block->request_queue);
 	mutex_unlock(&block->request_queue->sysfs_lock);
 	return rc;
+=======
+	rc = elevator_init(block->request_queue, "deadline");
+	if (rc) {
+		blk_cleanup_queue(block->request_queue);
+		return rc;
+	}
+	return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*

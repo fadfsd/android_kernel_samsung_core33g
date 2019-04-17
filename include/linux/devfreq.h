@@ -175,6 +175,25 @@ struct devfreq {
 	unsigned long last_stat_updated;
 };
 
+<<<<<<< HEAD
+=======
+enum {
+	DEVFREQ_ONDEMAND_LEVEL = 0,
+};
+
+
+#define	DEVFREQ_PRE_CHANGE	(0)
+#define	DEVFREQ_POST_CHANGE	(1)
+
+struct devfreq_dbs {
+	struct list_head link;
+	int level;
+	void *data;
+	unsigned int (*devfreq_notifier)(struct devfreq_dbs *h, unsigned int state);
+};
+
+typedef unsigned int (*forbidden_func)(struct devfreq_dbs *h);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #if defined(CONFIG_PM_DEVFREQ)
 extern struct devfreq *devfreq_add_device(struct device *dev,
 				  struct devfreq_dev_profile *profile,
@@ -193,6 +212,29 @@ extern int devfreq_unregister_opp_notifier(struct device *dev,
 					   struct devfreq *devfreq);
 
 #if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
+<<<<<<< HEAD
+=======
+#endif
+#ifdef CONFIG_DEVFREQ_GOV_ONDEMAND
+extern const struct devfreq_governor devfreq_ondemand;
+void dfs_request_bw(int req_bw);
+int devfreq_notifier_register(struct devfreq_dbs *handler);
+int devfreq_notifier_unregister(struct devfreq_dbs *handler);
+#else
+static inline void dfs_request_bw(int req_bw)
+{
+	return;
+}
+inline int devfreq_notifier_register(struct devfreq_dbs *handler)
+{
+	return 0;
+}
+inline int devfreq_notifier_unregister(struct devfreq_dbs *handler)
+{
+	return 0;
+}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * struct devfreq_simple_ondemand_data - void *data fed to struct devfreq
  *	and devfreq_add_device
@@ -210,7 +252,10 @@ struct devfreq_simple_ondemand_data {
 	unsigned int upthreshold;
 	unsigned int downdifferential;
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #else /* !CONFIG_PM_DEVFREQ */
 static inline struct devfreq *devfreq_add_device(struct device *dev,

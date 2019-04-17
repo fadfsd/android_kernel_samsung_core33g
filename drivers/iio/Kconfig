@@ -67,8 +67,15 @@ source "drivers/iio/common/Kconfig"
 source "drivers/iio/dac/Kconfig"
 source "drivers/iio/frequency/Kconfig"
 source "drivers/iio/gyro/Kconfig"
+<<<<<<< HEAD
 source "drivers/iio/imu/Kconfig"
 source "drivers/iio/light/Kconfig"
 source "drivers/iio/magnetometer/Kconfig"
+=======
+source "drivers/iio/imu/inv_mpu/Kconfig"
+source "drivers/iio/inv_test/Kconfig"
+source "drivers/iio/light/Kconfig"
+source "drivers/iio/magnetometer/inv_compass/Kconfig"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 endif # IIO

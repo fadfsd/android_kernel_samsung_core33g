@@ -142,6 +142,7 @@
 static DEFINE_MUTEX(proto_list_mutex);
 static LIST_HEAD(proto_list);
 
+<<<<<<< HEAD
 /**
  * sk_ns_capable - General socket capability test
  * @sk: Socket to use a capability on or through
@@ -191,6 +192,8 @@ bool sk_net_capable(const struct sock *sk, int cap)
 EXPORT_SYMBOL(sk_net_capable);
 
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_MEMCG_KMEM
 int mem_cgroup_sockets_init(struct mem_cgroup *memcg, struct cgroup_subsys *ss)
 {
@@ -934,7 +937,11 @@ set_rcvbuf:
 
 	case SO_PEEK_OFF:
 		if (sock->ops->set_peek_off)
+<<<<<<< HEAD
 			ret = sock->ops->set_peek_off(sk, val);
+=======
+			sock->ops->set_peek_off(sk, val);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else
 			ret = -EOPNOTSUPP;
 		break;
@@ -1863,7 +1870,11 @@ bool sk_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
 		gfp_t gfp = sk->sk_allocation;
 
 		if (order)
+<<<<<<< HEAD
 			gfp |= __GFP_COMP | __GFP_NOWARN | __GFP_NORETRY;
+=======
+			gfp |= __GFP_COMP | __GFP_NOWARN;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		pfrag->page = alloc_pages(gfp, order);
 		if (likely(pfrag->page)) {
 			pfrag->offset = 0;
@@ -2320,7 +2331,10 @@ void sock_init_data(struct socket *sock, struct sock *sk)
 
 	sk->sk_stamp = ktime_set(-1L, 0);
 
+<<<<<<< HEAD
 	sk->sk_pacing_rate = ~0U;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Before updating sk_refcnt, we must commit prior changes to memory
 	 * (Documentation/RCU/rculist_nulls.txt for details)
@@ -2358,6 +2372,7 @@ void release_sock(struct sock *sk)
 	if (sk->sk_backlog.tail)
 		__release_sock(sk);
 
+<<<<<<< HEAD
 	/* Warning : release_cb() might need to release sk ownership,
 	 * ie call sock_release_ownership(sk) before us.
 	 */
@@ -2365,6 +2380,12 @@ void release_sock(struct sock *sk)
 		sk->sk_prot->release_cb(sk);
 
 	sock_release_ownership(sk);
+=======
+	if (sk->sk_prot->release_cb)
+		sk->sk_prot->release_cb(sk);
+
+	sk->sk_lock.owned = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (waitqueue_active(&sk->sk_lock.wq))
 		wake_up(&sk->sk_lock.wq);
 	spin_unlock_bh(&sk->sk_lock.slock);

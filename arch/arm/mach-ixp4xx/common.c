@@ -559,7 +559,11 @@ void ixp4xx_restart(char mode, const char *cmd)
  * fallback to the default.
  */
 
+<<<<<<< HEAD
 static void __iomem *ixp4xx_ioremap_caller(phys_addr_t addr, size_t size,
+=======
+static void __iomem *ixp4xx_ioremap_caller(unsigned long addr, size_t size,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					   unsigned int mtype, void *caller)
 {
 	if (!is_pci_memory(addr))

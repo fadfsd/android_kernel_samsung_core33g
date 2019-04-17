@@ -102,7 +102,12 @@ static long madvise_behavior(struct vm_area_struct * vma,
 
 	pgoff = vma->vm_pgoff + ((start - vma->vm_start) >> PAGE_SHIFT);
 	*prev = vma_merge(mm, *prev, start, end, new_flags, vma->anon_vma,
+<<<<<<< HEAD
 				vma->vm_file, pgoff, vma_policy(vma));
+=======
+				vma->vm_file, pgoff, vma_policy(vma),
+				vma_get_anon_name(vma));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (*prev) {
 		vma = *prev;
 		goto success;

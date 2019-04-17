@@ -134,10 +134,17 @@ static int pscsi_pmode_enable_hba(struct se_hba *hba, unsigned long mode_flag)
 	 * pSCSI Host ID and enable for phba mode
 	 */
 	sh = scsi_host_lookup(phv->phv_host_id);
+<<<<<<< HEAD
 	if (!sh) {
 		pr_err("pSCSI: Unable to locate SCSI Host for"
 			" phv_host_id: %d\n", phv->phv_host_id);
 		return -EINVAL;
+=======
+	if (IS_ERR(sh)) {
+		pr_err("pSCSI: Unable to locate SCSI Host for"
+			" phv_host_id: %d\n", phv->phv_host_id);
+		return PTR_ERR(sh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	phv->phv_lld_host = sh;
@@ -515,12 +522,20 @@ static int pscsi_configure_device(struct se_device *dev)
 			sh = phv->phv_lld_host;
 		} else {
 			sh = scsi_host_lookup(pdv->pdv_host_id);
+<<<<<<< HEAD
 			if (!sh) {
 				pr_err("pSCSI: Unable to locate"
 					" pdv_host_id: %d\n", pdv->pdv_host_id);
 				return -EINVAL;
 			}
 			pdv->pdv_lld_host = sh;
+=======
+			if (IS_ERR(sh)) {
+				pr_err("pSCSI: Unable to locate"
+					" pdv_host_id: %d\n", pdv->pdv_host_id);
+				return PTR_ERR(sh);
+			}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	} else {
 		if (phv->phv_mode == PHV_VIRTUAL_HOST_ID) {
@@ -603,8 +618,11 @@ static void pscsi_free_device(struct se_device *dev)
 		if ((phv->phv_mode == PHV_LLD_SCSI_HOST_NO) &&
 		    (phv->phv_lld_host != NULL))
 			scsi_host_put(phv->phv_lld_host);
+<<<<<<< HEAD
 		else if (pdv->pdv_lld_host)
 			scsi_host_put(pdv->pdv_lld_host);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if ((sd->type == TYPE_DISK) || (sd->type == TYPE_ROM))
 			scsi_device_put(sd);
@@ -1115,7 +1133,11 @@ static u32 pscsi_get_device_type(struct se_device *dev)
 	struct pscsi_dev_virt *pdv = PSCSI_DEV(dev);
 	struct scsi_device *sd = pdv->pdv_sd;
 
+<<<<<<< HEAD
 	return (sd) ? sd->type : TYPE_NO_LUN;
+=======
+	return sd->type;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static sector_t pscsi_get_blocks(struct se_device *dev)

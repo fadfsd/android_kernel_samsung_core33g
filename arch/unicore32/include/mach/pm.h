@@ -36,5 +36,11 @@ extern int puv3_pm_enter(suspend_state_t state);
 /* Defined in hibernate_asm.S */
 extern int restore_image(pgd_t *resume_pg_dir, struct pbe *restore_pblist);
 
+<<<<<<< HEAD
+=======
+/* References to section boundaries */
+extern const void __nosave_begin, __nosave_end;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern struct pbe *restore_pblist;
 #endif

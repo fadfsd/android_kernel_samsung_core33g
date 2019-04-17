@@ -11,7 +11,11 @@ all: uImage vmlinux.elf
 
 KBUILD_DEFCONFIG	:= atstk1002_defconfig
 
+<<<<<<< HEAD
 KBUILD_CFLAGS	+= -pipe -fno-builtin -mno-pic -D__linux__
+=======
+KBUILD_CFLAGS	+= -pipe -fno-builtin -mno-pic
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 KBUILD_AFLAGS	+= -mrelax -mno-pic
 KBUILD_CFLAGS_MODULE += -mno-relax
 LDFLAGS_vmlinux	+= --relax

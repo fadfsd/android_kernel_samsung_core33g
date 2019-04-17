@@ -1059,7 +1059,11 @@ static void request_write(struct cached_dev *dc, struct search *s)
 
 		if (bio->bi_rw & REQ_FLUSH) {
 			/* Also need to send a flush to the backing device */
+<<<<<<< HEAD
 			struct bio *flush = bio_alloc_bioset(GFP_NOIO, 0,
+=======
+			struct bio *flush = bio_alloc_bioset(0, GFP_NOIO,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 							     dc->disk.bio_split);
 
 			flush->bi_rw	= WRITE_FLUSH;

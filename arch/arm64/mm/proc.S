@@ -95,6 +95,13 @@ ENTRY(cpu_do_switch_mm)
 	ret
 ENDPROC(cpu_do_switch_mm)
 
+<<<<<<< HEAD
+=======
+cpu_name:
+	.ascii	"AArch64 Processor"
+	.align
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.section ".text.init", #alloc, #execinstr
 
 /*

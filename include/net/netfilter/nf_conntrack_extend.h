@@ -41,8 +41,13 @@ enum nf_ct_ext_id {
 /* Extensions: optional stuff which isn't permanently in struct. */
 struct nf_ct_ext {
 	struct rcu_head rcu;
+<<<<<<< HEAD
 	u16 offset[NF_CT_EXT_NUM];
 	u16 len;
+=======
+	u8 offset[NF_CT_EXT_NUM];
+	u8 len;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	char data[0];
 };
 
@@ -80,7 +85,11 @@ static inline void nf_ct_ext_destroy(struct nf_conn *ct)
 static inline void nf_ct_ext_free(struct nf_conn *ct)
 {
 	if (ct->ext)
+<<<<<<< HEAD
 		kfree_rcu(ct->ext, rcu);
+=======
+		kfree(ct->ext);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* Add this type, returns pointer to data or NULL. */

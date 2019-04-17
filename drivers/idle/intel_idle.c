@@ -359,10 +359,14 @@ static int intel_idle(struct cpuidle_device *dev,
 	if (!(lapic_timer_reliable_states & (1 << (cstate))))
 		clockevents_notify(CLOCK_EVT_NOTIFY_BROADCAST_ENTER, &cpu);
 
+<<<<<<< HEAD
 	if (!current_set_polling_and_test()) {
 
 		if (this_cpu_has(X86_FEATURE_CLFLUSH_MONITOR))
 			clflush((void *)&current_thread_info()->flags);
+=======
+	if (!need_resched()) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		__monitor((void *)&current_thread_info()->flags, 0, 0);
 		smp_mb();

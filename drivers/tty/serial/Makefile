@@ -85,3 +85,11 @@ obj-$(CONFIG_SERIAL_AR933X)   += ar933x_uart.o
 obj-$(CONFIG_SERIAL_EFM32_UART) += efm32-uart.o
 obj-$(CONFIG_SERIAL_ARC)	+= arc_uart.o
 obj-$(CONFIG_SERIAL_RP2)	+= rp2.o
+<<<<<<< HEAD
+=======
+ifeq ($(CONFIG_OF),y)
+obj-$(CONFIG_SERIAL_SPRD_UART) += serial_sprd_dt.o
+else
+obj-$(CONFIG_SERIAL_SPRD_UART) += serial_sprd.o
+endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

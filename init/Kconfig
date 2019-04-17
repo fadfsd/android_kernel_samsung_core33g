@@ -1251,6 +1251,15 @@ config HOTPLUG
 config HAVE_PCSPKR_PLATFORM
 	bool
 
+<<<<<<< HEAD
+=======
+config PANIC_TIMEOUT
+	int "Default panic timeout"
+	default 0
+	help
+	  Set default panic timeout.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 menuconfig EXPERT
 	bool "Configure standard kernel features (expert users)"
 	# Unhide debug options, to make the on-by-default options visible
@@ -1365,6 +1374,7 @@ config FUTEX
 	  support for "fast userspace mutexes".  The resulting kernel may not
 	  run glibc-based applications correctly.
 
+<<<<<<< HEAD
 config HAVE_FUTEX_CMPXCHG
 	bool
 	depends on FUTEX
@@ -1373,6 +1383,8 @@ config HAVE_FUTEX_CMPXCHG
 	  is implemented and always working. This removes a couple of runtime
 	  checks.
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config EPOLL
 	bool "Enable eventpoll support" if EXPERT
 	default y

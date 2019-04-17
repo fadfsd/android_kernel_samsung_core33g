@@ -53,8 +53,11 @@
 #define STACK_TOP	TASK_SIZE
 #define STACK_TOP_MAX	DEFAULT_TASK_SIZE
 
+<<<<<<< HEAD
 #define STACK_SIZE_MAX	(1 << 30)	/* 1 GB */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 #ifndef __ASSEMBLY__

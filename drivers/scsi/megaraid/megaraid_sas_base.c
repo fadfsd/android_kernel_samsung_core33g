@@ -933,7 +933,11 @@ megasas_issue_blocked_abort_cmd(struct megasas_instance *instance,
 	abort_fr->abort_mfi_phys_addr_hi = 0;
 
 	cmd->sync_cmd = 1;
+<<<<<<< HEAD
 	cmd->cmd_status = ENODATA;
+=======
+	cmd->cmd_status = 0xFF;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	instance->instancet->issue_dcmd(instance, cmd);
 
@@ -2099,7 +2103,10 @@ static struct scsi_host_template megasas_template = {
 	.bios_param = megasas_bios_param,
 	.use_clustering = ENABLE_CLUSTERING,
 	.change_queue_depth = megasas_change_queue_depth,
+<<<<<<< HEAD
 	.no_write_same = 1,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /**
@@ -3461,7 +3468,10 @@ static int megasas_init_fw(struct megasas_instance *instance)
 	u32 max_sectors_1;
 	u32 max_sectors_2;
 	u32 tmp_sectors, msix_enable;
+<<<<<<< HEAD
 	resource_size_t base_addr;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct megasas_register_set __iomem *reg_set;
 	struct megasas_ctrl_info *ctrl_info;
 	unsigned long bar_list;
@@ -3470,14 +3480,22 @@ static int megasas_init_fw(struct megasas_instance *instance)
 	/* Find first memory bar */
 	bar_list = pci_select_bars(instance->pdev, IORESOURCE_MEM);
 	instance->bar = find_first_bit(&bar_list, sizeof(unsigned long));
+<<<<<<< HEAD
+=======
+	instance->base_addr = pci_resource_start(instance->pdev, instance->bar);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (pci_request_selected_regions(instance->pdev, instance->bar,
 					 "megasas: LSI")) {
 		printk(KERN_DEBUG "megasas: IO memory region busy!\n");
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	base_addr = pci_resource_start(instance->pdev, instance->bar);
 	instance->reg_set = ioremap_nocache(base_addr, 8192);
+=======
+	instance->reg_set = ioremap_nocache(instance->base_addr, 8192);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!instance->reg_set) {
 		printk(KERN_DEBUG "megasas: Failed to map IO mem\n");

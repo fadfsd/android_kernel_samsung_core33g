@@ -71,7 +71,11 @@ int br_handle_frame_finish(struct sk_buff *skb)
 		goto drop;
 
 	if (!br_allowed_ingress(p->br, nbp_get_vlan_info(p), skb, &vid))
+<<<<<<< HEAD
 		goto out;
+=======
+		goto drop;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* insert into forwarding database after filtering to avoid spoofing */
 	br = p->br;

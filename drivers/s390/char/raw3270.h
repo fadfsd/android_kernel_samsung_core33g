@@ -190,7 +190,11 @@ raw3270_put_view(struct raw3270_view *view)
 		wake_up(&raw3270_wait_queue);
 }
 
+<<<<<<< HEAD
 struct raw3270 *raw3270_setup_console(void);
+=======
+struct raw3270 *raw3270_setup_console(struct ccw_device *cdev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void raw3270_wait_cons_dev(struct raw3270 *);
 
 /* Notifier for device addition/removal */

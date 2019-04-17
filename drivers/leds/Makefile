@@ -53,7 +53,22 @@ obj-$(CONFIG_LEDS_RENESAS_TPU)		+= leds-renesas-tpu.o
 obj-$(CONFIG_LEDS_MAX8997)		+= leds-max8997.o
 obj-$(CONFIG_LEDS_LM355x)		+= leds-lm355x.o
 obj-$(CONFIG_LEDS_BLINKM)		+= leds-blinkm.o
+<<<<<<< HEAD
 
+=======
+obj-$(CONFIG_LEDS_SC8810_KB)		+= leds-sc8810-kb.o
+# richteck
+obj-$(CONFIG_FLASHLIGHT)		+= flashlight.o
+obj-$(CONFIG_RT_FLASH_LED)		+= rtfled.o
+obj-$(CONFIG_FLED_RT5033)       += rt5033_fled.o
+#SiliconMitus
+obj-$(CONFIG_FLED_SM5701)       += leds-sm5701.o
+# SPRD keyboard-backlight Drivers
+obj-$(CONFIG_LEDS_SPRD_KB) += leds-sprd-kb.o
+obj-$(CONFIG_SPRD_KPLED_2723) += leds-sprd-kpled-2723.o
+# SPRD rgb led Drivers
+obj-$(CONFIG_LEDS_SPRD_RGB)	+= leds-sprd-rgb.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 # LED SPI Drivers
 obj-$(CONFIG_LEDS_DAC124S085)		+= leds-dac124s085.o
 

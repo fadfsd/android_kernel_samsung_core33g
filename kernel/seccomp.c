@@ -18,6 +18,7 @@
 #include <linux/compat.h>
 #include <linux/sched.h>
 #include <linux/seccomp.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/syscalls.h>
 
@@ -32,6 +33,17 @@
 #include <linux/pid.h>
 #include <linux/ptrace.h>
 #include <linux/security.h>
+=======
+
+/* #define SECCOMP_DEBUG 1 */
+
+#ifdef CONFIG_SECCOMP_FILTER
+#include <asm/syscall.h>
+#include <linux/filter.h>
+#include <linux/ptrace.h>
+#include <linux/security.h>
+#include <linux/slab.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/tracehook.h>
 #include <linux/uaccess.h>
 
@@ -204,6 +216,7 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
  *
  * Returns valid seccomp BPF response codes.
  */
+<<<<<<< HEAD
 static u32 seccomp_run_filters(void)
 {
 	struct seccomp_filter *f = ACCESS_ONCE(current->seccomp.filter);
@@ -216,18 +229,35 @@ static u32 seccomp_run_filters(void)
 	/* Make sure cross-thread synced filter points somewhere sane. */
 	smp_read_barrier_depends();
 
+=======
+static u32 seccomp_run_filters(int syscall)
+{
+	struct seccomp_filter *f;
+	u32 ret = SECCOMP_RET_ALLOW;
+
+	/* Ensure unexpected behavior doesn't result in failing open. */
+	if (WARN_ON(current->seccomp.filter == NULL))
+		return SECCOMP_RET_KILL;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * All filters in the list are evaluated and the lowest BPF return
 	 * value always takes priority (ignoring the DATA).
 	 */
+<<<<<<< HEAD
 	for (; f; f = f->prev) {
 		u32 cur_ret = sk_run_filter(NULL, f->insns);
 		
+=======
+	for (f = current->seccomp.filter; f; f = f->prev) {
+		u32 cur_ret = sk_run_filter(NULL, f->insns);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if ((cur_ret & SECCOMP_RET_ACTION) < (ret & SECCOMP_RET_ACTION))
 			ret = cur_ret;
 	}
 	return ret;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_SECCOMP_FILTER */
 
 static inline bool seccomp_may_assign_mode(unsigned long seccomp_mode)
@@ -370,6 +400,16 @@ static inline void seccomp_sync_threads(void)
  * Returns filter on success or an ERR_PTR on failure.
  */
 static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+=======
+
+/**
+ * seccomp_attach_filter: Attaches a seccomp filter to current.
+ * @fprog: BPF program to install
+ *
+ * Returns 0 on success or an errno on failure.
+ */
+static long seccomp_attach_filter(struct sock_fprog *fprog)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct seccomp_filter *filter;
 	unsigned long fp_size = fprog->len * sizeof(struct sock_filter);
@@ -377,13 +417,21 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	long ret;
 
 	if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
+<<<<<<< HEAD
 		return ERR_PTR(-EINVAL);
 	BUG_ON(INT_MAX / fprog->len < sizeof(struct sock_filter));
+=======
+		return -EINVAL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	for (filter = current->seccomp.filter; filter; filter = filter->prev)
 		total_insns += filter->len + 4;  /* include a 4 instr penalty */
 	if (total_insns > MAX_INSNS_PER_PATH)
+<<<<<<< HEAD
 		return ERR_PTR(-ENOMEM);
+=======
+		return -ENOMEM;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * Installing a seccomp filter requires that the task have
@@ -391,16 +439,27 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	 * This avoids scenarios where unprivileged tasks can affect the
 	 * behavior of privileged children.
 	 */
+<<<<<<< HEAD
 	if (!task_no_new_privs(current) &&
 	    security_capable_noaudit(current_cred(), current_user_ns(),
 				     CAP_SYS_ADMIN) != 0)
 		return ERR_PTR(-EACCES);
+=======
+	if (!current->no_new_privs &&
+	    security_capable_noaudit(current_cred(), current_user_ns(),
+				     CAP_SYS_ADMIN) != 0)
+		return -EACCES;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Allocate a new seccomp_filter */
 	filter = kzalloc(sizeof(struct seccomp_filter) + fp_size,
 			 GFP_KERNEL|__GFP_NOWARN);
 	if (!filter)
+<<<<<<< HEAD
 		return ERR_PTR(-ENOMEM);;
+=======
+		return -ENOMEM;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	atomic_set(&filter->usage, 1);
 	filter->len = fprog->len;
 
@@ -419,6 +478,7 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	if (ret)
 		goto fail;
 
+<<<<<<< HEAD
 	return filter;
 
 fail:
@@ -428,15 +488,38 @@ fail:
 
 /**
  * seccomp_prepare_user_filter - prepares a user-supplied sock_fprog
+=======
+	/*
+	 * If there is an existing filter, make it the prev and don't drop its
+	 * task reference.
+	 */
+	filter->prev = current->seccomp.filter;
+	current->seccomp.filter = filter;
+	return 0;
+fail:
+	kfree(filter);
+	return ret;
+}
+
+/**
+ * seccomp_attach_user_filter - attaches a user-supplied sock_fprog
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * @user_filter: pointer to the user data containing a sock_fprog.
  *
  * Returns 0 on success and non-zero otherwise.
  */
+<<<<<<< HEAD
 static struct seccomp_filter *
 seccomp_prepare_user_filter(const char __user *user_filter)
 {
 	struct sock_fprog fprog;
 	struct seccomp_filter *filter = ERR_PTR(-EFAULT);
+=======
+long seccomp_attach_user_filter(char __user *user_filter)
+{
+	struct sock_fprog fprog;
+	long ret = -EFAULT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_COMPAT
 	if (is_compat_task()) {
@@ -449,6 +532,7 @@ seccomp_prepare_user_filter(const char __user *user_filter)
 #endif
 	if (copy_from_user(&fprog, user_filter, sizeof(fprog)))
 		goto out;
+<<<<<<< HEAD
 	filter = seccomp_prepare_filter(&fprog);
 out:
 	return filter;
@@ -499,6 +583,11 @@ static long seccomp_attach_filter(unsigned int flags,
 		seccomp_sync_threads();
 
 	return 0;
+=======
+	ret = seccomp_attach_filter(&fprog);
+out:
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* get_seccomp_filter - increments the reference count of the filter on @tsk */
@@ -511,6 +600,7 @@ void get_seccomp_filter(struct task_struct *tsk)
 	atomic_inc(&orig->usage);
 }
 
+<<<<<<< HEAD
 static inline void seccomp_filter_free(struct seccomp_filter *filter)
 {
 	if (filter) {
@@ -518,6 +608,8 @@ static inline void seccomp_filter_free(struct seccomp_filter *filter)
 	}
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* put_seccomp_filter - decrements the ref count of tsk->seccomp.filter */
 void put_seccomp_filter(struct task_struct *tsk)
 {
@@ -526,7 +618,11 @@ void put_seccomp_filter(struct task_struct *tsk)
 	while (orig && atomic_dec_and_test(&orig->usage)) {
 		struct seccomp_filter *freeme = orig;
 		orig = orig->prev;
+<<<<<<< HEAD
 		seccomp_filter_free(freeme);
+=======
+		kfree(freeme);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -568,6 +664,7 @@ static int mode1_syscalls_32[] = {
 };
 #endif
 
+<<<<<<< HEAD
 static void __secure_computing_strict(int this_syscall)
 {
 	int *syscall_whitelist = mode1_syscalls;
@@ -621,13 +718,45 @@ int __secure_computing(void)
 	case SECCOMP_MODE_FILTER: {
 		int data;
 		ret = seccomp_run_filters();
+=======
+int __secure_computing(int this_syscall)
+{
+	int mode = current->seccomp.mode;
+	int exit_sig = 0;
+	int *syscall;
+	u32 ret;
+
+	switch (mode) {
+	case SECCOMP_MODE_STRICT:
+		syscall = mode1_syscalls;
+#ifdef CONFIG_COMPAT
+		if (is_compat_task())
+			syscall = mode1_syscalls_32;
+#endif
+		do {
+			if (*syscall == this_syscall)
+				return 0;
+		} while (*++syscall);
+		exit_sig = SIGKILL;
+		ret = SECCOMP_RET_KILL;
+		break;
+#ifdef CONFIG_SECCOMP_FILTER
+	case SECCOMP_MODE_FILTER: {
+		int data;
+		struct pt_regs *regs = task_pt_regs(current);
+		ret = seccomp_run_filters(this_syscall);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		data = ret & SECCOMP_RET_DATA;
 		ret &= SECCOMP_RET_ACTION;
 		switch (ret) {
 		case SECCOMP_RET_ERRNO:
+<<<<<<< HEAD
 			/* Set low-order bits as an errno, capped at MAX_ERRNO. */
 			if (data > MAX_ERRNO)
 				data = MAX_ERRNO;
+=======
+			/* Set the low-order 16-bits as a errno. */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			syscall_set_return_value(current, regs,
 						 -data, 0);
 			goto skip;
@@ -680,10 +809,16 @@ int __secure_computing(void)
 #ifdef CONFIG_SECCOMP_FILTER
 skip:
 	audit_seccomp(this_syscall, exit_sig, ret);
+<<<<<<< HEAD
 	return -1;
 #endif
 }
 #endif /* CONFIG_HAVE_ARCH_SECCOMP_FILTER */
+=======
+#endif
+	return -1;
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 long prctl_get_seccomp(void)
 {
@@ -691,6 +826,7 @@ long prctl_get_seccomp(void)
 }
 
 /**
+<<<<<<< HEAD
  * seccomp_set_mode_strict: internal function for setting strict seccomp
  *
  * Once current->seccomp.mode is non-zero, it may not be changed.
@@ -728,11 +864,22 @@ out:
  * This function may be called repeatedly to install additional filters.
  * Every filter successfully installed will be evaluated (in reverse order)
  * for each system call the task makes.
+=======
+ * prctl_set_seccomp: configures current->seccomp.mode
+ * @seccomp_mode: requested mode to use
+ * @filter: optional struct sock_fprog for use with SECCOMP_MODE_FILTER
+ *
+ * This function may be called repeatedly with a @seccomp_mode of
+ * SECCOMP_MODE_FILTER to install additional filters.  Every filter
+ * successfully installed will be evaluated (in reverse order) for each system
+ * call the task makes.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *
  * Once current->seccomp.mode is non-zero, it may not be changed.
  *
  * Returns 0 on success or -EINVAL on failure.
  */
+<<<<<<< HEAD
 static long seccomp_set_mode_filter(unsigned int flags,
 				    const char __user *filter)
 {
@@ -839,4 +986,36 @@ long prctl_set_seccomp(unsigned long seccomp_mode, char __user *filter)
 
 	/* prctl interface doesn't have flags, so they are always zero. */
 	return do_seccomp(op, 0, uargs);
+=======
+long prctl_set_seccomp(unsigned long seccomp_mode, char __user *filter)
+{
+	long ret = -EINVAL;
+
+	if (current->seccomp.mode &&
+	    current->seccomp.mode != seccomp_mode)
+		goto out;
+
+	switch (seccomp_mode) {
+	case SECCOMP_MODE_STRICT:
+		ret = 0;
+#ifdef TIF_NOTSC
+		disable_TSC();
+#endif
+		break;
+#ifdef CONFIG_SECCOMP_FILTER
+	case SECCOMP_MODE_FILTER:
+		ret = seccomp_attach_user_filter(filter);
+		if (ret)
+			goto out;
+		break;
+#endif
+	default:
+		goto out;
+	}
+
+	current->seccomp.mode = seccomp_mode;
+	set_thread_flag(TIF_SECCOMP);
+out:
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }

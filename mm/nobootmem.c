@@ -137,6 +137,7 @@ static unsigned long __init free_low_memory_core_early(void)
 	return count;
 }
 
+<<<<<<< HEAD
 static int reset_managed_pages_done __initdata;
 
 static inline void __init reset_node_managed_pages(pg_data_t *pgdat)
@@ -156,6 +157,22 @@ void __init reset_all_zones_managed_pages(void)
 	for_each_online_pgdat(pgdat)
 		reset_node_managed_pages(pgdat);
 	reset_managed_pages_done = 1;
+=======
+static void reset_node_lowmem_managed_pages(pg_data_t *pgdat)
+{
+	struct zone *z;
+
+	/*
+	 * In free_area_init_core(), highmem zone's managed_pages is set to
+	 * present_pages, and bootmem allocator doesn't allocate from highmem
+	 * zones. So there's no need to recalculate managed_pages because all
+	 * highmem pages will be managed by the buddy system. Here highmem
+	 * zone also includes highmem movable zone.
+	 */
+	for (z = pgdat->node_zones; z < pgdat->node_zones + MAX_NR_ZONES; z++)
+		if (!is_highmem(z))
+			z->managed_pages = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -165,7 +182,14 @@ void __init reset_all_zones_managed_pages(void)
  */
 unsigned long __init free_all_bootmem(void)
 {
+<<<<<<< HEAD
 	reset_all_zones_managed_pages();
+=======
+	struct pglist_data *pgdat;
+
+	for_each_online_pgdat(pgdat)
+		reset_node_lowmem_managed_pages(pgdat);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * We need to use MAX_NUMNODES instead of NODE_DATA(0)->node_id

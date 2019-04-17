@@ -171,6 +171,7 @@ static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
 	wake_up(&stream->runtime->sleep);
 }
 
+<<<<<<< HEAD
 static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
 {
 	if (snd_BUG_ON(!stream))
@@ -180,4 +181,6 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
 	wake_up(&stream->runtime->sleep);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif

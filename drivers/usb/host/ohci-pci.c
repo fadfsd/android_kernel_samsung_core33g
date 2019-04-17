@@ -172,7 +172,10 @@ static int ohci_quirk_amd700(struct usb_hcd *hcd)
 	pci_dev_put(amd_smbus_dev);
 	amd_smbus_dev = NULL;
 
+<<<<<<< HEAD
 	ohci->flags |= OHCI_QUIRK_GLOBAL_SUSPEND;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

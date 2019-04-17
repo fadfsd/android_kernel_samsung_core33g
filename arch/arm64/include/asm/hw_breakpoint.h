@@ -79,6 +79,10 @@ static inline void decode_ctrl_reg(u32 reg,
  */
 #define ARM_MAX_BRP		16
 #define ARM_MAX_WRP		16
+<<<<<<< HEAD
+=======
+#define ARM_MAX_HBP_SLOTS	(ARM_MAX_BRP + ARM_MAX_WRP)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Virtual debug register bases. */
 #define AARCH64_DBG_REG_BVR	0

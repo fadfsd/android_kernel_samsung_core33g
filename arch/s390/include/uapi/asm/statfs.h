@@ -35,11 +35,19 @@ struct statfs {
 struct statfs64 {
 	unsigned int	f_type;
 	unsigned int	f_bsize;
+<<<<<<< HEAD
 	unsigned long long f_blocks;
 	unsigned long long f_bfree;
 	unsigned long long f_bavail;
 	unsigned long long f_files;
 	unsigned long long f_ffree;
+=======
+	unsigned long	f_blocks;
+	unsigned long	f_bfree;
+	unsigned long	f_bavail;
+	unsigned long	f_files;
+	unsigned long	f_ffree;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__kernel_fsid_t f_fsid;
 	unsigned int	f_namelen;
 	unsigned int	f_frsize;

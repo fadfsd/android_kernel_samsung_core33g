@@ -280,7 +280,11 @@ static struct omap_usb_config osk_usb_config __initdata = {
 	 * be used, with a NONSTANDARD gender-bending cable/dongle, as
 	 * a peripheral.
 	 */
+<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_USB_OMAP)
+=======
+#ifdef	CONFIG_USB_GADGET_OMAP
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.register_dev	= 1,
 	.hmc_mode	= 0,
 #else

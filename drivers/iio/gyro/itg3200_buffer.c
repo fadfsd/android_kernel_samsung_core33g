@@ -135,7 +135,11 @@ int itg3200_probe_trigger(struct iio_dev *indio_dev)
 		goto error_free_irq;
 
 	/* select default trigger */
+<<<<<<< HEAD
 	indio_dev->trig = iio_trigger_get(st->trig);
+=======
+	indio_dev->trig = st->trig;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 

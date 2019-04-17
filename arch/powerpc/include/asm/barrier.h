@@ -45,6 +45,7 @@
 #    define SMPWMB      eieio
 #endif
 
+<<<<<<< HEAD
 #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
 
 #define smp_mb()	mb()
@@ -54,6 +55,13 @@
 #else
 #define __lwsync()	barrier()
 
+=======
+#define smp_mb()	mb()
+#define smp_rmb()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+#define smp_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
+#define smp_read_barrier_depends()	read_barrier_depends()
+#else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define smp_mb()	barrier()
 #define smp_rmb()	barrier()
 #define smp_wmb()	barrier()
@@ -69,6 +77,7 @@
 #define data_barrier(x)	\
 	asm volatile("twi 0,%0,0; isync" : : "r" (x) : "memory");
 
+<<<<<<< HEAD
 #define smp_store_release(p, v)						\
 do {									\
 	compiletime_assert_atomic_type(*p);				\
@@ -84,4 +93,6 @@ do {									\
 	___p1;								\
 })
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _ASM_POWERPC_BARRIER_H */

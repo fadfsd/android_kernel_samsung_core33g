@@ -16,6 +16,17 @@ menuconfig USB_PHY
 	  If you're not sure if this applies to you, it probably doesn't;
 	  say N here.
 
+<<<<<<< HEAD
+=======
+config USB_OTG_WAKELOCK
+	bool "Hold a wakelock when USB connected"
+	depends on WAKELOCK
+	select USB_OTG_UTILS
+	help
+	  Select this to automatically hold a wakelock when USB is
+	  connected, preventing suspend.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 if USB_PHY
 
 #

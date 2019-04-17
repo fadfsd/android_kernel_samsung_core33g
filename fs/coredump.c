@@ -299,7 +299,11 @@ static int zap_threads(struct task_struct *tsk, struct mm_struct *mm,
 	if (unlikely(nr < 0))
 		return nr;
 
+<<<<<<< HEAD
 	tsk->flags |= PF_DUMPCORE;
+=======
+	tsk->flags = PF_DUMPCORE;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (atomic_read(&mm->mm_users) == nr + 1)
 		goto done;
 	/*
@@ -482,6 +486,22 @@ static int umh_pipe_setup(struct subprocess_info *info, struct cred *new)
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static int s_dumpTsk = 0;
+
+int get_dumpTsk(void)
+{
+    return s_dumpTsk;
+}
+
+void set_dumpTsk(int tsk)
+{
+    s_dumpTsk = tsk;
+}
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void do_coredump(siginfo_t *siginfo)
 {
 	struct core_state core_state;
@@ -509,6 +529,10 @@ void do_coredump(siginfo_t *siginfo)
 		.mm_flags = mm->flags,
 	};
 
+<<<<<<< HEAD
+=======
+	set_dumpTsk(current);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	audit_core_dumps(siginfo->si_signo);
 
 	binfmt = mm->binfmt;
@@ -636,12 +660,20 @@ void do_coredump(siginfo_t *siginfo)
 		 */
 		if (!S_ISREG(inode->i_mode))
 			goto close_fail;
+<<<<<<< HEAD
+=======
+#if 0
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*
 		 * Dont allow local users get cute and trick others to coredump
 		 * into their pre-created files.
 		 */
 		if (!uid_eq(inode->i_uid, current_fsuid()))
 			goto close_fail;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (!cprm.file->f_op || !cprm.file->f_op->write)
 			goto close_fail;
 		if (do_truncate(cprm.file->f_path.dentry, 0, 0, cprm.file))
@@ -675,6 +707,11 @@ fail_corename:
 fail_creds:
 	put_cred(cred);
 fail:
+<<<<<<< HEAD
+=======
+	set_dumpTsk(0);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return;
 }
 

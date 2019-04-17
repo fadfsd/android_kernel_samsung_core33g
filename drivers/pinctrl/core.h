@@ -183,7 +183,11 @@ static inline struct pin_desc *pin_desc_get(struct pinctrl_dev *pctldev,
 }
 
 int pinctrl_register_map(struct pinctrl_map const *maps, unsigned num_maps,
+<<<<<<< HEAD
 			 bool dup);
+=======
+			 bool dup, bool locked);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void pinctrl_unregister_map(struct pinctrl_map const *map);
 
 extern int pinctrl_force_sleep(struct pinctrl_dev *pctldev);

@@ -288,10 +288,13 @@ int ip_options_compile(struct net *net,
 			optptr++;
 			continue;
 		}
+<<<<<<< HEAD
 		if (unlikely(l < 2)) {
 			pp_ptr = optptr;
 			goto error;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		optlen = optptr[1];
 		if (optlen<2 || optlen>l) {
 			pp_ptr = optptr;

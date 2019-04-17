@@ -26,7 +26,10 @@ struct isp_irq_param {
 	uint32_t isp_irq_val;
 	uint32_t dcam_irq_val;
 	uint32_t irq_val;
+<<<<<<< HEAD
 	int32_t  ret_val;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 } ;
 struct isp_reg_bits {
 	uint32_t reg_addr;

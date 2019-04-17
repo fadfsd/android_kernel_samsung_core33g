@@ -17,6 +17,11 @@ obj-$(CONFIG_VIOTAPE)		+= viotape.o
 obj-$(CONFIG_IBM_BSR)		+= bsr.o
 obj-$(CONFIG_SGI_MBCS)		+= mbcs.o
 obj-$(CONFIG_BFIN_OTP)		+= bfin-otp.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_TS0710_MUX_ENABLE)+= ts0710_mux.o
+obj-$(CONFIG_TS0710_MUX_ENABLE)+= mux.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 obj-$(CONFIG_PRINTER)		+= lp.o
 
@@ -56,8 +61,19 @@ obj-$(CONFIG_PCMCIA)		+= pcmcia/
 obj-$(CONFIG_HANGCHECK_TIMER)	+= hangcheck-timer.o
 obj-$(CONFIG_TCG_TPM)		+= tpm/
 
+<<<<<<< HEAD
 obj-$(CONFIG_PS3_FLASH)		+= ps3flash.o
 
+=======
+obj-$(CONFIG_MODEM_INTF)	+= modem_interface/
+
+obj-$(CONFIG_MUX_SDIO_OPT1_HAL)	+= mux_sdio_opt1_hal/
+
+obj-$(CONFIG_DCC_TTY)		+= dcc_tty.o
+obj-$(CONFIG_PS3_FLASH)		+= ps3flash.o
+
+obj-$(CONFIG_MUX_SPI_HAL)	+= mux_spi_hal/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-$(CONFIG_JS_RTC)		+= js-rtc.o
 js-rtc-y = rtc.o
 

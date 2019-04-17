@@ -18,6 +18,10 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
+=======
+#include <video/vga.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/irq.h>
 #include <asm/mach/pci.h>
@@ -290,6 +294,10 @@ void __init dc21285_preinit(void)
 	int cfn_mode;
 
 	pcibios_min_mem = 0x81000000;
+<<<<<<< HEAD
+=======
+	vga_base = PCIMEM_BASE;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	mem_size = (unsigned int)high_memory - PAGE_OFFSET;
 	for (mem_mask = 0x00100000; mem_mask < 0x10000000; mem_mask <<= 1)

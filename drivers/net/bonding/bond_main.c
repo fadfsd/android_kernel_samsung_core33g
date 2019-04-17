@@ -4995,7 +4995,10 @@ static int __init bonding_init(void)
 out:
 	return res;
 err:
+<<<<<<< HEAD
 	bond_destroy_debugfs();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rtnl_link_unregister(&bond_link_ops);
 err_link:
 	unregister_pernet_subsys(&bond_net_ops);

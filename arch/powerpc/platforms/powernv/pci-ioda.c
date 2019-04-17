@@ -151,23 +151,30 @@ static int pnv_ioda_configure_pe(struct pnv_phb *phb, struct pnv_ioda_pe *pe)
 		rid_end = pe->rid + 1;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Associate PE in PELT. We need add the PE into the
 	 * corresponding PELT-V as well. Otherwise, the error
 	 * originated from the PE might contribute to other
 	 * PEs.
 	 */
+=======
+	/* Associate PE in PELT */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rc = opal_pci_set_pe(phb->opal_id, pe->pe_number, pe->rid,
 			     bcomp, dcomp, fcomp, OPAL_MAP_PE);
 	if (rc) {
 		pe_err(pe, "OPAL error %ld trying to setup PELT table\n", rc);
 		return -ENXIO;
 	}
+<<<<<<< HEAD
 
 	rc = opal_pci_set_peltv(phb->opal_id, pe->pe_number,
 				pe->pe_number, OPAL_ADD_PE_TO_DOMAIN);
 	if (rc)
 		pe_warn(pe, "OPAL error %d adding self to PELTV\n", rc);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	opal_pci_eeh_freeze_clear(phb->opal_id, pe->pe_number,
 				  OPAL_EEH_ACTION_CLEAR_FREEZE_ALL);
 
@@ -789,6 +796,10 @@ static int pnv_pci_ioda_msi_setup(struct pnv_phb *phb, struct pci_dev *dev,
 				  unsigned int is_64, struct msi_msg *msg)
 {
 	struct pnv_ioda_pe *pe = pnv_ioda_get_pe(dev);
+<<<<<<< HEAD
+=======
+	struct pci_dn *pdn = pci_get_pdn(dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct irq_data *idata;
 	struct irq_chip *ichip;
 	unsigned int xive_num = hwirq - phb->msi_base;
@@ -805,7 +816,11 @@ static int pnv_pci_ioda_msi_setup(struct pnv_phb *phb, struct pci_dev *dev,
 		return -ENXIO;
 
 	/* Force 32-bit MSI on some broken devices */
+<<<<<<< HEAD
 	if (dev->no_64bit_msi)
+=======
+	if (pdn && pdn->force_32bit_msi)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		is_64 = 0;
 
 	/* Assign XIVE to PE */

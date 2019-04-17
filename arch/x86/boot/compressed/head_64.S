@@ -217,8 +217,11 @@ ENTRY(efi_pe_entry)
 	cmpq	$0,%rax
 	je	1f
 	mov	%rax, %rdx
+<<<<<<< HEAD
 	leaq	startup_32(%rip), %rax
 	movl	%eax, BP_code32_start(%rdx)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	popq	%rsi
 	popq	%rdi
 
@@ -232,7 +235,16 @@ ENTRY(efi_stub_entry)
 	hlt
 	jmp	1b
 2:
+<<<<<<< HEAD
 	movl	BP_code32_start(%esi), %eax
+=======
+	call	3f
+3:
+	popq	%rax
+	subq	$3b, %rax
+	subq	BP_pref_address(%rsi), %rax
+	add	BP_code32_start(%esi), %eax
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	leaq	preferred_addr(%rax), %rax
 	jmp	*%rax
 

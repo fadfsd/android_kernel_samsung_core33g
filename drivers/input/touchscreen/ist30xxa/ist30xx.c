@@ -51,7 +51,11 @@ extern int sec_touch_sysfs(struct ist30xx_data *data);
 extern int sec_fac_cmd_init(struct ist30xx_data *data);
 #endif
 
+<<<<<<< HEAD
 #define TOUCH_BOOSTER	0
+=======
+#define TOUCH_BOOSTER	1
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define MAX_ERR_CNT             (100)
 
 #if TOUCH_BOOSTER

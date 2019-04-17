@@ -37,6 +37,10 @@
 struct sockaddr_sco {
 	sa_family_t	sco_family;
 	bdaddr_t	sco_bdaddr;
+<<<<<<< HEAD
+=======
+	__u16		sco_pkt_type;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /* SCO socket options */
@@ -72,7 +76,12 @@ struct sco_conn {
 
 struct sco_pinfo {
 	struct bt_sock	bt;
+<<<<<<< HEAD
 	__u32		flags;
+=======
+	__u16		pkt_type;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct sco_conn	*conn;
 };
 

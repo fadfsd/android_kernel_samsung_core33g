@@ -3919,7 +3919,10 @@ static void b43legacy_remove(struct ssb_device *dev)
 	 * as the ieee80211 unreg will destroy the workqueue. */
 	cancel_work_sync(&wldev->restart_work);
 	cancel_work_sync(&wl->firmware_load);
+<<<<<<< HEAD
 	complete(&wldev->fw_load_complete);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	B43legacy_WARN_ON(!wl);
 	if (!wldev->fw.ucode)

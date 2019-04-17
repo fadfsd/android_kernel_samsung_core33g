@@ -49,6 +49,10 @@
 #include <linux/rmap.h>
 #include <linux/export.h>
 #include <linux/delayacct.h>
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/init.h>
 #include <linux/writeback.h>
 #include <linux/memcontrol.h>
@@ -834,6 +838,7 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		if (!pte_file(pte)) {
 			swp_entry_t entry = pte_to_swp_entry(pte);
 
+<<<<<<< HEAD
 			if (likely(!non_swap_entry(entry))) {
 				if (swap_duplicate(entry) < 0)
 					return entry.val;
@@ -848,6 +853,22 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 				}
 				rss[MM_SWAPENTS]++;
 			} else if (is_migration_entry(entry)) {
+=======
+			if (swap_duplicate(entry) < 0)
+				return entry.val;
+
+			/* make sure dst_mm is on swapoff's mmlist. */
+			if (unlikely(list_empty(&dst_mm->mmlist))) {
+				spin_lock(&mmlist_lock);
+				if (list_empty(&dst_mm->mmlist))
+					list_add(&dst_mm->mmlist,
+						 &src_mm->mmlist);
+				spin_unlock(&mmlist_lock);
+			}
+			if (likely(!non_swap_entry(entry)))
+				rss[MM_SWAPENTS]++;
+			else if (is_migration_entry(entry)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				page = migration_entry_to_page(entry);
 
 				if (PageAnon(page))
@@ -1844,8 +1865,12 @@ long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
 						else
 							return -EFAULT;
 					}
+<<<<<<< HEAD
 					if (ret & (VM_FAULT_SIGBUS |
 						   VM_FAULT_SIGSEGV))
+=======
+					if (ret & VM_FAULT_SIGBUS)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 						return i ? i : -EFAULT;
 					BUG();
 				}
@@ -1938,24 +1963,34 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
 		     unsigned long address, unsigned int fault_flags)
 {
 	struct vm_area_struct *vma;
+<<<<<<< HEAD
 	vm_flags_t vm_flags;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret;
 
 	vma = find_extend_vma(mm, address);
 	if (!vma || address < vma->vm_start)
 		return -EFAULT;
 
+<<<<<<< HEAD
 	vm_flags = (fault_flags & FAULT_FLAG_WRITE) ? VM_WRITE : VM_READ;
 	if (!(vm_flags & vma->vm_flags))
 		return -EFAULT;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = handle_mm_fault(mm, vma, address, fault_flags);
 	if (ret & VM_FAULT_ERROR) {
 		if (ret & VM_FAULT_OOM)
 			return -ENOMEM;
 		if (ret & (VM_FAULT_HWPOISON | VM_FAULT_HWPOISON_LARGE))
 			return -EHWPOISON;
+<<<<<<< HEAD
 		if (ret & (VM_FAULT_SIGBUS | VM_FAULT_SIGSEGV))
+=======
+		if (ret & VM_FAULT_SIGBUS)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -EFAULT;
 		BUG();
 	}
@@ -2998,6 +3033,17 @@ void unmap_mapping_range(struct address_space *mapping,
 }
 EXPORT_SYMBOL(unmap_mapping_range);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ZRAM
+#include <linux/module.h>
+// always try to free swap in zram swap case
+static int keep_to_free_swap = 1;
+module_param_named(keep_to_free_swap,keep_to_free_swap, int, S_IRUGO | S_IWUSR);
+#endif
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * We enter with non-exclusive mmap_sem (to exclude vma changes,
  * but allow concurrent faults), and pte mapped but not yet locked.
@@ -3022,6 +3068,19 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	entry = pte_to_swp_entry(orig_pte);
 	if (unlikely(non_swap_entry(entry))) {
 		if (is_migration_entry(entry)) {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA
+			/*
+			 * FIXME: mszyprow: cruel, brute-force method for
+			 * letting cma/migration to finish it's job without
+			 * stealing the lock migration_entry_wait() and creating
+			 * a live-lock on the faulted page
+			 * (page->_count == 2 migration failure issue)
+			 */
+			mdelay(10);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			migration_entry_wait(mm, pmd, address);
 		} else if (is_hwpoison_entry(entry)) {
 			ret = VM_FAULT_HWPOISON;
@@ -3138,7 +3197,16 @@ static int do_swap_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	mem_cgroup_commit_charge_swapin(page, ptr);
 
 	swap_free(entry);
+<<<<<<< HEAD
 	if (vm_swap_full() || (vma->vm_flags & VM_LOCKED) || PageMlocked(page))
+=======
+
+#ifdef CONFIG_ZRAM
+	if (keep_to_free_swap || vm_swap_full() || (vma->vm_flags & VM_LOCKED) || PageMlocked(page))
+#else
+	if (vm_swap_full() || (vma->vm_flags & VM_LOCKED) || PageMlocked(page))
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		try_to_free_swap(page);
 	unlock_page(page);
 	if (page != swapcache) {
@@ -3201,7 +3269,11 @@ static inline int check_stack_guard_page(struct vm_area_struct *vma, unsigned lo
 		if (prev && prev->vm_end == address)
 			return prev->vm_flags & VM_GROWSDOWN ? 0 : -ENOMEM;
 
+<<<<<<< HEAD
 		return expand_downwards(vma, address - PAGE_SIZE);
+=======
+		expand_downwards(vma, address - PAGE_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	if ((vma->vm_flags & VM_GROWSUP) && address + PAGE_SIZE == vma->vm_end) {
 		struct vm_area_struct *next = vma->vm_next;
@@ -3210,7 +3282,11 @@ static inline int check_stack_guard_page(struct vm_area_struct *vma, unsigned lo
 		if (next && next->vm_start == address + PAGE_SIZE)
 			return next->vm_flags & VM_GROWSUP ? 0 : -ENOMEM;
 
+<<<<<<< HEAD
 		return expand_upwards(vma, address + PAGE_SIZE);
+=======
+		expand_upwards(vma, address + PAGE_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return 0;
 }
@@ -3230,6 +3306,7 @@ static int do_anonymous_page(struct mm_struct *mm, struct vm_area_struct *vma,
 
 	pte_unmap(page_table);
 
+<<<<<<< HEAD
 	/* File mapping without ->vm_ops ? */
 	if (vma->vm_flags & VM_SHARED)
 		return VM_FAULT_SIGBUS;
@@ -3237,6 +3314,11 @@ static int do_anonymous_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	/* Check if we need to add a guard page to the stack */
 	if (check_stack_guard_page(vma, address) < 0)
 		return VM_FAULT_SIGSEGV;
+=======
+	/* Check if we need to add a guard page to the stack */
+	if (check_stack_guard_page(vma, address) < 0)
+		return VM_FAULT_SIGBUS;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Use the zero-page for reads */
 	if (!(flags & FAULT_FLAG_WRITE)) {
@@ -3499,9 +3581,12 @@ static int do_linear_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 			- vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff;
 
 	pte_unmap(page_table);
+<<<<<<< HEAD
 	/* The VMA was not fully populated on mmap() or missing VM_DONTEXPAND */
 	if (!vma->vm_ops->fault)
 		return VM_FAULT_SIGBUS;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return __do_fault(mm, vma, address, pmd, pgoff, flags, orig_pte);
 }
 
@@ -3538,12 +3623,20 @@ static int do_nonlinear_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 }
 
 int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
+<<<<<<< HEAD
 				unsigned long addr, int page_nid)
+=======
+				unsigned long addr, int current_nid)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	get_page(page);
 
 	count_vm_numa_event(NUMA_HINT_FAULTS);
+<<<<<<< HEAD
 	if (page_nid == numa_node_id())
+=======
+	if (current_nid == numa_node_id())
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		count_vm_numa_event(NUMA_HINT_FAULTS_LOCAL);
 
 	return mpol_misplaced(page, vma, addr);
@@ -3554,7 +3647,11 @@ int do_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 {
 	struct page *page = NULL;
 	spinlock_t *ptl;
+<<<<<<< HEAD
 	int page_nid = -1;
+=======
+	int current_nid = -1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int target_nid;
 	bool migrated = false;
 
@@ -3584,10 +3681,22 @@ int do_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	page_nid = page_to_nid(page);
 	target_nid = numa_migrate_prep(page, vma, addr, page_nid);
 	pte_unmap_unlock(ptep, ptl);
 	if (target_nid == -1) {
+=======
+	current_nid = page_to_nid(page);
+	target_nid = numa_migrate_prep(page, vma, addr, current_nid);
+	pte_unmap_unlock(ptep, ptl);
+	if (target_nid == -1) {
+		/*
+		 * Account for the fault against the current node if it not
+		 * being replaced regardless of where the page is located.
+		 */
+		current_nid = numa_node_id();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		put_page(page);
 		goto out;
 	}
@@ -3595,11 +3704,19 @@ int do_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	/* Migrate to the requested node */
 	migrated = migrate_misplaced_page(page, target_nid);
 	if (migrated)
+<<<<<<< HEAD
 		page_nid = target_nid;
 
 out:
 	if (page_nid != -1)
 		task_numa_fault(page_nid, 1, migrated);
+=======
+		current_nid = target_nid;
+
+out:
+	if (current_nid != -1)
+		task_numa_fault(current_nid, 1, migrated);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -3614,6 +3731,10 @@ static int do_pmd_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	unsigned long offset;
 	spinlock_t *ptl;
 	bool numa = false;
+<<<<<<< HEAD
+=======
+	int local_nid = numa_node_id();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_lock(&mm->page_table_lock);
 	pmd = *pmdp;
@@ -3636,10 +3757,16 @@ static int do_pmd_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 	for (addr = _addr + offset; addr < _addr + PMD_SIZE; pte++, addr += PAGE_SIZE) {
 		pte_t pteval = *pte;
 		struct page *page;
+<<<<<<< HEAD
 		int page_nid = -1;
 		int target_nid;
 		bool migrated = false;
 
+=======
+		int curr_nid = local_nid;
+		int target_nid;
+		bool migrated;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (!pte_present(pteval))
 			continue;
 		if (!pte_numa(pteval))
@@ -3661,6 +3788,7 @@ static int do_pmd_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 		if (unlikely(page_mapcount(page) != 1))
 			continue;
 
+<<<<<<< HEAD
 		page_nid = page_to_nid(page);
 		target_nid = numa_migrate_prep(page, vma, addr, page_nid);
 		pte_unmap_unlock(pte, ptl);
@@ -3674,6 +3802,27 @@ static int do_pmd_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 
 		if (page_nid != -1)
 			task_numa_fault(page_nid, 1, migrated);
+=======
+		/*
+		 * Note that the NUMA fault is later accounted to either
+		 * the node that is currently running or where the page is
+		 * migrated to.
+		 */
+		curr_nid = local_nid;
+		target_nid = numa_migrate_prep(page, vma, addr,
+					       page_to_nid(page));
+		if (target_nid == -1) {
+			put_page(page);
+			continue;
+		}
+
+		/* Migrate to the requested node */
+		pte_unmap_unlock(pte, ptl);
+		migrated = migrate_misplaced_page(page, target_nid);
+		if (migrated)
+			curr_nid = target_nid;
+		task_numa_fault(curr_nid, 1, migrated);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		pte = pte_offset_map_lock(mm, pmdp, addr, &ptl);
 	}
@@ -3713,9 +3862,17 @@ int handle_pte_fault(struct mm_struct *mm,
 	entry = *pte;
 	if (!pte_present(entry)) {
 		if (pte_none(entry)) {
+<<<<<<< HEAD
 			if (vma->vm_ops)
 				return do_linear_fault(mm, vma, address,
 						pte, pmd, flags, entry);
+=======
+			if (vma->vm_ops) {
+				if (likely(vma->vm_ops->fault))
+					return do_linear_fault(mm, vma, address,
+						pte, pmd, flags, entry);
+			}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return do_anonymous_page(mm, vma, address,
 						 pte, pmd, flags);
 		}
@@ -3760,14 +3917,30 @@ unlock:
 /*
  * By the time we get here, we already hold the mm semaphore
  */
+<<<<<<< HEAD
 static int __handle_mm_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 			     unsigned long address, unsigned int flags)
+=======
+int handle_mm_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+		unsigned long address, unsigned int flags)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	pgd_t *pgd;
 	pud_t *pud;
 	pmd_t *pmd;
 	pte_t *pte;
 
+<<<<<<< HEAD
+=======
+	__set_current_state(TASK_RUNNING);
+
+	count_vm_event(PGFAULT);
+	mem_cgroup_count_vm_event(mm, PGFAULT);
+
+	/* do counter updates before entering really critical section. */
+	check_sync_rss_stat(current);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(is_vm_hugetlb_page(vma)))
 		return hugetlb_fault(mm, vma, address, flags);
 
@@ -3848,6 +4021,7 @@ retry:
 	return handle_pte_fault(mm, vma, address, pte, pmd, flags);
 }
 
+<<<<<<< HEAD
 int handle_mm_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 		    unsigned long address, unsigned int flags)
 {
@@ -3885,6 +4059,8 @@ int handle_mm_fault(struct mm_struct *mm, struct vm_area_struct *vma,
 	return ret;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifndef __PAGETABLE_PUD_FOLDED
 /*
  * Allocate page upper directory.
@@ -4094,7 +4270,11 @@ int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
 	if (follow_phys(vma, addr, write, &prot, &phys_addr))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	maddr = ioremap_prot(phys_addr, PAGE_ALIGN(len + offset), prot);
+=======
+	maddr = ioremap_prot(phys_addr, PAGE_SIZE, prot);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (write)
 		memcpy_toio(maddr + offset, buf, len);
 	else
@@ -4103,7 +4283,10 @@ int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
 
 	return len;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(generic_access_phys);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 /*

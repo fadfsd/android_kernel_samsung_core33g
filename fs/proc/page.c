@@ -9,6 +9,11 @@
 #include <linux/seq_file.h>
 #include <linux/hugetlb.h>
 #include <linux/kernel-page-flags.h>
+<<<<<<< HEAD
+=======
+#include <linux/swap.h>
+#include <linux/swapops.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/uaccess.h>
 #include "internal.h"
 
@@ -61,6 +66,66 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SWAP
+
+extern struct swap_info_struct *swap_info_get(swp_entry_t entry);
+
+static inline unsigned char swap_count(unsigned char ent)
+{
+	return ent & ~SWAP_HAS_CACHE;	/* may include SWAP_HAS_CONT flag */
+}
+
+/* /proc/kpageswapn - an array exposing page swap counts
+ *
+ * Each entry is a u64 representing the corresponding
+ * physical page swap count.
+ */
+static ssize_t kpageswapn_read(struct file *file, char __user *buf,
+			       size_t count, loff_t *ppos)
+{
+	u64 __user *out = (u64 __user *)buf;
+	unsigned long src = *ppos;
+	swp_entry_t swap_entry;
+	ssize_t ret = 0;
+	struct swap_info_struct *p;
+
+	swap_entry.val = src / KPMSIZE;
+
+	if (src & KPMMASK || count & KPMMASK) {
+		printk(KERN_INFO "kpageswapn_read return EINVAL\n");
+		return -EINVAL;
+	}
+
+	p = swap_info_get(swap_entry);
+	if (p) {
+		u64 swapcount = swap_count(p->swap_map[swp_offset(swap_entry)]);
+		if (put_user(swapcount, out)) {
+			printk(KERN_INFO "kpageswapn_read put user failed\n");
+			ret = -EFAULT;
+		}
+		spin_unlock(&p->lock);
+	} else {
+		printk(KERN_INFO "kpageswapn_read swap_info_get failed\n");
+		ret = -EFAULT;
+	}
+
+	if (!ret) {
+		*ppos += KPMSIZE;
+		ret = KPMSIZE;
+	}
+	return ret;
+}
+
+static const struct file_operations proc_kpageswapn_operations = {
+	.llseek = mem_lseek,
+	.read = kpageswapn_read,
+};
+
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static const struct file_operations proc_kpagecount_operations = {
 	.llseek = mem_lseek,
 	.read = kpagecount_read,
@@ -121,7 +186,11 @@ u64 stable_page_flags(struct page *page)
 	 * just checks PG_head/PG_tail, so we need to check PageLRU to make
 	 * sure a given page is a thp, not a non-huge compound page.
 	 */
+<<<<<<< HEAD
 	else if (PageTransCompound(page) && PageLRU(compound_head(page)))
+=======
+	else if (PageTransCompound(page) && PageLRU(compound_trans_head(page)))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		u |= 1 << KPF_THP;
 
 	/*
@@ -214,6 +283,12 @@ static const struct file_operations proc_kpageflags_operations = {
 static int __init proc_page_init(void)
 {
 	proc_create("kpagecount", S_IRUSR, NULL, &proc_kpagecount_operations);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SWAP
+	proc_create("kpageswapn", S_IRUSR, NULL, &proc_kpageswapn_operations);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	proc_create("kpageflags", S_IRUSR, NULL, &proc_kpageflags_operations);
 	return 0;
 }

@@ -873,7 +873,11 @@ static int pci9111_auto_attach(struct comedi_device *dev,
 	pci9111_reset(dev);
 
 	if (pcidev->irq > 0) {
+<<<<<<< HEAD
 		ret = request_irq(pcidev->irq, pci9111_interrupt,
+=======
+		ret = request_irq(dev->irq, pci9111_interrupt,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				  IRQF_SHARED, dev->board_name, dev);
 		if (ret)
 			return ret;

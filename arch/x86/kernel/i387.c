@@ -86,6 +86,7 @@ EXPORT_SYMBOL(__kernel_fpu_begin);
 
 void __kernel_fpu_end(void)
 {
+<<<<<<< HEAD
 	if (use_eager_fpu()) {
 		/*
 		 * For eager fpu, most the time, tsk_used_math() is true.
@@ -99,6 +100,12 @@ void __kernel_fpu_end(void)
 	} else {
 		stts();
 	}
+=======
+	if (use_eager_fpu())
+		math_state_restore();
+	else
+		stts();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL(__kernel_fpu_end);
 

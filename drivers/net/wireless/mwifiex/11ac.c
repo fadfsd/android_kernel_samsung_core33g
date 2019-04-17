@@ -189,7 +189,12 @@ int mwifiex_cmd_append_11ac_tlv(struct mwifiex_private *priv,
 		vht_cap->header.len  =
 				cpu_to_le16(sizeof(struct ieee80211_vht_cap));
 		memcpy((u8 *)vht_cap + sizeof(struct mwifiex_ie_types_header),
+<<<<<<< HEAD
 		       (u8 *)bss_desc->bcn_vht_cap,
+=======
+		       (u8 *)bss_desc->bcn_vht_cap +
+		       sizeof(struct ieee_types_header),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		       le16_to_cpu(vht_cap->header.len));
 
 		mwifiex_fill_vht_cap_tlv(priv, vht_cap, bss_desc->bss_band);

@@ -63,9 +63,12 @@ static struct acpi_scan_handler pci_root_handler = {
 	.ids = root_device_ids,
 	.attach = acpi_pci_root_add,
 	.detach = acpi_pci_root_remove,
+<<<<<<< HEAD
 	.hotplug = {
 		.ignore = true,
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /* Lock to protect both acpi_pci_roots lists */
@@ -617,12 +620,18 @@ static void handle_root_bridge_removal(struct acpi_device *device)
 	ej_event->device = device;
 	ej_event->event = ACPI_NOTIFY_EJECT_REQUEST;
 
+<<<<<<< HEAD
 	get_device(&device->dev);
 	status = acpi_os_hotplug_execute(acpi_bus_hot_remove_device, ej_event);
 	if (ACPI_FAILURE(status)) {
 		put_device(&device->dev);
 		kfree(ej_event);
 	}
+=======
+	status = acpi_os_hotplug_execute(acpi_bus_hot_remove_device, ej_event);
+	if (ACPI_FAILURE(status))
+		kfree(ej_event);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void _handle_hotplug_event_root(struct work_struct *work)

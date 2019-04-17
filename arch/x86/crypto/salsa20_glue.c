@@ -119,5 +119,10 @@ module_exit(fini);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION ("Salsa20 stream cipher algorithm (optimized assembly version)");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("salsa20");
 MODULE_ALIAS_CRYPTO("salsa20-asm");
+=======
+MODULE_ALIAS("salsa20");
+MODULE_ALIAS("salsa20-asm");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

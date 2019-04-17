@@ -1243,10 +1243,18 @@ int __break_lease(struct inode *inode, unsigned int mode)
 
 restart:
 	break_time = flock->fl_break_time;
+<<<<<<< HEAD
 	if (break_time != 0)
 		break_time -= jiffies;
 	if (break_time == 0)
 		break_time++;
+=======
+	if (break_time != 0) {
+		break_time -= jiffies;
+		if (break_time == 0)
+			break_time++;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	locks_insert_block(flock, new_fl);
 	unlock_flocks();
 	error = wait_event_interruptible_timeout(new_fl->fl_wait,

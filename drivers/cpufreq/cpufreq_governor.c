@@ -26,9 +26,18 @@
 #include <linux/tick.h>
 #include <linux/types.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 
 #include "cpufreq_governor.h"
 
+=======
+#include <linux/input.h>
+
+#include "cpufreq_governor.h"
+
+extern struct input_handler dbs_input_handler;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static struct kobject *get_governor_parent_kobj(struct cpufreq_policy *policy)
 {
 	if (have_governor_per_policy())
@@ -97,7 +106,11 @@ void dbs_check_cpu(struct dbs_data *dbs_data, int cpu)
 
 	policy = cdbs->cur_policy;
 
+<<<<<<< HEAD
 	/* Get Absolute Load */
+=======
+	/* Get Absolute Load (in terms of freq for ondemand gov) */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for_each_cpu(j, policy->cpus) {
 		struct cpu_dbs_common_info *j_cdbs;
 		u64 cur_wall_time, cur_idle_time;
@@ -148,6 +161,17 @@ void dbs_check_cpu(struct dbs_data *dbs_data, int cpu)
 
 		load = 100 * (wall_time - idle_time) / wall_time;
 
+<<<<<<< HEAD
+=======
+		if (dbs_data->cdata->governor == GOV_ONDEMAND) {
+			int freq_avg = __cpufreq_driver_getavg(policy, j);
+			if (freq_avg <= 0)
+				freq_avg = policy->cur;
+
+			load *= freq_avg;
+		}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (load > max_load)
 			max_load = load;
 	}
@@ -169,9 +193,12 @@ void gov_queue_work(struct dbs_data *dbs_data, struct cpufreq_policy *policy,
 {
 	int i;
 
+<<<<<<< HEAD
 	if (!policy->governor_enabled)
 		return;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!all_cpus) {
 		__gov_queue_work(smp_processor_id(), dbs_data, delay);
 	} else {

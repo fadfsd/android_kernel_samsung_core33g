@@ -11,7 +11,10 @@
 #include <linux/slab.h>
 #include <linux/poll.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/wait.h>
@@ -31,14 +34,28 @@
 #define tty_ldisc_debug(tty, f, args...)
 #endif
 
+<<<<<<< HEAD
+=======
+/* lockdep nested classes for tty->ldisc_sem */
+enum {
+	LDISC_SEM_NORMAL,
+	LDISC_SEM_OTHER,
+};
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  *	This guards the refcounted line discipline lists. The lock
  *	must be taken with irqs off because there are hangup path
  *	callers who will do ldisc lookups and cannot sleep.
  */
 
+<<<<<<< HEAD
 static DEFINE_RAW_SPINLOCK(tty_ldisc_lock);
 static DECLARE_WAIT_QUEUE_HEAD(tty_ldisc_wait);
+=======
+static DEFINE_RAW_SPINLOCK(tty_ldiscs_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Line disc dispatch table */
 static struct tty_ldisc_ops *tty_ldiscs[NR_LDISCS];
 
@@ -52,7 +69,11 @@ static struct tty_ldisc_ops *tty_ldiscs[NR_LDISCS];
  *	from this point onwards.
  *
  *	Locking:
+<<<<<<< HEAD
  *		takes tty_ldisc_lock to guard against ldisc races
+=======
+ *		takes tty_ldiscs_lock to guard against ldisc races
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 int tty_register_ldisc(int disc, struct tty_ldisc_ops *new_ldisc)
@@ -63,11 +84,19 @@ int tty_register_ldisc(int disc, struct tty_ldisc_ops *new_ldisc)
 	if (disc < N_TTY || disc >= NR_LDISCS)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&tty_ldisc_lock, flags);
 	tty_ldiscs[disc] = new_ldisc;
 	new_ldisc->num = disc;
 	new_ldisc->refcount = 0;
 	raw_spin_unlock_irqrestore(&tty_ldisc_lock, flags);
+=======
+	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
+	tty_ldiscs[disc] = new_ldisc;
+	new_ldisc->num = disc;
+	new_ldisc->refcount = 0;
+	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }
@@ -82,7 +111,11 @@ EXPORT_SYMBOL(tty_register_ldisc);
  *	currently in use.
  *
  *	Locking:
+<<<<<<< HEAD
  *		takes tty_ldisc_lock to guard against ldisc races
+=======
+ *		takes tty_ldiscs_lock to guard against ldisc races
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 int tty_unregister_ldisc(int disc)
@@ -93,12 +126,20 @@ int tty_unregister_ldisc(int disc)
 	if (disc < N_TTY || disc >= NR_LDISCS)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&tty_ldisc_lock, flags);
+=======
+	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (tty_ldiscs[disc]->refcount)
 		ret = -EBUSY;
 	else
 		tty_ldiscs[disc] = NULL;
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&tty_ldisc_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }
@@ -109,7 +150,11 @@ static struct tty_ldisc_ops *get_ldops(int disc)
 	unsigned long flags;
 	struct tty_ldisc_ops *ldops, *ret;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&tty_ldisc_lock, flags);
+=======
+	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = ERR_PTR(-EINVAL);
 	ldops = tty_ldiscs[disc];
 	if (ldops) {
@@ -119,7 +164,11 @@ static struct tty_ldisc_ops *get_ldops(int disc)
 			ret = ldops;
 		}
 	}
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&tty_ldisc_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 
@@ -127,10 +176,17 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&tty_ldisc_lock, flags);
 	ldops->refcount--;
 	module_put(ldops->owner);
 	raw_spin_unlock_irqrestore(&tty_ldisc_lock, flags);
+=======
+	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
+	ldops->refcount--;
+	module_put(ldops->owner);
+	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -143,10 +199,17 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
  *	available
  *
  *	Locking:
+<<<<<<< HEAD
  *		takes tty_ldisc_lock to guard against ldisc races
  */
 
 static struct tty_ldisc *tty_ldisc_get(int disc)
+=======
+ *		takes tty_ldiscs_lock to guard against ldisc races
+ */
+
+static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct tty_ldisc *ld;
 	struct tty_ldisc_ops *ldops;
@@ -173,8 +236,12 @@ static struct tty_ldisc *tty_ldisc_get(int disc)
 	}
 
 	ld->ops = ldops;
+<<<<<<< HEAD
 	atomic_set(&ld->users, 1);
 	init_waitqueue_head(&ld->wq_idle);
+=======
+	ld->tty = tty;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ld;
 }
@@ -186,6 +253,7 @@ static struct tty_ldisc *tty_ldisc_get(int disc)
  */
 static inline void tty_ldisc_put(struct tty_ldisc *ld)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	if (WARN_ON_ONCE(!ld))
@@ -200,6 +268,13 @@ static inline void tty_ldisc_put(struct tty_ldisc *ld)
 	module_put(ld->ops->owner);
 	kfree(ld);
 	raw_spin_unlock_irqrestore(&tty_ldisc_lock, flags);
+=======
+	if (WARN_ON_ONCE(!ld))
+		return;
+
+	put_ldops(ld->ops);
+	kfree(ld);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void *tty_ldiscs_seq_start(struct seq_file *m, loff_t *pos)
@@ -251,6 +326,7 @@ const struct file_operations tty_ldiscs_proc_fops = {
 };
 
 /**
+<<<<<<< HEAD
  *	tty_ldisc_try		-	internal helper
  *	@tty: the tty
  *
@@ -279,6 +355,8 @@ static struct tty_ldisc *tty_ldisc_try(struct tty_struct *tty)
 }
 
 /**
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *	tty_ldisc_ref_wait	-	wait for the tty ldisc
  *	@tty: tty device
  *
@@ -291,16 +369,27 @@ static struct tty_ldisc *tty_ldisc_try(struct tty_struct *tty)
  *	against a discipline change, such as an existing ldisc reference
  *	(which we check for)
  *
+<<<<<<< HEAD
  *	Locking: call functions take tty_ldisc_lock
+=======
+ *	Note: only callable from a file_operations routine (which
+ *	guarantees tty->ldisc != NULL when the lock is acquired).
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 struct tty_ldisc *tty_ldisc_ref_wait(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct tty_ldisc *ld;
 
 	/* wait_event is a macro */
 	wait_event(tty_ldisc_wait, (ld = tty_ldisc_try(tty)) != NULL);
 	return ld;
+=======
+	ldsem_down_read(&tty->ldisc_sem, MAX_SCHEDULE_TIMEOUT);
+	WARN_ON(!tty->ldisc);
+	return tty->ldisc;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL_GPL(tty_ldisc_ref_wait);
 
@@ -311,13 +400,27 @@ EXPORT_SYMBOL_GPL(tty_ldisc_ref_wait);
  *	Dereference the line discipline for the terminal and take a
  *	reference to it. If the line discipline is in flux then
  *	return NULL. Can be called from IRQ and timer functions.
+<<<<<<< HEAD
  *
  *	Locking: called functions take tty_ldisc_lock
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 struct tty_ldisc *tty_ldisc_ref(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	return tty_ldisc_try(tty);
+=======
+	struct tty_ldisc *ld = NULL;
+
+	if (ldsem_down_read_trylock(&tty->ldisc_sem)) {
+		ld = tty->ldisc;
+		if (!ld)
+			ldsem_up_read(&tty->ldisc_sem);
+	}
+	return ld;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL_GPL(tty_ldisc_ref);
 
@@ -327,12 +430,16 @@ EXPORT_SYMBOL_GPL(tty_ldisc_ref);
  *
  *	Undoes the effect of tty_ldisc_ref or tty_ldisc_ref_wait. May
  *	be called in IRQ context.
+<<<<<<< HEAD
  *
  *	Locking: takes tty_ldisc_lock
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 void tty_ldisc_deref(struct tty_ldisc *ld)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	if (WARN_ON_ONCE(!ld))
@@ -369,6 +476,89 @@ static void tty_ldisc_enable(struct tty_struct *tty)
 	set_bit(TTY_LDISC, &tty->flags);
 	clear_bit(TTY_LDISC_CHANGING, &tty->flags);
 	wake_up(&tty_ldisc_wait);
+=======
+	ldsem_up_read(&ld->tty->ldisc_sem);
+}
+EXPORT_SYMBOL_GPL(tty_ldisc_deref);
+
+
+static inline int __lockfunc
+tty_ldisc_lock(struct tty_struct *tty, unsigned long timeout)
+{
+	return ldsem_down_write(&tty->ldisc_sem, timeout);
+}
+
+static inline int __lockfunc
+tty_ldisc_lock_nested(struct tty_struct *tty, unsigned long timeout)
+{
+	return ldsem_down_write_nested(&tty->ldisc_sem,
+				       LDISC_SEM_OTHER, timeout);
+}
+
+static inline void tty_ldisc_unlock(struct tty_struct *tty)
+{
+	return ldsem_up_write(&tty->ldisc_sem);
+}
+
+static int __lockfunc
+tty_ldisc_lock_pair_timeout(struct tty_struct *tty, struct tty_struct *tty2,
+			    unsigned long timeout)
+{
+	int ret;
+
+	if (tty < tty2) {
+		ret = tty_ldisc_lock(tty, timeout);
+		if (ret) {
+			ret = tty_ldisc_lock_nested(tty2, timeout);
+			if (!ret)
+				tty_ldisc_unlock(tty);
+		}
+	} else {
+		/* if this is possible, it has lots of implications */
+		WARN_ON_ONCE(tty == tty2);
+		if (tty2 && tty != tty2) {
+			ret = tty_ldisc_lock(tty2, timeout);
+			if (ret) {
+				ret = tty_ldisc_lock_nested(tty, timeout);
+				if (!ret)
+					tty_ldisc_unlock(tty2);
+			}
+		} else
+			ret = tty_ldisc_lock(tty, timeout);
+	}
+
+	if (!ret)
+		return -EBUSY;
+
+	set_bit(TTY_LDISC_HALTED, &tty->flags);
+	if (tty2)
+		set_bit(TTY_LDISC_HALTED, &tty2->flags);
+	return 0;
+}
+
+static void __lockfunc
+tty_ldisc_lock_pair(struct tty_struct *tty, struct tty_struct *tty2)
+{
+	tty_ldisc_lock_pair_timeout(tty, tty2, MAX_SCHEDULE_TIMEOUT);
+}
+
+static void __lockfunc tty_ldisc_unlock_pair(struct tty_struct *tty,
+					     struct tty_struct *tty2)
+{
+	tty_ldisc_unlock(tty);
+	if (tty2)
+		tty_ldisc_unlock(tty2);
+}
+
+static void __lockfunc tty_ldisc_enable_pair(struct tty_struct *tty,
+					     struct tty_struct *tty2)
+{
+	clear_bit(TTY_LDISC_HALTED, &tty->flags);
+	if (tty2)
+		clear_bit(TTY_LDISC_HALTED, &tty2->flags);
+
+	tty_ldisc_unlock_pair(tty, tty2);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -400,14 +590,24 @@ EXPORT_SYMBOL_GPL(tty_ldisc_flush);
  *	they are not on hot paths so a little discipline won't do
  *	any harm.
  *
+<<<<<<< HEAD
  *	Locking: takes termios_mutex
+=======
+ *	Locking: takes termios_rwsem
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 static void tty_set_termios_ldisc(struct tty_struct *tty, int num)
 {
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
 	tty->termios.c_line = num;
 	mutex_unlock(&tty->termios_mutex);
+=======
+	down_write(&tty->termios_rwsem);
+	tty->termios.c_line = num;
+	up_write(&tty->termios_rwsem);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -468,14 +668,22 @@ static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
 	int r;
 
 	/* There is an outstanding reference here so this is safe */
+<<<<<<< HEAD
 	old = tty_ldisc_get(old->ops->num);
+=======
+	old = tty_ldisc_get(tty, old->ops->num);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	WARN_ON(IS_ERR(old));
 	tty->ldisc = old;
 	tty_set_termios_ldisc(tty, old->ops->num);
 	if (tty_ldisc_open(tty, old) < 0) {
 		tty_ldisc_put(old);
 		/* This driver is always present */
+<<<<<<< HEAD
 		new_ldisc = tty_ldisc_get(N_TTY);
+=======
+		new_ldisc = tty_ldisc_get(tty, N_TTY);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (IS_ERR(new_ldisc))
 			panic("n_tty: get");
 		tty->ldisc = new_ldisc;
@@ -489,6 +697,7 @@ static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
 }
 
 /**
+<<<<<<< HEAD
  *	tty_ldisc_wait_idle	-	wait for the ldisc to become idle
  *	@tty: tty to wait for
  *	@timeout: for how long to wait at most
@@ -584,6 +793,8 @@ static bool tty_ldisc_hangup_halt(struct tty_struct *tty)
 }
 
 /**
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *	tty_set_ldisc		-	set line discipline
  *	@tty: the terminal to set
  *	@ldisc: the line discipline
@@ -592,13 +803,17 @@ static bool tty_ldisc_hangup_halt(struct tty_struct *tty)
  *	context. The ldisc change logic has to protect itself against any
  *	overlapping ldisc change (including on the other end of pty pairs),
  *	the close of one side of a tty/pty pair, and eventually hangup.
+<<<<<<< HEAD
  *
  *	Locking: takes tty_ldisc_lock, termios_mutex
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 int tty_set_ldisc(struct tty_struct *tty, int ldisc)
 {
 	int retval;
+<<<<<<< HEAD
 	struct tty_ldisc *o_ldisc, *new_ldisc;
 	struct tty_struct *o_tty;
 
@@ -614,17 +829,36 @@ int tty_set_ldisc(struct tty_struct *tty, int ldisc)
 
 	o_tty = tty->link;	/* o_tty is the pty side or NULL */
 
+=======
+	struct tty_ldisc *old_ldisc, *new_ldisc;
+	struct tty_struct *o_tty = tty->link;
+
+	new_ldisc = tty_ldisc_get(tty, ldisc);
+	if (IS_ERR(new_ldisc))
+		return PTR_ERR(new_ldisc);
+
+	retval = tty_ldisc_lock_pair_timeout(tty, o_tty, 5 * HZ);
+	if (retval) {
+		tty_ldisc_put(new_ldisc);
+		return retval;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 *	Check the no-op case
 	 */
 
 	if (tty->ldisc->ops->num == ldisc) {
+<<<<<<< HEAD
 		tty_unlock(tty);
+=======
+		tty_ldisc_enable_pair(tty, o_tty);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tty_ldisc_put(new_ldisc);
 		return 0;
 	}
 
+<<<<<<< HEAD
 	mutex_lock(&tty->ldisc_mutex);
 
 	/*
@@ -689,13 +923,28 @@ int tty_set_ldisc(struct tty_struct *tty, int ldisc)
 		   the ldisc data and closed the ldisc down */
 		clear_bit(TTY_LDISC_CHANGING, &tty->flags);
 		mutex_unlock(&tty->ldisc_mutex);
+=======
+	old_ldisc = tty->ldisc;
+	tty_lock(tty);
+
+	if (test_bit(TTY_HUPPING, &tty->flags) ||
+	    test_bit(TTY_HUPPED, &tty->flags)) {
+		/* We were raced by the hangup method. It will have stomped
+		   the ldisc data and closed the ldisc down */
+		tty_ldisc_enable_pair(tty, o_tty);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tty_ldisc_put(new_ldisc);
 		tty_unlock(tty);
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	/* Shutdown the current discipline. */
 	tty_ldisc_close(tty, o_ldisc);
+=======
+	/* Shutdown the old discipline. */
+	tty_ldisc_close(tty, old_ldisc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Now set up the new line discipline. */
 	tty->ldisc = new_ldisc;
@@ -705,6 +954,7 @@ int tty_set_ldisc(struct tty_struct *tty, int ldisc)
 	if (retval < 0) {
 		/* Back to the old one or N_TTY if we can't */
 		tty_ldisc_put(new_ldisc);
+<<<<<<< HEAD
 		tty_ldisc_restore(tty, o_ldisc);
 	}
 
@@ -725,6 +975,26 @@ enable:
 	tty_ldisc_enable(tty);
 	if (o_tty)
 		tty_ldisc_enable(o_tty);
+=======
+		tty_ldisc_restore(tty, old_ldisc);
+	}
+
+	if (tty->ldisc->ops->num != old_ldisc->ops->num && tty->ops->set_ldisc)
+		tty->ops->set_ldisc(tty);
+
+	/* At this point we hold a reference to the new ldisc and a
+	   reference to the old ldisc, or we hold two references to
+	   the old ldisc (if it was restored as part of error cleanup
+	   above). In either case, releasing a single reference from
+	   the old ldisc is correct. */
+
+	tty_ldisc_put(old_ldisc);
+
+	/*
+	 *	Allow ldisc referencing to occur again
+	 */
+	tty_ldisc_enable_pair(tty, o_tty);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Restart the work queue in case no characters kick it off. Safe if
 	   already running */
@@ -732,7 +1002,10 @@ enable:
 	if (o_tty)
 		schedule_work(&o_tty->port->buf.work);
 
+<<<<<<< HEAD
 	mutex_unlock(&tty->ldisc_mutex);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tty_unlock(tty);
 	return retval;
 }
@@ -746,11 +1019,19 @@ enable:
 
 static void tty_reset_termios(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
 	tty->termios = tty->driver->init_termios;
 	tty->termios.c_ispeed = tty_termios_input_baud_rate(&tty->termios);
 	tty->termios.c_ospeed = tty_termios_baud_rate(&tty->termios);
 	mutex_unlock(&tty->termios_mutex);
+=======
+	down_write(&tty->termios_rwsem);
+	tty->termios = tty->driver->init_termios;
+	tty->termios.c_ispeed = tty_termios_input_baud_rate(&tty->termios);
+	tty->termios.c_ospeed = tty_termios_baud_rate(&tty->termios);
+	up_write(&tty->termios_rwsem);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 
@@ -765,7 +1046,11 @@ static void tty_reset_termios(struct tty_struct *tty)
 
 static int tty_ldisc_reinit(struct tty_struct *tty, int ldisc)
 {
+<<<<<<< HEAD
 	struct tty_ldisc *ld = tty_ldisc_get(ldisc);
+=======
+	struct tty_ldisc *ld = tty_ldisc_get(tty, ldisc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (IS_ERR(ld))
 		return -1;
@@ -802,6 +1087,7 @@ void tty_ldisc_hangup(struct tty_struct *tty)
 	int reset = tty->driver->flags & TTY_DRIVER_RESET_TERMIOS;
 	int err = 0;
 
+<<<<<<< HEAD
 	tty_ldisc_debug(tty, "closing ldisc: %p\n", tty->ldisc);
 
 	/*
@@ -812,6 +1098,14 @@ void tty_ldisc_hangup(struct tty_struct *tty)
 	ld = tty_ldisc_ref(tty);
 	if (ld != NULL) {
 		/* We may have no line discipline at this point */
+=======
+	pr_debug("[TTY_DEBUG tty_ldisc_hangup]pid %d\n",current->pid);
+
+	tty_ldisc_debug(tty, "closing ldisc: %p\n", tty->ldisc);
+
+	ld = tty_ldisc_ref(tty);
+	if (ld != NULL) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (ld->ops->flush_buffer)
 			ld->ops->flush_buffer(tty);
 		tty_driver_flush_buffer(tty);
@@ -822,21 +1116,37 @@ void tty_ldisc_hangup(struct tty_struct *tty)
 			ld->ops->hangup(tty);
 		tty_ldisc_deref(ld);
 	}
+<<<<<<< HEAD
 	/*
 	 * FIXME: Once we trust the LDISC code better we can wait here for
 	 * ldisc completion and fix the driver call race
 	 */
 	wake_up_interruptible_poll(&tty->write_wait, POLLOUT);
 	wake_up_interruptible_poll(&tty->read_wait, POLLIN);
+=======
+
+	wake_up_interruptible_poll(&tty->write_wait, POLLOUT);
+	wake_up_interruptible_poll(&tty->read_wait, POLLIN);
+
+	tty_unlock(tty);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Shutdown the current line discipline, and reset it to
 	 * N_TTY if need be.
 	 *
 	 * Avoid racing set_ldisc or tty_ldisc_release
 	 */
+<<<<<<< HEAD
 	mutex_lock(&tty->ldisc_mutex);
 
 	if (tty_ldisc_hangup_halt(tty)) {
+=======
+	tty_ldisc_lock_pair(tty, tty->link);
+	tty_lock(tty);
+
+	if (tty->ldisc) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* At this point we have a halted ldisc; we want to close it and
 		   reopen a new ldisc. We could defer the reopen to the next
@@ -855,9 +1165,14 @@ void tty_ldisc_hangup(struct tty_struct *tty)
 			BUG_ON(tty_ldisc_reinit(tty, N_TTY));
 			WARN_ON(tty_ldisc_open(tty, tty->ldisc));
 		}
+<<<<<<< HEAD
 		tty_ldisc_enable(tty);
 	}
 	mutex_unlock(&tty->ldisc_mutex);
+=======
+	}
+	tty_ldisc_enable_pair(tty, tty->link);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (reset)
 		tty_reset_termios(tty);
 
@@ -889,15 +1204,22 @@ int tty_ldisc_setup(struct tty_struct *tty, struct tty_struct *o_tty)
 			tty_ldisc_close(tty, ld);
 			return retval;
 		}
+<<<<<<< HEAD
 		tty_ldisc_enable(o_tty);
 	}
 	tty_ldisc_enable(tty);
+=======
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
 static void tty_ldisc_kill(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	mutex_lock(&tty->ldisc_mutex);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Now kill off the ldisc
 	 */
@@ -908,7 +1230,10 @@ static void tty_ldisc_kill(struct tty_struct *tty)
 
 	/* Ensure the next open requests the N_TTY ldisc */
 	tty_set_termios_ldisc(tty, N_TTY);
+<<<<<<< HEAD
 	mutex_unlock(&tty->ldisc_mutex);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -930,15 +1255,26 @@ void tty_ldisc_release(struct tty_struct *tty, struct tty_struct *o_tty)
 
 	tty_ldisc_debug(tty, "closing ldisc: %p\n", tty->ldisc);
 
+<<<<<<< HEAD
 	tty_ldisc_halt(tty, o_tty, MAX_SCHEDULE_TIMEOUT);
 
 	tty_lock_pair(tty, o_tty);
 	/* This will need doing differently if we need to lock */
+=======
+	tty_ldisc_lock_pair(tty, o_tty);
+	tty_lock_pair(tty, o_tty);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tty_ldisc_kill(tty);
 	if (o_tty)
 		tty_ldisc_kill(o_tty);
 
 	tty_unlock_pair(tty, o_tty);
+<<<<<<< HEAD
+=======
+	tty_ldisc_unlock_pair(tty, o_tty);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* And the memory resources remaining (buffers, termios) will be
 	   disposed of when the kref hits zero */
 
@@ -955,7 +1291,11 @@ void tty_ldisc_release(struct tty_struct *tty, struct tty_struct *o_tty)
 
 void tty_ldisc_init(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct tty_ldisc *ld = tty_ldisc_get(N_TTY);
+=======
+	struct tty_ldisc *ld = tty_ldisc_get(tty, N_TTY);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (IS_ERR(ld))
 		panic("n_tty: init_tty");
 	tty->ldisc = ld;

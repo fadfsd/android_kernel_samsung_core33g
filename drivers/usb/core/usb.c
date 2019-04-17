@@ -1003,7 +1003,10 @@ static int __init usb_init(void)
 		pr_info("%s: USB support disabled\n", usbcore_name);
 		return 0;
 	}
+<<<<<<< HEAD
 	usb_init_pool_max();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	retval = usb_debugfs_init();
 	if (retval)

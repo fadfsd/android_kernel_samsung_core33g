@@ -280,7 +280,12 @@ static int handle_page_fault(struct pt_regs *regs,
 	if (!is_page_fault)
 		write = 1;
 
+<<<<<<< HEAD
 	flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+=======
+	flags = (FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+		 (write ? FAULT_FLAG_WRITE : 0));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	is_kernel_mode = (EX1_PL(regs->ex1) != USER_PL);
 
@@ -364,9 +369,12 @@ static int handle_page_fault(struct pt_regs *regs,
 		goto bad_area_nosemaphore;
 	}
 
+<<<<<<< HEAD
 	if (!is_kernel_mode)
 		flags |= FAULT_FLAG_USER;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * When running in the kernel we expect faults to occur only to
 	 * addresses in user space.  All other faults represent errors in the
@@ -427,12 +435,19 @@ good_area:
 #endif
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 		flags |= FAULT_FLAG_WRITE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		if (!is_page_fault || !(vma->vm_flags & VM_READ))
 			goto bad_area;
 	}
 
+<<<<<<< HEAD
+=======
+ survive:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * If for any reason at all we couldn't handle the fault,
 	 * make sure we exit gracefully rather than endlessly redo
@@ -446,8 +461,11 @@ good_area:
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
+<<<<<<< HEAD
 		else if (fault & VM_FAULT_SIGSEGV)
 			goto bad_area;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else if (fault & VM_FAULT_SIGBUS)
 			goto do_sigbus;
 		BUG();
@@ -572,10 +590,22 @@ no_context:
  */
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (is_kernel_mode)
 		goto no_context;
 	pagefault_out_of_memory();
 	return 0;
+=======
+	if (is_global_init(tsk)) {
+		yield();
+		down_read(&mm->mmap_sem);
+		goto survive;
+	}
+	pr_alert("VM: killing process %s\n", tsk->comm);
+	if (!is_kernel_mode)
+		do_group_exit(SIGKILL);
+	goto no_context;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 do_sigbus:
 	up_read(&mm->mmap_sem);

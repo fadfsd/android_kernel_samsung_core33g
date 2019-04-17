@@ -372,6 +372,12 @@ bool nouveau_acpi_rom_supported(struct pci_dev *pdev)
 	acpi_status status;
 	acpi_handle dhandle, rom_handle;
 
+<<<<<<< HEAD
+=======
+	if (!nouveau_dsm_priv.dsm_detected && !nouveau_dsm_priv.optimus_detected)
+		return false;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	dhandle = DEVICE_ACPI_HANDLE(&pdev->dev);
 	if (!dhandle)
 		return false;

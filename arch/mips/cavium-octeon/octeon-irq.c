@@ -635,7 +635,11 @@ static void octeon_irq_cpu_offline_ciu(struct irq_data *data)
 		cpumask_clear(&new_affinity);
 		cpumask_set_cpu(cpumask_first(cpu_online_mask), &new_affinity);
 	}
+<<<<<<< HEAD
 	irq_set_affinity_locked(data, &new_affinity, false);
+=======
+	__irq_set_affinity_locked(data, &new_affinity);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int octeon_irq_ciu_set_affinity(struct irq_data *data,

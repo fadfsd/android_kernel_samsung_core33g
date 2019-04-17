@@ -164,9 +164,12 @@ static void mei_me_hw_reset_release(struct mei_device *dev)
 	hcsr |= H_IG;
 	hcsr &= ~H_RST;
 	mei_hcsr_set(hw, hcsr);
+<<<<<<< HEAD
 
 	/* complete this write before we set host ready on another CPU */
 	mmiowb();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 /**
  * mei_me_hw_reset - resets fw via mei csr register.
@@ -186,6 +189,7 @@ static void mei_me_hw_reset(struct mei_device *dev, bool intr_enable)
 	else
 		hcsr &= ~H_IE;
 
+<<<<<<< HEAD
 	dev->recvd_hw_ready = false;
 	mei_me_reg_write(hw, H_CSR, hcsr);
 
@@ -202,6 +206,11 @@ static void mei_me_hw_reset(struct mei_device *dev, bool intr_enable)
 		dev_warn(&dev->pdev->dev, "H_RDY is not cleared 0x%08X", hcsr);
 
 	if (intr_enable == false)
+=======
+	mei_me_reg_write(hw, H_CSR, hcsr);
+
+	if (dev->dev_state == MEI_DEV_POWER_DOWN)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		mei_me_hw_reset_release(dev);
 
 	dev_dbg(&dev->pdev->dev, "current HCSR = 0x%08x.\n", mei_hcsr_read(hw));
@@ -217,7 +226,10 @@ static void mei_me_hw_reset(struct mei_device *dev, bool intr_enable)
 static void mei_me_host_set_ready(struct mei_device *dev)
 {
 	struct mei_me_hw *hw = to_me_hw(dev);
+<<<<<<< HEAD
 	hw->host_hw_state = mei_hcsr_read(hw);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	hw->host_hw_state |= H_IE | H_IG | H_RDY;
 	mei_hcsr_set(hw, hw->host_hw_state);
 }
@@ -250,7 +262,14 @@ static bool mei_me_hw_is_ready(struct mei_device *dev)
 static int mei_me_hw_ready_wait(struct mei_device *dev)
 {
 	int err;
+<<<<<<< HEAD
 
+=======
+	if (mei_me_hw_is_ready(dev))
+		return 0;
+
+	dev->recvd_hw_ready = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&dev->device_lock);
 	err = wait_event_interruptible_timeout(dev->wait_hw_ready,
 			dev->recvd_hw_ready,
@@ -510,15 +529,30 @@ irqreturn_t mei_me_irq_thread_handler(int irq, void *dev_id)
 	/*  check if we need to start the dev */
 	if (!mei_host_is_ready(dev)) {
 		if (mei_hw_is_ready(dev)) {
+<<<<<<< HEAD
 			mei_me_hw_reset_release(dev);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			dev_dbg(&dev->pdev->dev, "we need to start the dev.\n");
 
 			dev->recvd_hw_ready = true;
 			wake_up_interruptible(&dev->wait_hw_ready);
+<<<<<<< HEAD
 		} else {
 			dev_dbg(&dev->pdev->dev, "Spurious Interrupt\n");
 		}
 		goto end;
+=======
+
+			mutex_unlock(&dev->device_lock);
+			return IRQ_HANDLED;
+		} else {
+			dev_dbg(&dev->pdev->dev, "Reset Completed.\n");
+			mei_me_hw_reset_release(dev);
+			mutex_unlock(&dev->device_lock);
+			return IRQ_HANDLED;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	/* check slots available for reading */
 	slots = mei_count_full_read_slots(dev);

@@ -65,6 +65,10 @@ extern int apparmor_initialized __initdata;
 char *aa_split_fqname(char *args, char **ns_name);
 void aa_info_message(const char *str);
 void *kvmalloc(size_t size);
+<<<<<<< HEAD
+=======
+void kvfree(void *buffer);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 
 /**

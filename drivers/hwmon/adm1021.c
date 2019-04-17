@@ -185,7 +185,11 @@ static ssize_t set_temp_max(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
 	long temp;
+<<<<<<< HEAD
 	int reg_val, err;
+=======
+	int err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = kstrtol(buf, 10, &temp);
 	if (err)
@@ -193,11 +197,18 @@ static ssize_t set_temp_max(struct device *dev,
 	temp /= 1000;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	reg_val = clamp_val(temp, -128, 127);
 	data->temp_max[index] = reg_val * 1000;
 	if (!read_only)
 		i2c_smbus_write_byte_data(client, ADM1021_REG_TOS_W(index),
 					  reg_val);
+=======
+	data->temp_max[index] = clamp_val(temp, -128, 127);
+	if (!read_only)
+		i2c_smbus_write_byte_data(client, ADM1021_REG_TOS_W(index),
+					  data->temp_max[index]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&data->update_lock);
 
 	return count;
@@ -211,7 +222,11 @@ static ssize_t set_temp_min(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct adm1021_data *data = i2c_get_clientdata(client);
 	long temp;
+<<<<<<< HEAD
 	int reg_val, err;
+=======
+	int err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = kstrtol(buf, 10, &temp);
 	if (err)
@@ -219,11 +234,18 @@ static ssize_t set_temp_min(struct device *dev,
 	temp /= 1000;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	reg_val = clamp_val(temp, -128, 127);
 	data->temp_min[index] = reg_val * 1000;
 	if (!read_only)
 		i2c_smbus_write_byte_data(client, ADM1021_REG_THYST_W(index),
 					  reg_val);
+=======
+	data->temp_min[index] = clamp_val(temp, -128, 127);
+	if (!read_only)
+		i2c_smbus_write_byte_data(client, ADM1021_REG_THYST_W(index),
+					  data->temp_min[index]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&data->update_lock);
 
 	return count;

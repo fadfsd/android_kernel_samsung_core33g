@@ -31,8 +31,11 @@
 #include <asm/sparsemem.h>
 #include <asm/prom.h>
 #include <asm/smp.h>
+<<<<<<< HEAD
 #include <asm/cputhreads.h>
 #include <asm/topology.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/firmware.h>
 #include <asm/paca.h>
 #include <asm/hvcall.h>
@@ -154,6 +157,7 @@ static void __init get_node_active_region(unsigned long pfn,
 	}
 }
 
+<<<<<<< HEAD
 static void reset_numa_cpu_lookup_table(void)
 {
 	unsigned int cpu;
@@ -170,6 +174,11 @@ static void update_numa_cpu_lookup_table(unsigned int cpu, int node)
 static void map_cpu_to_node(int cpu, int node)
 {
 	update_numa_cpu_lookup_table(cpu, node);
+=======
+static void map_cpu_to_node(int cpu, int node)
+{
+	numa_cpu_lookup_table[cpu] = node;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	dbg("adding cpu %d to node %d\n", cpu, node);
 
@@ -534,6 +543,7 @@ static int of_drconf_to_nid_single(struct of_drconf_cell *drmem,
  */
 static int __cpuinit numa_setup_cpu(unsigned long lcpu)
 {
+<<<<<<< HEAD
 	int nid;
 	struct device_node *cpu;
 
@@ -552,6 +562,13 @@ static int __cpuinit numa_setup_cpu(unsigned long lcpu)
 	if (!cpu) {
 		WARN_ON(1);
 		nid = 0;
+=======
+	int nid = 0;
+	struct device_node *cpu = of_get_cpu_node(lcpu, NULL);
+
+	if (!cpu) {
+		WARN_ON(1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out;
 	}
 
@@ -586,8 +603,13 @@ static int __cpuinit cpu_numa_callback(struct notifier_block *nfb,
 	case CPU_UP_CANCELED:
 	case CPU_UP_CANCELED_FROZEN:
 		unmap_cpu_from_node(lcpu);
+<<<<<<< HEAD
 		ret = NOTIFY_OK;
 		break;
+=======
+		break;
+		ret = NOTIFY_OK;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 	}
 	return ret;
@@ -1094,7 +1116,10 @@ void __init do_init_bootmem(void)
 	 */
 	setup_node_to_cpumask_map();
 
+<<<<<<< HEAD
 	reset_numa_cpu_lookup_table();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	register_cpu_notifier(&ppc64_numa_nb);
 	cpu_numa_callback(&ppc64_numa_nb, CPU_UP_PREPARE,
 			  (void *)(unsigned long)boot_cpuid);
@@ -1472,6 +1497,7 @@ static int update_cpu_topology(void *data)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int update_lookup_table(void *data)
 {
 	struct topology_update_data *update;
@@ -1499,6 +1525,8 @@ static int update_lookup_table(void *data)
 	return 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Update the node maps and sysfs entries for each cpu whose home node
  * has changed. Returns 1 when the topology has changed, and 0 otherwise.
@@ -1567,6 +1595,7 @@ int arch_update_cpu_topology(void)
 
 	stop_machine(update_cpu_topology, &updates[0], &updated_cpus);
 
+<<<<<<< HEAD
 	/*
 	 * Update the numa-cpu lookup table with the new mappings, even for
 	 * offline CPUs. It is best to perform this update from the stop-
@@ -1575,6 +1604,8 @@ int arch_update_cpu_topology(void)
 	stop_machine(update_lookup_table, &updates[0],
 					cpumask_of(raw_smp_processor_id()));
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (ud = &updates[0]; ud; ud = ud->next) {
 		unregister_cpu_under_node(ud->cpu, ud->old_nid);
 		register_cpu_under_node(ud->cpu, ud->new_nid);

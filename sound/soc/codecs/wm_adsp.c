@@ -964,7 +964,10 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
 			  file, blocks, pos - firmware->size);
 
 out_fw:
+<<<<<<< HEAD
 	regmap_async_complete(regmap);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	release_firmware(firmware);
 	wm_adsp_buf_free(&buf_list);
 out:
@@ -1074,17 +1077,26 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
 		return ret;
 
 	/* Wait for the RAM to start, should be near instantaneous */
+<<<<<<< HEAD
 	for (count = 0; count < 10; ++count) {
+=======
+	count = 0;
+	do {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ret = regmap_read(dsp->regmap, dsp->base + ADSP2_STATUS1,
 				  &val);
 		if (ret != 0)
 			return ret;
+<<<<<<< HEAD
 
 		if (val & ADSP2_RAM_RDY)
 			break;
 
 		msleep(1);
 	}
+=======
+	} while (!(val & ADSP2_RAM_RDY) && ++count < 10);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!(val & ADSP2_RAM_RDY)) {
 		adsp_err(dsp, "Failed to start DSP RAM\n");
@@ -1285,5 +1297,8 @@ int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs)
 	return 0;
 }
 EXPORT_SYMBOL_GPL(wm_adsp2_init);
+<<<<<<< HEAD
 
 MODULE_LICENSE("GPL v2");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

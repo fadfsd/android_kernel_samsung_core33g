@@ -2,6 +2,11 @@ menu "Device Drivers"
 
 source "drivers/base/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/battery/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "drivers/bus/Kconfig"
 
 source "drivers/connector/Kconfig"
@@ -100,6 +105,11 @@ source "drivers/memstick/Kconfig"
 
 source "drivers/leds/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/switch/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "drivers/accessibility/Kconfig"
 
 source "drivers/infiniband/Kconfig"
@@ -167,20 +177,28 @@ source "drivers/ipack/Kconfig"
 source "drivers/reset/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "drivers/sipc/Kconfig"
 
 source "drivers/android/Kconfig"
 
+=======
+source "drivers/sipc/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "drivers/sensor/Kconfig"
 
 source "drivers/iq/Kconfig"
 
 source "drivers/cpuhotplug/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/gpu/mali400/Kconfig"
 
 source "drivers/android/Kconfig"
 
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endmenu

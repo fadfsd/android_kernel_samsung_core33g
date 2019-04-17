@@ -255,6 +255,11 @@ static int load_aout_binary(struct linux_binprm * bprm)
 		(current->mm->start_data = N_DATADDR(ex));
 	current->mm->brk = ex.a_bss +
 		(current->mm->start_brk = N_BSSADDR(ex));
+<<<<<<< HEAD
+=======
+	current->mm->free_area_cache = current->mm->mmap_base;
+	current->mm->cached_hole_size = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	retval = setup_arg_pages(bprm, STACK_TOP, EXSTACK_DEFAULT);
 	if (retval < 0) {

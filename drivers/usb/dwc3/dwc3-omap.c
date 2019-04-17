@@ -395,9 +395,15 @@ static int dwc3_omap_remove(struct platform_device *pdev)
 	struct dwc3_omap	*omap = platform_get_drvdata(pdev);
 
 	dwc3_omap_disable_irqs(omap);
+<<<<<<< HEAD
 	device_for_each_child(&pdev->dev, NULL, dwc3_omap_remove_core);
 	pm_runtime_put_sync(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);
+=======
+	pm_runtime_put_sync(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+	device_for_each_child(&pdev->dev, NULL, dwc3_omap_remove_core);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }

@@ -589,7 +589,15 @@ ARC_ENTRY ret_from_exception
 	; Pre-{IRQ,Trap,Exception} K/U mode from pt_regs->status32
 	ld  r8, [sp, PT_status32]   ; returning to User/Kernel Mode
 
+<<<<<<< HEAD
 	bbit0  r8, STATUS_U_BIT, resume_kernel_mode
+=======
+#ifdef CONFIG_PREEMPT
+	bbit0  r8, STATUS_U_BIT, resume_kernel_mode
+#else
+	bbit0  r8, STATUS_U_BIT, restore_regs
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	; Before returning to User mode check-for-and-complete any pending work
 	; such as rescheduling/signal-delivery etc.
@@ -649,6 +657,7 @@ resume_user_mode_begin:
 	b      resume_user_mode_begin	; unconditionally back to U mode ret chks
 					; for single exit point from this block
 
+<<<<<<< HEAD
 resume_kernel_mode:
 
 	; Disable Interrupts from this point on
@@ -658,6 +667,12 @@ resume_kernel_mode:
 
 #ifdef CONFIG_PREEMPT
 
+=======
+#ifdef CONFIG_PREEMPT
+
+resume_kernel_mode:
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	; Can't preempt if preemption disabled
 	GET_CURR_THR_INFO_FROM_SP   r10
 	ld  r8, [r10, THREAD_INFO_PREEMPT_COUNT]
@@ -667,6 +682,11 @@ resume_kernel_mode:
 	ld  r9, [r10, THREAD_INFO_FLAGS]
 	bbit0  r9, TIF_NEED_RESCHED, restore_regs
 
+<<<<<<< HEAD
+=======
+	IRQ_DISABLE	r9
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	; Invoke PREEMPTION
 	bl      preempt_schedule_irq
 
@@ -679,11 +699,20 @@ resume_kernel_mode:
 ;
 ; Restore the saved sys context (common exit-path for EXCPN/IRQ/Trap)
 ; IRQ shd definitely not happen between now and rtie
+<<<<<<< HEAD
 ; All 2 entry points to here already disable interrupts
 
 restore_regs :
 
 	lr	r10, [status32]
+=======
+
+restore_regs :
+
+	; Disable Interrupts while restoring reg-file back
+	; XXX can this be optimised out
+	IRQ_DISABLE_SAVE    r9, r10	;@r10 has prisitine (pre-disable) copy
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_ARC_CURR_IN_REG
 	; Restore User R25

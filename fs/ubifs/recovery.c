@@ -180,8 +180,18 @@ static int get_master_node(const struct ubifs_info *c, int lnum, void **pbuf,
 	}
 	/* Check remaining empty space */
 	if (offs < c->leb_size)
+<<<<<<< HEAD
 		if (!is_empty(buf, len))
 			goto out_err;
+=======
+		if (!is_empty(buf, len)) {
+			int corruption = first_non_ff(buf, len);
+			ubifs_err("corrupt empty space LEB %d:%d, corruption starts at %d",
+				  lnum, offs, corruption);
+			ubifs_scanned_corruption(c, lnum, offs + corruption, buf + corruption);
+			//goto out_err;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	*pbuf = sbuf;
 	return 0;
 
@@ -244,11 +254,19 @@ int ubifs_recover_master_node(struct ubifs_info *c)
 
 	err = get_master_node(c, UBIFS_MST_LNUM, &buf1, &mst1, &cor1);
 	if (err)
+<<<<<<< HEAD
 		goto out_free;
 
 	err = get_master_node(c, UBIFS_MST_LNUM + 1, &buf2, &mst2, &cor2);
 	if (err)
 		goto out_free;
+=======
+		dbg_rcvry("get 1st master node failed %d", err);
+
+	err = get_master_node(c, UBIFS_MST_LNUM + 1, &buf2, &mst2, &cor2);
+	if (err)
+		dbg_rcvry("get 2nd master node failed %d", err);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (mst1) {
 		offs1 = (void *)mst1 - buf1;
@@ -412,6 +430,15 @@ int ubifs_write_rcvrd_mst_node(struct ubifs_info *c)
  */
 static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * The empty corruption may harmless, but this
+	 * is a bad  habit for sw development, fix me.
+	 */
+	 return 1;
+#if 0
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int empty_offs, check_len;
 	uint8_t *p;
 
@@ -423,6 +450,10 @@ static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
 	check_len = c->leb_size - empty_offs;
 	p = buf + empty_offs - offs;
 	return is_empty(p, check_len);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -488,6 +519,7 @@ static int no_more_nodes(const struct ubifs_info *c, void *buf, int len,
 	/* Now we know the corrupt node's length we can skip over it */
 	skip = ALIGN(offs + dlen, c->max_write_size) - offs;
 	/* After which there should be empty space */
+<<<<<<< HEAD
 	if (is_empty(buf + skip, len - skip))
 		return 1;
 	dbg_rcvry("unexpected data at %d:%d", lnum, offs + skip);
@@ -496,11 +528,29 @@ static int no_more_nodes(const struct ubifs_info *c, void *buf, int len,
 
 /**
  * fix_unclean_leb - fix an unclean LEB.
+=======
+	if (!is_empty(buf + skip, len - skip)) {
+		int corruption = first_non_ff(buf + skip, len - skip);
+		ubifs_err("unexpected data at LEB %d:%d, corruption starts at %d",
+			  lnum, offs + skip, corruption);
+		ubifs_scanned_corruption(c, lnum, offs + skip + corruption, buf + skip + corruption);
+	}
+
+	return 1;
+}
+
+/**
+ * ubifs_fix_unclean_leb - fix an unclean LEB.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * @c: UBIFS file-system description object
  * @sleb: scanned LEB information
  * @start: offset where scan started
  */
+<<<<<<< HEAD
 static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+=======
+int ubifs_fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			   int start)
 {
 	int lnum = sleb->lnum, endpt = start;
@@ -781,7 +831,11 @@ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
 	clean_buf(c, &buf, lnum, &offs, &len);
 	ubifs_end_scan(c, sleb, lnum, offs);
 
+<<<<<<< HEAD
 	err = fix_unclean_leb(c, sleb, start);
+=======
+	err = ubifs_fix_unclean_leb(c, sleb, start);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (err)
 		goto error;
 

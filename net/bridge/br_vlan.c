@@ -202,7 +202,11 @@ bool br_allowed_ingress(struct net_bridge *br, struct net_port_vlans *v,
 	 * rejected.
 	 */
 	if (!v)
+<<<<<<< HEAD
 		goto drop;
+=======
+		return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (br_vlan_get_tag(skb, vid)) {
 		u16 pvid = br_get_pvid(v);
@@ -212,7 +216,11 @@ bool br_allowed_ingress(struct net_bridge *br, struct net_port_vlans *v,
 		 * traffic belongs to.
 		 */
 		if (pvid == VLAN_N_VID)
+<<<<<<< HEAD
 			goto drop;
+=======
+			return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* PVID is set on this port.  Any untagged ingress
 		 * frame is considered to belong to this vlan.
@@ -224,8 +232,12 @@ bool br_allowed_ingress(struct net_bridge *br, struct net_port_vlans *v,
 	/* Frame had a valid vlan tag.  See if vlan is allowed */
 	if (test_bit(*vid, v->vlan_bitmap))
 		return true;
+<<<<<<< HEAD
 drop:
 	kfree_skb(skb);
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return false;
 }
 

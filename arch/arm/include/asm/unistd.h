@@ -48,5 +48,9 @@
  */
 #define __IGNORE_fadvise64_64
 #define __IGNORE_migrate_pages
+<<<<<<< HEAD
+=======
+#define __IGNORE_kcmp
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #endif /* __ASM_ARM_UNISTD_H */

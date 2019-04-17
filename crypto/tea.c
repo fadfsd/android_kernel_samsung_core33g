@@ -270,9 +270,14 @@ static void __exit tea_mod_fini(void)
 	crypto_unregister_algs(tea_algs, ARRAY_SIZE(tea_algs));
 }
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("tea");
 MODULE_ALIAS_CRYPTO("xtea");
 MODULE_ALIAS_CRYPTO("xeta");
+=======
+MODULE_ALIAS("xtea");
+MODULE_ALIAS("xeta");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 module_init(tea_mod_init);
 module_exit(tea_mod_fini);

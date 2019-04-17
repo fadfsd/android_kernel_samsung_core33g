@@ -390,16 +390,23 @@ n:
  *      ld	rY,ADDROFF(name)(rX)
  */
 #ifdef __powerpc64__
+<<<<<<< HEAD
 #ifdef HAVE_AS_ATHIGH
 #define __AS_ATHIGH high
 #else
 #define __AS_ATHIGH h
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define LOAD_REG_IMMEDIATE(reg,expr)		\
 	lis     reg,(expr)@highest;		\
 	ori     reg,reg,(expr)@higher;	\
 	rldicr  reg,reg,32,31;		\
+<<<<<<< HEAD
 	oris    reg,reg,(expr)@__AS_ATHIGH;	\
+=======
+	oris    reg,reg,(expr)@h;		\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ori     reg,reg,(expr)@l;
 
 #define LOAD_REG_ADDR(reg,name)			\

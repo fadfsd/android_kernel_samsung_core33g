@@ -224,6 +224,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 	SEQ_printf(m, "  .%-30s: %d\n", "tg->runnable_avg",
 			atomic_read(&cfs_rq->tg->runnable_avg));
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_CFS_BANDWIDTH
 	SEQ_printf(m, "  .%-30s: %d\n", "tg->cfs_bandwidth.timer_active",
 			cfs_rq->tg->cfs_bandwidth.timer_active);
@@ -232,6 +233,8 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 	SEQ_printf(m, "  .%-30s: %d\n", "throttle_count",
 			cfs_rq->throttle_count);
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	print_cfs_group_stats(m, cpu, cfs_rq->tg);
 #endif
@@ -404,7 +407,10 @@ static int sched_debug_show(struct seq_file *m, void *v)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_SYSRQ_SCHED_DEBUG
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void sysrq_sched_debug_show(void)
 {
 	int cpu;
@@ -414,7 +420,10 @@ void sysrq_sched_debug_show(void)
 		print_cpu(NULL, cpu);
 
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * This itererator needs some explanation.
@@ -553,7 +562,11 @@ void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 
 		avg_atom = p->se.sum_exec_runtime;
 		if (nr_switches)
+<<<<<<< HEAD
 			avg_atom = div64_ul(avg_atom, nr_switches);
+=======
+			do_div(avg_atom, nr_switches);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else
 			avg_atom = -1LL;
 

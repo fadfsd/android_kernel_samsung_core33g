@@ -30,7 +30,10 @@
    descriptor */
 #define USB_QUIRK_DELAY_INIT		0x00000040
 
+<<<<<<< HEAD
 /* device generates spurious wakeup, ignore remote wakeup capability */
 #define USB_QUIRK_IGNORE_REMOTE_WAKEUP	0x00000200
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* __LINUX_USB_QUIRKS_H */

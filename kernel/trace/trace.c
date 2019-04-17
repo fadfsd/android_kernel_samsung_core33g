@@ -423,19 +423,26 @@ int __trace_puts(unsigned long ip, const char *str, int size)
 	struct print_entry *entry;
 	unsigned long irq_flags;
 	int alloc;
+<<<<<<< HEAD
 	int pc;
 
 	pc = preempt_count();
 
 	if (unlikely(tracing_selftest_running || tracing_disabled))
 		return 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	alloc = sizeof(*entry) + size + 2; /* possible \n added */
 
 	local_save_flags(irq_flags);
 	buffer = global_trace.trace_buffer.buffer;
 	event = trace_buffer_lock_reserve(buffer, TRACE_PRINT, alloc, 
+<<<<<<< HEAD
 					  irq_flags, pc);
+=======
+					  irq_flags, preempt_count());
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!event)
 		return 0;
 
@@ -452,7 +459,10 @@ int __trace_puts(unsigned long ip, const char *str, int size)
 		entry->buf[size] = '\0';
 
 	__buffer_unlock_commit(buffer, event);
+<<<<<<< HEAD
 	ftrace_trace_stack(buffer, irq_flags, 4, pc);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return size;
 }
@@ -470,17 +480,24 @@ int __trace_bputs(unsigned long ip, const char *str)
 	struct bputs_entry *entry;
 	unsigned long irq_flags;
 	int size = sizeof(struct bputs_entry);
+<<<<<<< HEAD
 	int pc;
 
 	pc = preempt_count();
 
 	if (unlikely(tracing_selftest_running || tracing_disabled))
 		return 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	local_save_flags(irq_flags);
 	buffer = global_trace.trace_buffer.buffer;
 	event = trace_buffer_lock_reserve(buffer, TRACE_BPUTS, size,
+<<<<<<< HEAD
 					  irq_flags, pc);
+=======
+					  irq_flags, preempt_count());
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!event)
 		return 0;
 
@@ -489,7 +506,10 @@ int __trace_bputs(unsigned long ip, const char *str)
 	entry->str			= str;
 
 	__buffer_unlock_commit(buffer, event);
+<<<<<<< HEAD
 	ftrace_trace_stack(buffer, irq_flags, 4, pc);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 1;
 }
@@ -730,6 +750,10 @@ static const char *trace_options[] = {
 	"irq-info",
 	"markers",
 	"function-trace",
+<<<<<<< HEAD
+=======
+	"print-tgid",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	NULL
 };
 
@@ -741,7 +765,11 @@ static struct {
 	{ trace_clock_local,	"local",	1 },
 	{ trace_clock_global,	"global",	1 },
 	{ trace_clock_counter,	"counter",	0 },
+<<<<<<< HEAD
 	{ trace_clock_jiffies,	"uptime",	0 },
+=======
+	{ trace_clock_jiffies,	"uptime",	1 },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ trace_clock,		"perf",		1 },
 	ARCH_TRACE_CLOCKS
 };
@@ -840,12 +868,18 @@ int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
 	if (isspace(ch)) {
 		parser->buffer[parser->idx] = 0;
 		parser->cont = false;
+<<<<<<< HEAD
 	} else if (parser->idx < parser->size - 1) {
 		parser->cont = true;
 		parser->buffer[parser->idx++] = ch;
 	} else {
 		ret = -EINVAL;
 		goto out;
+=======
+	} else {
+		parser->cont = true;
+		parser->buffer[parser->idx++] = ch;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	*ppos += read;
@@ -1035,6 +1069,7 @@ update_max_tr_single(struct trace_array *tr, struct task_struct *tsk, int cpu)
 }
 #endif /* CONFIG_TRACER_MAX_TRACE */
 
+<<<<<<< HEAD
 static int default_wait_pipe(struct trace_iterator *iter)
 {
 	/* Iterators are static, they should be filled or empty */
@@ -1042,6 +1077,15 @@ static int default_wait_pipe(struct trace_iterator *iter)
 		return 0;
 
 	return ring_buffer_wait(iter->trace_buffer->buffer, iter->cpu_file);
+=======
+static void default_wait_pipe(struct trace_iterator *iter)
+{
+	/* Iterators are static, they should be filled or empty */
+	if (trace_buffer_iter(iter, iter->cpu_file))
+		return;
+
+	ring_buffer_wait(iter->trace_buffer->buffer, iter->cpu_file);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #ifdef CONFIG_FTRACE_STARTUP_TEST
@@ -1242,6 +1286,10 @@ void tracing_reset_all_online_cpus(void)
 static unsigned map_pid_to_cmdline[PID_MAX_DEFAULT+1];
 static unsigned map_cmdline_to_pid[SAVED_CMDLINES];
 static char saved_cmdlines[SAVED_CMDLINES][TASK_COMM_LEN];
+<<<<<<< HEAD
+=======
+static unsigned saved_tgids[SAVED_CMDLINES];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int cmdline_idx;
 static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
 
@@ -1314,6 +1362,10 @@ void tracing_start(void)
 
 	arch_spin_unlock(&ftrace_max_lock);
 
+<<<<<<< HEAD
+=======
+	ftrace_start();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  out:
 	raw_spin_unlock_irqrestore(&global_trace.start_lock, flags);
 }
@@ -1360,6 +1412,10 @@ void tracing_stop(void)
 	struct ring_buffer *buffer;
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+	ftrace_stop();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	raw_spin_lock_irqsave(&global_trace.start_lock, flags);
 	if (global_trace.stop_count++)
 		goto out;
@@ -1406,12 +1462,20 @@ static void tracing_stop_tr(struct trace_array *tr)
 
 void trace_stop_cmdline_recording(void);
 
+<<<<<<< HEAD
 static int trace_save_cmdline(struct task_struct *tsk)
+=======
+static void trace_save_cmdline(struct task_struct *tsk)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned pid, idx;
 
 	if (!tsk->pid || unlikely(tsk->pid > PID_MAX_DEFAULT))
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * It's not the end of the world if we don't get
@@ -1420,7 +1484,11 @@ static int trace_save_cmdline(struct task_struct *tsk)
 	 * so if we miss here, then better luck next time.
 	 */
 	if (!arch_spin_trylock(&trace_cmdline_lock))
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	idx = map_pid_to_cmdline[tsk->pid];
 	if (idx == NO_CMDLINE_MAP) {
@@ -1443,10 +1511,16 @@ static int trace_save_cmdline(struct task_struct *tsk)
 	}
 
 	memcpy(&saved_cmdlines[idx], tsk->comm, TASK_COMM_LEN);
+<<<<<<< HEAD
 
 	arch_spin_unlock(&trace_cmdline_lock);
 
 	return 1;
+=======
+	saved_tgids[idx] = tsk->tgid;
+
+	arch_spin_unlock(&trace_cmdline_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void trace_find_cmdline(int pid, char comm[])
@@ -1480,6 +1554,28 @@ void trace_find_cmdline(int pid, char comm[])
 	preempt_enable();
 }
 
+<<<<<<< HEAD
+=======
+int trace_find_tgid(int pid)
+{
+	unsigned map;
+	int tgid;
+
+	preempt_disable();
+	arch_spin_lock(&trace_cmdline_lock);
+	map = map_pid_to_cmdline[pid];
+	if (map != NO_CMDLINE_MAP)
+		tgid = saved_tgids[map];
+	else
+		tgid = -1;
+
+	arch_spin_unlock(&trace_cmdline_lock);
+	preempt_enable();
+
+	return tgid;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void tracing_record_cmdline(struct task_struct *tsk)
 {
 	if (atomic_read(&trace_record_cmdline_disabled) || !tracing_is_on())
@@ -1488,8 +1584,14 @@ void tracing_record_cmdline(struct task_struct *tsk)
 	if (!__this_cpu_read(trace_cmdline_save))
 		return;
 
+<<<<<<< HEAD
 	if (trace_save_cmdline(tsk))
 		__this_cpu_write(trace_cmdline_save, false);
+=======
+	__this_cpu_write(trace_cmdline_save, false);
+
+	trace_save_cmdline(tsk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void
@@ -2435,6 +2537,16 @@ static void print_func_help_header(struct trace_buffer *buf, struct seq_file *m)
 	seq_puts(m, "#              | |       |          |         |\n");
 }
 
+<<<<<<< HEAD
+=======
+static void print_func_help_header_tgid(struct trace_buffer *buf, struct seq_file *m)
+{
+	print_event_info(buf, m);
+	seq_puts(m, "#           TASK-PID    TGID   CPU#      TIMESTAMP  FUNCTION\n");
+	seq_puts(m, "#              | |        |      |          |         |\n");
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void print_func_help_header_irq(struct trace_buffer *buf, struct seq_file *m)
 {
 	print_event_info(buf, m);
@@ -2447,6 +2559,21 @@ static void print_func_help_header_irq(struct trace_buffer *buf, struct seq_file
 	seq_puts(m, "#              | |       |   ||||       |         |\n");
 }
 
+<<<<<<< HEAD
+=======
+static void print_func_help_header_irq_tgid(struct trace_buffer *buf, struct seq_file *m)
+{
+	print_event_info(buf, m);
+	seq_puts(m, "#                                      _-----=> irqs-off\n");
+	seq_puts(m, "#                                     / _----=> need-resched\n");
+	seq_puts(m, "#                                    | / _---=> hardirq/softirq\n");
+	seq_puts(m, "#                                    || / _--=> preempt-depth\n");
+	seq_puts(m, "#                                    ||| /     delay\n");
+	seq_puts(m, "#           TASK-PID    TGID   CPU#  ||||    TIMESTAMP  FUNCTION\n");
+	seq_puts(m, "#              | |        |      |   ||||       |         |\n");
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void
 print_trace_header(struct seq_file *m, struct trace_iterator *iter)
 {
@@ -2747,9 +2874,21 @@ void trace_default_header(struct seq_file *m)
 	} else {
 		if (!(trace_flags & TRACE_ITER_VERBOSE)) {
 			if (trace_flags & TRACE_ITER_IRQ_INFO)
+<<<<<<< HEAD
 				print_func_help_header_irq(iter->trace_buffer, m);
 			else
 				print_func_help_header(iter->trace_buffer, m);
+=======
+				if (trace_flags & TRACE_ITER_TGID)
+					print_func_help_header_irq_tgid(iter->trace_buffer, m);
+				else
+					print_func_help_header_irq(iter->trace_buffer, m);
+			else
+				if (trace_flags & TRACE_ITER_TGID)
+					print_func_help_header_tgid(iter->trace_buffer, m);
+				else
+					print_func_help_header(iter->trace_buffer, m);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	}
 }
@@ -3601,9 +3740,59 @@ tracing_saved_cmdlines_read(struct file *file, char __user *ubuf,
 }
 
 static const struct file_operations tracing_saved_cmdlines_fops = {
+<<<<<<< HEAD
     .open       = tracing_open_generic,
     .read       = tracing_saved_cmdlines_read,
     .llseek	= generic_file_llseek,
+=======
+	.open	= tracing_open_generic,
+	.read	= tracing_saved_cmdlines_read,
+	.llseek	= generic_file_llseek,
+};
+
+static ssize_t
+tracing_saved_tgids_read(struct file *file, char __user *ubuf,
+				size_t cnt, loff_t *ppos)
+{
+	char *file_buf;
+	char *buf;
+	int len = 0;
+	int pid;
+	int i;
+
+	file_buf = kmalloc(SAVED_CMDLINES*(16+1+16), GFP_KERNEL);
+	if (!file_buf)
+		return -ENOMEM;
+
+	buf = file_buf;
+
+	for (i = 0; i < SAVED_CMDLINES; i++) {
+		int tgid;
+		int r;
+
+		pid = map_cmdline_to_pid[i];
+		if (pid == -1 || pid == NO_CMDLINE_MAP)
+			continue;
+
+		tgid = trace_find_tgid(pid);
+		r = sprintf(buf, "%d %d\n", pid, tgid);
+		buf += r;
+		len += r;
+	}
+
+	len = simple_read_from_buffer(ubuf, cnt, ppos,
+				      file_buf, len);
+
+	kfree(file_buf);
+
+	return len;
+}
+
+static const struct file_operations tracing_saved_tgids_fops = {
+	.open	= tracing_open_generic,
+	.read	= tracing_saved_tgids_read,
+	.llseek	= generic_file_llseek,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static ssize_t
@@ -4062,19 +4251,29 @@ tracing_poll_pipe(struct file *filp, poll_table *poll_table)
  *
  *     Anyway, this is really very primitive wakeup.
  */
+<<<<<<< HEAD
 int poll_wait_pipe(struct trace_iterator *iter)
+=======
+void poll_wait_pipe(struct trace_iterator *iter)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	set_current_state(TASK_INTERRUPTIBLE);
 	/* sleep for 100 msecs, and try again. */
 	schedule_timeout(HZ / 10);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* Must be called with trace_types_lock mutex held. */
 static int tracing_wait_pipe(struct file *filp)
 {
 	struct trace_iterator *iter = filp->private_data;
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	while (trace_empty(iter)) {
 
@@ -4084,6 +4283,7 @@ static int tracing_wait_pipe(struct file *filp)
 
 		mutex_unlock(&iter->mutex);
 
+<<<<<<< HEAD
 		ret = iter->trace->wait_pipe(iter);
 
 		mutex_lock(&iter->mutex);
@@ -4091,6 +4291,12 @@ static int tracing_wait_pipe(struct file *filp)
 		if (ret)
 			return ret;
 
+=======
+		iter->trace->wait_pipe(iter);
+
+		mutex_lock(&iter->mutex);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (signal_pending(current))
 			return -EINTR;
 
@@ -4588,7 +4794,11 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
 	*fpos += written;
 
  out_unlock:
+<<<<<<< HEAD
 	for (i = nr_pages - 1; i >= 0; i--) {
+=======
+	for (i = 0; i < nr_pages; i++){
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kunmap_atomic(map_page[i]);
 		put_page(pages[i]);
 	}
@@ -5024,12 +5234,17 @@ tracing_buffers_read(struct file *filp, char __user *ubuf,
 				goto out_unlock;
 			}
 			mutex_unlock(&trace_types_lock);
+<<<<<<< HEAD
 			ret = iter->trace->wait_pipe(iter);
 			mutex_lock(&trace_types_lock);
 			if (ret) {
 				size = ret;
 				goto out_unlock;
 			}
+=======
+			iter->trace->wait_pipe(iter);
+			mutex_lock(&trace_types_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (signal_pending(current)) {
 				size = -EINTR;
 				goto out_unlock;
@@ -5241,10 +5456,15 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
 			goto out;
 		}
 		mutex_unlock(&trace_types_lock);
+<<<<<<< HEAD
 		ret = iter->trace->wait_pipe(iter);
 		mutex_lock(&trace_types_lock);
 		if (ret)
 			goto out;
+=======
+		iter->trace->wait_pipe(iter);
+		mutex_lock(&trace_types_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (signal_pending(current)) {
 			ret = -EINTR;
 			goto out;
@@ -5902,8 +6122,11 @@ allocate_trace_buffer(struct trace_array *tr, struct trace_buffer *buf, int size
 
 	rb_flags = trace_flags & TRACE_ITER_OVERWRITE ? RB_FL_OVERWRITE : 0;
 
+<<<<<<< HEAD
 	buf->tr = tr;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	buf->buffer = ring_buffer_alloc(size, rb_flags);
 	if (!buf->buffer)
 		return -ENOMEM;
@@ -6063,7 +6286,11 @@ static int instance_mkdir (struct inode *inode, struct dentry *dentry, umode_t m
 	int ret;
 
 	/* Paranoid: Make sure the parent is the "instances" directory */
+<<<<<<< HEAD
 	parent = hlist_entry(inode->i_dentry.first, struct dentry, d_u.d_alias);
+=======
+	parent = hlist_entry(inode->i_dentry.first, struct dentry, d_alias);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (WARN_ON_ONCE(parent != trace_instance_dir))
 		return -ENOENT;
 
@@ -6090,7 +6317,11 @@ static int instance_rmdir(struct inode *inode, struct dentry *dentry)
 	int ret;
 
 	/* Paranoid: Make sure the parent is the "instances" directory */
+<<<<<<< HEAD
 	parent = hlist_entry(inode->i_dentry.first, struct dentry, d_u.d_alias);
+=======
+	parent = hlist_entry(inode->i_dentry.first, struct dentry, d_alias);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (WARN_ON_ONCE(parent != trace_instance_dir))
 		return -ENOENT;
 
@@ -6157,6 +6388,12 @@ init_tracer_debugfs(struct trace_array *tr, struct dentry *d_tracer)
 	trace_create_file("trace_marker", 0220, d_tracer,
 			  tr, &tracing_mark_fops);
 
+<<<<<<< HEAD
+=======
+	trace_create_file("saved_tgids", 0444, d_tracer,
+			  tr, &tracing_saved_tgids_fops);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	trace_create_file("trace_clock", 0644, d_tracer, tr,
 			  &trace_clock_fops);
 

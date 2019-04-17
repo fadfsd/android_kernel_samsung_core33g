@@ -677,11 +677,14 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
 		 * handler too.
 		 */
 		regs->flags &= ~X86_EFLAGS_TF;
+<<<<<<< HEAD
 		/*
 		 * Ensure the signal handler starts with the new fpu state.
 		 */
 		if (used_math())
 			drop_init_fpu(current);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	signal_setup_done(failed, ksig, test_thread_flag(TIF_SINGLESTEP));
 }

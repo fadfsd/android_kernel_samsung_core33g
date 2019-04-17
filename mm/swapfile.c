@@ -505,7 +505,11 @@ swp_entry_t get_swap_page_of_type(int type)
 	return (swp_entry_t) {0};
 }
 
+<<<<<<< HEAD
 static struct swap_info_struct *swap_info_get(swp_entry_t entry)
+=======
+struct swap_info_struct *swap_info_get(swp_entry_t entry)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct swap_info_struct *p;
 	unsigned long offset, type;

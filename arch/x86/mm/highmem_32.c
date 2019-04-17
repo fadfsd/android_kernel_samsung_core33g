@@ -1,7 +1,10 @@
 #include <linux/highmem.h>
 #include <linux/module.h>
 #include <linux/swap.h> /* for totalram_pages */
+<<<<<<< HEAD
 #include <linux/bootmem.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void *kmap(struct page *page)
 {
@@ -122,11 +125,14 @@ void __init set_highmem_pages_init(void)
 	struct zone *zone;
 	int nid;
 
+<<<<<<< HEAD
 	/*
 	 * Explicitly reset zone->managed_pages because set_highmem_pages_init()
 	 * is invoked before free_all_bootmem()
 	 */
 	reset_all_zones_managed_pages();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for_each_zone(zone) {
 		unsigned long zone_start_pfn, zone_end_pfn;
 

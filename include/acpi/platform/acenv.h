@@ -76,7 +76,10 @@
 #define ACPI_LARGE_NAMESPACE_NODE
 #define ACPI_DATA_TABLE_DISASSEMBLY
 #define ACPI_SINGLE_THREADED
+<<<<<<< HEAD
 #define ACPI_32BIT_PHYSICAL_ADDRESS
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 /* acpi_exec configuration. Multithreaded with full AML debugger */

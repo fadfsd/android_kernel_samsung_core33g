@@ -341,7 +341,11 @@ inline void softmac_ps_mgmt_xmit(struct sk_buff *skb,
 	}
 }
 
+<<<<<<< HEAD
 static inline struct sk_buff *rtllib_probe_req(struct rtllib_device *ieee)
+=======
+inline struct sk_buff *rtllib_probe_req(struct rtllib_device *ieee)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned int len, rate_len;
 	u8 *tag;

@@ -103,7 +103,11 @@ static inline void enable_omap3630_toggle_l2_on_restore(void) { }
 
 #define PM_OMAP4_ROM_SMP_BOOT_ERRATUM_GICD	(1 << 0)
 
+<<<<<<< HEAD
 #if defined(CONFIG_PM) && defined(CONFIG_ARCH_OMAP4)
+=======
+#if defined(CONFIG_ARCH_OMAP4)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern u16 pm44xx_errata;
 #define IS_PM44XX_ERRATUM(id)		(pm44xx_errata & (id))
 #else

@@ -13,6 +13,7 @@
 #include <trace/events/rpm.h>
 #include "power.h"
 
+<<<<<<< HEAD
 #define RPM_GET_CALLBACK(dev, cb)				\
 ({								\
 	int (*__rpm_cb)(struct device *__d);			\
@@ -49,6 +50,8 @@ static int (*rpm_get_idle_cb(struct device *dev))(struct device *)
 	return RPM_GET_CALLBACK(dev, runtime_idle);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int rpm_resume(struct device *dev, int rpmflags);
 static int rpm_suspend(struct device *dev, int rpmflags);
 
@@ -347,7 +350,23 @@ static int rpm_idle(struct device *dev, int rpmflags)
 
 	dev->power.idle_notification = true;
 
+<<<<<<< HEAD
 	callback = rpm_get_idle_cb(dev);
+=======
+	if (dev->pm_domain)
+		callback = dev->pm_domain->ops.runtime_idle;
+	else if (dev->type && dev->type->pm)
+		callback = dev->type->pm->runtime_idle;
+	else if (dev->class && dev->class->pm)
+		callback = dev->class->pm->runtime_idle;
+	else if (dev->bus && dev->bus->pm)
+		callback = dev->bus->pm->runtime_idle;
+	else
+		callback = NULL;
+
+	if (!callback && dev->driver && dev->driver->pm)
+		callback = dev->driver->pm->runtime_idle;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (callback)
 		__rpm_callback(callback, dev);
@@ -517,7 +536,23 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 
 	__update_runtime_status(dev, RPM_SUSPENDING);
 
+<<<<<<< HEAD
 	callback = rpm_get_suspend_cb(dev);
+=======
+	if (dev->pm_domain)
+		callback = dev->pm_domain->ops.runtime_suspend;
+	else if (dev->type && dev->type->pm)
+		callback = dev->type->pm->runtime_suspend;
+	else if (dev->class && dev->class->pm)
+		callback = dev->class->pm->runtime_suspend;
+	else if (dev->bus && dev->bus->pm)
+		callback = dev->bus->pm->runtime_suspend;
+	else
+		callback = NULL;
+
+	if (!callback && dev->driver && dev->driver->pm)
+		callback = dev->driver->pm->runtime_suspend;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	retval = rpm_callback(callback, dev);
 	if (retval)
@@ -737,7 +772,23 @@ static int rpm_resume(struct device *dev, int rpmflags)
 
 	__update_runtime_status(dev, RPM_RESUMING);
 
+<<<<<<< HEAD
 	callback = rpm_get_resume_cb(dev);
+=======
+	if (dev->pm_domain)
+		callback = dev->pm_domain->ops.runtime_resume;
+	else if (dev->type && dev->type->pm)
+		callback = dev->type->pm->runtime_resume;
+	else if (dev->class && dev->class->pm)
+		callback = dev->class->pm->runtime_resume;
+	else if (dev->bus && dev->bus->pm)
+		callback = dev->bus->pm->runtime_resume;
+	else
+		callback = NULL;
+
+	if (!callback && dev->driver && dev->driver->pm)
+		callback = dev->driver->pm->runtime_resume;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	retval = rpm_callback(callback, dev);
 	if (retval) {
@@ -746,7 +797,10 @@ static int rpm_resume(struct device *dev, int rpmflags)
 	} else {
  no_callback:
 		__update_runtime_status(dev, RPM_ACTIVE);
+<<<<<<< HEAD
 		pm_runtime_mark_last_busy(dev);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (parent)
 			atomic_inc(&parent->power.child_count);
 	}
@@ -889,13 +943,21 @@ int __pm_runtime_idle(struct device *dev, int rpmflags)
 	unsigned long flags;
 	int retval;
 
+<<<<<<< HEAD
+=======
+	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rpmflags & RPM_GET_PUT) {
 		if (!atomic_dec_and_test(&dev->power.usage_count))
 			return 0;
 	}
 
+<<<<<<< HEAD
 	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock_irqsave(&dev->power.lock, flags);
 	retval = rpm_idle(dev, rpmflags);
 	spin_unlock_irqrestore(&dev->power.lock, flags);
@@ -921,13 +983,21 @@ int __pm_runtime_suspend(struct device *dev, int rpmflags)
 	unsigned long flags;
 	int retval;
 
+<<<<<<< HEAD
+=======
+	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rpmflags & RPM_GET_PUT) {
 		if (!atomic_dec_and_test(&dev->power.usage_count))
 			return 0;
 	}
 
+<<<<<<< HEAD
 	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock_irqsave(&dev->power.lock, flags);
 	retval = rpm_suspend(dev, rpmflags);
 	spin_unlock_irqrestore(&dev->power.lock, flags);
@@ -952,8 +1022,12 @@ int __pm_runtime_resume(struct device *dev, int rpmflags)
 	unsigned long flags;
 	int retval;
 
+<<<<<<< HEAD
 	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe &&
 			dev->power.runtime_status != RPM_ACTIVE);
+=======
+	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (rpmflags & RPM_GET_PUT)
 		atomic_inc(&dev->power.usage_count);
@@ -1233,7 +1307,11 @@ void pm_runtime_allow(struct device *dev)
 
 	dev->power.runtime_auto = true;
 	if (atomic_dec_and_test(&dev->power.usage_count))
+<<<<<<< HEAD
 		rpm_idle(dev, RPM_AUTO | RPM_ASYNC);
+=======
+		rpm_idle(dev, RPM_AUTO);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
  out:
 	spin_unlock_irq(&dev->power.lock);
@@ -1391,6 +1469,7 @@ void pm_runtime_init(struct device *dev)
 }
 
 /**
+<<<<<<< HEAD
  * pm_runtime_reinit - Re-initialize runtime PM fields in given device object.
  * @dev: Device object to re-initialize.
  */
@@ -1410,11 +1489,22 @@ void pm_runtime_reinit(struct device *dev)
 }
 
 /**
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * pm_runtime_remove - Prepare for removing a device from device hierarchy.
  * @dev: Device object being removed from device hierarchy.
  */
 void pm_runtime_remove(struct device *dev)
 {
 	__pm_runtime_disable(dev, false);
+<<<<<<< HEAD
 	pm_runtime_reinit(dev);
+=======
+
+	/* Change the status back to 'suspended' to match the initial status. */
+	if (dev->power.runtime_status == RPM_ACTIVE)
+		pm_runtime_set_suspended(dev);
+	if (dev->power.irq_safe && dev->parent)
+		pm_runtime_put(dev->parent);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }

@@ -34,7 +34,11 @@ static inline unsigned int __getcpu(void)
 		native_read_tscp(&p);
 	} else {
 		/* Load per CPU data from GDT */
+<<<<<<< HEAD
 		asm volatile ("lsl %1,%0" : "=r" (p) : "r" (__PER_CPU_SEG));
+=======
+		asm("lsl %1,%0" : "=r" (p) : "r" (__PER_CPU_SEG));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	return p;

@@ -38,6 +38,21 @@
 
 #include "mm.h"
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CMA_SIZE_MBYTES
+#define CMA_SIZE_MBYTES CONFIG_CMA_SIZE_MBYTES
+#else
+#define CMA_SIZE_MBYTES 0
+#endif
+
+#ifdef CONFIG_CMA_SIZE_PERCENTAGE
+#define CMA_SIZE_PERCENTAGE CONFIG_CMA_SIZE_PERCENTAGE
+#else
+#define CMA_SIZE_PERCENTAGE 0
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * The DMA API is built upon the notion of "buffer ownership".  A buffer
  * is either exclusively owned by the CPU (and therefore may be accessed
@@ -358,7 +373,12 @@ static int __init atomic_pool_init(void)
 	if (!pages)
 		goto no_pages;
 
+<<<<<<< HEAD
 	if (IS_ENABLED(CONFIG_CMA))
+=======
+	if (IS_ENABLED(CONFIG_CMA)
+			&& (CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ptr = __alloc_from_contiguous(NULL, pool->size, prot, &page,
 					      atomic_pool_init);
 	else
@@ -429,6 +449,7 @@ void __init dma_contiguous_remap(void)
 		map.type = MT_MEMORY_DMA_READY;
 
 		/*
+<<<<<<< HEAD
 		 * Clear previous low-memory mapping to ensure that the
 		 * TLB does not see any conflicting entries, then flush
 		 * the TLB of the old entries before creating new mappings.
@@ -436,14 +457,20 @@ void __init dma_contiguous_remap(void)
 		 * This ensures that any speculatively loaded TLB entries
 		 * (even though they may be rare) can not cause any problems,
 		 * and ensures that this code is architecturally compliant.
+=======
+		 * Clear previous low-memory mapping
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		 */
 		for (addr = __phys_to_virt(start); addr < __phys_to_virt(end);
 		     addr += PMD_SIZE)
 			pmd_clear(pmd_off_k(addr));
 
+<<<<<<< HEAD
 		flush_tlb_kernel_range(__phys_to_virt(start),
 				       __phys_to_virt(end));
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		iotable_init(&map, 1);
 	}
 }
@@ -679,7 +706,12 @@ static void *__dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 		addr = __alloc_simple_buffer(dev, size, gfp, &page);
 	else if (!(gfp & __GFP_WAIT))
 		addr = __alloc_from_pool(size, &page);
+<<<<<<< HEAD
 	else if (!IS_ENABLED(CONFIG_CMA))
+=======
+	else if (!IS_ENABLED(CONFIG_CMA)
+			|| !(CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		addr = __alloc_remap_buffer(dev, size, gfp, prot, &page, caller);
 	else
 		addr = __alloc_from_contiguous(dev, size, prot, &page, caller);
@@ -768,7 +800,12 @@ static void __arm_dma_free(struct device *dev, size_t size, void *cpu_addr,
 		__dma_free_buffer(page, size);
 	} else if (__free_from_pool(cpu_addr, size)) {
 		return;
+<<<<<<< HEAD
 	} else if (!IS_ENABLED(CONFIG_CMA)) {
+=======
+	} else if (!IS_ENABLED(CONFIG_CMA)
+			|| !(CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__dma_free_remap(cpu_addr, size);
 		__dma_free_buffer(page, size);
 	} else {
@@ -1097,9 +1134,22 @@ static struct page **__iommu_alloc_buffer(struct device *dev, size_t size,
 		unsigned long order = get_order(size);
 		struct page *page;
 
+<<<<<<< HEAD
 		page = dma_alloc_from_contiguous(dev, count, order);
 		if (!page)
 			goto error;
+=======
+		if (IS_ENABLED(CONFIG_CMA)
+			&& (CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0)) {
+			page = dma_alloc_from_contiguous(dev, count, order);
+			if (!page)
+				goto error;
+		} else {
+			page = alloc_pages(gfp, order);
+			if (!page)
+				goto error;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		__dma_clear_buffer(page, size);
 
@@ -1155,7 +1205,15 @@ static int __iommu_free_buffer(struct device *dev, struct page **pages,
 	int i;
 
 	if (dma_get_attr(DMA_ATTR_FORCE_CONTIGUOUS, attrs)) {
+<<<<<<< HEAD
 		dma_release_from_contiguous(dev, pages[0], count);
+=======
+		if (IS_ENABLED(CONFIG_CMA)
+			&& (CMA_SIZE_MBYTES > 0 || CMA_SIZE_PERCENTAGE > 0))
+			dma_release_from_contiguous(dev, pages[0], count);
+		else
+			__free_pages(pages[0], get_order(size));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		for (i = 0; i < count; i++)
 			if (pages[i])
@@ -1320,7 +1378,11 @@ static void *arm_iommu_alloc_attrs(struct device *dev, size_t size,
 	*handle = DMA_ERROR_CODE;
 	size = PAGE_ALIGN(size);
 
+<<<<<<< HEAD
 	if (!(gfp & __GFP_WAIT))
+=======
+	if (gfp & GFP_ATOMIC)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return __iommu_alloc_atomic(dev, size, handle);
 
 	pages = __iommu_alloc_buffer(dev, size, gfp, attrs);

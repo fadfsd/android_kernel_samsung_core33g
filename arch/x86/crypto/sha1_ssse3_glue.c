@@ -237,4 +237,8 @@ module_exit(sha1_ssse3_mod_fini);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SHA1 Secure Hash Algorithm, Supplemental SSE3 accelerated");
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("sha1");
+=======
+MODULE_ALIAS("sha1");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

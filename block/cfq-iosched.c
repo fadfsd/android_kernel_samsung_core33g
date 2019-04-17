@@ -30,7 +30,11 @@ static const int cfq_back_penalty = 2;
 static const int cfq_slice_sync = HZ / 10;
 static int cfq_slice_async = HZ / 25;
 static const int cfq_slice_async_rq = 2;
+<<<<<<< HEAD
 static int cfq_slice_idle = 0;
+=======
+static int cfq_slice_idle = HZ / 125;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int cfq_group_idle = HZ / 125;
 static const int cfq_target_latency = HZ * 3/10; /* 300 ms */
 static const int cfq_hist_divisor = 4;
@@ -1275,16 +1279,24 @@ __cfq_group_service_tree_add(struct cfq_rb_root *st, struct cfq_group *cfqg)
 static void
 cfq_update_group_weight(struct cfq_group *cfqg)
 {
+<<<<<<< HEAD
+=======
+	BUG_ON(!RB_EMPTY_NODE(&cfqg->rb_node));
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (cfqg->new_weight) {
 		cfqg->weight = cfqg->new_weight;
 		cfqg->new_weight = 0;
 	}
+<<<<<<< HEAD
 }
 
 static void
 cfq_update_group_leaf_weight(struct cfq_group *cfqg)
 {
 	BUG_ON(!RB_EMPTY_NODE(&cfqg->rb_node));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (cfqg->new_leaf_weight) {
 		cfqg->leaf_weight = cfqg->new_leaf_weight;
@@ -1303,7 +1315,11 @@ cfq_group_service_tree_add(struct cfq_rb_root *st, struct cfq_group *cfqg)
 	/* add to the service tree */
 	BUG_ON(!RB_EMPTY_NODE(&cfqg->rb_node));
 
+<<<<<<< HEAD
 	cfq_update_group_leaf_weight(cfqg);
+=======
+	cfq_update_group_weight(cfqg);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__cfq_group_service_tree_add(st, cfqg);
 
 	/*
@@ -1327,7 +1343,10 @@ cfq_group_service_tree_add(struct cfq_rb_root *st, struct cfq_group *cfqg)
 	 */
 	while ((parent = cfqg_parent(pos))) {
 		if (propagate) {
+<<<<<<< HEAD
 			cfq_update_group_weight(pos);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			propagate = !parent->nr_active++;
 			parent->children_weight += pos->weight;
 		}
@@ -3003,9 +3022,12 @@ static void cfq_choose_cfqg(struct cfq_data *cfqd)
 {
 	struct cfq_group *cfqg = cfq_get_next_cfqg(cfqd);
 
+<<<<<<< HEAD
 	if (!cfqg)
 		return;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cfqd->serving_group = cfqg;
 
 	/* Restore the workload type data */
@@ -3426,6 +3448,7 @@ static void cfq_exit_icq(struct io_cq *icq)
 	struct cfq_io_cq *cic = icq_to_cic(icq);
 	struct cfq_data *cfqd = cic_to_cfqd(cic);
 
+<<<<<<< HEAD
 	if (cic_to_cfqq(cic, false)) {
 		cfq_exit_cfqq(cfqd, cic_to_cfqq(cic, false));
 		cic_set_cfqq(cic, NULL, false);
@@ -3434,6 +3457,16 @@ static void cfq_exit_icq(struct io_cq *icq)
 	if (cic_to_cfqq(cic, true)) {
 		cfq_exit_cfqq(cfqd, cic_to_cfqq(cic, true));
 		cic_set_cfqq(cic, NULL, true);
+=======
+	if (cic->cfqq[BLK_RW_ASYNC]) {
+		cfq_exit_cfqq(cfqd, cic->cfqq[BLK_RW_ASYNC]);
+		cic->cfqq[BLK_RW_ASYNC] = NULL;
+	}
+
+	if (cic->cfqq[BLK_RW_SYNC]) {
+		cfq_exit_cfqq(cfqd, cic->cfqq[BLK_RW_SYNC]);
+		cic->cfqq[BLK_RW_SYNC] = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -3492,6 +3525,7 @@ static void check_ioprio_changed(struct cfq_io_cq *cic, struct bio *bio)
 	if (unlikely(!cfqd) || likely(cic->ioprio == ioprio))
 		return;
 
+<<<<<<< HEAD
 	cfqq = cic_to_cfqq(cic, false);
 	if (cfqq) {
 		cfq_put_queue(cfqq);
@@ -3500,6 +3534,20 @@ static void check_ioprio_changed(struct cfq_io_cq *cic, struct bio *bio)
 	}
 
 	cfqq = cic_to_cfqq(cic, true);
+=======
+	cfqq = cic->cfqq[BLK_RW_ASYNC];
+	if (cfqq) {
+		struct cfq_queue *new_cfqq;
+		new_cfqq = cfq_get_queue(cfqd, BLK_RW_ASYNC, cic, bio,
+					 GFP_ATOMIC);
+		if (new_cfqq) {
+			cic->cfqq[BLK_RW_ASYNC] = new_cfqq;
+			cfq_put_queue(cfqq);
+		}
+	}
+
+	cfqq = cic->cfqq[BLK_RW_SYNC];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (cfqq)
 		cfq_mark_cfqq_prio_changed(cfqq);
 
@@ -3574,11 +3622,14 @@ retry:
 
 	blkcg = bio_blkcg(bio);
 	cfqg = cfq_lookup_create_cfqg(cfqd, blkcg);
+<<<<<<< HEAD
 	if (!cfqg) {
 		cfqq = &cfqd->oom_cfqq;
 		goto out;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cfqq = cic_to_cfqq(cic, is_sync);
 
 	/*
@@ -3615,7 +3666,11 @@ retry:
 		} else
 			cfqq = &cfqd->oom_cfqq;
 	}
+<<<<<<< HEAD
 out:
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (new_cfqq)
 		kmem_cache_free(cfq_pool, new_cfqq);
 
@@ -3645,28 +3700,50 @@ static struct cfq_queue *
 cfq_get_queue(struct cfq_data *cfqd, bool is_sync, struct cfq_io_cq *cic,
 	      struct bio *bio, gfp_t gfp_mask)
 {
+<<<<<<< HEAD
 	int ioprio_class = IOPRIO_PRIO_CLASS(cic->ioprio);
 	int ioprio = IOPRIO_PRIO_DATA(cic->ioprio);
 	struct cfq_queue **async_cfqq;
 	struct cfq_queue *cfqq;
+=======
+	const int ioprio_class = IOPRIO_PRIO_CLASS(cic->ioprio);
+	const int ioprio = IOPRIO_PRIO_DATA(cic->ioprio);
+	struct cfq_queue **async_cfqq = NULL;
+	struct cfq_queue *cfqq = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!is_sync) {
 		async_cfqq = cfq_async_queue_prio(cfqd, ioprio_class, ioprio);
 		cfqq = *async_cfqq;
+<<<<<<< HEAD
 		if (cfqq)
 			goto out;
 	}
 
 	cfqq = cfq_find_alloc_queue(cfqd, is_sync, cic, bio, gfp_mask);
+=======
+	}
+
+	if (!cfqq)
+		cfqq = cfq_find_alloc_queue(cfqd, is_sync, cic, bio, gfp_mask);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * pin the queue now that it's allocated, scheduler exit will prune it
 	 */
+<<<<<<< HEAD
 	if (!is_sync && cfqq != &cfqd->oom_cfqq) {
 		cfqq->ref++;
 		*async_cfqq = cfqq;
 	}
 out:
+=======
+	if (!is_sync && !(*async_cfqq)) {
+		cfqq->ref++;
+		*async_cfqq = cfqq;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cfqq->ref++;
 	return cfqq;
 }
@@ -4210,8 +4287,11 @@ cfq_set_request(struct request_queue *q, struct request *rq, struct bio *bio,
 new_queue:
 	cfqq = cic_to_cfqq(cic, is_sync);
 	if (!cfqq || cfqq == &cfqd->oom_cfqq) {
+<<<<<<< HEAD
 		if (cfqq)
 			cfq_put_queue(cfqq);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		cfqq = cfq_get_queue(cfqd, is_sync, cic, bio, gfp_mask);
 		cic_set_cfqq(cic, cfqq, is_sync);
 	} else {
@@ -4442,7 +4522,11 @@ static int cfq_init_queue(struct request_queue *q, struct elevator_type *e)
 	cfqd->cfq_slice[1] = cfq_slice_sync;
 	cfqd->cfq_target_latency = cfq_target_latency;
 	cfqd->cfq_slice_async_rq = cfq_slice_async_rq;
+<<<<<<< HEAD
 	cfqd->cfq_slice_idle = blk_queue_nonrot(q) ? 0 : cfq_slice_idle;
+=======
+	cfqd->cfq_slice_idle = cfq_slice_idle;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cfqd->cfq_group_idle = cfq_group_idle;
 	cfqd->cfq_latency = 1;
 	cfqd->hw_tag = -1;
@@ -4459,6 +4543,7 @@ out_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void cfq_registered_queue(struct request_queue *q)
 {
 	struct elevator_queue *e = q->elevator;
@@ -4471,13 +4556,19 @@ static void cfq_registered_queue(struct request_queue *q)
 		cfqd->cfq_slice_idle = 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * sysfs parts below -->
  */
 static ssize_t
 cfq_var_show(unsigned int var, char *page)
 {
+<<<<<<< HEAD
 	return sprintf(page, "%u\n", var);
+=======
+	return sprintf(page, "%d\n", var);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static ssize_t
@@ -4586,7 +4677,10 @@ static struct elevator_type iosched_cfq = {
 		.elevator_may_queue_fn =	cfq_may_queue,
 		.elevator_init_fn =		cfq_init_queue,
 		.elevator_exit_fn =		cfq_exit_queue,
+<<<<<<< HEAD
 		.elevator_registered_fn =	cfq_registered_queue,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 	.icq_size	=	sizeof(struct cfq_io_cq),
 	.icq_align	=	__alignof__(struct cfq_io_cq),
@@ -4616,7 +4710,11 @@ static int __init cfq_init(void)
 	if (!cfq_slice_async)
 		cfq_slice_async = 1;
 	if (!cfq_slice_idle)
+<<<<<<< HEAD
 		cfq_slice_idle = 0;
+=======
+		cfq_slice_idle = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_CFQ_GROUP_IOSCHED
 	if (!cfq_group_idle)

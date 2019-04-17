@@ -487,7 +487,10 @@ static int omap_dma_terminate_all(struct omap_chan *c)
 	 * c->desc is NULL and exit.)
 	 */
 	if (c->desc) {
+<<<<<<< HEAD
 		omap_dma_desc_free(&c->desc->vd);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		c->desc = NULL;
 		/* Avoid stopping the dma twice */
 		if (!c->paused)

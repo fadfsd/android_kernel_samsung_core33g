@@ -1611,7 +1611,10 @@ static void rhine_reset_task(struct work_struct *work)
 		goto out_unlock;
 
 	napi_disable(&rp->napi);
+<<<<<<< HEAD
 	netif_tx_disable(dev);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock_bh(&rp->lock);
 
 	/* clear all descriptors */

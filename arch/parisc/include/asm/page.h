@@ -28,9 +28,15 @@ struct page;
 
 void clear_page_asm(void *page);
 void copy_page_asm(void *to, void *from);
+<<<<<<< HEAD
 #define clear_user_page(vto, vaddr, page) clear_page_asm(vto)
 void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
 			struct page *pg);
+=======
+void clear_user_page(void *vto, unsigned long vaddr, struct page *pg);
+void copy_user_page(void *vto, void *vfrom, unsigned long vaddr,
+			   struct page *pg);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* #define CONFIG_PARISC_TMPALIAS */
 

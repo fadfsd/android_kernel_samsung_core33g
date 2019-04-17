@@ -1096,7 +1096,10 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
 		goto err_pmecc_data_alloc;
 	}
 
+<<<<<<< HEAD
 	nand_chip->options |= NAND_NO_SUBPAGE_WRITE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	nand_chip->ecc.read_page = atmel_nand_pmecc_read_page;
 	nand_chip->ecc.write_page = atmel_nand_pmecc_write_page;
 

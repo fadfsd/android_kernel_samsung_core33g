@@ -82,6 +82,12 @@ config EVENT_TRACING
 	select CONTEXT_SWITCH_TRACER
 	bool
 
+<<<<<<< HEAD
+=======
+config GPU_TRACEPOINTS
+	bool
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config CONTEXT_SWITCH_TRACER
 	bool
 

@@ -74,6 +74,14 @@
 #define SERVER_NAME_LENGTH 40
 #define SERVER_NAME_LEN_WITH_NULL     (SERVER_NAME_LENGTH + 1)
 
+<<<<<<< HEAD
+=======
+/* used to define string lengths for reversing unicode strings */
+/*         (256+1)*2 = 514                                     */
+/*           (max path length + 1 for null) * 2 for unicode    */
+#define MAX_NAME 514
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* SMB echo "timeout" -- FIXME: tunable? */
 #define SMB_ECHO_INTERVAL (60 * HZ)
 
@@ -365,6 +373,7 @@ struct smb_version_operations {
 	void (*new_lease_key)(struct cifs_fid *fid);
 	int (*calc_signature)(struct smb_rqst *rqst,
 				   struct TCP_Server_Info *server);
+<<<<<<< HEAD
 	ssize_t (*query_all_EAs)(const unsigned int, struct cifs_tcon *,
 			const unsigned char *, const unsigned char *, char *,
 			size_t, const struct nls_table *, int);
@@ -377,6 +386,8 @@ struct smb_version_operations {
 			int);
 	/* check if we need to issue closedir */
 	bool (*dir_needs_close)(struct cifsFileInfo *);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct smb_version_values {

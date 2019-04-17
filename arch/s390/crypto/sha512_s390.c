@@ -86,7 +86,11 @@ static struct shash_alg sha512_alg = {
 	}
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("sha512");
+=======
+MODULE_ALIAS("sha512");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static int sha384_init(struct shash_desc *desc)
 {
@@ -126,7 +130,11 @@ static struct shash_alg sha384_alg = {
 	}
 };
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("sha384");
+=======
+MODULE_ALIAS("sha384");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static int __init init(void)
 {

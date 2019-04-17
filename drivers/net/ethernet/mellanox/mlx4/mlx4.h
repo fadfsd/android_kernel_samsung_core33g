@@ -743,7 +743,10 @@ struct mlx4_priv {
 	spinlock_t		ctx_lock;
 
 	int			pci_dev_data;
+<<<<<<< HEAD
 	int                     removed;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct list_head        pgdir_list;
 	struct mutex            pgdir_mutex;

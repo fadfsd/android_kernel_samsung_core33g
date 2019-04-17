@@ -35,7 +35,11 @@
 #include <net/netfilter/nf_conntrack.h>
 #endif
 
+<<<<<<< HEAD
 static void
+=======
+void
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 xt_socket_put_sk(struct sock *sk)
 {
 	if (sk->sk_state == TCP_TIME_WAIT)
@@ -43,6 +47,10 @@ xt_socket_put_sk(struct sock *sk)
 	else
 		sock_put(sk);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(xt_socket_put_sk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static int
 extract_icmp4_fields(const struct sk_buff *skb,
@@ -101,9 +109,14 @@ extract_icmp4_fields(const struct sk_buff *skb,
 	return 0;
 }
 
+<<<<<<< HEAD
 static bool
 socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 	     const struct xt_socket_mtinfo1 *info)
+=======
+struct sock*
+xt_socket_get4_sk(const struct sk_buff *skb, struct xt_action_param *par)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	const struct iphdr *iph = ip_hdr(skb);
 	struct udphdr _hdr, *hp = NULL;
@@ -120,7 +133,11 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 		hp = skb_header_pointer(skb, ip_hdrlen(skb),
 					sizeof(_hdr), &_hdr);
 		if (hp == NULL)
+<<<<<<< HEAD
 			return false;
+=======
+			return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		protocol = iph->protocol;
 		saddr = iph->saddr;
@@ -131,9 +148,15 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 	} else if (iph->protocol == IPPROTO_ICMP) {
 		if (extract_icmp4_fields(skb, &protocol, &saddr, &daddr,
 					&sport, &dport))
+<<<<<<< HEAD
 			return false;
 	} else {
 		return false;
+=======
+			return NULL;
+	} else {
+		return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 #ifdef XT_SOCKET_HAVE_CONNTRACK
@@ -157,6 +180,26 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 
 	sk = nf_tproxy_get_sock_v4(dev_net(skb->dev), protocol,
 				   saddr, daddr, sport, dport, par->in, NFT_LOOKUP_ANY);
+<<<<<<< HEAD
+=======
+
+	pr_debug("proto %hhu %pI4:%hu -> %pI4:%hu (orig %pI4:%hu) sock %p\n",
+		 protocol, &saddr, ntohs(sport),
+		 &daddr, ntohs(dport),
+		 &iph->daddr, hp ? ntohs(hp->dest) : 0, sk);
+
+	return sk;
+}
+EXPORT_SYMBOL(xt_socket_get4_sk);
+
+static bool
+socket_match(const struct sk_buff *skb, struct xt_action_param *par,
+	     const struct xt_socket_mtinfo1 *info)
+{
+	struct sock *sk;
+
+	sk = xt_socket_get4_sk(skb, par);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (sk != NULL) {
 		bool wildcard;
 		bool transparent = true;
@@ -179,11 +222,14 @@ socket_match(const struct sk_buff *skb, struct xt_action_param *par,
 			sk = NULL;
 	}
 
+<<<<<<< HEAD
 	pr_debug("proto %hhu %pI4:%hu -> %pI4:%hu (orig %pI4:%hu) sock %p\n",
 		 protocol, &saddr, ntohs(sport),
 		 &daddr, ntohs(dport),
 		 &iph->daddr, hp ? ntohs(hp->dest) : 0, sk);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return (sk != NULL);
 }
 
@@ -255,8 +301,13 @@ extract_icmp6_fields(const struct sk_buff *skb,
 	return 0;
 }
 
+<<<<<<< HEAD
 static bool
 socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
+=======
+struct sock*
+xt_socket_get6_sk(const struct sk_buff *skb, struct xt_action_param *par)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct ipv6hdr *iph = ipv6_hdr(skb);
 	struct udphdr _hdr, *hp = NULL;
@@ -264,7 +315,10 @@ socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
 	struct in6_addr *daddr = NULL, *saddr = NULL;
 	__be16 uninitialized_var(dport), uninitialized_var(sport);
 	int thoff = 0, uninitialized_var(tproto);
+<<<<<<< HEAD
 	const struct xt_socket_mtinfo1 *info = (struct xt_socket_mtinfo1 *) par->matchinfo;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tproto = ipv6_find_hdr(skb, &thoff, -1, NULL, NULL);
 	if (tproto < 0) {
@@ -276,7 +330,11 @@ socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
 		hp = skb_header_pointer(skb, thoff,
 					sizeof(_hdr), &_hdr);
 		if (hp == NULL)
+<<<<<<< HEAD
 			return false;
+=======
+			return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		saddr = &iph->saddr;
 		sport = hp->source;
@@ -286,13 +344,39 @@ socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
 	} else if (tproto == IPPROTO_ICMPV6) {
 		if (extract_icmp6_fields(skb, thoff, &tproto, &saddr, &daddr,
 					 &sport, &dport))
+<<<<<<< HEAD
 			return false;
 	} else {
 		return false;
+=======
+			return NULL;
+	} else {
+		return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	sk = nf_tproxy_get_sock_v6(dev_net(skb->dev), tproto,
 				   saddr, daddr, sport, dport, par->in, NFT_LOOKUP_ANY);
+<<<<<<< HEAD
+=======
+	pr_debug("proto %hhd %pI6:%hu -> %pI6:%hu "
+		 "(orig %pI6:%hu) sock %p\n",
+		 tproto, saddr, ntohs(sport),
+		 daddr, ntohs(dport),
+		 &iph->daddr, hp ? ntohs(hp->dest) : 0, sk);
+	return sk;
+}
+EXPORT_SYMBOL(xt_socket_get6_sk);
+
+static bool
+socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
+{
+	struct sock *sk;
+	const struct xt_socket_mtinfo1 *info;
+
+	info = (struct xt_socket_mtinfo1 *) par->matchinfo;
+	sk = xt_socket_get6_sk(skb, par);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (sk != NULL) {
 		bool wildcard;
 		bool transparent = true;
@@ -315,12 +399,15 @@ socket_mt6_v1(const struct sk_buff *skb, struct xt_action_param *par)
 			sk = NULL;
 	}
 
+<<<<<<< HEAD
 	pr_debug("proto %hhd %pI6:%hu -> %pI6:%hu "
 		 "(orig %pI6:%hu) sock %p\n",
 		 tproto, saddr, ntohs(sport),
 		 daddr, ntohs(dport),
 		 &iph->daddr, hp ? ntohs(hp->dest) : 0, sk);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return (sk != NULL);
 }
 #endif

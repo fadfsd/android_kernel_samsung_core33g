@@ -271,8 +271,12 @@ static int crypto_ccm_auth(struct aead_request *req, struct scatterlist *plain,
 	}
 
 	/* compute plaintext into mac */
+<<<<<<< HEAD
 	if (cryptlen)
 		get_data_to_compute(cipher, pctx, plain, cryptlen);
+=======
+	get_data_to_compute(cipher, pctx, plain, cryptlen);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 out:
 	return err;
@@ -879,6 +883,11 @@ module_exit(crypto_ccm_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Counter with CBC MAC");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("ccm_base");
 MODULE_ALIAS_CRYPTO("rfc4309");
 MODULE_ALIAS_CRYPTO("ccm");
+=======
+MODULE_ALIAS("ccm_base");
+MODULE_ALIAS("rfc4309");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

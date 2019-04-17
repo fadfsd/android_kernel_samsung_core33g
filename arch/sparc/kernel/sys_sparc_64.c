@@ -290,6 +290,10 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 	    sysctl_legacy_va_layout) {
 		mm->mmap_base = TASK_UNMAPPED_BASE + random_factor;
 		mm->get_unmapped_area = arch_get_unmapped_area;
+<<<<<<< HEAD
+=======
+		mm->unmap_area = arch_unmap_area;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		/* We know it's 32-bit */
 		unsigned long task_size = STACK_TOP32;
@@ -301,6 +305,10 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 
 		mm->mmap_base = PAGE_ALIGN(task_size - gap - random_factor);
 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+<<<<<<< HEAD
+=======
+		mm->unmap_area = arch_unmap_area_topdown;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -334,7 +342,11 @@ SYSCALL_DEFINE6(sparc_ipc, unsigned int, call, int, first, unsigned long, second
 	long err;
 
 	/* No need for backward compatibility. We can start fresh... */
+<<<<<<< HEAD
 	if (call <= SEMTIMEDOP) {
+=======
+	if (call <= SEMCTL) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		switch (call) {
 		case SEMOP:
 			err = sys_semtimedop(first, ptr,

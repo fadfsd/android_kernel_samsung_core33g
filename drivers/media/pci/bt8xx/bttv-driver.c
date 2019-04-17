@@ -4226,8 +4226,12 @@ static int bttv_probe(struct pci_dev *dev, const struct pci_device_id *pci_id)
 	}
 	btv->std = V4L2_STD_PAL;
 	init_irqreg(btv);
+<<<<<<< HEAD
 	if (!bttv_tvcards[btv->c.type].no_video)
 		v4l2_ctrl_handler_setup(hdl);
+=======
+	v4l2_ctrl_handler_setup(hdl);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (hdl->error) {
 		result = hdl->error;
 		goto fail2;

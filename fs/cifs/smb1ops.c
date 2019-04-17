@@ -885,12 +885,15 @@ cifs_mand_lock(const unsigned int xid, struct cifsFileInfo *cfile, __u64 offset,
 			   (__u8)type, wait, 0);
 }
 
+<<<<<<< HEAD
 static bool
 cifs_dir_needs_close(struct cifsFileInfo *cfile)
 {
 	return !cfile->srch_inf.endOfSearch && !cfile->invalidHandle;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct smb_version_operations smb1_operations = {
 	.send_cancel = send_nt_cancel,
 	.compare_fids = cifs_compare_fids,
@@ -954,6 +957,7 @@ struct smb_version_operations smb1_operations = {
 	.mand_lock = cifs_mand_lock,
 	.mand_unlock_range = cifs_unlock_range,
 	.push_mand_locks = cifs_push_mandatory_locks,
+<<<<<<< HEAD
 	.dir_needs_close = cifs_dir_needs_close,
 #ifdef CONFIG_CIFS_XATTR
 	.query_all_EAs = CIFSSMBQAllEAs,
@@ -963,6 +967,8 @@ struct smb_version_operations smb1_operations = {
 	.get_acl = get_cifs_acl,
 	.set_acl = set_cifs_acl,
 #endif /* CIFS_ACL */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct smb_version_values smb1_values = {

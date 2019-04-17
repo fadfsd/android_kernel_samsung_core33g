@@ -537,9 +537,14 @@ static ssize_t bonding_store_arp_interval(struct device *d,
 		goto out;
 	}
 	if (bond->params.mode == BOND_MODE_ALB ||
+<<<<<<< HEAD
 	    bond->params.mode == BOND_MODE_TLB ||
 	    bond->params.mode == BOND_MODE_8023AD) {
 		pr_info("%s: ARP monitoring cannot be used with ALB/TLB/802.3ad. Only MII monitoring is supported on %s.\n",
+=======
+	    bond->params.mode == BOND_MODE_TLB) {
+		pr_info("%s: ARP monitoring cannot be used with ALB/TLB. Only MII monitoring is supported on %s.\n",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			bond->dev->name, bond->dev->name);
 		ret = -EINVAL;
 		goto out;
@@ -697,8 +702,11 @@ static ssize_t bonding_store_downdelay(struct device *d,
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
 	if (!rtnl_trylock())
 		return restart_syscall();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!(bond->params.miimon)) {
 		pr_err("%s: Unable to set down delay as MII monitoring is disabled\n",
 		       bond->dev->name);
@@ -732,7 +740,10 @@ static ssize_t bonding_store_downdelay(struct device *d,
 	}
 
 out:
+<<<<<<< HEAD
 	rtnl_unlock();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 static DEVICE_ATTR(downdelay, S_IRUGO | S_IWUSR,
@@ -755,8 +766,11 @@ static ssize_t bonding_store_updelay(struct device *d,
 	int new_value, ret = count;
 	struct bonding *bond = to_bond(d);
 
+<<<<<<< HEAD
 	if (!rtnl_trylock())
 		return restart_syscall();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!(bond->params.miimon)) {
 		pr_err("%s: Unable to set up delay as MII monitoring is disabled\n",
 		       bond->dev->name);
@@ -790,7 +804,10 @@ static ssize_t bonding_store_updelay(struct device *d,
 	}
 
 out:
+<<<<<<< HEAD
 	rtnl_unlock();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 static DEVICE_ATTR(updelay, S_IRUGO | S_IWUSR,

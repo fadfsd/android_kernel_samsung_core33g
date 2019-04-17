@@ -18,28 +18,44 @@ static struct ctl_table llc2_timeout_table[] = {
 	{
 		.procname	= "ack",
 		.data		= &sysctl_llc2_ack_timeout,
+<<<<<<< HEAD
 		.maxlen		= sizeof(sysctl_llc2_ack_timeout),
+=======
+		.maxlen		= sizeof(long),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.mode		= 0644,
 		.proc_handler   = proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "busy",
 		.data		= &sysctl_llc2_busy_timeout,
+<<<<<<< HEAD
 		.maxlen		= sizeof(sysctl_llc2_busy_timeout),
+=======
+		.maxlen		= sizeof(long),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.mode		= 0644,
 		.proc_handler   = proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "p",
 		.data		= &sysctl_llc2_p_timeout,
+<<<<<<< HEAD
 		.maxlen		= sizeof(sysctl_llc2_p_timeout),
+=======
+		.maxlen		= sizeof(long),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.mode		= 0644,
 		.proc_handler   = proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "rej",
 		.data		= &sysctl_llc2_rej_timeout,
+<<<<<<< HEAD
 		.maxlen		= sizeof(sysctl_llc2_rej_timeout),
+=======
+		.maxlen		= sizeof(long),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.mode		= 0644,
 		.proc_handler   = proc_dointvec_jiffies,
 	},

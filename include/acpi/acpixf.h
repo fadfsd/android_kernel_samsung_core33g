@@ -177,7 +177,11 @@ acpi_status acpi_load_tables(void);
  */
 acpi_status acpi_reallocate_root_table(void);
 
+<<<<<<< HEAD
 acpi_status acpi_find_root_pointer(acpi_physical_address *rsdp_address);
+=======
+acpi_status acpi_find_root_pointer(acpi_size *rsdp_address);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 acpi_status acpi_unload_table_id(acpi_owner_id id);
 

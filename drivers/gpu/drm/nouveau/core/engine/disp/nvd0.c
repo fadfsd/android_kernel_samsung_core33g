@@ -679,7 +679,11 @@ exec_clkcmp(struct nv50_disp_priv *priv, int head, int id,
 	}
 
 	if (outp == 8)
+<<<<<<< HEAD
 		return conf;
+=======
+		return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	data = exec_lookup(priv, head, outp, ctrl, dcb, &ver, &hdr, &cnt, &len, &info1);
 	if (data == 0x0000)

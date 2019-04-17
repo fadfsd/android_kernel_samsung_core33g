@@ -18,12 +18,21 @@
 #include <linux/poll.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/vmalloc.h>
+#include <linux/mm.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/input/mt.h>
 #include <linux/major.h>
 #include <linux/device.h>
 #include <linux/cdev.h>
+<<<<<<< HEAD
+=======
+#include <linux/wakelock.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include "input-compat.h"
 
 struct evdev {
@@ -44,6 +53,12 @@ struct evdev_client {
 	unsigned int tail;
 	unsigned int packet_head; /* [future] position of the first element of next packet */
 	spinlock_t buffer_lock; /* protects access to buffer, head and tail */
+<<<<<<< HEAD
+=======
+	struct wake_lock wake_lock;
+	bool use_wake_lock;
+	char name[28];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct fasync_struct *fasync;
 	struct evdev *evdev;
 	struct list_head node;
@@ -71,10 +86,20 @@ static void __pass_event(struct evdev_client *client,
 		client->buffer[client->tail].value = 0;
 
 		client->packet_head = client->tail;
+<<<<<<< HEAD
+=======
+		if (client->use_wake_lock)
+			wake_unlock(&client->wake_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	if (event->type == EV_SYN && event->code == SYN_REPORT) {
 		client->packet_head = client->head;
+<<<<<<< HEAD
+=======
+		if (client->use_wake_lock)
+			wake_lock(&client->wake_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kill_fasync(&client->fasync, SIGIO, POLL_IN);
 	}
 }
@@ -289,7 +314,17 @@ static int evdev_release(struct inode *inode, struct file *file)
 	mutex_unlock(&evdev->mutex);
 
 	evdev_detach_client(evdev, client);
+<<<<<<< HEAD
 	kfree(client);
+=======
+	if (client->use_wake_lock)
+		wake_lock_destroy(&client->wake_lock);
+
+	if (is_vmalloc_addr(client))
+		vfree(client);
+	else
+		kfree(client);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	evdev_close_device(evdev);
 
@@ -309,6 +344,7 @@ static int evdev_open(struct inode *inode, struct file *file)
 {
 	struct evdev *evdev = container_of(inode->i_cdev, struct evdev, cdev);
 	unsigned int bufsize = evdev_compute_buffer_size(evdev->handle.dev);
+<<<<<<< HEAD
 	struct evdev_client *client;
 	int error;
 
@@ -320,6 +356,24 @@ static int evdev_open(struct inode *inode, struct file *file)
 
 	client->bufsize = bufsize;
 	spin_lock_init(&client->buffer_lock);
+=======
+	unsigned int size = sizeof(struct evdev_client) +
+					bufsize * sizeof(struct input_event);
+	struct evdev_client *client;
+	int error;
+
+	client = kzalloc(size, GFP_KERNEL | __GFP_NOWARN);
+	if (!client)
+		client = vzalloc(size); 
+	if (!client)
+		return -ENOMEM;
+
+	client->clkid = CLOCK_MONOTONIC;
+	client->bufsize = bufsize;
+	spin_lock_init(&client->buffer_lock);
+	snprintf(client->name, sizeof(client->name), "%s-%d",
+			dev_name(&evdev->dev), task_tgid_vnr(current));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	client->evdev = evdev;
 	evdev_attach_client(evdev, client);
 
@@ -334,7 +388,14 @@ static int evdev_open(struct inode *inode, struct file *file)
 
  err_free_client:
 	evdev_detach_client(evdev, client);
+<<<<<<< HEAD
 	kfree(client);
+=======
+	if (is_vmalloc_addr(client))
+		vfree(client);
+	else
+		kfree(client);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return error;
 }
 
@@ -386,6 +447,12 @@ static int evdev_fetch_next_event(struct evdev_client *client,
 	if (have_event) {
 		*event = client->buffer[client->tail++];
 		client->tail &= client->bufsize - 1;
+<<<<<<< HEAD
+=======
+		if (client->use_wake_lock &&
+		    client->packet_head == client->tail)
+			wake_unlock(&client->wake_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	spin_unlock_irq(&client->buffer_lock);
@@ -674,6 +741,38 @@ static int evdev_handle_mt_request(struct input_dev *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int evdev_enable_suspend_block(struct evdev *evdev,
+				      struct evdev_client *client)
+{
+	if (client->use_wake_lock)
+		return 0;
+
+	spin_lock_irq(&client->buffer_lock);
+	wake_lock_init(&client->wake_lock, WAKE_LOCK_SUSPEND, client->name);
+	client->use_wake_lock = true;
+	if (client->packet_head != client->tail)
+		wake_lock(&client->wake_lock);
+	spin_unlock_irq(&client->buffer_lock);
+	return 0;
+}
+
+static int evdev_disable_suspend_block(struct evdev *evdev,
+				       struct evdev_client *client)
+{
+	if (!client->use_wake_lock)
+		return 0;
+
+	spin_lock_irq(&client->buffer_lock);
+	client->use_wake_lock = false;
+	wake_lock_destroy(&client->wake_lock);
+	spin_unlock_irq(&client->buffer_lock);
+
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static long evdev_do_ioctl(struct file *file, unsigned int cmd,
 			   void __user *p, int compat_mode)
 {
@@ -755,6 +854,18 @@ static long evdev_do_ioctl(struct file *file, unsigned int cmd,
 
 	case EVIOCSKEYCODE_V2:
 		return evdev_handle_set_keycode_v2(dev, p);
+<<<<<<< HEAD
+=======
+
+	case EVIOCGSUSPENDBLOCK:
+		return put_user(client->use_wake_lock, ip);
+
+	case EVIOCSSUSPENDBLOCK:
+		if (p)
+			return evdev_enable_suspend_block(evdev, client);
+		else
+			return evdev_disable_suspend_block(evdev, client);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	size = _IOC_SIZE(cmd);
@@ -981,7 +1092,15 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
 	/* Normalize device number if it falls into legacy range */
 	if (dev_no < EVDEV_MINOR_BASE + EVDEV_MINORS)
 		dev_no -= EVDEV_MINOR_BASE;
+<<<<<<< HEAD
 	dev_set_name(&evdev->dev, "event%d", dev_no);
+=======
+
+	if(dev->device_node_name)
+		dev_set_name(&evdev->dev, "event_%s", dev->device_node_name);
+	else
+		dev_set_name(&evdev->dev, "event%d", dev_no);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	evdev->handle.dev = input_get_device(dev);
 	evdev->handle.name = dev_name(&evdev->dev);

@@ -69,7 +69,11 @@ static int create_fd(struct fsnotify_group *group,
 
 	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
 
+<<<<<<< HEAD
 	client_fd = get_unused_fd_flags(group->fanotify_data.f_flags);
+=======
+	client_fd = get_unused_fd();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (client_fd < 0)
 		return client_fd;
 
@@ -867,9 +871,15 @@ COMPAT_SYSCALL_DEFINE6(fanotify_mark,
 {
 	return sys_fanotify_mark(fanotify_fd, flags,
 #ifdef __BIG_ENDIAN
+<<<<<<< HEAD
 				((__u64)mask0 << 32) | mask1,
 #else
 				((__u64)mask1 << 32) | mask0,
+=======
+				((__u64)mask1 << 32) | mask0,
+#else
+				((__u64)mask0 << 32) | mask1,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 				 dfd, pathname);
 }

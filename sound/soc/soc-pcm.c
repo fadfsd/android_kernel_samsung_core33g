@@ -1886,7 +1886,10 @@ int soc_dpcm_runtime_update(struct snd_soc_dapm_widget *widget)
 			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
 		}
 
+<<<<<<< HEAD
 		dpcm_path_put(&list);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 capture:
 		/* skip if FE doesn't have capture capability */
 		if (!fe->cpu_dai->driver->capture.channels_min)

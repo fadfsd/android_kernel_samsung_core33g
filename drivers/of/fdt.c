@@ -24,6 +24,10 @@
 #endif /* CONFIG_PPC */
 
 #include <asm/page.h>
+<<<<<<< HEAD
+=======
+#include <asm/system_info.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 char *of_fdt_get_string(struct boot_param_header *blob, u32 offset)
 {
@@ -661,6 +665,7 @@ int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Convert configs to something easy to use in C code
  */
@@ -700,11 +705,24 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
 
 	if (depth != 1 || !cmdline |
+=======
+int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+				     int depth, void *data)
+{
+	unsigned long l;
+	char *p;
+	__be32 *serial;
+
+	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
+
+	if (depth != 1 || !data ||
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	    (strcmp(uname, "chosen") != 0 && strcmp(uname, "chosen@0") != 0))
 		return 0;
 
 	early_init_dt_check_for_initrd(node);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Put CONFIG_CMDLINE in if forced or if data had nothing in it to start */
 	if (overwrite_incoming_cmdline || !cmdline[0])
@@ -729,11 +747,21 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 		}
 	}
 =======
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Retrieve command line */
 	p = of_get_flat_dt_prop(node, "bootargs", &l);
 	if (p != NULL && l > 0)
 		strlcpy(data, p, min((int)l, COMMAND_LINE_SIZE));
 
+<<<<<<< HEAD
+=======
+	serial = of_get_flat_dt_prop(node, "serial", &l);
+	if (serial != NULL && l > 0) {
+		system_serial_low = *(serial++);
+		system_serial_high = *(serial);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * CONFIG_CMDLINE is meant to be a default in case nothing else
 	 * managed to set the command line, unless CONFIG_CMDLINE_FORCE
@@ -745,7 +773,10 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 #endif
 		strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
 #endif /* CONFIG_CMDLINE */
+<<<<<<< HEAD
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	pr_debug("Command line is: %s\n", (char*)data);
 

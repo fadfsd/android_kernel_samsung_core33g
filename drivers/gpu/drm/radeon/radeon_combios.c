@@ -1271,6 +1271,7 @@ struct radeon_encoder_lvds *radeon_combios_get_lvds_info(struct radeon_encoder
 
 			if ((RBIOS16(tmp) == lvds->native_mode.hdisplay) &&
 			    (RBIOS16(tmp + 2) == lvds->native_mode.vdisplay)) {
+<<<<<<< HEAD
 				u32 hss = (RBIOS16(tmp + 21) - RBIOS16(tmp + 19) - 1) * 8;
 
 				if (hss > lvds->native_mode.hdisplay)
@@ -1280,6 +1281,12 @@ struct radeon_encoder_lvds *radeon_combios_get_lvds_info(struct radeon_encoder
 					(RBIOS16(tmp + 17) - RBIOS16(tmp + 19)) * 8;
 				lvds->native_mode.hsync_start = lvds->native_mode.hdisplay +
 					hss;
+=======
+				lvds->native_mode.htotal = lvds->native_mode.hdisplay +
+					(RBIOS16(tmp + 17) - RBIOS16(tmp + 19)) * 8;
+				lvds->native_mode.hsync_start = lvds->native_mode.hdisplay +
+					(RBIOS16(tmp + 21) - RBIOS16(tmp + 19) - 1) * 8;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				lvds->native_mode.hsync_end = lvds->native_mode.hsync_start +
 					(RBIOS8(tmp + 23) * 8);
 

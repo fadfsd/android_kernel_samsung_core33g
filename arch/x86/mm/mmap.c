@@ -35,12 +35,21 @@ struct __read_mostly va_alignment va_align = {
 	.flags = -1,
 };
 
+<<<<<<< HEAD
 static unsigned long stack_maxrandom_size(void)
 {
 	unsigned long max = 0;
 	if ((current->flags & PF_RANDOMIZE) &&
 		!(current->personality & ADDR_NO_RANDOMIZE)) {
 		max = ((-1UL) & STACK_RND_MASK) << PAGE_SHIFT;
+=======
+static unsigned int stack_maxrandom_size(void)
+{
+	unsigned int max = 0;
+	if ((current->flags & PF_RANDOMIZE) &&
+		!(current->personality & ADDR_NO_RANDOMIZE)) {
+		max = ((-1U) & STACK_RND_MASK) << PAGE_SHIFT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	return max;
@@ -118,7 +127,14 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 	if (mmap_is_legacy()) {
 		mm->mmap_base = mm->mmap_legacy_base;
 		mm->get_unmapped_area = arch_get_unmapped_area;
+<<<<<<< HEAD
 	} else {
 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+=======
+		mm->unmap_area = arch_unmap_area;
+	} else {
+		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+		mm->unmap_area = arch_unmap_area_topdown;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }

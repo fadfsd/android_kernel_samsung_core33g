@@ -4,7 +4,10 @@
 #include <linux/types.h>
 
 #define SOCK_DIAG_BY_FAMILY 20
+<<<<<<< HEAD
 #define SOCK_DESTROY_BACKPORT 21
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct sock_diag_req {
 	__u8	sdiag_family;

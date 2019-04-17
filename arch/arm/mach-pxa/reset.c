@@ -13,7 +13,10 @@
 
 #include <mach/regs-ost.h>
 #include <mach/reset.h>
+<<<<<<< HEAD
 #include <mach/smemc.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 unsigned int reset_status;
 EXPORT_SYMBOL(reset_status);
@@ -82,12 +85,15 @@ static void do_hw_reset(void)
 	writel_relaxed(OSSR_M3, OSSR);
 	/* ... in 100 ms */
 	writel_relaxed(readl_relaxed(OSCR) + 368640, OSMR3);
+<<<<<<< HEAD
 	/*
 	 * SDRAM hangs on watchdog reset on Marvell PXA270 (erratum 71)
 	 * we put SDRAM into self-refresh to prevent that
 	 */
 	while (1)
 		writel_relaxed(MDREFR_SLFRSH, MDREFR);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void pxa_restart(char mode, const char *cmd)
@@ -111,3 +117,7 @@ void pxa_restart(char mode, const char *cmd)
 		break;
 	}
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

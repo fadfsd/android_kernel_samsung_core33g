@@ -60,12 +60,15 @@ struct tp_module {
 	unsigned int num_tracepoints;
 	struct tracepoint * const *tracepoints_ptrs;
 };
+<<<<<<< HEAD
 bool trace_module_has_bad_taint(struct module *mod);
 #else
 static inline bool trace_module_has_bad_taint(struct module *mod)
 {
 	return false;
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* CONFIG_MODULES */
 
 struct tracepoint_iter {

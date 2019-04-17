@@ -448,6 +448,10 @@ static long __ncp_ioctl(struct inode *inode, unsigned int cmd, unsigned long arg
 						result = -EIO;
 					}
 				}
+<<<<<<< HEAD
+=======
+				result = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			mutex_unlock(&server->root_setup_lock);
 

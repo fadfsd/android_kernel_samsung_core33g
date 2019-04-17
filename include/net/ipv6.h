@@ -111,9 +111,12 @@ struct frag_hdr {
 
 #define	IP6_MF	0x0001
 
+<<<<<<< HEAD
 #define IP6_REPLY_MARK(net, mark) \
 	((net)->ipv6.sysctl.fwmark_reflect ? (mark) : 0)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <net/sock.h>
 
 /* sysctls */
@@ -263,6 +266,15 @@ static inline void fl6_sock_release(struct ip6_flowlabel *fl)
 
 extern void icmpv6_notify(struct sk_buff *skb, u8 type, u8 code, __be32 info);
 
+<<<<<<< HEAD
+=======
+int icmpv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
+			       struct icmp6hdr *thdr, int len);
+
+struct dst_entry *icmpv6_route_lookup(struct net *net, struct sk_buff *skb,
+				      struct sock *sk, struct flowi6 *fl6);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern int 			ip6_ra_control(struct sock *sk, int sel);
 
 extern int			ipv6_parse_hopopts(struct sk_buff *skb);
@@ -533,19 +545,27 @@ static inline u32 ipv6_addr_hash(const struct in6_addr *a)
 }
 
 /* more secured version of ipv6_addr_hash() */
+<<<<<<< HEAD
 static inline u32 __ipv6_addr_jhash(const struct in6_addr *a, const u32 initval)
+=======
+static inline u32 ipv6_addr_jhash(const struct in6_addr *a)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	u32 v = (__force u32)a->s6_addr32[0] ^ (__force u32)a->s6_addr32[1];
 
 	return jhash_3words(v,
 			    (__force u32)a->s6_addr32[2],
 			    (__force u32)a->s6_addr32[3],
+<<<<<<< HEAD
 			    initval);
 }
 
 static inline u32 ipv6_addr_jhash(const struct in6_addr *a)
 {
 	return __ipv6_addr_jhash(a, ipv6_hash_secret);
+=======
+			    ipv6_hash_secret);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline bool ipv6_addr_loopback(const struct in6_addr *a)
@@ -657,6 +677,11 @@ static inline int ipv6_addr_diff(const struct in6_addr *a1, const struct in6_add
 	return __ipv6_addr_diff(a1, a2, sizeof(struct in6_addr));
 }
 
+<<<<<<< HEAD
+=======
+extern void ipv6_select_ident(struct frag_hdr *fhdr, struct rt6_info *rt);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  *	Header manipulation
  */

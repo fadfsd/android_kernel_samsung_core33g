@@ -337,7 +337,10 @@ static void icmp_reply(struct icmp_bxm *icmp_param, struct sk_buff *skb)
 	struct sock *sk;
 	struct inet_sock *inet;
 	__be32 daddr, saddr;
+<<<<<<< HEAD
 	u32 mark = IP4_REPLY_MARK(net, skb->mark);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (ip_options_echo(&icmp_param->replyopts.opt.opt, skb))
 		return;
@@ -350,7 +353,10 @@ static void icmp_reply(struct icmp_bxm *icmp_param, struct sk_buff *skb)
 	icmp_param->data.icmph.checksum = 0;
 
 	inet->tos = ip_hdr(skb)->tos;
+<<<<<<< HEAD
 	sk->sk_mark = mark;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	daddr = ipc.addr = ip_hdr(skb)->saddr;
 	saddr = fib_compute_spec_dst(skb);
 	ipc.opt = NULL;
@@ -363,7 +369,10 @@ static void icmp_reply(struct icmp_bxm *icmp_param, struct sk_buff *skb)
 	memset(&fl4, 0, sizeof(fl4));
 	fl4.daddr = daddr;
 	fl4.saddr = saddr;
+<<<<<<< HEAD
 	fl4.flowi4_mark = mark;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	fl4.flowi4_tos = RT_TOS(ip_hdr(skb)->tos);
 	fl4.flowi4_proto = IPPROTO_ICMP;
 	security_skb_classify_flow(skb, flowi4_to_flowi(&fl4));
@@ -382,7 +391,11 @@ static struct rtable *icmp_route_lookup(struct net *net,
 					struct flowi4 *fl4,
 					struct sk_buff *skb_in,
 					const struct iphdr *iph,
+<<<<<<< HEAD
 					__be32 saddr, u8 tos, u32 mark,
+=======
+					__be32 saddr, u8 tos,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					int type, int code,
 					struct icmp_bxm *param)
 {
@@ -394,7 +407,10 @@ static struct rtable *icmp_route_lookup(struct net *net,
 	fl4->daddr = (param->replyopts.opt.opt.srr ?
 		      param->replyopts.opt.opt.faddr : iph->saddr);
 	fl4->saddr = saddr;
+<<<<<<< HEAD
 	fl4->flowi4_mark = mark;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	fl4->flowi4_tos = RT_TOS(tos);
 	fl4->flowi4_proto = IPPROTO_ICMP;
 	fl4->fl4_icmp_type = type;
@@ -492,7 +508,10 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	struct flowi4 fl4;
 	__be32 saddr;
 	u8  tos;
+<<<<<<< HEAD
 	u32 mark;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct net *net;
 	struct sock *sk;
 
@@ -589,7 +608,10 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	tos = icmp_pointers[type].error ? ((iph->tos & IPTOS_TOS_MASK) |
 					   IPTOS_PREC_INTERNETCONTROL) :
 					  iph->tos;
+<<<<<<< HEAD
 	mark = IP4_REPLY_MARK(net, skb_in->mark);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (ip_options_echo(&icmp_param.replyopts.opt.opt, skb_in))
 		goto out_unlock;
@@ -606,12 +628,19 @@ void icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info)
 	icmp_param.skb	  = skb_in;
 	icmp_param.offset = skb_network_offset(skb_in);
 	inet_sk(sk)->tos = tos;
+<<<<<<< HEAD
 	sk->sk_mark = mark;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ipc.addr = iph->saddr;
 	ipc.opt = &icmp_param.replyopts.opt;
 	ipc.tx_flags = 0;
 
+<<<<<<< HEAD
 	rt = icmp_route_lookup(net, &fl4, skb_in, iph, saddr, tos, mark,
+=======
+	rt = icmp_route_lookup(net, &fl4, skb_in, iph, saddr, tos,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			       type, code, &icmp_param);
 	if (IS_ERR(rt))
 		goto out_unlock;
@@ -704,6 +733,11 @@ static void icmp_unreach(struct sk_buff *skb)
 					       &iph->daddr);
 			} else {
 				info = ntohs(icmph->un.frag.mtu);
+<<<<<<< HEAD
+=======
+				if (!info)
+					goto out;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			break;
 		case ICMP_SR_FAILED:
@@ -944,7 +978,12 @@ error:
 void icmp_err(struct sk_buff *skb, u32 info)
 {
 	struct iphdr *iph = (struct iphdr *)skb->data;
+<<<<<<< HEAD
 	struct icmphdr *icmph = (struct icmphdr *)(skb->data+(iph->ihl<<2));
+=======
+	int offset = iph->ihl<<2;
+	struct icmphdr *icmph = (struct icmphdr *)(skb->data + offset);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int type = icmp_hdr(skb)->type;
 	int code = icmp_hdr(skb)->code;
 	struct net *net = dev_net(skb->dev);
@@ -954,7 +993,11 @@ void icmp_err(struct sk_buff *skb, u32 info)
 	 * triggered by ICMP_ECHOREPLY which sent from kernel.
 	 */
 	if (icmph->type != ICMP_ECHOREPLY) {
+<<<<<<< HEAD
 		ping_err(skb, info);
+=======
+		ping_err(skb, offset, info);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 	}
 

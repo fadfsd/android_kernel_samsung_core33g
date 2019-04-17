@@ -157,12 +157,18 @@ static struct mr_table *ipmr_get_table(struct net *net, u32 id)
 static int ipmr_fib_lookup(struct net *net, struct flowi4 *flp4,
 			   struct mr_table **mrt)
 {
+<<<<<<< HEAD
 	int err;
 	struct ipmr_result res;
 	struct fib_lookup_arg arg = {
 		.result = &res,
 		.flags = FIB_LOOKUP_NOREF,
 	};
+=======
+	struct ipmr_result res;
+	struct fib_lookup_arg arg = { .result = &res, };
+	int err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = fib_rules_lookup(net->ipv4.mr_rules_ops,
 			       flowi4_to_flowi(flp4), 0, &arg);
@@ -1661,7 +1667,11 @@ static void ip_encap(struct sk_buff *skb, __be32 saddr, __be32 daddr)
 	iph->protocol	=	IPPROTO_IPIP;
 	iph->ihl	=	5;
 	iph->tot_len	=	htons(skb->len);
+<<<<<<< HEAD
 	ip_select_ident(skb, NULL);
+=======
+	ip_select_ident(skb, skb_dst(skb), NULL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ip_send_check(iph);
 
 	memset(&(IPCB(skb)->opt), 0, sizeof(IPCB(skb)->opt));
@@ -2255,14 +2265,22 @@ int ipmr_get_route(struct net *net, struct sk_buff *skb,
 }
 
 static int ipmr_fill_mroute(struct mr_table *mrt, struct sk_buff *skb,
+<<<<<<< HEAD
 			    u32 portid, u32 seq, struct mfc_cache *c, int cmd,
 			    int flags)
+=======
+			    u32 portid, u32 seq, struct mfc_cache *c, int cmd)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct nlmsghdr *nlh;
 	struct rtmsg *rtm;
 	int err;
 
+<<<<<<< HEAD
 	nlh = nlmsg_put(skb, portid, seq, cmd, sizeof(*rtm), flags);
+=======
+	nlh = nlmsg_put(skb, portid, seq, cmd, sizeof(*rtm), NLM_F_MULTI);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (nlh == NULL)
 		return -EMSGSIZE;
 
@@ -2330,7 +2348,11 @@ static void mroute_netlink_event(struct mr_table *mrt, struct mfc_cache *mfc,
 	if (skb == NULL)
 		goto errout;
 
+<<<<<<< HEAD
 	err = ipmr_fill_mroute(mrt, skb, 0, 0, mfc, cmd, 0);
+=======
+	err = ipmr_fill_mroute(mrt, skb, 0, 0, mfc, cmd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (err < 0)
 		goto errout;
 
@@ -2369,8 +2391,12 @@ static int ipmr_rtm_dumproute(struct sk_buff *skb, struct netlink_callback *cb)
 				if (ipmr_fill_mroute(mrt, skb,
 						     NETLINK_CB(cb->skb).portid,
 						     cb->nlh->nlmsg_seq,
+<<<<<<< HEAD
 						     mfc, RTM_NEWROUTE,
 						     NLM_F_MULTI) < 0)
+=======
+						     mfc, RTM_NEWROUTE) < 0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					goto done;
 next_entry:
 				e++;
@@ -2384,8 +2410,12 @@ next_entry:
 			if (ipmr_fill_mroute(mrt, skb,
 					     NETLINK_CB(cb->skb).portid,
 					     cb->nlh->nlmsg_seq,
+<<<<<<< HEAD
 					     mfc, RTM_NEWROUTE,
 					     NLM_F_MULTI) < 0) {
+=======
+					     mfc, RTM_NEWROUTE) < 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				spin_unlock_bh(&mfc_unres_lock);
 				goto done;
 			}

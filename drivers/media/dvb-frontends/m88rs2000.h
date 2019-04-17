@@ -53,8 +53,11 @@ static inline struct dvb_frontend *m88rs2000_attach(
 }
 #endif /* CONFIG_DVB_M88RS2000 */
 
+<<<<<<< HEAD
 #define RS2000_FE_CRYSTAL_KHZ 27000
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 enum {
 	DEMOD_WRITE = 0x1,
 	WRITE_DELAY = 0x10,

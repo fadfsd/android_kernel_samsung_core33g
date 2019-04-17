@@ -11,6 +11,7 @@
  * 2014.07.21 : Release Version 2.1.1
  *    - Add sdcardfs_copy_inode_attr() to fix permission issue
  *    - Delete mmap_sem lock in sdcardfs_setattr() to avoid deadlock
+<<<<<<< HEAD
  * 2014.11.12 : Release Version 2.1.2
  *    - Add get_lower_file function pointer in file_operations
  * 2014.11.25 : Release Version 2.1.3
@@ -32,3 +33,8 @@
  */
 
 #define SDCARDFS_VERSION "3.2.0"
+=======
+ */
+
+#define SDCARDFS_VERSION "2.1.1"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

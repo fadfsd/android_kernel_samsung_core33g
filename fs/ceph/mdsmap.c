@@ -138,8 +138,11 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end)
 				m->m_info[mds].export_targets =
 					kcalloc(num_export_targets, sizeof(u32),
 						GFP_NOFS);
+<<<<<<< HEAD
 				if (m->m_info[mds].export_targets == NULL)
 					goto badmem;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				for (j = 0; j < num_export_targets; j++)
 					m->m_info[mds].export_targets[j] =
 					       ceph_decode_32(&pexport_targets);
@@ -172,7 +175,11 @@ bad:
 		       DUMP_PREFIX_OFFSET, 16, 1,
 		       start, end - start, true);
 	ceph_mdsmap_destroy(m);
+<<<<<<< HEAD
 	return ERR_PTR(err);
+=======
+	return ERR_PTR(-EINVAL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void ceph_mdsmap_destroy(struct ceph_mdsmap *m)

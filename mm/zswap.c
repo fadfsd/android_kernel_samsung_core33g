@@ -75,6 +75,7 @@ static u64 zswap_duplicate_entry;
 /*********************************
 * tunables
 **********************************/
+<<<<<<< HEAD
 
 /* Enable/disable zswap (enabled by default) */
 static bool zswap_enabled = true;
@@ -135,6 +136,92 @@ struct zswap_pool {
 	char tfm_name[CRYPTO_MAX_ALG_NAME];
 };
 
+=======
+/* Enable/disable zswap (disabled by default, fixed at boot for now) */
+static bool zswap_enabled __read_mostly = 1;
+module_param_named(enabled, zswap_enabled, bool, 0444);
+
+/* Compressor to be used by zswap (fixed at boot for now) */
+#define ZSWAP_COMPRESSOR_DEFAULT "lzo"
+static char *zswap_compressor = ZSWAP_COMPRESSOR_DEFAULT;
+module_param_named(compressor, zswap_compressor, charp, 0444);
+
+/* The maximum percentage of memory that the compressed pool can occupy */
+static unsigned int zswap_max_pool_percent = 20;
+module_param_named(max_pool_percent,
+			zswap_max_pool_percent, uint, 0644);
+
+/* Compressed storage to use */
+#define ZSWAP_ZPOOL_DEFAULT "zsmalloc"
+static char *zswap_zpool_type = ZSWAP_ZPOOL_DEFAULT;
+module_param_named(zpool, zswap_zpool_type, charp, 0444);
+
+/* zpool is shared by all of zswap backend  */
+static struct zpool *zswap_pool;
+
+/*********************************
+* compression functions
+**********************************/
+/* per-cpu compression transforms */
+static struct crypto_comp * __percpu *zswap_comp_pcpu_tfms;
+
+enum comp_op {
+	ZSWAP_COMPOP_COMPRESS,
+	ZSWAP_COMPOP_DECOMPRESS
+};
+
+static int zswap_comp_op(enum comp_op op, const u8 *src, unsigned int slen,
+				u8 *dst, unsigned int *dlen)
+{
+	struct crypto_comp *tfm;
+	int ret;
+
+	tfm = *per_cpu_ptr(zswap_comp_pcpu_tfms, get_cpu());
+	switch (op) {
+	case ZSWAP_COMPOP_COMPRESS:
+		ret = crypto_comp_compress(tfm, src, slen, dst, dlen);
+		break;
+	case ZSWAP_COMPOP_DECOMPRESS:
+		ret = crypto_comp_decompress(tfm, src, slen, dst, dlen);
+		break;
+	default:
+		ret = -EINVAL;
+	}
+
+	put_cpu();
+	return ret;
+}
+
+static int __init zswap_comp_init(void)
+{
+	if (!crypto_has_comp(zswap_compressor, 0, 0)) {
+		pr_info("%s compressor not available\n", zswap_compressor);
+		/* fall back to default compressor */
+		zswap_compressor = ZSWAP_COMPRESSOR_DEFAULT;
+		if (!crypto_has_comp(zswap_compressor, 0, 0))
+			/* can't even load the default compressor */
+			return -ENODEV;
+	}
+	pr_info("using %s compressor\n", zswap_compressor);
+
+	/* alloc percpu transforms */
+	zswap_comp_pcpu_tfms = alloc_percpu(struct crypto_comp *);
+	if (!zswap_comp_pcpu_tfms)
+		return -ENOMEM;
+	return 0;
+}
+
+static void zswap_comp_exit(void)
+{
+	/* free percpu transforms */
+	if (zswap_comp_pcpu_tfms)
+		free_percpu(zswap_comp_pcpu_tfms);
+}
+
+/*********************************
+* data structures
+**********************************/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * struct zswap_entry
  *
@@ -142,24 +229,37 @@ struct zswap_pool {
  * page within zswap.
  *
  * rbnode - links the entry into red-black tree for the appropriate swap type
+<<<<<<< HEAD
  * offset - the swap offset for the entry.  Index into the red-black tree.
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * refcount - the number of outstanding reference to the entry. This is needed
  *            to protect against premature freeing of the entry by code
  *            concurrent calls to load, invalidate, and writeback.  The lock
  *            for the zswap_tree structure that contains the entry must
  *            be held while changing the refcount.  Since the lock must
  *            be held, there is no reason to also make refcount atomic.
+<<<<<<< HEAD
  * length - the length in bytes of the compressed page data.  Needed during
  *          decompression
  * pool - the zswap_pool the entry's data is in
  * handle - zpool allocation handle that stores the compressed page data
+=======
+ * offset - the swap offset for the entry.  Index into the red-black tree.
+ * handle - zpool allocation handle that stores the compressed page data
+ * length - the length in bytes of the compressed page data.  Needed during
+ *          decompression
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 struct zswap_entry {
 	struct rb_node rbnode;
 	pgoff_t offset;
 	int refcount;
 	unsigned int length;
+<<<<<<< HEAD
 	struct zswap_pool *pool;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long handle;
 };
 
@@ -179,6 +279,7 @@ struct zswap_tree {
 
 static struct zswap_tree *zswap_trees[MAX_SWAPFILES];
 
+<<<<<<< HEAD
 /* RCU-protected iteration */
 static LIST_HEAD(zswap_pools);
 /* protects zswap_pools list modification */
@@ -229,12 +330,18 @@ static void zswap_update_total_size(void)
 	zswap_pool_total_size = total;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*********************************
 * zswap entry functions
 **********************************/
 static struct kmem_cache *zswap_entry_cache;
 
+<<<<<<< HEAD
 static int __init zswap_entry_cache_create(void)
+=======
+static int zswap_entry_cache_create(void)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	zswap_entry_cache = KMEM_CACHE(zswap_entry, 0);
 	return zswap_entry_cache == NULL;
@@ -322,11 +429,18 @@ static void zswap_rb_erase(struct rb_root *root, struct zswap_entry *entry)
  */
 static void zswap_free_entry(struct zswap_entry *entry)
 {
+<<<<<<< HEAD
 	zpool_free(entry->pool->zpool, entry->handle);
 	zswap_pool_put(entry->pool);
 	zswap_entry_cache_free(entry);
 	atomic_dec(&zswap_stored_pages);
 	zswap_update_total_size();
+=======
+	zpool_free(zswap_pool, entry->handle);
+	zswap_entry_cache_free(entry);
+	atomic_dec(&zswap_stored_pages);
+	zswap_pool_total_size = zpool_get_total_size(zswap_pool);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* caller must hold the tree lock */
@@ -368,21 +482,49 @@ static struct zswap_entry *zswap_entry_find_get(struct rb_root *root,
 **********************************/
 static DEFINE_PER_CPU(u8 *, zswap_dstmem);
 
+<<<<<<< HEAD
 static int __zswap_cpu_dstmem_notifier(unsigned long action, unsigned long cpu)
 {
+=======
+static int __zswap_cpu_notifier(unsigned long action, unsigned long cpu)
+{
+	struct crypto_comp *tfm;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u8 *dst;
 
 	switch (action) {
 	case CPU_UP_PREPARE:
+<<<<<<< HEAD
 		dst = kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cpu));
 		if (!dst) {
 			pr_err("can't allocate compressor buffer\n");
+=======
+		tfm = crypto_alloc_comp(zswap_compressor, 0, 0);
+		if (IS_ERR(tfm)) {
+			pr_err("can't allocate compressor transform\n");
+			return NOTIFY_BAD;
+		}
+		*per_cpu_ptr(zswap_comp_pcpu_tfms, cpu) = tfm;
+		dst = kmalloc_node(PAGE_SIZE * 2, GFP_KERNEL, cpu_to_node(cpu));
+		if (!dst) {
+			pr_err("can't allocate compressor buffer\n");
+			crypto_free_comp(tfm);
+			*per_cpu_ptr(zswap_comp_pcpu_tfms, cpu) = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return NOTIFY_BAD;
 		}
 		per_cpu(zswap_dstmem, cpu) = dst;
 		break;
 	case CPU_DEAD:
 	case CPU_UP_CANCELED:
+<<<<<<< HEAD
+=======
+		tfm = *per_cpu_ptr(zswap_comp_pcpu_tfms, cpu);
+		if (tfm) {
+			crypto_free_comp(tfm);
+			*per_cpu_ptr(zswap_comp_pcpu_tfms, cpu) = NULL;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		dst = per_cpu(zswap_dstmem, cpu);
 		kfree(dst);
 		per_cpu(zswap_dstmem, cpu) = NULL;
@@ -393,6 +535,7 @@ static int __zswap_cpu_dstmem_notifier(unsigned long action, unsigned long cpu)
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static int zswap_cpu_dstmem_notifier(struct notifier_block *nb,
 				     unsigned long action, void *pcpu)
 {
@@ -404,25 +547,50 @@ static struct notifier_block zswap_dstmem_notifier = {
 };
 
 static int __init zswap_cpu_dstmem_init(void)
+=======
+static int zswap_cpu_notifier(struct notifier_block *nb,
+				unsigned long action, void *pcpu)
+{
+	unsigned long cpu = (unsigned long)pcpu;
+	return __zswap_cpu_notifier(action, cpu);
+}
+
+static struct notifier_block zswap_cpu_notifier_block = {
+	.notifier_call = zswap_cpu_notifier
+};
+
+static int zswap_cpu_init(void)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned long cpu;
 
 	cpu_notifier_register_begin();
 	for_each_online_cpu(cpu)
+<<<<<<< HEAD
 		if (__zswap_cpu_dstmem_notifier(CPU_UP_PREPARE, cpu) ==
 		    NOTIFY_BAD)
 			goto cleanup;
 	__register_cpu_notifier(&zswap_dstmem_notifier);
+=======
+		if (__zswap_cpu_notifier(CPU_UP_PREPARE, cpu) != NOTIFY_OK)
+			goto cleanup;
+	__register_cpu_notifier(&zswap_cpu_notifier_block);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cpu_notifier_register_done();
 	return 0;
 
 cleanup:
 	for_each_online_cpu(cpu)
+<<<<<<< HEAD
 		__zswap_cpu_dstmem_notifier(CPU_UP_CANCELED, cpu);
+=======
+		__zswap_cpu_notifier(CPU_UP_CANCELED, cpu);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cpu_notifier_register_done();
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static void zswap_cpu_dstmem_destroy(void)
 {
 	unsigned long cpu;
@@ -809,6 +977,15 @@ static int zswap_enabled_param_set(const char *val,
 	}
 
 	return param_set_bool(val, kp);
+=======
+/*********************************
+* helpers
+**********************************/
+static bool zswap_is_full(void)
+{
+	return totalram_pages * zswap_max_pool_percent / 100 <
+		DIV_ROUND_UP(zswap_pool_total_size, PAGE_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*********************************
@@ -840,6 +1017,7 @@ enum zswap_get_swap_ret {
 static int zswap_get_swap_cache_page(swp_entry_t entry,
 				struct page **retpage)
 {
+<<<<<<< HEAD
 	bool page_was_allocated;
 
 	*retpage = __read_swap_cache_async(entry, GFP_KERNEL,
@@ -849,6 +1027,78 @@ static int zswap_get_swap_cache_page(swp_entry_t entry,
 	if (!*retpage)
  		return ZSWAP_SWAPCACHE_FAIL;
  	return ZSWAP_SWAPCACHE_EXIST;
+=======
+	struct page *found_page, *new_page = NULL;
+	struct address_space *swapper_space = swap_address_space(entry);
+	int err;
+
+	*retpage = NULL;
+	do {
+		/*
+		 * First check the swap cache.  Since this is normally
+		 * called after lookup_swap_cache() failed, re-calling
+		 * that would confuse statistics.
+		 */
+		found_page = find_get_page(swapper_space, entry.val);
+		if (found_page)
+			break;
+
+		/*
+		 * Get a new page to read into from swap.
+		 */
+		if (!new_page) {
+			new_page = alloc_page(GFP_KERNEL);
+			if (!new_page)
+				break; /* Out of memory */
+		}
+
+		/*
+		 * call radix_tree_preload() while we can wait.
+		 */
+		err = radix_tree_preload(GFP_KERNEL);
+		if (err)
+			break;
+
+		/*
+		 * Swap entry may have been freed since our caller observed it.
+		 */
+		err = swapcache_prepare(entry);
+		if (err == -EEXIST) { /* seems racy */
+			radix_tree_preload_end();
+			continue;
+		}
+		if (err) { /* swp entry is obsolete ? */
+			radix_tree_preload_end();
+			break;
+		}
+
+		/* May fail (-ENOMEM) if radix-tree node allocation failed. */
+		__set_page_locked(new_page);
+		SetPageSwapBacked(new_page);
+		err = __add_to_swap_cache(new_page, entry);
+		if (likely(!err)) {
+			radix_tree_preload_end();
+			lru_cache_add_anon(new_page);
+			*retpage = new_page;
+			return ZSWAP_SWAPCACHE_NEW;
+		}
+		radix_tree_preload_end();
+		ClearPageSwapBacked(new_page);
+		__clear_page_locked(new_page);
+		/*
+		 * add_to_swap_cache() doesn't return -EEXIST, so we can safely
+		 * clear SWAP_HAS_CACHE flag.
+		 */
+		swapcache_free(entry, NULL);
+	} while (err != -ENOMEM);
+
+	if (new_page)
+		page_cache_release(new_page);
+	if (!found_page)
+		return ZSWAP_SWAPCACHE_FAIL;
+	*retpage = found_page;
+	return ZSWAP_SWAPCACHE_EXIST;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -871,7 +1121,10 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
 	pgoff_t offset;
 	struct zswap_entry *entry;
 	struct page *page;
+<<<<<<< HEAD
 	struct crypto_comp *tfm;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u8 *src, *dst;
 	unsigned int dlen;
 	int ret;
@@ -912,6 +1165,7 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
 	case ZSWAP_SWAPCACHE_NEW: /* page is locked */
 		/* decompress */
 		dlen = PAGE_SIZE;
+<<<<<<< HEAD
 		src = (u8 *)zpool_map_handle(entry->pool->zpool, entry->handle,
 				ZPOOL_MM_RO) + sizeof(struct zswap_header);
 		dst = kmap_atomic(page);
@@ -921,6 +1175,15 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
 		put_cpu_ptr(entry->pool->tfm);
 		kunmap_atomic(dst);
 		zpool_unmap_handle(entry->pool->zpool, entry->handle);
+=======
+		src = (u8 *)zpool_map_handle(zswap_pool, entry->handle,
+				ZPOOL_MM_RO) + sizeof(struct zswap_header);
+		dst = kmap_atomic(page);
+		ret = zswap_comp_op(ZSWAP_COMPOP_DECOMPRESS, src,
+				entry->length, dst, &dlen);
+		kunmap_atomic(dst);
+		zpool_unmap_handle(zswap_pool, entry->handle);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		BUG_ON(ret);
 		BUG_ON(dlen != PAGE_SIZE);
 
@@ -969,6 +1232,7 @@ end:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int zswap_shrink(void)
 {
 	struct zswap_pool *pool;
@@ -985,6 +1249,8 @@ static int zswap_shrink(void)
 	return ret;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*********************************
 * frontswap hooks
 **********************************/
@@ -994,7 +1260,10 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 {
 	struct zswap_tree *tree = zswap_trees[type];
 	struct zswap_entry *entry, *dupentry;
+<<<<<<< HEAD
 	struct crypto_comp *tfm;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret;
 	unsigned int dlen = PAGE_SIZE, len;
 	unsigned long handle;
@@ -1002,15 +1271,32 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 	u8 *src, *dst;
 	struct zswap_header *zhdr;
 
+<<<<<<< HEAD
 	if (!zswap_enabled || !tree) {
+=======
+	if (!tree) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ret = -ENODEV;
+		goto reject;
+	}
+
+<<<<<<< HEAD
+	/* reclaim space if needed */
+	if (zswap_is_full()) {
+		zswap_pool_limit_hit++;
+		if (zswap_shrink()) {
+=======
+	/* if this page got EIO on pageout before, give up immediately */
+	if (PageError(page)) {
+		ret = -ENOMEM;
 		goto reject;
 	}
 
 	/* reclaim space if needed */
 	if (zswap_is_full()) {
 		zswap_pool_limit_hit++;
-		if (zswap_shrink()) {
+		if (zpool_shrink(zswap_pool, 1, NULL)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			zswap_reject_reclaim_fail++;
 			ret = -ENOMEM;
 			goto reject;
@@ -1025,6 +1311,7 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 		goto reject;
 	}
 
+<<<<<<< HEAD
 	/* if entry is successfully added, it keeps the reference */
 	entry->pool = zswap_pool_current_get();
 	if (!entry->pool) {
@@ -1042,10 +1329,21 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 	if (ret) {
 		ret = -EINVAL;
 		goto put_dstmem;
+=======
+	/* compress */
+	dst = get_cpu_var(zswap_dstmem);
+	src = kmap_atomic(page);
+	ret = zswap_comp_op(ZSWAP_COMPOP_COMPRESS, src, PAGE_SIZE, dst, &dlen);
+	kunmap_atomic(src);
+	if (ret) {
+		ret = -EINVAL;
+		goto freepage;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* store */
 	len = dlen + sizeof(struct zswap_header);
+<<<<<<< HEAD
 	ret = zpool_malloc(entry->pool->zpool, len,
 			   __GFP_NORETRY | __GFP_NOWARN, &handle);
 	if (ret == -ENOSPC) {
@@ -1061,6 +1359,23 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 	buf = (u8 *)(zhdr + 1);
 	memcpy(buf, dst, dlen);
 	zpool_unmap_handle(entry->pool->zpool, handle);
+=======
+	ret = zpool_malloc(zswap_pool, len, __GFP_NORETRY | __GFP_NOWARN,
+		&handle);
+	if (ret == -ENOSPC) {
+		zswap_reject_compress_poor++;
+		goto freepage;
+	}
+	if (ret) {
+		zswap_reject_alloc_fail++;
+		goto freepage;
+	}
+	zhdr = zpool_map_handle(zswap_pool, handle, ZPOOL_MM_RW);
+	zhdr->swpentry = swp_entry(type, offset);
+	buf = (u8 *)(zhdr + 1);
+	memcpy(buf, dst, dlen);
+	zpool_unmap_handle(zswap_pool, handle);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	put_cpu_var(zswap_dstmem);
 
 	/* populate entry */
@@ -1083,6 +1398,7 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
 
 	/* update stats */
 	atomic_inc(&zswap_stored_pages);
+<<<<<<< HEAD
 	zswap_update_total_size();
 
 	return 0;
@@ -1091,6 +1407,14 @@ put_dstmem:
 	put_cpu_var(zswap_dstmem);
 	zswap_pool_put(entry->pool);
 freepage:
+=======
+	zswap_pool_total_size = zpool_get_total_size(zswap_pool);
+
+	return 0;
+
+freepage:
+	put_cpu_var(zswap_dstmem);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	zswap_entry_cache_free(entry);
 reject:
 	return ret;
@@ -1105,7 +1429,10 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
 {
 	struct zswap_tree *tree = zswap_trees[type];
 	struct zswap_entry *entry;
+<<<<<<< HEAD
 	struct crypto_comp *tfm;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u8 *src, *dst;
 	unsigned int dlen;
 	int ret;
@@ -1122,6 +1449,7 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
 
 	/* decompress */
 	dlen = PAGE_SIZE;
+<<<<<<< HEAD
 	src = (u8 *)zpool_map_handle(entry->pool->zpool, entry->handle,
 			ZPOOL_MM_RO) + sizeof(struct zswap_header);
 	dst = kmap_atomic(page);
@@ -1130,6 +1458,15 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
 	put_cpu_ptr(entry->pool->tfm);
 	kunmap_atomic(dst);
 	zpool_unmap_handle(entry->pool->zpool, entry->handle);
+=======
+	src = (u8 *)zpool_map_handle(zswap_pool, entry->handle,
+			ZPOOL_MM_RO) + sizeof(struct zswap_header);
+	dst = kmap_atomic(page);
+	ret = zswap_comp_op(ZSWAP_COMPOP_DECOMPRESS, src, entry->length,
+		dst, &dlen);
+	kunmap_atomic(dst);
+	zpool_unmap_handle(zswap_pool, entry->handle);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	BUG_ON(ret);
 
 	spin_lock(&tree->lock);
@@ -1182,6 +1519,13 @@ static void zswap_frontswap_invalidate_area(unsigned type)
 	zswap_trees[type] = NULL;
 }
 
+<<<<<<< HEAD
+=======
+static struct zpool_ops zswap_zpool_ops = {
+	.evict = zswap_writeback_entry
+};
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void zswap_frontswap_init(unsigned type)
 {
 	struct zswap_tree *tree;
@@ -1262,6 +1606,7 @@ static void __exit zswap_debugfs_exit(void) { }
 **********************************/
 static int __init init_zswap(void)
 {
+<<<<<<< HEAD
 	struct zswap_pool *pool;
 
 	zswap_init_started = true;
@@ -1285,11 +1630,47 @@ static int __init init_zswap(void)
 		zpool_get_type(pool->zpool));
 
 	list_add(&pool->list, &zswap_pools);
+=======
+	gfp_t gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_HIGHMEM;
+
+	if (!zswap_enabled)
+		return 0;
+
+	pr_info("loading zswap\n");
+
+	zswap_pool = zpool_create_pool(zswap_zpool_type, gfp, &zswap_zpool_ops);
+	if (!zswap_pool && strcmp(zswap_zpool_type, ZSWAP_ZPOOL_DEFAULT)) {
+		pr_info("%s zpool not available\n", zswap_zpool_type);
+		zswap_zpool_type = ZSWAP_ZPOOL_DEFAULT;
+		zswap_pool = zpool_create_pool(zswap_zpool_type, gfp,
+					&zswap_zpool_ops);
+	}
+	if (!zswap_pool) {
+		pr_err("%s zpool not available\n", zswap_zpool_type);
+		pr_err("zpool creation failed\n");
+		goto error;
+	}
+	pr_info("using %s pool\n", zswap_zpool_type);
+
+	if (zswap_entry_cache_create()) {
+		pr_err("entry cache creation failed\n");
+		goto cachefail;
+	}
+	if (zswap_comp_init()) {
+		pr_err("compressor initialization failed\n");
+		goto compfail;
+	}
+	if (zswap_cpu_init()) {
+		pr_err("per-cpu initialization failed\n");
+		goto pcpufail;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	frontswap_register_ops(&zswap_frontswap_ops);
 	if (zswap_debugfs_init())
 		pr_warn("debugfs initialization failed\n");
 	return 0;
+<<<<<<< HEAD
 
 pool_fail:
 	zswap_cpu_dstmem_destroy();
@@ -1299,11 +1680,24 @@ cache_fail:
 	/* if built-in, we aren't unloaded on failure; don't allow use */
 	zswap_init_failed = true;
 	zswap_enabled = false;
+=======
+pcpufail:
+	zswap_comp_exit();
+compfail:
+	zswap_entry_cache_destroy();
+cachefail:
+	zpool_destroy_pool(zswap_pool);
+error:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return -ENOMEM;
 }
 /* must be late so crypto has time to come up */
 late_initcall(init_zswap);
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("Seth Jennings <sjennings@variantweb.net>");
+=======
+MODULE_AUTHOR("Seth Jennings <sjenning@linux.vnet.ibm.com>");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_DESCRIPTION("Compressed cache for swap pages");

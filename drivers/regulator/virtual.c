@@ -266,11 +266,20 @@ static ssize_t set_mode(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
+<<<<<<< HEAD
 static DEVICE_ATTR(min_microvolts, 0666, show_min_uV, set_min_uV);
 static DEVICE_ATTR(max_microvolts, 0666, show_max_uV, set_max_uV);
 static DEVICE_ATTR(min_microamps, 0666, show_min_uA, set_min_uA);
 static DEVICE_ATTR(max_microamps, 0666, show_max_uA, set_max_uA);
 static DEVICE_ATTR(mode, 0666, show_mode, set_mode);
+=======
+static DEVICE_ATTR(min_microvolts, 0660, show_min_uV, set_min_uV);
+static DEVICE_ATTR(max_microvolts, 0660, show_max_uV, set_max_uV);
+static DEVICE_ATTR(min_microamps, 0660, show_min_uA, set_min_uA);
+static DEVICE_ATTR(max_microamps, 0660, show_max_uA, set_max_uA);
+
+static DEVICE_ATTR(mode, 0660, show_mode, set_mode);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static struct attribute *regulator_virtual_attributes[] = {
 	&dev_attr_min_microvolts.attr,

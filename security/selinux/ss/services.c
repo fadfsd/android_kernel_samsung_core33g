@@ -92,10 +92,16 @@ static int context_struct_to_string(struct context *context, char **scontext,
 				    u32 *scontext_len);
 
 static void context_struct_compute_av(struct context *scontext,
+<<<<<<< HEAD
 					struct context *tcontext,
 					u16 tclass,
 					struct av_decision *avd,
 					struct extended_perms *xperms);
+=======
+				      struct context *tcontext,
+				      u16 tclass,
+				      struct av_decision *avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct selinux_mapping {
 	u16 value; /* policy value */
@@ -565,8 +571,12 @@ static void type_attribute_bounds_av(struct context *scontext,
 		context_struct_compute_av(&lo_scontext,
 					  tcontext,
 					  tclass,
+<<<<<<< HEAD
 					  &lo_avd,
 					  NULL);
+=======
+					  &lo_avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if ((lo_avd.allowed & avd->allowed) == avd->allowed)
 			return;		/* no masked permission */
 		masked = ~lo_avd.allowed & avd->allowed;
@@ -581,8 +591,12 @@ static void type_attribute_bounds_av(struct context *scontext,
 		context_struct_compute_av(scontext,
 					  &lo_tcontext,
 					  tclass,
+<<<<<<< HEAD
 					  &lo_avd,
 					  NULL);
+=======
+					  &lo_avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if ((lo_avd.allowed & avd->allowed) == avd->allowed)
 			return;		/* no masked permission */
 		masked = ~lo_avd.allowed & avd->allowed;
@@ -598,8 +612,12 @@ static void type_attribute_bounds_av(struct context *scontext,
 		context_struct_compute_av(&lo_scontext,
 					  &lo_tcontext,
 					  tclass,
+<<<<<<< HEAD
 					  &lo_avd,
 					  NULL);
+=======
+					  &lo_avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if ((lo_avd.allowed & avd->allowed) == avd->allowed)
 			return;		/* no masked permission */
 		masked = ~lo_avd.allowed & avd->allowed;
@@ -616,6 +634,7 @@ static void type_attribute_bounds_av(struct context *scontext,
 }
 
 /*
+<<<<<<< HEAD
  * flag which drivers have permissions
  * only looking for ioctl based extended permssions
  */
@@ -649,6 +668,15 @@ static void context_struct_compute_av(struct context *scontext,
 					u16 tclass,
 					struct av_decision *avd,
 					struct extended_perms *xperms)
+=======
+ * Compute access vectors based on a context structure pair for
+ * the permissions in a particular class.
+ */
+static void context_struct_compute_av(struct context *scontext,
+				      struct context *tcontext,
+				      u16 tclass,
+				      struct av_decision *avd)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct constraint_node *constraint;
 	struct role_allow *ra;
@@ -662,10 +690,13 @@ static void context_struct_compute_av(struct context *scontext,
 	avd->allowed = 0;
 	avd->auditallow = 0;
 	avd->auditdeny = 0xffffffff;
+<<<<<<< HEAD
 	if (xperms) {
 		memset(&xperms->drivers, 0, sizeof(xperms->drivers));
 		xperms->len = 0;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (unlikely(!tclass || tclass > policydb.p_classes.nprim)) {
 		if (printk_ratelimit())
@@ -680,7 +711,11 @@ static void context_struct_compute_av(struct context *scontext,
 	 * this permission check, then use it.
 	 */
 	avkey.target_class = tclass;
+<<<<<<< HEAD
 	avkey.specified = AVTAB_AV | AVTAB_XPERMS;
+=======
+	avkey.specified = AVTAB_AV;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sattr = flex_array_get(policydb.type_attr_map_array, scontext->type - 1);
 	BUG_ON(!sattr);
 	tattr = flex_array_get(policydb.type_attr_map_array, tcontext->type - 1);
@@ -693,6 +728,7 @@ static void context_struct_compute_av(struct context *scontext,
 			     node;
 			     node = avtab_search_node_next(node, avkey.specified)) {
 				if (node->key.specified == AVTAB_ALLOWED)
+<<<<<<< HEAD
 					avd->allowed |= node->datum.u.data;
 				else if (node->key.specified == AVTAB_AUDITALLOW)
 					avd->auditallow |= node->datum.u.data;
@@ -705,6 +741,17 @@ static void context_struct_compute_av(struct context *scontext,
 			/* Check conditional av table for additional permissions */
 			cond_compute_av(&policydb.te_cond_avtab, &avkey,
 					avd, xperms);
+=======
+					avd->allowed |= node->datum.data;
+				else if (node->key.specified == AVTAB_AUDITALLOW)
+					avd->auditallow |= node->datum.data;
+				else if (node->key.specified == AVTAB_AUDITDENY)
+					avd->auditdeny &= node->datum.data;
+			}
+
+			/* Check conditional av table for additional permissions */
+			cond_compute_av(&policydb.te_cond_avtab, &avkey, avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		}
 	}
@@ -935,6 +982,7 @@ static void avd_init(struct av_decision *avd)
 	avd->flags = 0;
 }
 
+<<<<<<< HEAD
 void services_compute_xperms_decision(struct extended_perms_decision *xpermd,
 					struct avtab_node *node)
 {
@@ -1068,6 +1116,8 @@ allow:
 	memset(xpermd->allowed->p, 0xff, sizeof(xpermd->allowed->p));
 	goto out;
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /**
  * security_compute_av - Compute access vector decisions.
@@ -1075,7 +1125,10 @@ allow:
  * @tsid: target security identifier
  * @tclass: target security class
  * @avd: access vector decisions
+<<<<<<< HEAD
  * @xperms: extended permissions
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *
  * Compute a set of access vector decisions based on the
  * SID pair (@ssid, @tsid) for the permissions in @tclass.
@@ -1083,15 +1136,22 @@ allow:
 void security_compute_av(u32 ssid,
 			 u32 tsid,
 			 u16 orig_tclass,
+<<<<<<< HEAD
 			 struct av_decision *avd,
 			 struct extended_perms *xperms)
+=======
+			 struct av_decision *avd)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	u16 tclass;
 	struct context *scontext = NULL, *tcontext = NULL;
 
 	read_lock(&policy_rwlock);
 	avd_init(avd);
+<<<<<<< HEAD
 	xperms->len = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!ss_initialized)
 		goto allow;
 
@@ -1119,7 +1179,11 @@ void security_compute_av(u32 ssid,
 			goto allow;
 		goto out;
 	}
+<<<<<<< HEAD
 	context_struct_compute_av(scontext, tcontext, tclass, avd, xperms);
+=======
+	context_struct_compute_av(scontext, tcontext, tclass, avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	map_decision(orig_tclass, avd, policydb.allow_unknown);
 out:
 	read_unlock(&policy_rwlock);
@@ -1165,7 +1229,11 @@ void security_compute_av_user(u32 ssid,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	context_struct_compute_av(scontext, tcontext, tclass, avd, NULL);
+=======
+	context_struct_compute_av(scontext, tcontext, tclass, avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  out:
 	read_unlock(&policy_rwlock);
 	return;
@@ -1404,6 +1472,13 @@ static int security_context_to_sid_core(const char *scontext, u32 scontext_len,
 	struct context context;
 	int rc = 0;
 
+<<<<<<< HEAD
+=======
+	/* An empty security context is never valid. */
+	if (!scontext_len)
+		return -EINVAL;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!ss_initialized) {
 		int i;
 
@@ -1681,7 +1756,11 @@ static int security_compute_sid(u32 ssid,
 
 	if (avdatum) {
 		/* Use the type from the type transition/member/change rule. */
+<<<<<<< HEAD
 		newcontext.type = avdatum->u.data;
+=======
+		newcontext.type = avdatum->data;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* if we have a objname this is a file trans check so check those rules */

@@ -50,9 +50,15 @@ static inline void prandom_seed_state(struct rnd_state *state, u64 seed)
 {
 	u32 i = (seed >> 32) ^ (seed << 10) ^ seed;
 
+<<<<<<< HEAD
 	state->s1 = __seed(i, 2);
 	state->s2 = __seed(i, 8);
 	state->s3 = __seed(i, 16);
+=======
+	state->s1 = __seed(i, 1);
+	state->s2 = __seed(i, 7);
+	state->s3 = __seed(i, 15);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #ifdef CONFIG_ARCH_RANDOM

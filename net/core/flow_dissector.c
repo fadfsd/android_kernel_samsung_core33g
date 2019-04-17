@@ -40,7 +40,11 @@ again:
 		struct iphdr _iph;
 ip:
 		iph = skb_header_pointer(skb, nhoff, sizeof(_iph), &_iph);
+<<<<<<< HEAD
 		if (!iph)
+=======
+		if (!iph || iph->ihl < 5)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return false;
 
 		if (ip_is_fragment(iph))

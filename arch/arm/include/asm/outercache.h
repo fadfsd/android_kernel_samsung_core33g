@@ -37,10 +37,17 @@ struct outer_cache_fns {
 	void (*resume)(void);
 };
 
+<<<<<<< HEAD
 extern struct outer_cache_fns outer_cache;
 
 #ifdef CONFIG_OUTER_CACHE
 
+=======
+#ifdef CONFIG_OUTER_CACHE
+
+extern struct outer_cache_fns outer_cache;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void outer_inv_range(phys_addr_t start, phys_addr_t end)
 {
 	if (outer_cache.inv_range)

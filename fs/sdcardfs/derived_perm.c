@@ -30,12 +30,20 @@ static void inherit_derived_state(struct inode *parent, struct inode *child)
 	ci->userid = pi->userid;
 	ci->d_uid = pi->d_uid;
 	ci->d_gid = pi->d_gid;
+<<<<<<< HEAD
 	ci->under_android = pi->under_android;
+=======
+	ci->d_mode = pi->d_mode;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* helper function for derived state */
 void setup_derived_state(struct inode *inode, perm_t perm,
+<<<<<<< HEAD
                         userid_t userid, uid_t uid, gid_t gid, bool under_android)
+=======
+                        userid_t userid, uid_t uid, gid_t gid, mode_t mode)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct sdcardfs_inode_info *info = SDCARDFS_I(inode);
 	
@@ -43,7 +51,11 @@ void setup_derived_state(struct inode *inode, perm_t perm,
 	info->userid = userid;
 	info->d_uid = uid;
 	info->d_gid = gid;
+<<<<<<< HEAD
 	info->under_android = under_android;
+=======
+	info->d_mode = mode;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void get_derived_permission(struct dentry *parent, struct dentry *dentry)
@@ -51,9 +63,12 @@ void get_derived_permission(struct dentry *parent, struct dentry *dentry)
 	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
 	struct sdcardfs_inode_info *info = SDCARDFS_I(dentry->d_inode);
 	struct sdcardfs_inode_info *parent_info= SDCARDFS_I(parent->d_inode);
+<<<<<<< HEAD
 #ifdef CONFIG_SDP
 	struct sdcardfs_dentry_info *parent_dinfo = SDCARDFS_D(parent);
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	appid_t appid;
 
 	/* By default, each inode inherits from its parent. 
@@ -69,11 +84,19 @@ void get_derived_permission(struct dentry *parent, struct dentry *dentry)
 	//printk(KERN_INFO "sdcardfs: derived: %s, %s, %d\n", parent->d_name.name,
 	//				dentry->d_name.name, parent_info->perm);
 
+<<<<<<< HEAD
+=======
+	if (sbi->options.derive == DERIVE_NONE) {
+		return;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Derive custom permissions based on parent and current node */
 	switch (parent_info->perm) {
 		case PERM_INHERIT:
 			/* Already inherited above */
 			break;
+<<<<<<< HEAD
 		case PERM_PRE_ROOT:
 			/* Legacy internal layout places users at top level */
 			info->perm = PERM_ROOT;
@@ -90,12 +113,39 @@ void get_derived_permission(struct dentry *parent, struct dentry *dentry)
 				/* App-specific directories inside; let anyone traverse */
 				info->perm = PERM_ANDROID;
 				info->under_android = true;
+=======
+		case PERM_LEGACY_PRE_ROOT:
+			/* Legacy internal layout places users at top level */
+			info->perm = PERM_ROOT;
+			info->userid = simple_strtoul(dentry->d_name.name, NULL, 10);
+			break;
+		case PERM_ROOT:
+			/* Assume masked off by default. */
+			info->d_mode = 00770;
+			if (!strcasecmp(dentry->d_name.name, "Android")) {
+				/* App-specific directories inside; let anyone traverse */
+				info->perm = PERM_ANDROID;
+				info->d_mode = 00771;
+			} else if (sbi->options.split_perms) {
+				if (!strcasecmp(dentry->d_name.name, "DCIM")
+					|| !strcasecmp(dentry->d_name.name, "Pictures")) {
+					info->d_gid = AID_SDCARD_PICS;
+				} else if (!strcasecmp(dentry->d_name.name, "Alarms")
+						|| !strcasecmp(dentry->d_name.name, "Movies")
+						|| !strcasecmp(dentry->d_name.name, "Music")
+						|| !strcasecmp(dentry->d_name.name, "Notifications")
+						|| !strcasecmp(dentry->d_name.name, "Podcasts")
+						|| !strcasecmp(dentry->d_name.name, "Ringtones")) {
+					info->d_gid = AID_SDCARD_AV;
+				}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			break;
 		case PERM_ANDROID:
 			if (!strcasecmp(dentry->d_name.name, "data")) {
 				/* App-specific directories inside; let anyone traverse */
 				info->perm = PERM_ANDROID_DATA;
+<<<<<<< HEAD
 			} else if (!strcasecmp(dentry->d_name.name, "obb")) {
 				/* App-specific directories inside; let anyone traverse */
 				info->perm = PERM_ANDROID_OBB;
@@ -104,21 +154,52 @@ void get_derived_permission(struct dentry *parent, struct dentry *dentry)
 			} else if (!strcasecmp(dentry->d_name.name, "media")) {
 				/* App-specific directories inside; let anyone traverse */
 				info->perm = PERM_ANDROID_MEDIA;
+=======
+				info->d_mode = 00771;
+			} else if (!strcasecmp(dentry->d_name.name, "obb")) {
+				/* App-specific directories inside; let anyone traverse */
+				info->perm = PERM_ANDROID_OBB;
+				info->d_mode = 00771;
+				// FIXME : this feature will be implemented later.
+				/* Single OBB directory is always shared */
+			} else if (!strcasecmp(dentry->d_name.name, "user")) {
+				/* User directories must only be accessible to system, protected
+				 * by sdcard_all. Zygote will bind mount the appropriate user-
+				 * specific path. */
+				info->perm = PERM_ANDROID_USER;
+				info->d_gid = AID_SDCARD_ALL;
+				info->d_mode = 00770;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			break;
 		/* same policy will be applied on PERM_ANDROID_DATA 
 		 * and PERM_ANDROID_OBB */
 		case PERM_ANDROID_DATA:
 		case PERM_ANDROID_OBB:
+<<<<<<< HEAD
 		case PERM_ANDROID_MEDIA:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			appid = get_appid(sbi->pkgl_id, dentry->d_name.name);
 			if (appid != 0) {
 				info->d_uid = multiuser_get_uid(parent_info->userid, appid);
 			}
+<<<<<<< HEAD
+=======
+			info->d_mode = 00770;
+			break;
+		case PERM_ANDROID_USER:
+			/* Root of a secondary user */
+			info->perm = PERM_ROOT;
+			info->userid = simple_strtoul(dentry->d_name.name, NULL, 10);
+			info->d_gid = AID_SDCARD_R;
+			info->d_mode = 00771;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			break;
 	}
 } 
 
+<<<<<<< HEAD
 /* set vfs_inode from sdcardfs_inode */
 void fix_derived_permission(struct inode *inode) {
 	struct sdcardfs_inode_info *info = SDCARDFS_I(inode);
@@ -159,6 +240,8 @@ void fix_derived_permission(struct inode *inode) {
 	inode->i_mode = ((inode->i_mode & S_IFMT) | filtered_mode); 
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* main function for updating derived permission */
 inline void update_derived_permission(struct dentry *dentry)
 {
@@ -192,9 +275,19 @@ int need_graft_path(struct dentry *dentry)
 	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
 
 	if(parent_info->perm == PERM_ANDROID && 
+<<<<<<< HEAD
 			!strcasecmp(dentry->d_name.name, "obb") &&
 			sbi->options.multi_user) {
 		ret = 1;
+=======
+			!strcasecmp(dentry->d_name.name, "obb")) {
+
+		/* /Android/obb is the base obbpath of DERIVED_UNIFIED */
+		if(!(sbi->options.derive == DERIVE_UNIFIED 
+				&& parent_info->userid == 0)) {
+			ret = 1;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	dput(parent);
 	return ret;
@@ -248,6 +341,7 @@ int is_base_obbpath(struct dentry *dentry)
 	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
 
 	spin_lock(&SDCARDFS_D(dentry)->lock); 
+<<<<<<< HEAD
 	/* if multi_user is true */
 	if(sbi->options.multi_user && parent_info->perm == PERM_PRE_ROOT && 
 			!strcasecmp(dentry->d_name.name, "obb")) {
@@ -257,6 +351,20 @@ int is_base_obbpath(struct dentry *dentry)
 	else if (!sbi->options.multi_user && parent_info->perm == PERM_ANDROID && 
 			!strcasecmp(dentry->d_name.name, "obb")) {
 		ret = 1;
+=======
+	/* DERIVED_LEGACY */
+	if(parent_info->perm == PERM_LEGACY_PRE_ROOT && 
+			!strcasecmp(dentry->d_name.name, "obb")) {
+		ret = 1;
+	} 
+	/* DERIVED_UNIFIED :/Android/obb is the base obbpath */
+	else if (parent_info->perm == PERM_ANDROID && 
+			!strcasecmp(dentry->d_name.name, "obb")) {
+		if((sbi->options.derive == DERIVE_UNIFIED 
+				&& parent_info->userid == 0)) {
+			ret = 1;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	spin_unlock(&SDCARDFS_D(dentry)->lock); 
 	dput(parent);
@@ -297,3 +405,8 @@ int setup_obb_dentry(struct dentry *dentry, struct path *lower_path)
 	}
 	return err;
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

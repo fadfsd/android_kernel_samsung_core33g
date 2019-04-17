@@ -2679,7 +2679,11 @@ static struct {
 };
 
 static int fs_ratios[] = {
+<<<<<<< HEAD
 	64, 128, 192, 256, 384, 512, 768, 1024, 1408, 1536
+=======
+	64, 128, 192, 256, 348, 512, 768, 1024, 1408, 1536
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static int bclk_divs[] = {

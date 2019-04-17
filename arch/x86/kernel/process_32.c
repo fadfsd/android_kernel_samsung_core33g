@@ -147,7 +147,11 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
 		childregs->bp = arg;
 		childregs->orig_ax = -1;
 		childregs->cs = __KERNEL_CS | get_kernel_rpl();
+<<<<<<< HEAD
 		childregs->flags = X86_EFLAGS_IF | X86_EFLAGS_FIXED;
+=======
+		childregs->flags = X86_EFLAGS_IF | X86_EFLAGS_BIT1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		p->fpu_counter = 0;
 		p->thread.io_bitmap_ptr = NULL;
 		memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));

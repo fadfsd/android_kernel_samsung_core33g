@@ -235,6 +235,7 @@ static void logi_dj_recv_add_djhid_device(struct dj_receiver_dev *djrcv_dev,
 		return;
 	}
 
+<<<<<<< HEAD
 	if ((dj_report->device_index < DJ_DEVICE_INDEX_MIN) ||
 	    (dj_report->device_index > DJ_DEVICE_INDEX_MAX)) {
 		dev_err(&djrcv_hdev->dev, "%s: invalid device index:%d\n",
@@ -242,6 +243,8 @@ static void logi_dj_recv_add_djhid_device(struct dj_receiver_dev *djrcv_dev,
 		return;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	dj_hiddev = hid_allocate_device();
 	if (IS_ERR(dj_hiddev)) {
 		dev_err(&djrcv_hdev->dev, "%s: hid_allocate_device failed\n",
@@ -641,6 +644,10 @@ static int logi_dj_raw_event(struct hid_device *hdev,
 	struct dj_receiver_dev *djrcv_dev = hid_get_drvdata(hdev);
 	struct dj_report *dj_report = (struct dj_report *) data;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	bool report_processed = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	dbg_hid("%s, size:%d\n", __func__, size);
 
@@ -667,6 +674,7 @@ static int logi_dj_raw_event(struct hid_device *hdev,
 	 * device (via hid_input_report() ) and return 1 so hid-core does not do
 	 * anything else with it.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* case 1) */
@@ -706,6 +714,36 @@ static int logi_dj_raw_event(struct hid_device *hdev,
 	spin_unlock_irqrestore(&djrcv_dev->lock, flags);
 
 	return true;
+=======
+	if ((dj_report->device_index < DJ_DEVICE_INDEX_MIN) ||
+	    (dj_report->device_index > DJ_DEVICE_INDEX_MAX)) {
+		dev_err(&hdev->dev, "%s: invalid device index:%d\n",
+				__func__, dj_report->device_index);
+		return false;
+	}
+
+	spin_lock_irqsave(&djrcv_dev->lock, flags);
+	if (dj_report->report_id == REPORT_ID_DJ_SHORT) {
+		switch (dj_report->report_type) {
+		case REPORT_TYPE_NOTIF_DEVICE_PAIRED:
+		case REPORT_TYPE_NOTIF_DEVICE_UNPAIRED:
+			logi_dj_recv_queue_notification(djrcv_dev, dj_report);
+			break;
+		case REPORT_TYPE_NOTIF_CONNECTION_STATUS:
+			if (dj_report->report_params[CONNECTION_STATUS_PARAM_STATUS] ==
+			    STATUS_LINKLOSS) {
+				logi_dj_recv_forward_null_report(djrcv_dev, dj_report);
+			}
+			break;
+		default:
+			logi_dj_recv_forward_report(djrcv_dev, dj_report);
+		}
+		report_processed = true;
+	}
+	spin_unlock_irqrestore(&djrcv_dev->lock, flags);
+
+	return report_processed;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int logi_dj_probe(struct hid_device *hdev,

@@ -40,9 +40,12 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
 
 static int make_writable(struct sk_buff *skb, int write_len)
 {
+<<<<<<< HEAD
 	if (!pskb_may_pull(skb, write_len))
 		return -ENOMEM;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!skb_cloned(skb) || skb_clone_writable(skb, write_len))
 		return 0;
 
@@ -71,8 +74,11 @@ static int __pop_vlan_tci(struct sk_buff *skb, __be16 *current_tci)
 
 	vlan_set_encap_proto(skb, vhdr);
 	skb->mac_header += VLAN_HLEN;
+<<<<<<< HEAD
 	if (skb_network_offset(skb) < ETH_HLEN)
 		skb_set_network_header(skb, ETH_HLEN);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	skb_reset_mac_len(skb);
 
 	return 0;

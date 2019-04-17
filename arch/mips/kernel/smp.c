@@ -109,10 +109,17 @@ asmlinkage __cpuinit void start_secondary(void)
 	else
 #endif /* CONFIG_MIPS_MT_SMTC */
 	cpu_probe();
+<<<<<<< HEAD
 	per_cpu_trap_init(false);
 	mips_clockevent_init();
 	mp_ops->init_secondary();
 	cpu_report();
+=======
+	cpu_report();
+	per_cpu_trap_init(false);
+	mips_clockevent_init();
+	mp_ops->init_secondary();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * XXX parity protection should be folded in here when it's converted

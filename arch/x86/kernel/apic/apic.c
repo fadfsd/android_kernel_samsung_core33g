@@ -1263,7 +1263,11 @@ void __cpuinit setup_local_APIC(void)
 	unsigned int value, queued;
 	int i, j, acked = 0;
 	unsigned long long tsc = 0, ntsc;
+<<<<<<< HEAD
 	long long max_loops = cpu_khz ? cpu_khz : 1000000;
+=======
+	long long max_loops = cpu_khz;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (cpu_has_tsc)
 		rdtscll(tsc);
@@ -1360,7 +1364,11 @@ void __cpuinit setup_local_APIC(void)
 			break;
 		}
 		if (queued) {
+<<<<<<< HEAD
 			if (cpu_has_tsc && cpu_khz) {
+=======
+			if (cpu_has_tsc) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				rdtscll(ntsc);
 				max_loops = (cpu_khz << 10) - (ntsc - tsc);
 			} else

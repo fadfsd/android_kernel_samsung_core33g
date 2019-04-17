@@ -18,13 +18,23 @@
 #include <linux/mm.h>
 
 #define INIT_MEMBLOCK_REGIONS	128
+<<<<<<< HEAD
 
+=======
+#define REGION_NAME_LEN 32
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct memblock_region {
 	phys_addr_t base;
 	phys_addr_t size;
 #ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
 	int nid;
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MEMBLOCK_RESERVE_DEBUG
+	char name[REGION_NAME_LEN];
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct memblock_type {
@@ -56,7 +66,19 @@ int memblock_add_node(phys_addr_t base, phys_addr_t size, int nid);
 int memblock_add(phys_addr_t base, phys_addr_t size);
 int memblock_remove(phys_addr_t base, phys_addr_t size);
 int memblock_free(phys_addr_t base, phys_addr_t size);
+<<<<<<< HEAD
 int memblock_reserve(phys_addr_t base, phys_addr_t size);
+=======
+#ifdef CONFIG_MEMBLOCK_RESERVE_DEBUG
+#define memblock_reserve(base, size) \
+	memblock_reserve_ext(__func__, __LINE__,base, size)
+#else
+int memblock_reserve(phys_addr_t base, phys_addr_t size);
+#endif
+#ifdef CONFIG_MEMBLOCK_RESERVE_DEBUG
+int memblock_reserve_ext(char*func, unsigned int line, phys_addr_t base, phys_addr_t size);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void memblock_trim_memory(phys_addr_t align);
 
 #ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
@@ -150,10 +172,32 @@ phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align);
 #define MEMBLOCK_ALLOC_ANYWHERE	(~(phys_addr_t)0)
 #define MEMBLOCK_ALLOC_ACCESSIBLE	0
 
+<<<<<<< HEAD
 phys_addr_t memblock_alloc_base(phys_addr_t size, phys_addr_t align,
 				phys_addr_t max_addr);
 phys_addr_t __memblock_alloc_base(phys_addr_t size, phys_addr_t align,
 				  phys_addr_t max_addr);
+=======
+
+
+#ifdef CONFIG_MEMBLOCK_RESERVE_DEBUG
+phys_addr_t __memblock_alloc_base_ext(char* func, unsigned int line, phys_addr_t size, phys_addr_t align,
+				  phys_addr_t max_addr);
+phys_addr_t memblock_alloc_base_ext(char* func, unsigned int line, phys_addr_t size, phys_addr_t align, phys_addr_t max_addr);
+#endif
+
+#ifdef CONFIG_MEMBLOCK_RESERVE_DEBUG
+#define __memblock_alloc_base(size, align, max_addr) \
+	__memblock_alloc_base_ext(__func__, __LINE__, size, align, max_addr)
+#define memblock_alloc_base(size, align, max_addr) \
+	memblock_alloc_base_ext(__func__, __LINE__, size, align, max_addr)
+#else
+phys_addr_t __memblock_alloc_base(phys_addr_t size, phys_addr_t align,
+				  phys_addr_t max_addr);
+phys_addr_t memblock_alloc_base(phys_addr_t size, phys_addr_t align,
+				phys_addr_t max_addr);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 phys_addr_t memblock_phys_mem_size(void);
 phys_addr_t memblock_mem_size(unsigned long limit_pfn);
 phys_addr_t memblock_start_of_DRAM(void);

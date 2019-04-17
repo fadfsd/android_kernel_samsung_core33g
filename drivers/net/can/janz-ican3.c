@@ -19,7 +19,10 @@
 #include <linux/netdevice.h>
 #include <linux/can.h>
 #include <linux/can/dev.h>
+<<<<<<< HEAD
 #include <linux/can/skb.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/can/error.h>
 
 #include <linux/mfd/janz.h>
@@ -1135,9 +1138,26 @@ static void ican3_handle_message(struct ican3_dev *mod, struct ican3_msg *msg)
  */
 static void ican3_put_echo_skb(struct ican3_dev *mod, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	skb = can_create_echo_skb(skb);
 	if (!skb)
 		return;
+=======
+	struct sock *srcsk = skb->sk;
+
+	if (atomic_read(&skb->users) != 1) {
+		struct sk_buff *old_skb = skb;
+
+		skb = skb_clone(old_skb, GFP_ATOMIC);
+		kfree_skb(old_skb);
+		if (!skb)
+			return;
+	} else {
+		skb_orphan(skb);
+	}
+
+	skb->sk = srcsk;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* save this skb for tx interrupt echo handling */
 	skb_queue_tail(&mod->echoq, skb);

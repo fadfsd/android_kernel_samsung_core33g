@@ -27,6 +27,15 @@
 
 DEFINE_MUTEX(event_mutex);
 
+<<<<<<< HEAD
+=======
+DEFINE_MUTEX(event_storage_mutex);
+EXPORT_SYMBOL_GPL(event_storage_mutex);
+
+char event_storage[EVENT_STORAGE_SIZE];
+EXPORT_SYMBOL_GPL(event_storage);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 LIST_HEAD(ftrace_events);
 static LIST_HEAD(ftrace_common_fields);
 
@@ -425,7 +434,11 @@ static void remove_event_file_dir(struct ftrace_event_file *file)
 
 	if (dir) {
 		spin_lock(&dir->d_lock);	/* probably unneeded */
+<<<<<<< HEAD
 		list_for_each_entry(child, &dir->d_subdirs, d_child) {
+=======
+		list_for_each_entry(child, &dir->d_subdirs, d_u.d_child) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (child->d_inode)	/* probably unneeded */
 				child->d_inode->i_private = NULL;
 		}
@@ -1854,6 +1867,7 @@ static void trace_module_add_events(struct module *mod)
 	struct ftrace_module_file_ops *file_ops = NULL;
 	struct ftrace_event_call **call, **start, **end;
 
+<<<<<<< HEAD
 	if (!mod->num_trace_events)
 		return;
 
@@ -1864,6 +1878,8 @@ static void trace_module_add_events(struct module *mod)
 		return;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	start = mod->trace_events;
 	end = mod->trace_events + mod->num_trace_events;
 

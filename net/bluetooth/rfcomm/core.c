@@ -436,7 +436,10 @@ static int __rfcomm_dlc_close(struct rfcomm_dlc *d, int err)
 
 	switch (d->state) {
 	case BT_CONNECT:
+<<<<<<< HEAD
 	case BT_CONFIG:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (test_and_clear_bit(RFCOMM_DEFER_SETUP, &d->flags)) {
 			set_bit(RFCOMM_AUTH_REJECT, &d->flags);
 			rfcomm_schedule();
@@ -1857,6 +1860,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
 	/* Get data directly from socket receive queue without copying it. */
 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
 		skb_orphan(skb);
+<<<<<<< HEAD
 		if (!skb_linearize(skb)) {
 			s = rfcomm_recv_frame(s, skb);
 			if (!s)
@@ -1864,6 +1868,12 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
 		} else {
 			kfree_skb(skb);
 		}
+=======
+		if (!skb_linearize(skb))
+			s = rfcomm_recv_frame(s, skb);
+		else
+			kfree_skb(skb);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	if (s && (sk->sk_state == BT_CLOSED))

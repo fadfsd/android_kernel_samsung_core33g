@@ -5,7 +5,10 @@
 #include <linux/sched.h>		/* For struct task_struct.  */
 #include <linux/err.h>			/* for IS_ERR_VALUE */
 #include <linux/bug.h>			/* For BUG_ON.  */
+<<<<<<< HEAD
 #include <linux/pid_namespace.h>	/* For task_active_pid_ns.  */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <uapi/linux/ptrace.h>
 
 /*
@@ -130,6 +133,7 @@ static inline void ptrace_event(int event, unsigned long message)
 }
 
 /**
+<<<<<<< HEAD
  * ptrace_event_pid - possibly stop for a ptrace event notification
  * @event:	%PTRACE_EVENT_* value to report
  * @pid:	process identifier for %PTRACE_GETEVENTMSG to return
@@ -161,6 +165,8 @@ static inline void ptrace_event_pid(int event, struct pid *pid)
 }
 
 /**
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * ptrace_init_task - initialize ptrace state for a new child
  * @child:		new child task
  * @ptrace:		true if child should be ptrace'd by parent's tracer
@@ -337,9 +343,12 @@ static inline void user_single_step_siginfo(struct task_struct *tsk,
  * calling arch_ptrace_stop() when it would be superfluous.  For example,
  * if the thread has not been back to user mode since the last stop, the
  * thread state might indicate that nothing needs to be done.
+<<<<<<< HEAD
  *
  * This is guaranteed to be invoked once before a task stops for ptrace and
  * may include arch-specific operations necessary prior to a ptrace stop.
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 #define arch_ptrace_stop_needed(code, info)	(0)
 #endif

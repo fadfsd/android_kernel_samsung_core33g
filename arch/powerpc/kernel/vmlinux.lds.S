@@ -213,7 +213,10 @@ SECTIONS
 		*(.opd)
 	}
 
+<<<<<<< HEAD
 	. = ALIGN(256);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.got : AT(ADDR(.got) - LOAD_OFFSET) {
 		__toc_start = .;
 #ifndef CONFIG_RELOCATABLE

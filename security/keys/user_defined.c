@@ -169,6 +169,15 @@ void user_destroy(struct key *key)
 {
 	struct user_key_payload *upayload = key->payload.data;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	if(upayload)
+	{
+		memset(upayload->data, 0, upayload->datalen);
+	}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kfree(upayload);
 }
 

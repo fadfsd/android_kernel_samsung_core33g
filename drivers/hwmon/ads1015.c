@@ -184,7 +184,11 @@ static int ads1015_get_channels_config_of(struct i2c_client *client)
 		}
 
 		channel = be32_to_cpup(property);
+<<<<<<< HEAD
 		if (channel >= ADS1015_CHANNELS) {
+=======
+		if (channel > ADS1015_CHANNELS) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			dev_err(&client->dev,
 				"invalid channel index %d on %s\n",
 				channel, node->full_name);
@@ -198,7 +202,10 @@ static int ads1015_get_channels_config_of(struct i2c_client *client)
 				dev_err(&client->dev,
 					"invalid gain on %s\n",
 					node->full_name);
+<<<<<<< HEAD
 				return -EINVAL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 		}
 
@@ -209,7 +216,10 @@ static int ads1015_get_channels_config_of(struct i2c_client *client)
 				dev_err(&client->dev,
 					"invalid data_rate on %s\n",
 					node->full_name);
+<<<<<<< HEAD
 				return -EINVAL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 		}
 

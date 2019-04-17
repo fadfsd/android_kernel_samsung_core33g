@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #
 # Magnetometer sensors
 #
@@ -56,3 +57,10 @@ config IIO_ST_MAGN_SPI_3AXIS
 	depends on IIO_ST_SENSORS_SPI
 
 endmenu
+=======
+
+source "drivers/staging/iio/magnetometer/inv_compass/Kconfig"
+
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

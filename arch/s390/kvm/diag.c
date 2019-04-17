@@ -130,7 +130,11 @@ static int __diag_virtio_hypercall(struct kvm_vcpu *vcpu)
 
 int kvm_s390_handle_diag(struct kvm_vcpu *vcpu)
 {
+<<<<<<< HEAD
 	int code = kvm_s390_get_base_disp_rs(vcpu) & 0xffff;
+=======
+	int code = (vcpu->arch.sie_block->ipb & 0xfff0000) >> 16;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	trace_kvm_s390_handle_diag(vcpu, code);
 	switch (code) {

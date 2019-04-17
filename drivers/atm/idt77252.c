@@ -3511,7 +3511,11 @@ static int init_card(struct atm_dev *dev)
 	tmp = dev_get_by_name(&init_net, tname);	/* jhs: was "tmp = dev_get(tname);" */
 	if (tmp) {
 		memcpy(card->atmdev->esi, tmp->dev_addr, 6);
+<<<<<<< HEAD
 		dev_put(tmp);
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk("%s: ESI %pM\n", card->name, card->atmdev->esi);
 	}
 	/*

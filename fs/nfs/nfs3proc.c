@@ -33,7 +33,11 @@ nfs3_rpc_wrapper(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 		res = rpc_call_sync(clnt, msg, flags);
 		if (res != -EJUKEBOX)
 			break;
+<<<<<<< HEAD
 		freezable_schedule_timeout_killable(NFS_JUKEBOX_RETRY_TIME);
+=======
+		freezable_schedule_timeout_killable_unsafe(NFS_JUKEBOX_RETRY_TIME);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		res = -ERESTARTSYS;
 	} while (!fatal_signal_pending(current));
 	return res;

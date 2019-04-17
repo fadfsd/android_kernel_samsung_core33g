@@ -86,6 +86,13 @@ static int kgdb_use_con;
 bool dbg_is_early = true;
 /* Next cpu to become the master debug core */
 int dbg_switch_cpu;
+<<<<<<< HEAD
+=======
+/* Flag for entering kdb when a panic occurs */
+static bool break_on_panic = true;
+/* Flag for entering kdb when an exception occurs */
+static bool break_on_exception = true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Use kdb or gdbserver mode */
 int dbg_kdb_mode = 1;
@@ -100,6 +107,11 @@ early_param("kgdbcon", opt_kgdb_con);
 
 module_param(kgdb_use_con, int, 0644);
 module_param(kgdbreboot, int, 0644);
+<<<<<<< HEAD
+=======
+module_param(break_on_panic, bool, 0644);
+module_param(break_on_exception, bool, 0644);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Holds information about breakpoints in a kernel. These breakpoints are
@@ -678,6 +690,12 @@ kgdb_handle_exception(int evector, int signo, int ecode, struct pt_regs *regs)
 	if (arch_kgdb_ops.enable_nmi)
 		arch_kgdb_ops.enable_nmi(0);
 
+<<<<<<< HEAD
+=======
+	if (unlikely(signo != SIGTRAP && !break_on_exception))
+		return 1;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ks->cpu			= raw_smp_processor_id();
 	ks->ex_vector		= evector;
 	ks->signo		= signo;
@@ -784,6 +802,12 @@ static int kgdb_panic_event(struct notifier_block *self,
 			    unsigned long val,
 			    void *data)
 {
+<<<<<<< HEAD
+=======
+	if (!break_on_panic)
+		return NOTIFY_DONE;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (dbg_kdb_mode)
 		kdb_printf("PANIC: %s\n", (char *)data);
 	kgdb_breakpoint();

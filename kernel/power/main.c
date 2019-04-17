@@ -15,6 +15,16 @@
 #include <linux/workqueue.h>
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <mach/system.h>
+#include <linux/reboot.h>
+#ifdef CONFIG_CPU_FREQ_LIMIT_USERSPACE
+#include <linux/cpufreq.h>
+#include <linux/cpufreq_limit.h>
+#endif
+#include <linux/io.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "power.h"
 
@@ -28,6 +38,10 @@ static BLOCKING_NOTIFIER_HEAD(pm_chain_head);
 
 int register_pm_notifier(struct notifier_block *nb)
 {
+<<<<<<< HEAD
+=======
+	pr_info("*** %s, nb->notifier_call:%pf ***\n", __func__, nb->notifier_call );
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return blocking_notifier_chain_register(&pm_chain_head, nb);
 }
 EXPORT_SYMBOL_GPL(register_pm_notifier);
@@ -338,6 +352,7 @@ static suspend_state_t decode_state(const char *buf, size_t n)
 static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 			   const char *buf, size_t n)
 {
+<<<<<<< HEAD
 	suspend_state_t state;
 	int error;
 
@@ -360,6 +375,46 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 
  out:
 	pm_autosleep_unlock();
+=======
+#ifdef CONFIG_SUSPEND
+#ifdef CONFIG_EARLYSUSPEND
+	suspend_state_t state = PM_SUSPEND_ON;
+#else
+	suspend_state_t state = PM_SUSPEND_STANDBY;
+#endif
+	const char * const *s;
+#endif
+	char *p;
+	int len;
+	int error = -EINVAL;
+
+	p = memchr(buf, '\n', n);
+	len = p ? p - buf : n;
+
+	/* First, check if we are requested to hibernate */
+	if (len == 4 && !strncmp(buf, "disk", len)) {
+		error = hibernate();
+		goto Exit;
+	}
+
+#ifdef CONFIG_SUSPEND
+	for (s = &pm_states[state]; state < PM_SUSPEND_MAX; s++, state++) {
+		if (*s && len == strlen(*s) && !strncmp(buf, *s, len)) {
+#ifdef CONFIG_EARLYSUSPEND
+			if (state == PM_SUSPEND_ON || valid_state(state)) {
+				error = 0;
+				request_suspend_state(state);
+				break;
+			}
+#else
+			error = pm_suspend(state);
+#endif
+		}
+	}
+#endif
+
+ Exit:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return error ? error : n;
 }
 
@@ -433,6 +488,157 @@ static ssize_t wakeup_count_store(struct kobject *kobj,
 
 power_attr(wakeup_count);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_FREQ_LIMIT_USERSPACE
+static int cpufreq_max_limit_val = -1;
+static int cpufreq_min_limit_val = -1;
+struct cpufreq_limit_handle *cpufreq_max_hd;
+struct cpufreq_limit_handle *cpufreq_min_hd;
+DEFINE_MUTEX(cpufreq_limit_mutex);
+
+static ssize_t cpufreq_table_show(struct kobject *kobj,
+				struct kobj_attribute *attr,
+				char *buf)
+{
+	ssize_t count = 0;
+	struct cpufreq_frequency_table *table;
+	struct cpufreq_policy *policy;
+	unsigned int min_freq = ~0;
+	unsigned int max_freq = 0;
+	unsigned int i = 0;
+
+	table = cpufreq_frequency_get_table(0);
+	if (!table) {
+		pr_err("%s: Failed to get the cpufreq table\n", __func__);
+		return sprintf(buf, "Failed to get the cpufreq table\n");
+	}
+
+	policy = cpufreq_cpu_get(0);
+	if (policy) {
+		min_freq = policy->cpuinfo.min_freq;
+		max_freq = policy->cpuinfo.max_freq;
+	}
+
+	for (i = 0; (table[i].frequency != CPUFREQ_TABLE_END); i++) {
+		if ((table[i].frequency == CPUFREQ_ENTRY_INVALID) ||
+		    (table[i].frequency > max_freq) ||
+		    (table[i].frequency < min_freq))
+			continue;
+		count += sprintf(&buf[count], "%d ", table[i].frequency);
+	}
+	count += sprintf(&buf[count], "\n");
+
+	return count;
+}
+
+static ssize_t cpufreq_table_store(struct kobject *kobj,
+				struct kobj_attribute *attr,
+				const char *buf, size_t n)
+{
+	pr_err("%s: cpufreq_table is read-only\n", __func__);
+	return -EINVAL;
+}
+
+static ssize_t cpufreq_max_limit_show(struct kobject *kobj,
+					struct kobj_attribute *attr,
+					char *buf)
+{
+	return sprintf(buf, "%d\n", cpufreq_max_limit_val);
+}
+
+static ssize_t cpufreq_max_limit_store(struct kobject *kobj,
+					struct kobj_attribute *attr,
+					const char *buf, size_t n)
+{
+	int val;
+	ssize_t ret = -EINVAL;
+
+	mutex_lock(&cpufreq_limit_mutex);
+
+	if (sscanf(buf, "%d", &val) != 1) {
+		pr_err("%s: Invalid cpufreq format\n", __func__);
+		goto out;
+	}
+
+	if (cpufreq_max_hd) {
+		cpufreq_limit_put(cpufreq_max_hd);
+		cpufreq_max_hd = NULL;
+	}
+
+	if (val != -1)
+		cpufreq_max_hd = cpufreq_limit_max_freq(val, "user lock(max)");
+
+	cpufreq_max_hd ?
+		(cpufreq_max_limit_val = val) : (cpufreq_max_limit_val = -1);
+	ret = n;
+out:
+	mutex_unlock(&cpufreq_limit_mutex);
+	return ret;
+}
+
+static ssize_t cpufreq_min_limit_show(struct kobject *kobj,
+					struct kobj_attribute *attr,
+					char *buf)
+{
+	return sprintf(buf, "%d\n", cpufreq_min_limit_val);
+}
+
+static ssize_t cpufreq_min_limit_store(struct kobject *kobj,
+					struct kobj_attribute *attr,
+					const char *buf, size_t n)
+{
+	int val;
+	ssize_t ret = -EINVAL;
+
+	mutex_lock(&cpufreq_limit_mutex);
+
+	if (sscanf(buf, "%d", &val) != 1) {
+		pr_err("%s: Invalid cpufreq format\n", __func__);
+		goto out;
+	}
+
+	if (cpufreq_min_hd) {
+		cpufreq_limit_put(cpufreq_min_hd);
+		cpufreq_min_hd = NULL;
+	}
+
+	if (val != -1)
+		cpufreq_min_hd = cpufreq_limit_min_freq(val, "user lock(min)");
+
+	cpufreq_min_hd ?
+		(cpufreq_min_limit_val = val) : (cpufreq_min_limit_val = -1);
+	ret = n;
+out:
+	mutex_unlock(&cpufreq_limit_mutex);
+	return ret;
+}
+
+power_attr(cpufreq_table);
+power_attr(cpufreq_max_limit);
+power_attr(cpufreq_min_limit);
+
+int set_cpufreq_min_limit(int freq)
+{
+	mutex_lock(&cpufreq_limit_mutex);
+
+	if (cpufreq_min_hd) {
+		cpufreq_limit_put(cpufreq_min_hd);
+		cpufreq_min_hd = NULL;
+	}
+
+	if (freq != -1)
+		cpufreq_min_hd = cpufreq_limit_min_freq(freq, "user lock(min)");
+
+	cpufreq_min_hd ?
+		(cpufreq_min_limit_val = freq) : (cpufreq_min_limit_val = -1);
+out:
+	mutex_unlock(&cpufreq_limit_mutex);
+	return 1;
+}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_PM_AUTOSLEEP
 static ssize_t autosleep_show(struct kobject *kobj,
 			      struct kobj_attribute *attr,
@@ -472,6 +678,7 @@ static ssize_t autosleep_store(struct kobject *kobj,
 
 power_attr(autosleep);
 #endif /* CONFIG_PM_AUTOSLEEP */
+<<<<<<< HEAD
 
 #ifdef CONFIG_PM_WAKELOCKS
 static ssize_t wake_lock_show(struct kobject *kobj,
@@ -509,6 +716,8 @@ static ssize_t wake_unlock_store(struct kobject *kobj,
 power_attr(wake_unlock);
 
 #endif /* CONFIG_PM_WAKELOCKS */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* CONFIG_PM_SLEEP */
 
 #ifdef CONFIG_PM_TRACE
@@ -576,6 +785,56 @@ static ssize_t pm_freeze_timeout_store(struct kobject *kobj,
 power_attr(pm_freeze_timeout);
 
 #endif	/* CONFIG_FREEZER*/
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_SC
+extern void cp_abort(void *debug_info);
+static ssize_t restart_cpc_show(struct kobject *kobj, struct kobj_attribute *attr,
+                          char *buf)
+{
+                return -EINVAL;
+}
+
+extern int sec_log_buf_nocache_enable;
+#define CP_DBG_ADD 0x86bfff00	//physical address
+#define CP_DBG_LEN 256
+static ssize_t restart_cpc_store(struct kobject *kobj, struct kobj_attribute *attr,
+                          const char *buf, size_t n)
+{
+	int val;
+	char *cp_assert_info[1]={0};
+#ifdef CONFIG_SEC_LOG_BUF_NOCACHE
+		void __iomem *base_cp_dbg = 0;
+#else
+		unsigned long base_cp_dbg = 0;
+#endif
+	
+	memcpy(cp_assert_info, buf, 1);
+	if (sscanf(cp_assert_info, "%d", &val) == 1 && val > 0){
+		if(sec_log_buf_nocache_enable == 1){
+			base_cp_dbg = ioremap_nocache(CP_DBG_ADD, CP_DBG_LEN);
+			memset(base_cp_dbg, 0, CP_DBG_LEN);
+			memcpy(base_cp_dbg, buf+2, CP_DBG_LEN);
+		} else if(sec_log_buf_nocache_enable == 0) {
+			base_cp_dbg = CP_DBG_ADD;
+			memset(base_cp_dbg, 0, CP_DBG_LEN);
+			memcpy(phys_to_virt(base_cp_dbg), buf+2, CP_DBG_LEN);
+		} else
+			printk("Fail to copy cp debug log!!!\n");
+		
+		cp_abort(buf+2);
+	}
+
+	return n;
+}
+
+power_attr(restart_cpc);
+#endif
+#ifdef CONFIG_USER_WAKELOCK
+power_attr(wake_lock);
+power_attr(wake_unlock);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static struct attribute * g[] = {
 	&state_attr.attr,
@@ -589,7 +848,11 @@ static struct attribute * g[] = {
 #ifdef CONFIG_PM_AUTOSLEEP
 	&autosleep_attr.attr,
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_PM_WAKELOCKS
+=======
+#ifdef CONFIG_USER_WAKELOCK
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	&wake_lock_attr.attr,
 	&wake_unlock_attr.attr,
 #endif
@@ -603,6 +866,18 @@ static struct attribute * g[] = {
 #ifdef CONFIG_FREEZER
 	&pm_freeze_timeout_attr.attr,
 #endif
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_ARCH_SC
+	&restart_cpc_attr.attr,
+#endif
+#ifdef CONFIG_CPU_FREQ_LIMIT_USERSPACE
+	&cpufreq_table_attr.attr,
+	&cpufreq_max_limit_attr.attr,
+	&cpufreq_min_limit_attr.attr,
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	NULL,
 };
 

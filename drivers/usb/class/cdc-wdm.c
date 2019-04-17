@@ -244,7 +244,11 @@ static void wdm_int_callback(struct urb *urb)
 	case USB_CDC_NOTIFY_RESPONSE_AVAILABLE:
 		dev_dbg(&desc->intf->dev,
 			"NOTIFY_RESPONSE_AVAILABLE received: index %d len %d",
+<<<<<<< HEAD
 			le16_to_cpu(dr->wIndex), le16_to_cpu(dr->wLength));
+=======
+			dr->wIndex, dr->wLength);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 
 	case USB_CDC_NOTIFY_NETWORK_CONNECTION:
@@ -257,9 +261,13 @@ static void wdm_int_callback(struct urb *urb)
 		clear_bit(WDM_POLL_RUNNING, &desc->flags);
 		dev_err(&desc->intf->dev,
 			"unknown notification %d received: index %d len %d\n",
+<<<<<<< HEAD
 			dr->bNotificationType,
 			le16_to_cpu(dr->wIndex),
 			le16_to_cpu(dr->wLength));
+=======
+			dr->bNotificationType, dr->wIndex, dr->wLength);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto exit;
 	}
 
@@ -405,7 +413,11 @@ static ssize_t wdm_write
 			     USB_RECIP_INTERFACE);
 	req->bRequest = USB_CDC_SEND_ENCAPSULATED_COMMAND;
 	req->wValue = 0;
+<<<<<<< HEAD
 	req->wIndex = desc->inum; /* already converted */
+=======
+	req->wIndex = desc->inum;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	req->wLength = cpu_to_le16(count);
 	set_bit(WDM_IN_USE, &desc->flags);
 	desc->outbuf = buf;
@@ -419,7 +431,11 @@ static ssize_t wdm_write
 		rv = usb_translate_errors(rv);
 	} else {
 		dev_dbg(&desc->intf->dev, "Tx URB has been submitted index=%d",
+<<<<<<< HEAD
 			le16_to_cpu(req->wIndex));
+=======
+			req->wIndex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 out:
 	usb_autopm_put_interface(desc->intf);
@@ -782,7 +798,11 @@ static int wdm_create(struct usb_interface *intf, struct usb_endpoint_descriptor
 	desc->irq->bRequestType = (USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE);
 	desc->irq->bRequest = USB_CDC_GET_ENCAPSULATED_RESPONSE;
 	desc->irq->wValue = 0;
+<<<<<<< HEAD
 	desc->irq->wIndex = desc->inum; /* already converted */
+=======
+	desc->irq->wIndex = desc->inum;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	desc->irq->wLength = cpu_to_le16(desc->wMaxCommand);
 
 	usb_fill_control_urb(
@@ -822,11 +842,21 @@ static int wdm_manage_power(struct usb_interface *intf, int on)
 {
 	/* need autopm_get/put here to ensure the usbcore sees the new value */
 	int rv = usb_autopm_get_interface(intf);
+<<<<<<< HEAD
 
 	intf->needs_remote_wakeup = on;
 	if (!rv)
 		usb_autopm_put_interface(intf);
 	return 0;
+=======
+	if (rv < 0)
+		goto err;
+
+	intf->needs_remote_wakeup = on;
+	usb_autopm_put_interface(intf);
+err:
+	return rv;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int wdm_probe(struct usb_interface *intf, const struct usb_device_id *id)

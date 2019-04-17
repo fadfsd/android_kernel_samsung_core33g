@@ -61,7 +61,10 @@
 MODULE_AUTHOR("Ville Nuorvala");
 MODULE_DESCRIPTION("IPv6 tunneling device");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_RTNL_LINK("ip6tnl");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_ALIAS_NETDEV("ip6tnl0");
 
 #ifdef IP6_TNL_DEBUG
@@ -265,6 +268,12 @@ static int ip6_tnl_create2(struct net_device *dev)
 	int err;
 
 	t = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	err = ip6_tnl_dev_init(dev);
+	if (err < 0)
+		goto out;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = register_netdevice(dev);
 	if (err < 0)
@@ -1430,7 +1439,10 @@ ip6_tnl_change_mtu(struct net_device *dev, int new_mtu)
 
 
 static const struct net_device_ops ip6_tnl_netdev_ops = {
+<<<<<<< HEAD
 	.ndo_init	= ip6_tnl_dev_init,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.ndo_uninit	= ip6_tnl_dev_uninit,
 	.ndo_start_xmit = ip6_tnl_xmit,
 	.ndo_do_ioctl	= ip6_tnl_ioctl,
@@ -1512,10 +1524,22 @@ static int __net_init ip6_fb_tnl_dev_init(struct net_device *dev)
 	struct ip6_tnl *t = netdev_priv(dev);
 	struct net *net = dev_net(dev);
 	struct ip6_tnl_net *ip6n = net_generic(net, ip6_tnl_net_id);
+<<<<<<< HEAD
+=======
+	int err = ip6_tnl_dev_init_gen(dev);
+
+	if (err)
+		return err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	t->parms.proto = IPPROTO_IPV6;
 	dev_hold(dev);
 
+<<<<<<< HEAD
+=======
+	ip6_tnl_link_config(t);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rcu_assign_pointer(ip6n->tnls_wc[0], t);
 	return 0;
 }
@@ -1524,7 +1548,11 @@ static int ip6_tnl_validate(struct nlattr *tb[], struct nlattr *data[])
 {
 	u8 proto;
 
+<<<<<<< HEAD
 	if (!data || !data[IFLA_IPTUN_PROTO])
+=======
+	if (!data)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 
 	proto = nla_get_u8(data[IFLA_IPTUN_PROTO]);
@@ -1610,6 +1638,7 @@ static int ip6_tnl_changelink(struct net_device *dev, struct nlattr *tb[],
 	return ip6_tnl_update(t, &p);
 }
 
+<<<<<<< HEAD
 static void ip6_tnl_dellink(struct net_device *dev, struct list_head *head)
 {
 	struct net *net = dev_net(dev);
@@ -1619,6 +1648,8 @@ static void ip6_tnl_dellink(struct net_device *dev, struct list_head *head)
 		unregister_netdevice_queue(dev, head);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static size_t ip6_tnl_get_size(const struct net_device *dev)
 {
 	return
@@ -1683,7 +1714,10 @@ static struct rtnl_link_ops ip6_link_ops __read_mostly = {
 	.validate	= ip6_tnl_validate,
 	.newlink	= ip6_tnl_newlink,
 	.changelink	= ip6_tnl_changelink,
+<<<<<<< HEAD
 	.dellink	= ip6_tnl_dellink,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.get_size	= ip6_tnl_get_size,
 	.fill_info	= ip6_tnl_fill_info,
 };

@@ -59,7 +59,11 @@ struct power_pmu {
 #define PPMU_SIAR_VALID		0x00000010 /* Processor has SIAR Valid bit */
 #define PPMU_HAS_SSLOT		0x00000020 /* Has sampled slot in MMCRA */
 #define PPMU_HAS_SIER		0x00000040 /* Has SIER */
+<<<<<<< HEAD
 #define PPMU_ARCH_207S		0x00000080 /* PMC is architecture v2.07S */
+=======
+#define PPMU_BHRB		0x00000080 /* has BHRB feature enabled */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Values for flags to get_alternatives()

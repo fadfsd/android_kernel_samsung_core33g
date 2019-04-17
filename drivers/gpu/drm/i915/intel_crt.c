@@ -702,7 +702,11 @@ static const struct drm_encoder_funcs intel_crt_enc_funcs = {
 	.destroy = intel_encoder_destroy,
 };
 
+<<<<<<< HEAD
 static int intel_no_crt_dmi_callback(const struct dmi_system_id *id)
+=======
+static int __init intel_no_crt_dmi_callback(const struct dmi_system_id *id)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	DRM_INFO("Skipping CRT initialization for %s\n", id->ident);
 	return 1;
@@ -717,6 +721,7 @@ static const struct dmi_system_id intel_no_crt[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "ZGB"),
 		},
 	},
+<<<<<<< HEAD
 	{
 		.callback = intel_no_crt_dmi_callback,
 		.ident = "DELL XPS 8700",
@@ -725,6 +730,8 @@ static const struct dmi_system_id intel_no_crt[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 8700"),
 		},
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ }
 };
 

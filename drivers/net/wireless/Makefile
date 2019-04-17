@@ -55,5 +55,15 @@ obj-$(CONFIG_WL_TI)	+= ti/
 
 obj-$(CONFIG_MWIFIEX)	+= mwifiex/
 
+<<<<<<< HEAD
 obj-$(CONFIG_BRCMFMAC)	+= brcm80211/
 obj-$(CONFIG_BRCMSMAC)	+= brcm80211/
+=======
+obj-$(CONFIG_BCMDHD)	+= bcmdhd/
+obj-$(CONFIG_BCM4343)	+= bcmdhd/
+
+obj-$(CONFIG_BRCMFMAC)	+= brcm80211/
+obj-$(CONFIG_BRCMSMAC)	+= brcm80211/
+
+obj-$(CONFIG_SPRDWL)	+= sprdwl/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

@@ -103,6 +103,10 @@ static void __exit sha1_s390_fini(void)
 module_init(sha1_s390_init);
 module_exit(sha1_s390_fini);
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("sha1");
+=======
+MODULE_ALIAS("sha1");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SHA1 Secure Hash Algorithm");

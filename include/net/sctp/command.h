@@ -118,7 +118,11 @@ typedef enum {
  * analysis of the state functions, but in reality just taken from
  * thin air in the hopes othat we don't trigger a kernel panic.
  */
+<<<<<<< HEAD
 #define SCTP_MAX_NUM_COMMANDS 20
+=======
+#define SCTP_MAX_NUM_COMMANDS 14
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 typedef union {
 	__s32 i32;

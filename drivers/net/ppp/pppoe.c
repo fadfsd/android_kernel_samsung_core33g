@@ -675,7 +675,11 @@ static int pppoe_connect(struct socket *sock, struct sockaddr *uservaddr,
 		po->chan.hdrlen = (sizeof(struct pppoe_hdr) +
 				   dev->hard_header_len);
 
+<<<<<<< HEAD
 		po->chan.mtu = dev->mtu - sizeof(struct pppoe_hdr) - 2;
+=======
+		po->chan.mtu = dev->mtu - sizeof(struct pppoe_hdr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		po->chan.private = sk;
 		po->chan.ops = &pppoe_chan_ops;
 
@@ -979,6 +983,11 @@ static int pppoe_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (error < 0)
 		goto end;
 
+<<<<<<< HEAD
+=======
+	m->msg_namelen = 0;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (skb) {
 		total_len = min_t(size_t, total_len, skb->len);
 		error = skb_copy_datagram_iovec(skb, 0, m->msg_iov, total_len);

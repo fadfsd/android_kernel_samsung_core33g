@@ -66,6 +66,10 @@
 #define   L2X0_STNDBY_MODE_EN		(1 << 0)
 
 /* Registers shifts and masks */
+<<<<<<< HEAD
+=======
+#define L2X0_CACHE_ID_REV_MASK		(0x3f)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define L2X0_CACHE_ID_PART_MASK		(0xf << 6)
 #define L2X0_CACHE_ID_PART_L210		(1 << 6)
 #define L2X0_CACHE_ID_PART_L310		(3 << 6)
@@ -106,6 +110,11 @@
 
 #define L2X0_WAY_SIZE_SHIFT		3
 
+<<<<<<< HEAD
+=======
+#define REV_PL310_R2P0				4
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifndef __ASSEMBLY__
 extern void __init l2x0_init(void __iomem *base, u32 aux_val, u32 aux_mask);
 #if defined(CONFIG_CACHE_L2X0) && defined(CONFIG_OF)

@@ -131,7 +131,11 @@ void __init init_msc_irqs(unsigned long icubase, unsigned int irqbase, msc_irqma
 
 	board_bind_eic_interrupt = &msc_bind_eic_interrupt;
 
+<<<<<<< HEAD
 	for (; nirq > 0; nirq--, imp++) {
+=======
+	for (; nirq >= 0; nirq--, imp++) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		int n = imp->im_irq;
 
 		switch (imp->im_type) {

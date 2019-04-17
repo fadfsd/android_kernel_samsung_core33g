@@ -1420,8 +1420,12 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
 	 * on two reads of a counter updated every ms.
 	 */
 	if (abs(est_delay - subs->last_delay) * 1000 > runtime->rate * 2)
+<<<<<<< HEAD
 		dev_dbg_ratelimited(&subs->dev->dev,
 			"delay: estimated %d, actual %d\n",
+=======
+		snd_printk(KERN_DEBUG "delay: estimated %d, actual %d\n",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			est_delay, subs->last_delay);
 
 	if (!subs->running) {

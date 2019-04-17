@@ -1064,7 +1064,11 @@ static void __init load_hv_initrd(void)
 
 void __init free_initrd_mem(unsigned long begin, unsigned long end)
 {
+<<<<<<< HEAD
 	free_bootmem_late(__pa(begin), end - begin);
+=======
+	free_bootmem(__pa(begin), end - begin);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #else

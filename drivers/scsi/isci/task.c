@@ -801,7 +801,11 @@ int isci_task_I_T_nexus_reset(struct domain_device *dev)
 		/* XXX: need to cleanup any ireqs targeting this
 		 * domain_device
 		 */
+<<<<<<< HEAD
 		ret = -ENODEV;
+=======
+		ret = TMF_RESP_FUNC_COMPLETE;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out;
 	}
 

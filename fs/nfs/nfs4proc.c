@@ -268,7 +268,11 @@ static int nfs4_delay(struct rpc_clnt *clnt, long *timeout)
 		*timeout = NFS4_POLL_RETRY_MIN;
 	if (*timeout > NFS4_POLL_RETRY_MAX)
 		*timeout = NFS4_POLL_RETRY_MAX;
+<<<<<<< HEAD
 	freezable_schedule_timeout_killable(*timeout);
+=======
+	freezable_schedule_timeout_killable_unsafe(*timeout);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (fatal_signal_pending(current))
 		res = -ERESTARTSYS;
 	*timeout <<= 1;
@@ -1160,6 +1164,7 @@ _nfs4_opendata_reclaim_to_nfs4_state(struct nfs4_opendata *data)
 	int ret;
 
 	if (!data->rpc_done) {
+<<<<<<< HEAD
 		if (data->rpc_status) {
 			ret = data->rpc_status;
 			goto err;
@@ -1168,16 +1173,38 @@ _nfs4_opendata_reclaim_to_nfs4_state(struct nfs4_opendata *data)
 		goto update;
 	}
 
+=======
+		ret = data->rpc_status;
+		goto err;
+	}
+
+	ret = -ESTALE;
+	if (!(data->f_attr.valid & NFS_ATTR_FATTR_TYPE) ||
+	    !(data->f_attr.valid & NFS_ATTR_FATTR_FILEID) ||
+	    !(data->f_attr.valid & NFS_ATTR_FATTR_CHANGE))
+		goto err;
+
+	ret = -ENOMEM;
+	state = nfs4_get_open_state(inode, data->owner);
+	if (state == NULL)
+		goto err;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = nfs_refresh_inode(inode, &data->f_attr);
 	if (ret)
 		goto err;
 
 	if (data->o_res.delegation_type != 0)
 		nfs4_opendata_check_deleg(data, state);
+<<<<<<< HEAD
 update:
 	update_open_stateid(state, &data->o_res.stateid, NULL,
 			    data->o_arg.fmode);
 	atomic_inc(&state->count);
+=======
+	update_open_stateid(state, &data->o_res.stateid, NULL,
+			    data->o_arg.fmode);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return state;
 err:
@@ -1416,7 +1443,11 @@ static int nfs4_handle_delegation_recall_error(struct nfs_server *server, struct
 			nfs_inode_find_state_and_recover(state->inode,
 					stateid);
 			nfs4_schedule_stateid_recovery(server, state);
+<<<<<<< HEAD
 			return -EAGAIN;
+=======
+			return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		case -NFS4ERR_DELAY:
 		case -NFS4ERR_GRACE:
 			set_bit(NFS_DELEGATED_STATE, &state->flags);
@@ -1845,6 +1876,7 @@ static int nfs4_open_expired(struct nfs4_state_owner *sp, struct nfs4_state *sta
 	return ret;
 }
 
+<<<<<<< HEAD
 static void nfs_finish_clear_delegation_stateid(struct nfs4_state *state)
 {
 	nfs_remove_bad_delegation(state->inode);
@@ -1867,6 +1899,8 @@ static int nfs40_open_expired(struct nfs4_state_owner *sp, struct nfs4_state *st
 	return nfs4_open_expired(sp, state);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #if defined(CONFIG_NFS_V4_1)
 static void nfs41_clear_delegation_stateid(struct nfs4_state *state)
 {
@@ -2309,7 +2343,10 @@ static void nfs4_close_prepare(struct rpc_task *task, void *data)
 	struct nfs4_closedata *calldata = data;
 	struct nfs4_state *state = calldata->state;
 	struct inode *inode = calldata->inode;
+<<<<<<< HEAD
 	bool is_rdonly, is_wronly, is_rdwr;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int call_close = 0;
 
 	dprintk("%s: begin!\n", __func__);
@@ -2317,6 +2354,7 @@ static void nfs4_close_prepare(struct rpc_task *task, void *data)
 		goto out_wait;
 
 	task->tk_msg.rpc_proc = &nfs4_procedures[NFSPROC4_CLNT_OPEN_DOWNGRADE];
+<<<<<<< HEAD
 	spin_lock(&state->owner->so_lock);
 	is_rdwr = test_bit(NFS_O_RDWR_STATE, &state->flags);
 	is_rdonly = test_bit(NFS_O_RDONLY_STATE, &state->flags);
@@ -2338,6 +2376,23 @@ static void nfs4_close_prepare(struct rpc_task *task, void *data)
 	if (calldata->arg.fmode == 0)
 		call_close |= is_rdwr;
 
+=======
+	calldata->arg.fmode = FMODE_READ|FMODE_WRITE;
+	spin_lock(&state->owner->so_lock);
+	/* Calculate the change in open mode */
+	if (state->n_rdwr == 0) {
+		if (state->n_rdonly == 0) {
+			call_close |= test_bit(NFS_O_RDONLY_STATE, &state->flags);
+			call_close |= test_bit(NFS_O_RDWR_STATE, &state->flags);
+			calldata->arg.fmode &= ~FMODE_READ;
+		}
+		if (state->n_wronly == 0) {
+			call_close |= test_bit(NFS_O_WRONLY_STATE, &state->flags);
+			call_close |= test_bit(NFS_O_RDWR_STATE, &state->flags);
+			calldata->arg.fmode &= ~FMODE_WRITE;
+		}
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!nfs4_valid_open_stateid(state))
 		call_close = 0;
 	spin_unlock(&state->owner->so_lock);
@@ -3636,9 +3691,14 @@ static bool nfs4_stateid_is_current(nfs4_stateid *stateid,
 {
 	nfs4_stateid current_stateid;
 
+<<<<<<< HEAD
 	/* If the current stateid represents a lost lock, then exit */
 	if (nfs4_set_rw_stateid(&current_stateid, ctx, l_ctx, fmode) == -EIO)
 		return true;
+=======
+	if (nfs4_set_rw_stateid(&current_stateid, ctx, l_ctx, fmode))
+		return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return nfs4_stateid_match(stateid, &current_stateid);
 }
 
@@ -4252,7 +4312,12 @@ nfs4_async_handle_error(struct rpc_task *task, const struct nfs_server *server, 
 			dprintk("%s ERROR %d, Reset session\n", __func__,
 				task->tk_status);
 			nfs4_schedule_session_recovery(clp->cl_session, task->tk_status);
+<<<<<<< HEAD
 			goto wait_on_recovery;
+=======
+			task->tk_status = 0;
+			return -EAGAIN;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* CONFIG_NFS_V4_1 */
 		case -NFS4ERR_DELAY:
 			nfs_inc_server_stats(server, NFSIOS_DELAY);
@@ -4430,6 +4495,7 @@ static void nfs4_delegreturn_done(struct rpc_task *task, void *calldata)
 		return;
 
 	switch (task->tk_status) {
+<<<<<<< HEAD
 	case 0:
 		renew_lease(data->res.server, data->timestamp);
 		break;
@@ -4440,6 +4506,12 @@ static void nfs4_delegreturn_done(struct rpc_task *task, void *calldata)
 	case -NFS4ERR_STALE_STATEID:
 	case -NFS4ERR_EXPIRED:
 		task->tk_status = 0;
+=======
+	case -NFS4ERR_STALE_STATEID:
+	case -NFS4ERR_EXPIRED:
+	case 0:
+		renew_lease(data->res.server, data->timestamp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	default:
 		if (nfs4_async_handle_error(task, data->res.server, NULL) ==
@@ -4558,7 +4630,11 @@ int nfs4_proc_delegreturn(struct inode *inode, struct rpc_cred *cred, const nfs4
 static unsigned long
 nfs4_set_lock_task_retry(unsigned long timeout)
 {
+<<<<<<< HEAD
 	freezable_schedule_timeout_killable(timeout);
+=======
+	freezable_schedule_timeout_killable_unsafe(timeout);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	timeout <<= 1;
 	if (timeout > NFS4_LOCK_MAXTIMEOUT)
 		return NFS4_LOCK_MAXTIMEOUT;
@@ -4602,7 +4678,10 @@ static int _nfs4_proc_getlk(struct nfs4_state *state, int cmd, struct file_lock 
 			status = 0;
 	}
 	request->fl_ops->fl_release_private(request);
+<<<<<<< HEAD
 	request->fl_ops = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out:
 	return status;
 }
@@ -6089,7 +6168,11 @@ static int nfs41_proc_async_sequence(struct nfs_client *clp, struct rpc_cred *cr
 	int ret = 0;
 
 	if ((renew_flags & NFS4_RENEW_TIMEOUT) == 0)
+<<<<<<< HEAD
 		return -EAGAIN;
+=======
+		return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	task = _nfs41_proc_sequence(clp, cred, false);
 	if (IS_ERR(task))
 		ret = PTR_ERR(task);
@@ -6262,9 +6345,15 @@ static void nfs4_layoutget_done(struct rpc_task *task, void *calldata)
 	struct nfs_server *server = NFS_SERVER(inode);
 	struct pnfs_layout_hdr *lo;
 	struct nfs4_state *state = NULL;
+<<<<<<< HEAD
 	unsigned long timeo, now, giveup;
 
 	dprintk("--> %s tk_status => %d\n", __func__, -task->tk_status);
+=======
+	unsigned long timeo, giveup;
+
+	dprintk("--> %s\n", __func__);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!nfs41_sequence_done(task, &lgp->res.seq_res))
 		goto out;
@@ -6272,6 +6361,7 @@ static void nfs4_layoutget_done(struct rpc_task *task, void *calldata)
 	switch (task->tk_status) {
 	case 0:
 		goto out;
+<<<<<<< HEAD
 	/*
 	 * NFS4ERR_LAYOUTTRYLATER is a conflict with another client
 	 * (or clients) writing to the same RAID stripe
@@ -6304,6 +6394,14 @@ static void nfs4_layoutget_done(struct rpc_task *task, void *calldata)
 			rpc_restart_call_prepare(task);
 			goto out; /* Do not call nfs4_async_handle_error() */
 		}
+=======
+	case -NFS4ERR_LAYOUTTRYLATER:
+	case -NFS4ERR_RECALLCONFLICT:
+		timeo = rpc_get_timeout(task->tk_client);
+		giveup = lgp->args.timestamp + timeo;
+		if (time_after(giveup, jiffies))
+			task->tk_status = -NFS4ERR_DELAY;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	case -NFS4ERR_EXPIRED:
 	case -NFS4ERR_BAD_STATEID:
@@ -6418,9 +6516,12 @@ nfs4_proc_layoutget(struct nfs4_layoutget *lgp, gfp_t gfp_flags)
 
 	dprintk("--> %s\n", __func__);
 
+<<<<<<< HEAD
 	/* nfs4_layoutget_release calls pnfs_put_layout_hdr */
 	pnfs_get_layout_hdr(NFS_I(inode)->layout);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	lgp->args.layout.pages = nfs4_alloc_pages(max_pages, gfp_flags);
 	if (!lgp->args.layout.pages) {
 		nfs4_layoutget_release(lgp);
@@ -6433,6 +6534,12 @@ nfs4_proc_layoutget(struct nfs4_layoutget *lgp, gfp_t gfp_flags)
 	lgp->res.seq_res.sr_slot = NULL;
 	nfs41_init_sequence(&lgp->args.seq_args, &lgp->res.seq_res, 0);
 
+<<<<<<< HEAD
+=======
+	/* nfs4_layoutget_release calls pnfs_put_layout_hdr */
+	pnfs_get_layout_hdr(NFS_I(inode)->layout);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	task = rpc_run_task(&task_setup_data);
 	if (IS_ERR(task))
 		return ERR_CAST(task);
@@ -6739,7 +6846,11 @@ nfs41_proc_secinfo_no_name(struct nfs_server *server, struct nfs_fh *fhandle,
 		switch (err) {
 		case 0:
 		case -NFS4ERR_WRONGSEC:
+<<<<<<< HEAD
 		case -ENOTSUPP:
+=======
+		case -NFS4ERR_NOTSUPP:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto out;
 		default:
 			err = nfs4_handle_exception(server, err, &exception);
@@ -6771,7 +6882,11 @@ nfs41_find_root_sec(struct nfs_server *server, struct nfs_fh *fhandle,
 	 * Fall back on "guess and check" method if
 	 * the server doesn't support SECINFO_NO_NAME
 	 */
+<<<<<<< HEAD
 	if (err == -NFS4ERR_WRONGSEC || err == -ENOTSUPP) {
+=======
+	if (err == -NFS4ERR_WRONGSEC || err == -NFS4ERR_NOTSUPP) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		err = nfs4_find_root_sec(server, fhandle, info);
 		goto out_freepage;
 	}
@@ -6996,7 +7111,11 @@ static const struct nfs4_state_recovery_ops nfs41_reboot_recovery_ops = {
 static const struct nfs4_state_recovery_ops nfs40_nograce_recovery_ops = {
 	.owner_flag_bit = NFS_OWNER_RECLAIM_NOGRACE,
 	.state_flag_bit	= NFS_STATE_RECLAIM_NOGRACE,
+<<<<<<< HEAD
 	.recover_open	= nfs40_open_expired,
+=======
+	.recover_open	= nfs4_open_expired,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.recover_lock	= nfs4_lock_expired,
 	.establish_clid = nfs4_init_clientid,
 	.get_clid_cred	= nfs4_get_setclientid_cred,

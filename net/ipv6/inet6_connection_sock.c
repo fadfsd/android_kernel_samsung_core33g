@@ -81,7 +81,11 @@ struct dst_entry *inet6_csk_route_req(struct sock *sk,
 	final_p = fl6_update_dst(fl6, np->opt, &final);
 	fl6->saddr = treq->loc_addr;
 	fl6->flowi6_oif = treq->iif;
+<<<<<<< HEAD
 	fl6->flowi6_mark = inet_rsk(req)->ir_mark;
+=======
+	fl6->flowi6_mark = sk->sk_mark;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	fl6->fl6_dport = inet_rsk(req)->rmt_port;
 	fl6->fl6_sport = inet_rsk(req)->loc_port;
 	security_req_classify_flow(req, flowi6_to_flowi(fl6));

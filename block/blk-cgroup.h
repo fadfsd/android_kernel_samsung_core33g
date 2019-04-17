@@ -266,7 +266,11 @@ static inline void blkg_get(struct blkcg_gq *blkg)
 	blkg->refcnt++;
 }
 
+<<<<<<< HEAD
 void __blkg_release_rcu(struct rcu_head *rcu);
+=======
+void __blkg_release(struct blkcg_gq *blkg);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /**
  * blkg_put - put a blkg reference
@@ -279,6 +283,7 @@ static inline void blkg_put(struct blkcg_gq *blkg)
 	lockdep_assert_held(blkg->q->queue_lock);
 	WARN_ON_ONCE(blkg->refcnt <= 0);
 	if (!--blkg->refcnt)
+<<<<<<< HEAD
 		call_rcu(&blkg->rcu_head, __blkg_release_rcu);
 }
 
@@ -316,6 +321,11 @@ struct blkcg_gq *__blkg_lookup(struct blkcg *blkcg, struct request_queue *q,
 		if (((d_blkg) = __blkg_lookup(cgroup_to_blkcg(pos_cgrp), \
 					      (p_blkg)->q, false)))
 
+=======
+		__blkg_release(blkg);
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * blk_get_rl - get request_list to use
  * @q: request_queue of interest
@@ -433,9 +443,15 @@ static inline uint64_t blkg_stat_read(struct blkg_stat *stat)
 	uint64_t v;
 
 	do {
+<<<<<<< HEAD
 		start = u64_stats_fetch_begin_bh(&stat->syncp);
 		v = stat->cnt;
 	} while (u64_stats_fetch_retry_bh(&stat->syncp, start));
+=======
+		start = u64_stats_fetch_begin(&stat->syncp);
+		v = stat->cnt;
+	} while (u64_stats_fetch_retry(&stat->syncp, start));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return v;
 }
@@ -501,9 +517,15 @@ static inline struct blkg_rwstat blkg_rwstat_read(struct blkg_rwstat *rwstat)
 	struct blkg_rwstat tmp;
 
 	do {
+<<<<<<< HEAD
 		start = u64_stats_fetch_begin_bh(&rwstat->syncp);
 		tmp = *rwstat;
 	} while (u64_stats_fetch_retry_bh(&rwstat->syncp, start));
+=======
+		start = u64_stats_fetch_begin(&rwstat->syncp);
+		tmp = *rwstat;
+	} while (u64_stats_fetch_retry(&rwstat->syncp, start));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return tmp;
 }

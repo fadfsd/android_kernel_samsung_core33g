@@ -295,11 +295,20 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+/*FIXME: added this macro for sipc issues*/
+#ifndef CONFIG_ION
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Don't allow RAM to be mapped - this causes problems with ARMv6+
 	 */
 	if (WARN_ON(pfn_valid(pfn)))
 		return NULL;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	area = get_vm_area_caller(size, VM_IOREMAP, caller);
  	if (!area)
@@ -331,10 +340,17 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 	return (void __iomem *) (offset + addr);
 }
 
+<<<<<<< HEAD
 void __iomem *__arm_ioremap_caller(phys_addr_t phys_addr, size_t size,
 	unsigned int mtype, void *caller)
 {
 	phys_addr_t last_addr;
+=======
+void __iomem *__arm_ioremap_caller(unsigned long phys_addr, size_t size,
+	unsigned int mtype, void *caller)
+{
+	unsigned long last_addr;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  	unsigned long offset = phys_addr & ~PAGE_MASK;
  	unsigned long pfn = __phys_to_pfn(phys_addr);
 
@@ -367,12 +383,20 @@ __arm_ioremap_pfn(unsigned long pfn, unsigned long offset, size_t size,
 }
 EXPORT_SYMBOL(__arm_ioremap_pfn);
 
+<<<<<<< HEAD
 void __iomem * (*arch_ioremap_caller)(phys_addr_t, size_t,
+=======
+void __iomem * (*arch_ioremap_caller)(unsigned long, size_t,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				      unsigned int, void *) =
 	__arm_ioremap_caller;
 
 void __iomem *
+<<<<<<< HEAD
 __arm_ioremap(phys_addr_t phys_addr, size_t size, unsigned int mtype)
+=======
+__arm_ioremap(unsigned long phys_addr, size_t size, unsigned int mtype)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	return arch_ioremap_caller(phys_addr, size, mtype,
 		__builtin_return_address(0));
@@ -387,7 +411,11 @@ EXPORT_SYMBOL(__arm_ioremap);
  * CONFIG_GENERIC_ALLOCATOR for allocating external memory.
  */
 void __iomem *
+<<<<<<< HEAD
 __arm_ioremap_exec(phys_addr_t phys_addr, size_t size, bool cached)
+=======
+__arm_ioremap_exec(unsigned long phys_addr, size_t size, bool cached)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned int mtype;
 

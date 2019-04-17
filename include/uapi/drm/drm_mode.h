@@ -223,8 +223,11 @@ struct drm_mode_get_connector {
 	__u32 connection;
 	__u32 mm_width, mm_height; /**< HxW in millimeters */
 	__u32 subpixel;
+<<<<<<< HEAD
 
 	__u32 pad;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 #define DRM_MODE_PROP_PENDING	(1<<0)

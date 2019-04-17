@@ -556,8 +556,12 @@ mwifiex_clean_txrx(struct mwifiex_private *priv)
 	mwifiex_wmm_delete_all_ralist(priv);
 	memcpy(tos_to_tid, ac_to_tid, sizeof(tos_to_tid));
 
+<<<<<<< HEAD
 	if (priv->adapter->if_ops.clean_pcie_ring &&
 	    !priv->adapter->surprise_removed)
+=======
+	if (priv->adapter->if_ops.clean_pcie_ring)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		priv->adapter->if_ops.clean_pcie_ring(priv->adapter);
 	spin_unlock_irqrestore(&priv->wmm.ra_list_spinlock, flags);
 }

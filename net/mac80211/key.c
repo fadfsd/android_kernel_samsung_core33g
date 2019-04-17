@@ -607,7 +607,11 @@ void ieee80211_free_sta_keys(struct ieee80211_local *local,
 	int i;
 
 	mutex_lock(&local->key_mtx);
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(sta->gtk); i++) {
+=======
+	for (i = 0; i < NUM_DEFAULT_KEYS; i++) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		key = key_mtx_dereference(local, sta->gtk[i]);
 		if (!key)
 			continue;

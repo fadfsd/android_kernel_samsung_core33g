@@ -125,10 +125,21 @@ flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vma
 void mark_rodata_ro(void);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PA8X00
+/* Only pa8800, pa8900 needs this */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/kmap_types.h>
 
 #define ARCH_HAS_KMAP
 
+<<<<<<< HEAD
+=======
+void kunmap_parisc(void *addr);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void *kmap(struct page *page)
 {
 	might_sleep();
@@ -137,7 +148,11 @@ static inline void *kmap(struct page *page)
 
 static inline void kunmap(struct page *page)
 {
+<<<<<<< HEAD
 	flush_kernel_dcache_page_addr(page_address(page));
+=======
+	kunmap_parisc(page_address(page));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void *kmap_atomic(struct page *page)
@@ -148,13 +163,21 @@ static inline void *kmap_atomic(struct page *page)
 
 static inline void __kunmap_atomic(void *addr)
 {
+<<<<<<< HEAD
 	flush_kernel_dcache_page_addr(addr);
+=======
+	kunmap_parisc(addr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pagefault_enable();
 }
 
 #define kmap_atomic_prot(page, prot)	kmap_atomic(page)
 #define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
 #define kmap_atomic_to_page(ptr)	virt_to_page(ptr)
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #endif /* _PARISC_CACHEFLUSH_H */
 

@@ -208,6 +208,10 @@ static int sdcardfs_open(struct inode *inode, struct file *file)
 	struct dentry *parent = dget_parent(dentry);
 	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb); 
 	const struct cred *saved_cred = NULL;
+<<<<<<< HEAD
+=======
+	int has_rw;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* don't open unhashed/deleted files */
 	if (d_unhashed(dentry)) {
@@ -215,7 +219,15 @@ static int sdcardfs_open(struct inode *inode, struct file *file)
 		goto out_err;
 	}
 	
+<<<<<<< HEAD
 	if(!check_caller_access_to_name(parent->d_inode, dentry->d_name.name)) {
+=======
+	has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+
+	if(!check_caller_access_to_name(parent->d_inode, dentry->d_name.name, 
+				sbi->options.derive, 
+				open_flags_to_access_mode(file->f_flags), has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
                          "	dentry: %s, task:%s\n",
 						 __func__, dentry->d_name.name, current->comm);
@@ -226,7 +238,10 @@ static int sdcardfs_open(struct inode *inode, struct file *file)
 	/* save current_cred and override it */
 	OVERRIDE_CRED(sbi, saved_cred);
 
+<<<<<<< HEAD
 	file->f_mode |= FMODE_NONMAPPABLE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	file->private_data =
 		kzalloc(sizeof(struct sdcardfs_file_info), GFP_KERNEL);
 	if (!SDCARDFS_F(file)) {
@@ -319,11 +334,14 @@ static int sdcardfs_fasync(int fd, struct file *file, int flag)
 	return err;
 }
 
+<<<<<<< HEAD
 static struct file *sdcardfs_get_lower_file(struct file *f)
 {
 	return sdcardfs_lower_file(f);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 const struct file_operations sdcardfs_main_fops = {
 	.llseek		= generic_file_llseek,
 	.read		= sdcardfs_read,
@@ -338,7 +356,10 @@ const struct file_operations sdcardfs_main_fops = {
 	.release	= sdcardfs_file_release,
 	.fsync		= sdcardfs_fsync,
 	.fasync		= sdcardfs_fasync,
+<<<<<<< HEAD
 	.get_lower_file = sdcardfs_get_lower_file,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /* trimmed directory options */
@@ -355,5 +376,8 @@ const struct file_operations sdcardfs_dir_fops = {
 	.flush		= sdcardfs_flush,
 	.fsync		= sdcardfs_fsync,
 	.fasync		= sdcardfs_fasync,
+<<<<<<< HEAD
 	.get_lower_file = sdcardfs_get_lower_file,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };

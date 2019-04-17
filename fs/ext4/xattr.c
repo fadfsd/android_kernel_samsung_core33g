@@ -189,6 +189,7 @@ ext4_listxattr(struct dentry *dentry, char *buffer, size_t size)
 }
 
 static int
+<<<<<<< HEAD
 ext4_xattr_check_names(struct ext4_xattr_entry *entry, void *end,
 		       void *value_start)
 {
@@ -211,6 +212,16 @@ ext4_xattr_check_names(struct ext4_xattr_entry *entry, void *end,
 		entry = EXT4_XATTR_NEXT(entry);
 	}
 
+=======
+ext4_xattr_check_names(struct ext4_xattr_entry *entry, void *end)
+{
+	while (!IS_LAST_ENTRY(entry)) {
+		struct ext4_xattr_entry *next = EXT4_XATTR_NEXT(entry);
+		if ((void *)next >= end)
+			return -EIO;
+		entry = next;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -227,8 +238,12 @@ ext4_xattr_check_block(struct inode *inode, struct buffer_head *bh)
 		return -EIO;
 	if (!ext4_xattr_block_csum_verify(inode, bh->b_blocknr, BHDR(bh)))
 		return -EIO;
+<<<<<<< HEAD
 	error = ext4_xattr_check_names(BFIRST(bh), bh->b_data + bh->b_size,
 				       bh->b_data);
+=======
+	error = ext4_xattr_check_names(BFIRST(bh), bh->b_data + bh->b_size);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!error)
 		set_buffer_verified(bh);
 	return error;
@@ -344,7 +359,11 @@ ext4_xattr_ibody_get(struct inode *inode, int name_index, const char *name,
 	header = IHDR(inode, raw_inode);
 	entry = IFIRST(header);
 	end = (void *)raw_inode + EXT4_SB(inode->i_sb)->s_inode_size;
+<<<<<<< HEAD
 	error = ext4_xattr_check_names(entry, end, entry);
+=======
+	error = ext4_xattr_check_names(entry, end);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (error)
 		goto cleanup;
 	error = ext4_xattr_find_entry(&entry, name_index, name,
@@ -472,7 +491,11 @@ ext4_xattr_ibody_list(struct dentry *dentry, char *buffer, size_t buffer_size)
 	raw_inode = ext4_raw_inode(&iloc);
 	header = IHDR(inode, raw_inode);
 	end = (void *)raw_inode + EXT4_SB(inode->i_sb)->s_inode_size;
+<<<<<<< HEAD
 	error = ext4_xattr_check_names(IFIRST(header), end, IFIRST(header));
+=======
+	error = ext4_xattr_check_names(IFIRST(header), end);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (error)
 		goto cleanup;
 	error = ext4_xattr_list_entries(dentry, IFIRST(header),
@@ -532,8 +555,13 @@ static void ext4_xattr_update_super_block(handle_t *handle,
 }
 
 /*
+<<<<<<< HEAD
  * Release the xattr block BH: If the reference count is > 1, decrement it;
  * otherwise free the block.
+=======
+ * Release the xattr block BH: If the reference count is > 1, decrement
+ * it; otherwise free the block.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 static void
 ext4_xattr_release_block(handle_t *handle, struct inode *inode,
@@ -553,14 +581,22 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
 		if (ce)
 			mb_cache_entry_free(ce);
 		get_bh(bh);
+<<<<<<< HEAD
 		unlock_buffer(bh);
 		ext4_free_blocks(handle, inode, bh, 0, 1,
 				 EXT4_FREE_BLOCKS_METADATA |
 				 EXT4_FREE_BLOCKS_FORGET);
+=======
+		ext4_free_blocks(handle, inode, bh, 0, 1,
+				 EXT4_FREE_BLOCKS_METADATA |
+				 EXT4_FREE_BLOCKS_FORGET);
+		unlock_buffer(bh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		le32_add_cpu(&BHDR(bh)->h_refcount, -1);
 		if (ce)
 			mb_cache_entry_release(ce);
+<<<<<<< HEAD
 		/*
 		 * Beware of this ugliness: Releasing of xattr block references
 		 * from different inodes can race and so we have to protect
@@ -578,6 +614,10 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
 		if (!ext4_handle_valid(handle))
 			error = ext4_handle_dirty_xattr_block(handle, inode,
 							      bh);
+=======
+		unlock_buffer(bh);
+		error = ext4_handle_dirty_xattr_block(handle, inode, bh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (IS_SYNC(inode))
 			ext4_handle_sync(handle);
 		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
@@ -987,8 +1027,12 @@ int ext4_xattr_ibody_find(struct inode *inode, struct ext4_xattr_info *i,
 	is->s.here = is->s.first;
 	is->s.end = (void *)raw_inode + EXT4_SB(inode->i_sb)->s_inode_size;
 	if (ext4_test_inode_state(inode, EXT4_STATE_XATTR)) {
+<<<<<<< HEAD
 		error = ext4_xattr_check_names(IFIRST(header), is->s.end,
 					       IFIRST(header));
+=======
+		error = ext4_xattr_check_names(IFIRST(header), is->s.end);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (error)
 			return error;
 		/* Find the named attribute. */
@@ -1383,7 +1427,10 @@ retry:
 					new_extra_isize = s_min_extra_isize;
 					kfree(is); is = NULL;
 					kfree(bs); bs = NULL;
+<<<<<<< HEAD
 					brelse(bh);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					goto retry;
 				}
 				error = -1;

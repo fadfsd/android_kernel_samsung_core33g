@@ -255,4 +255,8 @@ module_exit(md4_mod_fini);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("MD4 Message Digest Algorithm");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("md4");
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

@@ -345,7 +345,17 @@ static void *persistent_ram_vmap(phys_addr_t start, size_t size)
 	page_start = start - offset_in_page(start);
 	page_count = DIV_ROUND_UP(size + offset_in_page(start), PAGE_SIZE);
 
+<<<<<<< HEAD
 	prot = pgprot_noncached(PAGE_KERNEL);
+=======
+	/* ldrex of atomic_cmpxchg called by buffer_size_add and buffer_start_add
+	 * need cache */
+#if 0
+	prot = pgprot_noncached(PAGE_KERNEL);
+#else
+	prot = PAGE_KERNEL;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	pages = kmalloc(sizeof(struct page *) * page_count, GFP_KERNEL);
 	if (!pages) {

@@ -32,7 +32,11 @@
 #ifdef CONFIG_ARM_ARCH_TIMER
 
 extern u32 arch_timer_get_rate(void);
+<<<<<<< HEAD
 extern u64 arch_timer_read_counter(void);
+=======
+extern u64 (*arch_timer_read_counter)(void);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern struct timecounter *arch_timer_get_timecounter(void);
 
 #else

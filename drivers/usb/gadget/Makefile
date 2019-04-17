@@ -34,6 +34,10 @@ obj-$(CONFIG_USB_MV_UDC)	+= mv_udc.o
 mv_udc-y			:= mv_udc_core.o
 obj-$(CONFIG_USB_FUSB300)	+= fusb300_udc.o
 obj-$(CONFIG_USB_MV_U3D)	+= mv_u3d_core.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_USB_SPRD_DWC) += dwc_otg/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 # USB Functions
 usb_f_acm-y			:= f_acm.o
@@ -65,6 +69,10 @@ g_nokia-y			:= nokia.o
 g_webcam-y			:= webcam.o
 g_ncm-y				:= ncm.o
 g_acm_ms-y			:= acm_ms.o
+<<<<<<< HEAD
+=======
+g_android-y			:= android.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 g_tcm_usb_gadget-y		:= tcm_usb_gadget.o
 
 obj-$(CONFIG_USB_ZERO)		+= g_zero.o
@@ -84,4 +92,10 @@ obj-$(CONFIG_USB_G_NOKIA)	+= g_nokia.o
 obj-$(CONFIG_USB_G_WEBCAM)	+= g_webcam.o
 obj-$(CONFIG_USB_G_NCM)		+= g_ncm.o
 obj-$(CONFIG_USB_G_ACM_MS)	+= g_acm_ms.o
+<<<<<<< HEAD
 obj-$(CONFIG_USB_GADGET_TARGET)	+= tcm_usb_gadget.o
+=======
+obj-$(CONFIG_USB_G_ANDROID)	+= g_android.o
+obj-$(CONFIG_USB_GADGET_TARGET)	+= tcm_usb_gadget.o
+obj-$(CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE)	+= multi_config.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

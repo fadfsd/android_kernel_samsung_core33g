@@ -48,7 +48,11 @@
 #define GR_GEN1			(REG_GLB_GEN1)
 #endif
 
+<<<<<<< HEAD
 #define FREQ_TABLE_SIZE 	11
+=======
+#define FREQ_TABLE_SIZE 	10
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define DVFS_BOOT_TIME	(30 * HZ)
 #define SHARK_TDPLL_FREQUENCY	(768000)
 #define TRANSITION_LATENCY	(100 * 1000) /* ns */
@@ -75,6 +79,7 @@ struct cpufreq_table_data {
 
 struct cpufreq_conf *sprd_cpufreq_conf = NULL;
 
+<<<<<<< HEAD
 static struct cpufreq_table_data sc8830t_cpufreq_table_data_es = {
         .freq_tbl = {
 		{0, 1536000},
@@ -104,6 +109,180 @@ static struct cpufreq_table_data sc8830t_cpufreq_table_data_es = {
         },
 };
 
+=======
+#if defined(CONFIG_ARCH_SC8825)
+static struct cpufreq_table_data sc8825_cpufreq_table_data = {
+	.freq_tbl =	{
+		{0, 1000000},
+		{1, 500000},
+		{2, CPUFREQ_TABLE_END}
+	},
+	.vddarm_mv = {
+		0
+	},
+};
+
+struct cpufreq_conf sc8825_cpufreq_conf = {
+	.clk = NULL,
+	.regulator = NULL,
+	.freq_tbl = sc8825_cpufreq_table_data.freq_tbl,
+	.vddarm_mv = sc8825_cpufreq_table_data.vddarm_mv,
+};
+
+static void set_mcu_clk_freq(u32 mcu_freq)
+{
+	u32 val, rate, arm_clk_div, gr_gen1;
+
+	rate = mcu_freq / MHz;
+	switch(1000 / rate)
+	{
+		case 1:
+			arm_clk_div = 0;
+			break;
+		case 2:
+			arm_clk_div = 1;
+			break;
+		default:
+			panic("set_mcu_clk_freq fault\n");
+			break;
+	}
+	pr_debug("%s --- before, AHB_ARM_CLK: %08x, rate = %d, div = %d\n",
+		__func__, __raw_readl(REG_AHB_ARM_CLK), rate, arm_clk_div);
+
+	gr_gen1 =  __raw_readl(GR_GEN1);
+	gr_gen1 |= BIT(9);
+	__raw_writel(gr_gen1, GR_GEN1);
+
+	val = __raw_readl(REG_AHB_ARM_CLK);
+	val &= 0xfffffff8;
+	val |= arm_clk_div;
+	__raw_writel(val, REG_AHB_ARM_CLK);
+
+	gr_gen1 &= ~BIT(9);
+	__raw_writel(gr_gen1, GR_GEN1);
+
+	pr_debug("%s --- after, AHB_ARM_CLK: %08x, rate = %d, div = %d\n",
+		__func__, __raw_readl(REG_AHB_ARM_CLK), rate, arm_clk_div);
+
+	return;
+}
+
+static unsigned int get_mcu_clk_freq(void)
+{
+	u32 mpll_refin, mpll_n, mpll_cfg = 0, rate, val;
+
+	mpll_cfg = __raw_readl(GR_MPLL_MN);
+
+	mpll_refin = (mpll_cfg >> GR_MPLL_REFIN_SHIFT) & GR_MPLL_REFIN_MASK;
+	switch(mpll_refin){
+		case 0:
+			mpll_refin = GR_MPLL_REFIN_2M;
+			break;
+		case 1:
+		case 2:
+			mpll_refin = GR_MPLL_REFIN_4M;
+			break;
+		case 3:
+			mpll_refin = GR_MPLL_REFIN_13M;
+			break;
+		default:
+			pr_err("%s mpll_refin: %d\n", __FUNCTION__, mpll_refin);
+	}
+	mpll_n = mpll_cfg & GR_MPLL_N_MASK;
+	rate = mpll_refin * mpll_n;
+
+	/*find div */
+	val = __raw_readl(REG_AHB_ARM_CLK) & 0x7;
+	val += 1;
+	return rate / val;
+}
+#endif
+
+static struct cpufreq_table_data sc8830_cpufreq_table_data_cs = {
+	.freq_tbl = {
+		{0, 1200000},
+		{1, 1000000},
+		{2, SHARK_TDPLL_FREQUENCY},
+		{3, 600000},
+		{4, CPUFREQ_TABLE_END},
+	},
+	.vddarm_mv = {
+		1300000,
+		1200000,
+		1150000,
+		1100000,
+		1000000,
+	},
+};
+
+/*
+for 7715 test
+*/
+static struct cpufreq_table_data sc7715_cpufreq_table_data = {
+	.freq_tbl = {
+		{0, 1000000},
+		{1, SHARK_TDPLL_FREQUENCY},
+		{2, 600000},
+		{3, SHARK_TDPLL_FREQUENCY/2},
+		{4, CPUFREQ_TABLE_END},
+	},
+	.vddarm_mv = {
+		1200000,
+		1150000,
+		1100000,
+		1100000,
+		1000000,
+	},
+};
+
+
+static struct cpufreq_table_data sc8830_cpufreq_table_data_es = {
+	.freq_tbl = {
+		{0, 1000000},
+		{1, SHARK_TDPLL_FREQUENCY},
+		{2, CPUFREQ_TABLE_END},
+	},
+	.vddarm_mv = {
+		1250000,
+		1200000,
+		1000000,
+	},
+};
+
+#if !defined (CONFIG_SCX35_1300MHZ)
+static struct cpufreq_table_data sc8830t_cpufreq_table_data_es = {
+	.freq_tbl = {
+		{0, 1200000},
+		{1, 1000000},
+		{2, SHARK_TDPLL_FREQUENCY},
+		{3, CPUFREQ_TABLE_END},
+	},
+	.vddarm_mv = {
+		1000000,
+		900000,
+		900000,
+		900000,
+	},
+};
+#else
+static struct cpufreq_table_data sc8830t_cpufreq_table_data_es_1300 = {
+	.freq_tbl = {
+		{0, 1300000},
+		{1, 1200000},
+		{2, 1000000},
+		{3, SHARK_TDPLL_FREQUENCY},
+		{4, CPUFREQ_TABLE_END},
+	},
+	.vddarm_mv = {
+		1050000,
+		1000000,
+		900000,
+		900000,
+		900000,
+	},
+};
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct cpufreq_conf sc8830_cpufreq_conf = {
 	.clk = NULL,
 	.mpllclk = NULL,
@@ -378,8 +557,37 @@ static void sprd_set_cpureq_limit(void)
 
 static int sprd_freq_table_init(void)
 {
+<<<<<<< HEAD
 	sprd_cpufreq_conf->freq_tbl = sc8830t_cpufreq_table_data_es.freq_tbl;
 	sprd_cpufreq_conf->vddarm_mv = sc8830t_cpufreq_table_data_es.vddarm_mv;
+=======
+	/* we init freq table here depends on which chip being used */
+	if (soc_is_scx35_v0()) {
+		pr_info("%s es_chip\n", __func__);
+		sprd_cpufreq_conf->freq_tbl = sc8830_cpufreq_table_data_es.freq_tbl;
+		sprd_cpufreq_conf->vddarm_mv = sc8830_cpufreq_table_data_es.vddarm_mv;
+	} else if (soc_is_scx35_v1()) {
+		pr_info("%s cs_chip\n", __func__);
+		sprd_cpufreq_conf->freq_tbl = sc8830_cpufreq_table_data_cs.freq_tbl;
+		sprd_cpufreq_conf->vddarm_mv = sc8830_cpufreq_table_data_cs.vddarm_mv;
+	} else if (soc_is_sc7715()){
+	        sprd_cpufreq_conf->freq_tbl = sc7715_cpufreq_table_data.freq_tbl;
+	        sprd_cpufreq_conf->vddarm_mv = sc7715_cpufreq_table_data.vddarm_mv;
+        }
+	else if(soc_is_scx35g_v0()){
+#if !defined (CONFIG_SCX35_1300MHZ)
+	        sprd_cpufreq_conf->freq_tbl = sc8830t_cpufreq_table_data_es.freq_tbl;
+	        sprd_cpufreq_conf->vddarm_mv = sc8830t_cpufreq_table_data_es.vddarm_mv;
+#else
+	        sprd_cpufreq_conf->freq_tbl = sc8830t_cpufreq_table_data_es_1300.freq_tbl;
+	        sprd_cpufreq_conf->vddarm_mv = sc8830t_cpufreq_table_data_es_1300.vddarm_mv;
+#endif
+	}
+        else {
+		pr_err("%s error chip id\n", __func__);
+		return -EINVAL;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sprd_set_cpureq_limit();
 	return 0;
 }

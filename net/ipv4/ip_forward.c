@@ -58,9 +58,12 @@ int ip_forward(struct sk_buff *skb)
 	struct rtable *rt;	/* Route we use */
 	struct ip_options *opt	= &(IPCB(skb)->opt);
 
+<<<<<<< HEAD
 	if (unlikely(skb->sk))
 		goto drop;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (skb_warn_if_lro(skb))
 		goto drop;
 
@@ -91,6 +94,11 @@ int ip_forward(struct sk_buff *skb)
 	if (opt->is_strictroute && rt->rt_uses_gateway)
 		goto sr_failed;
 
+<<<<<<< HEAD
+=======
+	/* avoid to ping some website failed, because they set IP_DF flag*/
+#if 0
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(skb->len > dst_mtu(&rt->dst) && !skb_is_gso(skb) &&
 		     (ip_hdr(skb)->frag_off & htons(IP_DF))) && !skb->local_df) {
 		IP_INC_STATS(dev_net(rt->dst.dev), IPSTATS_MIB_FRAGFAILS);
@@ -98,7 +106,11 @@ int ip_forward(struct sk_buff *skb)
 			  htonl(dst_mtu(&rt->dst)));
 		goto drop;
 	}
+<<<<<<< HEAD
 
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* We are about to mangle packet. Copy it! */
 	if (skb_cow(skb, LL_RESERVED_SPACE(rt->dst.dev)+rt->dst.header_len))
 		goto drop;
@@ -111,8 +123,12 @@ int ip_forward(struct sk_buff *skb)
 	 *	We now generate an ICMP HOST REDIRECT giving the route
 	 *	we calculated.
 	 */
+<<<<<<< HEAD
 	if (IPCB(skb)->flags & IPSKB_DOREDIRECT && !opt->srr &&
 	    !skb_sec_path(skb))
+=======
+	if (rt->rt_flags&RTCF_DOREDIRECT && !opt->srr && !skb_sec_path(skb))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ip_rt_send_redirect(skb);
 
 	skb->priority = rt_tos2priority(iph->tos);

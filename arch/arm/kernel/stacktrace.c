@@ -31,7 +31,11 @@ int notrace unwind_frame(struct stackframe *frame)
 	high = ALIGN(low, THREAD_SIZE);
 
 	/* check current frame pointer is within bounds */
+<<<<<<< HEAD
 	if (fp < low + 12 || fp > high - 4)
+=======
+	if (fp < (low + 12) || fp + 4 >= high)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 
 	/* restore the registers from the stack frame */
@@ -83,16 +87,23 @@ static int save_trace(struct stackframe *frame, void *d)
 	return trace->nr_entries >= trace->max_entries;
 }
 
+<<<<<<< HEAD
 /* This must be noinline to so that our skip calculation works correctly */
 static noinline void __save_stack_trace(struct task_struct *tsk,
 	struct stack_trace *trace, unsigned int nosched)
+=======
+void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct stack_trace_data data;
 	struct stackframe frame;
 
 	data.trace = trace;
 	data.skip = trace->skip;
+<<<<<<< HEAD
 	data.no_sched_functions = nosched;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (tsk != current) {
 #ifdef CONFIG_SMP
@@ -105,6 +116,10 @@ static noinline void __save_stack_trace(struct task_struct *tsk,
 			trace->entries[trace->nr_entries++] = ULONG_MAX;
 		return;
 #else
+<<<<<<< HEAD
+=======
+		data.no_sched_functions = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		frame.fp = thread_saved_fp(tsk);
 		frame.sp = thread_saved_sp(tsk);
 		frame.lr = 0;		/* recovered from the stack */
@@ -113,12 +128,20 @@ static noinline void __save_stack_trace(struct task_struct *tsk,
 	} else {
 		register unsigned long current_sp asm ("sp");
 
+<<<<<<< HEAD
 		/* We don't want this function nor the caller */
 		data.skip += 2;
 		frame.fp = (unsigned long)__builtin_frame_address(0);
 		frame.sp = current_sp;
 		frame.lr = (unsigned long)__builtin_return_address(0);
 		frame.pc = (unsigned long)__save_stack_trace;
+=======
+		data.no_sched_functions = 0;
+		frame.fp = (unsigned long)__builtin_frame_address(0);
+		frame.sp = current_sp;
+		frame.lr = (unsigned long)__builtin_return_address(0);
+		frame.pc = (unsigned long)save_stack_trace_tsk;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	walk_stackframe(&frame, save_trace, &data);
@@ -126,6 +149,7 @@ static noinline void __save_stack_trace(struct task_struct *tsk,
 		trace->entries[trace->nr_entries++] = ULONG_MAX;
 }
 
+<<<<<<< HEAD
 void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
 {
 	__save_stack_trace(tsk, trace, 1);
@@ -134,6 +158,11 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
 void save_stack_trace(struct stack_trace *trace)
 {
 	__save_stack_trace(current, trace, 0);
+=======
+void save_stack_trace(struct stack_trace *trace)
+{
+	save_stack_trace_tsk(current, trace);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL_GPL(save_stack_trace);
 #endif

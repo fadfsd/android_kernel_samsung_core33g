@@ -22,7 +22,10 @@
 #define FC2580_PRIV_H
 
 #include "fc2580.h"
+<<<<<<< HEAD
 #include <linux/math64.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct fc2580_reg_val {
 	u8 reg;

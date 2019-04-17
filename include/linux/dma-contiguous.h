@@ -68,8 +68,33 @@ struct device;
 extern struct cma *dma_contiguous_default_area;
 
 void dma_contiguous_reserve(phys_addr_t addr_limit);
+<<<<<<< HEAD
 int dma_declare_contiguous(struct device *dev, phys_addr_t size,
 			   phys_addr_t base, phys_addr_t limit);
+=======
+int dma_contiguous_reserve_area(struct device *dev, phys_addr_t size,
+				  phys_addr_t base, phys_addr_t limit,
+				  phys_addr_t reserve_size, phys_addr_t threshold_size);
+static inline int dma_declare_contiguous(struct device *dev, phys_addr_t size,
+			   phys_addr_t base, phys_addr_t limit)
+{
+	int ret;
+	ret = dma_contiguous_reserve_area(dev, size,
+				  base, limit, 0, 0);
+	return ret;
+}
+
+static inline int dma_declare_contiguous_reserved(struct device *dev,
+					 phys_addr_t size, phys_addr_t base,
+					 phys_addr_t limit, phys_addr_t reserve_size,
+					 phys_addr_t threshold_size)
+{
+	int ret;
+	ret = dma_contiguous_reserve_area(dev, size,
+				  base, limit, reserve_size, threshold_size);
+	return ret;
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct page *dma_alloc_from_contiguous(struct device *dev, int count,
 				       unsigned int order);

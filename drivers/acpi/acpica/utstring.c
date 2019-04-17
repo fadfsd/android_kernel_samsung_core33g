@@ -349,7 +349,11 @@ void acpi_ut_print_string(char *string, u8 max_length)
 	}
 
 	acpi_os_printf("\"");
+<<<<<<< HEAD
 	for (i = 0; (i < max_length) && string[i]; i++) {
+=======
+	for (i = 0; string[i] && (i < max_length); i++) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* Escape sequences */
 

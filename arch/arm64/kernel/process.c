@@ -172,6 +172,7 @@ void exit_thread(void)
 {
 }
 
+<<<<<<< HEAD
 static void tls_thread_flush(void)
 {
 	asm ("msr tpidr_el0, xzr");
@@ -193,6 +194,11 @@ void flush_thread(void)
 {
 	fpsimd_flush_thread();
 	tls_thread_flush();
+=======
+void flush_thread(void)
+{
+	fpsimd_flush_thread();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	flush_ptrace_hw_breakpoint(current);
 }
 

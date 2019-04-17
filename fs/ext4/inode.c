@@ -38,7 +38,10 @@
 #include <linux/slab.h>
 #include <linux/ratelimit.h>
 #include <linux/aio.h>
+<<<<<<< HEAD
 #include <linux/bitops.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "ext4_jbd2.h"
 #include "xattr.h"
@@ -412,6 +415,14 @@ static int __check_block_validity(struct inode *inode, const char *func,
 {
 	if (!ext4_data_block_valid(EXT4_SB(inode->i_sb), map->m_pblk,
 				   map->m_len)) {
+<<<<<<< HEAD
+=======
+		/* for debugging, sangwoo2.lee */
+		printk(KERN_ERR "printing inode..\n");
+		print_block_data(inode->i_sb, 0, (unsigned char *)inode,
+				0, EXT4_INODE_SIZE(inode->i_sb));
+		/* for debugging */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ext4_error_inode(inode, func, line, map->m_pblk,
 				 "lblock %lu mapped to illegal pblock "
 				 "(length %d)", (unsigned long) map->m_lblk,
@@ -626,7 +637,10 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
 		status = map->m_flags & EXT4_MAP_UNWRITTEN ?
 				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
 		if (!(flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE) &&
+<<<<<<< HEAD
 		    !(status & EXTENT_STATUS_WRITTEN) &&
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		    ext4_find_delalloc_range(inode, map->m_lblk,
 					     map->m_lblk + map->m_len - 1))
 			status |= EXTENT_STATUS_DELAYED;
@@ -737,7 +751,10 @@ found:
 		status = map->m_flags & EXT4_MAP_UNWRITTEN ?
 				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
 		if (!(flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE) &&
+<<<<<<< HEAD
 		    !(status & EXTENT_STATUS_WRITTEN) &&
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		    ext4_find_delalloc_range(inode, map->m_lblk,
 					     map->m_lblk + map->m_len - 1))
 			status |= EXTENT_STATUS_DELAYED;
@@ -1032,8 +1049,12 @@ retry_journal:
 		ext4_journal_stop(handle);
 		goto retry_grab;
 	}
+<<<<<<< HEAD
 	/* In case writeback began while the page was unlocked */
 	wait_for_stable_page(page);
+=======
+	wait_on_page_writeback(page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (ext4_should_dioread_nolock(inode))
 		ret = __block_write_begin(page, pos, len, ext4_get_block_write);
@@ -1267,6 +1288,10 @@ static int ext4_journalled_write_end(struct file *file,
  */
 static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
 {
+<<<<<<< HEAD
+=======
+	int retries = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	unsigned int md_needed;
@@ -1278,6 +1303,10 @@ static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
 	 * in order to allocate nrblocks
 	 * worse case is one extent per block
 	 */
+<<<<<<< HEAD
+=======
+repeat:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock(&ei->i_block_reservation_lock);
 	/*
 	 * ext4_calc_metadata_amount() has side effects, which we have
@@ -1297,6 +1326,13 @@ static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
 		ei->i_da_metadata_calc_len = save_len;
 		ei->i_da_metadata_calc_last_lblock = save_last_lblock;
 		spin_unlock(&ei->i_block_reservation_lock);
+<<<<<<< HEAD
+=======
+		if (ext4_should_retry_alloc(inode->i_sb, &retries)) {
+			cond_resched();
+			goto repeat;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -ENOSPC;
 	}
 	ei->i_reserved_meta_blocks += md_needed;
@@ -1310,6 +1346,10 @@ static int ext4_da_reserve_metadata(struct inode *inode, ext4_lblk_t lblock)
  */
 static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 {
+<<<<<<< HEAD
+=======
+	int retries = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	unsigned int md_needed;
@@ -1331,6 +1371,10 @@ static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 	 * in order to allocate nrblocks
 	 * worse case is one extent per block
 	 */
+<<<<<<< HEAD
+=======
+repeat:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock(&ei->i_block_reservation_lock);
 	/*
 	 * ext4_calc_metadata_amount() has side effects, which we have
@@ -1350,6 +1394,13 @@ static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 		ei->i_da_metadata_calc_len = save_len;
 		ei->i_da_metadata_calc_last_lblock = save_last_lblock;
 		spin_unlock(&ei->i_block_reservation_lock);
+<<<<<<< HEAD
+=======
+		if (ext4_should_retry_alloc(inode->i_sb, &retries)) {
+			cond_resched();
+			goto repeat;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		dquot_release_reservation_block(inode, EXT4_C2B(sbi, 1));
 		return -ENOSPC;
 	}
@@ -1412,7 +1463,11 @@ static void ext4_da_release_space(struct inode *inode, int to_free)
 static void ext4_da_page_release_reservation(struct page *page,
 					     unsigned long offset)
 {
+<<<<<<< HEAD
 	int to_release = 0, contiguous_blks = 0;
+=======
+	int to_release = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct buffer_head *head, *bh;
 	unsigned int curr_off = 0;
 	struct inode *inode = page->mapping->host;
@@ -1427,6 +1482,7 @@ static void ext4_da_page_release_reservation(struct page *page,
 
 		if ((offset <= curr_off) && (buffer_delay(bh))) {
 			to_release++;
+<<<<<<< HEAD
 			contiguous_blks++;
 			clear_buffer_delay(bh);
 		} else if (contiguous_blks) {
@@ -1436,14 +1492,23 @@ static void ext4_da_page_release_reservation(struct page *page,
 				contiguous_blks;
 			ext4_es_remove_extent(inode, lblk, contiguous_blks);
 			contiguous_blks = 0;
+=======
+			clear_buffer_delay(bh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 		curr_off = next_off;
 	} while ((bh = bh->b_this_page) != head);
 
+<<<<<<< HEAD
 	if (contiguous_blks) {
 		lblk = page->index << (PAGE_CACHE_SHIFT - inode->i_blkbits);
 		lblk += (curr_off >> inode->i_blkbits) - contiguous_blks;
 		ext4_es_remove_extent(inode, lblk, contiguous_blks);
+=======
+	if (to_release) {
+		lblk = page->index << (PAGE_CACHE_SHIFT - inode->i_blkbits);
+		ext4_es_remove_extent(inode, lblk, to_release);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* If we have released all the blocks belonging to a cluster, then we
@@ -2108,18 +2173,24 @@ static int __ext4_journalled_writepage(struct page *page,
 		ext4_walk_page_buffers(handle, page_bufs, 0, len,
 				       NULL, bget_one);
 	}
+<<<<<<< HEAD
 	/*
 	 * We need to release the page lock before we start the
 	 * journal, so grab a reference so the page won't disappear
 	 * out from under us.
 	 */
 	get_page(page);
+=======
+	/* As soon as we unlock the page, it can go away, but we have
+	 * references to buffers so we are safe */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unlock_page(page);
 
 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
 				    ext4_writepage_trans_blocks(inode));
 	if (IS_ERR(handle)) {
 		ret = PTR_ERR(handle);
+<<<<<<< HEAD
 		put_page(page);
 		goto out_no_pagelock;
 	}
@@ -2134,6 +2205,13 @@ static int __ext4_journalled_writepage(struct page *page,
 		goto out;
 	}
 
+=======
+		goto out;
+	}
+
+	BUG_ON(!ext4_handle_valid(handle));
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (inline_data) {
 		ret = ext4_journal_get_write_access(handle, inode_bh);
 
@@ -2158,8 +2236,11 @@ static int __ext4_journalled_writepage(struct page *page,
 				       NULL, bput_one);
 	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
 out:
+<<<<<<< HEAD
 	unlock_page(page);
 out_no_pagelock:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	brelse(inode_bh);
 	return ret;
 }
@@ -2674,6 +2755,7 @@ static int ext4_nonda_switch(struct super_block *sb)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* We always reserve for an inode update; the superblock could be there too */
 static int ext4_da_write_credits(struct inode *inode, loff_t pos, unsigned len)
 {
@@ -2688,6 +2770,8 @@ static int ext4_da_write_credits(struct inode *inode, loff_t pos, unsigned len)
 	return 2;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
 			       loff_t pos, unsigned len, unsigned flags,
 			       struct page **pagep, void **fsdata)
@@ -2738,8 +2822,12 @@ retry_grab:
 	 * of file which has an already mapped buffer.
 	 */
 retry_journal:
+<<<<<<< HEAD
 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
 				ext4_da_write_credits(inode, pos, len));
+=======
+	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE, 1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (IS_ERR(handle)) {
 		page_cache_release(page);
 		return PTR_ERR(handle);
@@ -2754,7 +2842,11 @@ retry_journal:
 		goto retry_grab;
 	}
 	/* In case writeback began while the page was unlocked */
+<<<<<<< HEAD
 	wait_for_stable_page(page);
+=======
+	wait_on_page_writeback(page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ret = __block_write_begin(page, pos, len, ext4_da_get_block_prep);
 	if (ret < 0) {
@@ -4087,6 +4179,7 @@ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
 void ext4_set_inode_flags(struct inode *inode)
 {
 	unsigned int flags = EXT4_I(inode)->i_flags;
+<<<<<<< HEAD
 	unsigned int new_fl = 0;
 
 	if (flags & EXT4_SYNC_FL)
@@ -4101,6 +4194,20 @@ void ext4_set_inode_flags(struct inode *inode)
 		new_fl |= S_DIRSYNC;
 	set_mask_bits(&inode->i_flags,
 		      S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC, new_fl);
+=======
+
+	inode->i_flags &= ~(S_SYNC|S_APPEND|S_IMMUTABLE|S_NOATIME|S_DIRSYNC);
+	if (flags & EXT4_SYNC_FL)
+		inode->i_flags |= S_SYNC;
+	if (flags & EXT4_APPEND_FL)
+		inode->i_flags |= S_APPEND;
+	if (flags & EXT4_IMMUTABLE_FL)
+		inode->i_flags |= S_IMMUTABLE;
+	if (flags & EXT4_NOATIME_FL)
+		inode->i_flags |= S_NOATIME;
+	if (flags & EXT4_DIRSYNC_FL)
+		inode->i_flags |= S_DIRSYNC;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* Propagate flags from i_flags to EXT4_I(inode)->i_flags */
@@ -4186,14 +4293,25 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 	iloc.bh = NULL;
 
 	ret = __ext4_get_inode_loc(inode, &iloc, 0);
+<<<<<<< HEAD
 	if (ret < 0)
 		goto bad_inode;
+=======
+	if (ret < 0) {
+		print_iloc_info(sb,iloc);
+		goto bad_inode;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	raw_inode = ext4_raw_inode(&iloc);
 
 	if (EXT4_INODE_SIZE(inode->i_sb) > EXT4_GOOD_OLD_INODE_SIZE) {
 		ei->i_extra_isize = le16_to_cpu(raw_inode->i_extra_isize);
 		if (EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize >
 		    EXT4_INODE_SIZE(inode->i_sb)) {
+<<<<<<< HEAD
+=======
+			print_iloc_info(sb,iloc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			EXT4_ERROR_INODE(inode, "bad extra_isize (%u != %u)",
 				EXT4_GOOD_OLD_INODE_SIZE + ei->i_extra_isize,
 				EXT4_INODE_SIZE(inode->i_sb));
@@ -4217,6 +4335,10 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 	}
 
 	if (!ext4_inode_csum_verify(inode, raw_inode, ei)) {
+<<<<<<< HEAD
+=======
+		print_iloc_info(sb,iloc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		EXT4_ERROR_INODE(inode, "checksum invalid");
 		ret = -EIO;
 		goto bad_inode;
@@ -4248,6 +4370,10 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 		    ino != EXT4_BOOT_LOADER_INO) {
 			/* this inode is deleted */
 			ret = -ESTALE;
+<<<<<<< HEAD
+=======
+			print_iloc_info(sb,iloc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto bad_inode;
 		}
 		/* The only unlinked inodes we let through here have
@@ -4329,6 +4455,10 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 	ret = 0;
 	if (ei->i_file_acl &&
 	    !ext4_data_block_valid(EXT4_SB(sb), ei->i_file_acl, 1)) {
+<<<<<<< HEAD
+=======
+		print_iloc_info(sb,iloc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		EXT4_ERROR_INODE(inode, "bad extended attribute block %llu",
 				 ei->i_file_acl);
 		ret = -EIO;
@@ -4347,8 +4477,15 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 			ret = ext4_ind_check_inode(inode);
 		}
 	}
+<<<<<<< HEAD
 	if (ret)
 		goto bad_inode;
+=======
+	if (ret) {
+		print_iloc_info(sb,iloc);
+		goto bad_inode;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (S_ISREG(inode->i_mode)) {
 		inode->i_op = &ext4_file_inode_operations;
@@ -4379,6 +4516,10 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 		make_bad_inode(inode);
 	} else {
 		ret = -EIO;
+<<<<<<< HEAD
+=======
+		print_iloc_info(sb,iloc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		EXT4_ERROR_INODE(inode, "bogus i_mode (%o)", inode->i_mode);
 		goto bad_inode;
 	}
@@ -4393,6 +4534,7 @@ bad_inode:
 	return ERR_PTR(ret);
 }
 
+<<<<<<< HEAD
 struct inode *ext4_iget_normal(struct super_block *sb, unsigned long ino)
 {
 	if (ino < EXT4_FIRST_INO(sb) && ino != EXT4_ROOT_INO)
@@ -4400,6 +4542,8 @@ struct inode *ext4_iget_normal(struct super_block *sb, unsigned long ino)
 	return ext4_iget(sb, ino);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int ext4_inode_blocks_set(handle_t *handle,
 				struct ext4_inode *raw_inode,
 				struct ext4_inode_info *ei)
@@ -4756,10 +4900,13 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
 			if (attr->ia_size > sbi->s_bitmap_maxbytes)
 				return -EFBIG;
 		}
+<<<<<<< HEAD
 
 		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
 			inode_inc_iversion(inode);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (S_ISREG(inode->i_mode) &&
 		    (attr->ia_size < inode->i_size)) {
 			if (ext4_should_order_data(inode)) {

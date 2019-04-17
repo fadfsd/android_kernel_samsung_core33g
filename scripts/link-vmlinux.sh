@@ -82,8 +82,11 @@ kallsyms()
 		kallsymopt="${kallsymopt} --all-symbols"
 	fi
 
+<<<<<<< HEAD
 	kallsymopt="${kallsymopt} --page-offset=$CONFIG_PAGE_OFFSET"
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	local aflags="${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL}               \
 		      ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
 

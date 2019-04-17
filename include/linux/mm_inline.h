@@ -2,6 +2,10 @@
 #define LINUX_MM_INLINE_H
 
 #include <linux/huge_mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/swap.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /**
  * page_is_file_cache - should the page be on a file LRU or anon LRU?

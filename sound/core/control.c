@@ -289,10 +289,13 @@ static bool snd_ctl_remove_numid_conflict(struct snd_card *card,
 {
 	struct snd_kcontrol *kctl;
 
+<<<<<<< HEAD
 	/* Make sure that the ids assigned to the control do not wrap around */
 	if (card->last_numid >= UINT_MAX - count)
 		card->last_numid = 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_for_each_entry(kctl, &card->controls, list) {
 		if (kctl->id.numid < card->last_numid + 1 + count &&
 		    kctl->id.numid + kctl->count > card->last_numid + 1) {
@@ -335,7 +338,10 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
 {
 	struct snd_ctl_elem_id id;
 	unsigned int idx;
+<<<<<<< HEAD
 	unsigned int count;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int err = -EINVAL;
 
 	if (! kcontrol)
@@ -343,9 +349,12 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
 	if (snd_BUG_ON(!card || !kcontrol->info))
 		goto error;
 	id = kcontrol->id;
+<<<<<<< HEAD
 	if (id.index > UINT_MAX - kcontrol->count)
 		goto error;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	down_write(&card->controls_rwsem);
 	if (snd_ctl_find_id(card, &id)) {
 		up_write(&card->controls_rwsem);
@@ -367,9 +376,14 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
 	card->controls_count += kcontrol->count;
 	kcontrol->id.numid = card->last_numid + 1;
 	card->last_numid += kcontrol->count;
+<<<<<<< HEAD
 	count = kcontrol->count;
 	up_write(&card->controls_rwsem);
 	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
+=======
+	up_write(&card->controls_rwsem);
+	for (idx = 0; idx < kcontrol->count; idx++, id.index++, id.numid++)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
 	return 0;
 
@@ -398,7 +412,10 @@ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
 		    bool add_on_replace)
 {
 	struct snd_ctl_elem_id id;
+<<<<<<< HEAD
 	unsigned int count;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int idx;
 	struct snd_kcontrol *old;
 	int ret;
@@ -434,9 +451,14 @@ add:
 	card->controls_count += kcontrol->count;
 	kcontrol->id.numid = card->last_numid + 1;
 	card->last_numid += kcontrol->count;
+<<<<<<< HEAD
 	count = kcontrol->count;
 	up_write(&card->controls_rwsem);
 	for (idx = 0; idx < count; idx++, id.index++, id.numid++)
+=======
+	up_write(&card->controls_rwsem);
+	for (idx = 0; idx < kcontrol->count; idx++, id.index++, id.numid++)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
 	return 0;
 
@@ -909,9 +931,15 @@ static int snd_ctl_elem_write(struct snd_card *card, struct snd_ctl_file *file,
 			result = kctl->put(kctl, control);
 		}
 		if (result > 0) {
+<<<<<<< HEAD
 			struct snd_ctl_elem_id id = control->id;
 			up_read(&card->controls_rwsem);
 			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &id);
+=======
+			up_read(&card->controls_rwsem);
+			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
+				       &control->id);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return 0;
 		}
 	}
@@ -1166,18 +1194,26 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 	struct user_element *ue;
 	int idx, err;
 
+<<<<<<< HEAD
 	if (info->count < 1)
 		return -EINVAL;
 	if (!*info->id.name)
 		return -EINVAL;
 	if (strnlen(info->id.name, sizeof(info->id.name)) >= sizeof(info->id.name))
 		return -EINVAL;
+=======
+	if (!replace && card->user_ctl_count >= MAX_USER_CONTROLS)
+		return -ENOMEM;
+	if (info->count < 1)
+		return -EINVAL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	access = info->access == 0 ? SNDRV_CTL_ELEM_ACCESS_READWRITE :
 		(info->access & (SNDRV_CTL_ELEM_ACCESS_READWRITE|
 				 SNDRV_CTL_ELEM_ACCESS_INACTIVE|
 				 SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE));
 	info->id.numid = 0;
 	memset(&kctl, 0, sizeof(kctl));
+<<<<<<< HEAD
 
 	if (replace) {
 		err = snd_ctl_remove_user_ctl(file, &info->id);
@@ -1188,6 +1224,23 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 	if (card->user_ctl_count >= MAX_USER_CONTROLS)
 		return -ENOMEM;
 
+=======
+	down_write(&card->controls_rwsem);
+	_kctl = snd_ctl_find_id(card, &info->id);
+	err = 0;
+	if (_kctl) {
+		if (replace)
+			err = snd_ctl_remove(card, _kctl);
+		else
+			err = -EBUSY;
+	} else {
+		if (replace)
+			err = -ENOENT;
+	}
+	up_write(&card->controls_rwsem);
+	if (err < 0)
+		return err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	memcpy(&kctl.id, &info->id, sizeof(info->id));
 	kctl.count = info->owner ? info->owner : 1;
 	access |= SNDRV_CTL_ELEM_ACCESS_USER;
@@ -1349,9 +1402,14 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
 		}
 		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv);
 		if (err > 0) {
+<<<<<<< HEAD
 			struct snd_ctl_elem_id id = kctl->id;
 			up_read(&card->controls_rwsem);
 			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_TLV, &id);
+=======
+			up_read(&card->controls_rwsem);
+			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_TLV, &kctl->id);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return 0;
 		}
 	} else {

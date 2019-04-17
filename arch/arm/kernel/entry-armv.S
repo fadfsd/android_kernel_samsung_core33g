@@ -192,7 +192,10 @@ __dabt_svc:
 	svc_entry
 	mov	r2, sp
 	dabt_helper
+<<<<<<< HEAD
  THUMB(	ldr	r5, [sp, #S_PSR]	)	@ potentially updated CPSR
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	svc_exit r5				@ return from exception
  UNWIND(.fnend		)
 ENDPROC(__dabt_svc)
@@ -358,8 +361,12 @@ ENDPROC(__pabt_svc)
 	.endm
 
 	.macro	kuser_cmpxchg_check
+<<<<<<< HEAD
 #if !defined(CONFIG_CPU_32v6K) && defined(CONFIG_KUSER_HELPERS) && \
     !defined(CONFIG_NEEDS_SYSCALL_FOR_CMPXCHG)
+=======
+#if !defined(CONFIG_CPU_32v6K) && !defined(CONFIG_NEEDS_SYSCALL_FOR_CMPXCHG)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifndef CONFIG_MMU
 #warning "NPTL on non MMU needs fixing"
 #else
@@ -413,6 +420,14 @@ __und_usr:
 	@
 	adr	r9, BSYM(ret_from_exception)
 
+<<<<<<< HEAD
+=======
+	@  IRQs must be enabled before attempting to read the instruction from
+	@  user space since that could cause a page/translation fault if the
+	@  page table was modified by another CPU.
+	enable_irq
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tst	r3, #PSR_T_BIT			@ Thumb mode?
 	bne	__und_usr_thumb
 	sub	r4, r2, #4			@ ARM instr at LR - 4
@@ -516,7 +531,11 @@ ENDPROC(__und_usr)
  *  r9  = normal "successful" return address
  *  r10 = this threads thread_info structure
  *  lr  = unrecognised instruction return address
+<<<<<<< HEAD
  * IRQs disabled, FIQs enabled.
+=======
+ * IRQs enabled, FIQs enabled.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 	@
 	@ Fall-through from Thumb-2 __und_usr
@@ -623,7 +642,10 @@ call_fpe:
 #endif
 
 do_fpe:
+<<<<<<< HEAD
 	enable_irq
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ldr	r4, .LCfp
 	add	r10, r10, #TI_FPSTATE		@ r10 = workspace
 	ldr	pc, [r4]			@ Call FP module USR entry point
@@ -651,8 +673,12 @@ __und_usr_fault_32:
 	b	1f
 __und_usr_fault_16:
 	mov	r1, #2
+<<<<<<< HEAD
 1:	enable_irq
 	mov	r0, sp
+=======
+1:	mov	r0, sp
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	adr	lr, BSYM(ret_from_exception)
 	b	__und_fault
 ENDPROC(__und_usr_fault_32)

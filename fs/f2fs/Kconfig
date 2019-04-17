@@ -1,8 +1,13 @@
 config F2FS_FS
+<<<<<<< HEAD
 	tristate "F2FS filesystem support"
 	depends on BLOCK
 	select CRYPTO
 	select CRYPTO_CRC32
+=======
+	tristate "F2FS filesystem support (EXPERIMENTAL)"
+	depends on BLOCK
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	help
 	  F2FS is based on Log-structured File System (LFS), which supports
 	  versatile "flash-friendly" features. The design has been focused on
@@ -25,7 +30,11 @@ config F2FS_STAT_FS
 	  mounted as f2fs. Each file shows the whole f2fs information.
 
 	  /sys/kernel/debug/f2fs/status includes:
+<<<<<<< HEAD
 	    - major filesystem information managed by f2fs currently
+=======
+	    - major file system information managed by f2fs currently
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	    - average SIT information about whole segments
 	    - current memory footprint consumed by f2fs.
 
@@ -47,12 +56,17 @@ config F2FS_FS_POSIX_ACL
 	default y
 	help
 	  Posix Access Control Lists (ACLs) support permissions for users and
+<<<<<<< HEAD
 	  groups beyond the owner/group/world scheme.
+=======
+	  gourps beyond the owner/group/world scheme.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	  To learn more about Access Control Lists, visit the POSIX ACLs for
 	  Linux website <http://acl.bestbits.at/>.
 
 	  If you don't know what Access Control Lists are, say N
+<<<<<<< HEAD
 
 config F2FS_FS_SECURITY
 	bool "F2FS Security Labels"
@@ -102,3 +116,5 @@ config F2FS_FAULT_INJECTION
 	  Test F2FS to inject faults such as ENOMEM, ENOSPC, and so on.
 
 	  If unsure, say N.
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

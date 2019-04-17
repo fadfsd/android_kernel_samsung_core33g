@@ -219,7 +219,11 @@ extern void ccw_device_get_id(struct ccw_device *, struct ccw_dev_id *);
 #define to_ccwdev(n) container_of(n, struct ccw_device, dev)
 #define to_ccwdrv(n) container_of(n, struct ccw_driver, driver)
 
+<<<<<<< HEAD
 extern struct ccw_device *ccw_device_probe_console(struct ccw_driver *);
+=======
+extern struct ccw_device *ccw_device_probe_console(void);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern void ccw_device_wait_idle(struct ccw_device *);
 extern int ccw_device_force_console(struct ccw_device *);
 

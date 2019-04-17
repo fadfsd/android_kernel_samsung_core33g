@@ -203,6 +203,7 @@ static void __init alloc_init_pmd(pud_t *pud, unsigned long addr,
 	do {
 		next = pmd_addr_end(addr, end);
 		/* try section mapping first */
+<<<<<<< HEAD
 		if (((addr | next | phys) & ~SECTION_MASK) == 0) {
 			pmd_t old_pmd =*pmd;
 			set_pmd(pmd, __pmd(phys | prot_sect_kernel));
@@ -215,6 +216,12 @@ static void __init alloc_init_pmd(pud_t *pud, unsigned long addr,
 		} else {
 			alloc_init_pte(pmd, addr, next, __phys_to_pfn(phys));
 		}
+=======
+		if (((addr | next | phys) & ~SECTION_MASK) == 0)
+			set_pmd(pmd, __pmd(phys | prot_sect_kernel));
+		else
+			alloc_init_pte(pmd, addr, next, __phys_to_pfn(phys));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		phys += next - addr;
 	} while (pmd++, addr = next, addr != end);
 }
@@ -347,6 +354,10 @@ void __init paging_init(void)
 	bootmem_init();
 
 	empty_zero_page = virt_to_page(zero_page);
+<<<<<<< HEAD
+=======
+	__flush_dcache_page(empty_zero_page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * TTBR0 is only used for the identity mapping at this stage. Make it

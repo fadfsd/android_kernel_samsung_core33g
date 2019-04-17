@@ -10,6 +10,14 @@ menuconfig RFKILL
 	  To compile this driver as a module, choose M here: the
 	  module will be called rfkill.
 
+<<<<<<< HEAD
+=======
+config RFKILL_PM
+	bool "Power off on suspend"
+	depends on RFKILL && PM
+	default y
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 # LED trigger support
 config RFKILL_LEDS
 	bool

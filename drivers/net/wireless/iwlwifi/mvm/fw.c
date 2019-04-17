@@ -443,6 +443,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 	if (ret)
 		goto error;
 
+<<<<<<< HEAD
 	if (mvm->trans->ltr_enabled) {
 		struct iwl_ltr_config_cmd cmd = {
 			.flags = cpu_to_le32(LTR_CFG_FLAG_FEATURE_ENABLE),
@@ -452,6 +453,8 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 					     sizeof(cmd), &cmd));
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	IWL_DEBUG_INFO(mvm, "RT uCode started.\n");
 
 	return 0;

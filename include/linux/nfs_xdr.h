@@ -1094,7 +1094,11 @@ struct pnfs_ds_commit_info {
 	struct pnfs_commit_bucket *buckets;
 };
 
+<<<<<<< HEAD
 #define NFS4_EXCHANGE_ID_LEN	(127)
+=======
+#define NFS4_EXCHANGE_ID_LEN	(48)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct nfs41_exchange_id_args {
 	struct nfs_client		*client;
 	nfs4_verifier			*verifier;
@@ -1184,22 +1188,28 @@ struct nfs41_free_stateid_res {
 	unsigned int			status;
 };
 
+<<<<<<< HEAD
 static inline void
 nfs_free_pnfs_ds_cinfo(struct pnfs_ds_commit_info *cinfo)
 {
 	kfree(cinfo->buckets);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else
 
 struct pnfs_ds_commit_info {
 };
 
+<<<<<<< HEAD
 static inline void
 nfs_free_pnfs_ds_cinfo(struct pnfs_ds_commit_info *cinfo)
 {
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* CONFIG_NFS_V4_1 */
 
 struct nfs_page;

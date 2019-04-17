@@ -2,7 +2,11 @@
 #define _ASM_SCORE_PGALLOC_H
 
 #include <linux/mm.h>
+<<<<<<< HEAD
 #include <linux/highmem.h>
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
 	pte_t *pte)
 {

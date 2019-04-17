@@ -3002,8 +3002,12 @@ out_overflow:
 	return -EIO;
 }
 
+<<<<<<< HEAD
 static bool __decode_op_hdr(struct xdr_stream *xdr, enum nfs_opnum4 expected,
 		int *nfs_retval)
+=======
+static int decode_op_hdr(struct xdr_stream *xdr, enum nfs_opnum4 expected)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	__be32 *p;
 	uint32_t opnum;
@@ -3013,6 +3017,7 @@ static bool __decode_op_hdr(struct xdr_stream *xdr, enum nfs_opnum4 expected,
 	if (unlikely(!p))
 		goto out_overflow;
 	opnum = be32_to_cpup(p++);
+<<<<<<< HEAD
 	if (unlikely(opnum != expected))
 		goto out_bad_operation;
 	nfserr = be32_to_cpup(p);
@@ -3039,6 +3044,21 @@ static int decode_op_hdr(struct xdr_stream *xdr, enum nfs_opnum4 expected)
 
 	__decode_op_hdr(xdr, expected, &retval);
 	return retval;
+=======
+	if (opnum != expected) {
+		dprintk("nfs: Server returned operation"
+			" %d but we issued a request for %d\n",
+				opnum, expected);
+		return -EIO;
+	}
+	nfserr = be32_to_cpup(p);
+	if (nfserr != NFS_OK)
+		return nfs4_stat_to_errno(nfserr);
+	return 0;
+out_overflow:
+	print_overflow_msg(__func__, xdr);
+	return -EIO;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* Dummy routine */
@@ -4856,12 +4876,20 @@ static int decode_open(struct xdr_stream *xdr, struct nfs_openres *res)
 	uint32_t savewords, bmlen, i;
 	int status;
 
+<<<<<<< HEAD
 	if (!__decode_op_hdr(xdr, OP_OPEN, &status))
 		return status;
 	nfs_increment_open_seqid(status, res->seqid);
 	if (status)
 		return status;
 	status = decode_stateid(xdr, &res->stateid);
+=======
+	status = decode_op_hdr(xdr, OP_OPEN);
+	if (status != -EIO)
+		nfs_increment_open_seqid(status, res->seqid);
+	if (!status)
+		status = decode_stateid(xdr, &res->stateid);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(status))
 		return status;
 

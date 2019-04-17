@@ -25,6 +25,11 @@
 #include <linux/posix-timers.h>
 #include <linux/workqueue.h>
 #include <linux/freezer.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+#include <linux/wakelock.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /**
  * struct alarm_base - Alarm timer bases
@@ -44,6 +49,11 @@ static struct alarm_base {
 /* freezer delta & lock used to handle clock_nanosleep triggered wakeups */
 static ktime_t freezer_delta;
 static DEFINE_SPINLOCK(freezer_delta_lock);
+<<<<<<< HEAD
+=======
+struct work_struct work;
+struct wake_lock alarm_wake_lock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static struct wakeup_source *ws;
 
@@ -53,6 +63,7 @@ static struct rtc_timer		rtctimer;
 static struct rtc_device	*rtcdev;
 static DEFINE_SPINLOCK(rtcdev_lock);
 
+<<<<<<< HEAD
 static void alarmtimer_triggered_func(void *p)
 {
 	struct rtc_device *rtc = rtcdev;
@@ -64,6 +75,8 @@ static void alarmtimer_triggered_func(void *p)
 static struct rtc_task alarmtimer_rtc_task = {
 	.func = alarmtimer_triggered_func
 };
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * alarmtimer_get_rtcdev - Return selected rtcdevice
  *
@@ -74,7 +87,11 @@ static struct rtc_task alarmtimer_rtc_task = {
 struct rtc_device *alarmtimer_get_rtcdev(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	struct rtc_device *ret = NULL;
+=======
+	struct rtc_device *ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_lock_irqsave(&rtcdev_lock, flags);
 	ret = rtcdev;
@@ -83,10 +100,15 @@ struct rtc_device *alarmtimer_get_rtcdev(void)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int alarmtimer_rtc_add_device(struct device *dev,
 				struct class_interface *class_intf)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int err = 0;
 	struct rtc_device *rtc = to_rtc_device(dev);
 	if (rtcdev)
@@ -99,10 +121,25 @@ static int alarmtimer_rtc_add_device(struct device *dev,
 		err = rtc_irq_register(rtc, &alarmtimer_rtc_task);
 		if (err)
 			goto rtc_irq_reg_err;
+=======
+	struct rtc_device *rtc = to_rtc_device(dev);
+
+	if (rtcdev)
+		return -EBUSY;
+
+	if (!rtc->ops->set_alarm)
+		return -1;
+	if (!device_may_wakeup(rtc->dev.parent))
+		return -1;
+
+	spin_lock_irqsave(&rtcdev_lock, flags);
+	if (!rtcdev) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		rtcdev = rtc;
 		/* hold a reference so it doesn't go away */
 		get_device(dev);
 	}
+<<<<<<< HEAD
 
 rtc_irq_reg_err:
 	spin_unlock_irqrestore(&rtcdev_lock, flags);
@@ -117,6 +154,10 @@ static void alarmtimer_rtc_remove_device(struct device *dev,
 		rtc_irq_unregister(rtcdev, &alarmtimer_rtc_task);
 		rtcdev = NULL;
 	}
+=======
+	spin_unlock_irqrestore(&rtcdev_lock, flags);
+	return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void alarmtimer_rtc_timer_init(void)
@@ -126,7 +167,10 @@ static inline void alarmtimer_rtc_timer_init(void)
 
 static struct class_interface alarmtimer_rtc_interface = {
 	.add_dev = &alarmtimer_rtc_add_device,
+<<<<<<< HEAD
 	.remove_dev = &alarmtimer_rtc_remove_device,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static int alarmtimer_rtc_interface_setup(void)
@@ -222,6 +266,15 @@ static enum hrtimer_restart alarmtimer_fired(struct hrtimer *timer)
 
 }
 
+<<<<<<< HEAD
+=======
+ktime_t alarm_expires_remaining(const struct alarm *alarm)
+{
+	struct alarm_base *base = &alarm_bases[alarm->type];
+	return ktime_sub(alarm->node.expires, base->gettime());
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_RTC_CLASS
 /**
  * alarmtimer_suspend - Suspend time callback
@@ -287,6 +340,7 @@ static int alarmtimer_suspend(struct device *dev)
 		__pm_wakeup_event(ws, MSEC_PER_SEC);
 	return ret;
 }
+<<<<<<< HEAD
 static int alarmtimer_resume(struct device *dev)
 {
 	struct rtc_device *rtc;
@@ -298,11 +352,14 @@ static int alarmtimer_resume(struct device *dev)
 	rtc_timer_cancel(rtc, &rtctimer);
 	return 0;
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else
 static int alarmtimer_suspend(struct device *dev)
 {
 	return 0;
 }
+<<<<<<< HEAD
 
 static int alarmtimer_resume(struct device *dev)
 {
@@ -310,6 +367,65 @@ static int alarmtimer_resume(struct device *dev)
 }
 #endif
 
+=======
+#endif
+void alarmtimer_shutdown(struct platform_device * pdev)
+{
+	struct rtc_time tm, tm_now, tm_set;
+	ktime_t set_time, now;
+	unsigned long flags;
+	struct rtc_device *rtc;
+	int ret = 0;
+	struct alarm_base *base = &alarm_bases[ALARM_POWEROFF];
+	struct timerqueue_node *next;
+	ktime_t delta;
+	struct rtc_wkalrm alarm;
+
+	rtc = alarmtimer_get_rtcdev();
+	/* If we have no rtcdev, just return */
+	if (!rtc){
+		pr_info("no alarm dev found\n");
+		return;
+	}
+
+	/* Find the soonest timer to expire*/
+	spin_lock_irqsave(&base->lock, flags);
+	next = timerqueue_getnext(&base->timerqueue);
+	spin_unlock_irqrestore(&base->lock, flags);
+	if (!next){
+		pr_info("no poweroff alarm found\n");
+		alarm.enabled = 0;
+		if (rtc->ops && rtc->ops->set_alarm)
+			ret = rtc->ops->set_alarm(rtc->dev.parent, &alarm);
+		return;
+	}
+	delta = ktime_sub(next->expires, base->gettime());
+	if (ktime_to_ms(delta) < 10 * MSEC_PER_SEC) {
+		pr_info("disable urgent alarm\n");
+		return;
+	}
+
+	/* Setup an rtc timer to fire that far in the future */
+	rtc_timer_cancel(rtc, &rtctimer);
+	rtc_read_time(rtc, &tm);
+	now = rtc_tm_to_ktime(tm);
+	set_time = ktime_add(now, delta);
+	tm_now = rtc_ktime_to_tm(now);
+	tm_set = rtc_ktime_to_tm(set_time);
+
+	pr_info("alarm set at %d-%d-%d %d:%d:%d\n",tm_set.tm_year + 1900, tm_set.tm_mon + 1, tm_set.tm_mday, \
+		tm_set.tm_hour, tm_set.tm_min, tm_set.tm_sec);
+	pr_info("         now %d-%d-%d %d:%d:%d\n",tm_now.tm_year + 1900, tm_now.tm_mon + 1, tm_now.tm_mday, \
+		tm_now.tm_hour, tm_now.tm_min, tm_now.tm_sec);
+	alarm.time = tm_set;
+	alarm.enabled = 1;
+	if (rtc->ops && rtc->ops->set_alarm)
+		ret = rtc->ops->set_alarm(rtc->dev.parent, &alarm);
+	if(ret)
+		pr_err("alarm shutdown err %d\n", ret);
+	return;
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void alarmtimer_freezerset(ktime_t absexp, enum alarmtimer_type type)
 {
 	ktime_t delta;
@@ -342,9 +458,67 @@ void alarm_init(struct alarm *alarm, enum alarmtimer_type type,
 	alarm->type = type;
 	alarm->state = ALARMTIMER_STATE_INACTIVE;
 }
+<<<<<<< HEAD
 
 /**
  * alarm_start - Sets an alarm to fire
+=======
+static void set_real_alarm(struct work_struct *work)
+{
+	struct rtc_time tm;
+	ktime_t min, now;
+	unsigned long flags;
+	struct rtc_device *rtc;
+	int i;
+	struct rtc_wkalrm alarm;
+
+	spin_lock_irqsave(&freezer_delta_lock, flags);
+	min = freezer_delta;
+	freezer_delta = ktime_set(0, 0);
+	spin_unlock_irqrestore(&freezer_delta_lock, flags);
+
+	rtc = alarmtimer_get_rtcdev();
+	/* If we have no rtcdev, just return */
+	if (!rtc)
+		return;
+
+	wake_lock(&alarm_wake_lock);
+	/* Find the soonest timer to expire*/
+	for (i = 0; i < ALARM_NUMTYPE; i++) {
+		struct alarm_base *base = &alarm_bases[i];
+		struct timerqueue_node *next;
+		ktime_t delta;
+
+		spin_lock_irqsave(&base->lock, flags);
+		next = timerqueue_getnext(&base->timerqueue);
+		spin_unlock_irqrestore(&base->lock, flags);
+		if (!next)
+			continue;
+		delta = ktime_sub(next->expires, base->gettime());
+		if (!min.tv64 || (delta.tv64 < min.tv64))
+			min = delta;
+	}
+	if (min.tv64 == 0){
+		wake_unlock(&alarm_wake_lock);
+		return;
+	}
+
+	/* Setup an rtc timer to fire that far in the future */
+	rtc_timer_cancel(rtc, &rtctimer);
+	rtc_read_time(rtc, &tm);
+	now = rtc_tm_to_ktime(tm);
+	now = ktime_add(now, min);
+
+	alarm.time = rtc_ktime_to_tm(now);
+	alarm.enabled = 1;
+	if (rtc->ops && rtc->ops->set_alarm)
+		rtc->ops->set_alarm(rtc->dev.parent, &alarm);
+	wake_unlock(&alarm_wake_lock);
+	return;
+}
+/**
+ * alarm_start - Sets an absolute alarm to fire
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * @alarm: ptr to alarm to set
  * @start: time to run the alarm
  */
@@ -360,10 +534,42 @@ int alarm_start(struct alarm *alarm, ktime_t start)
 	ret = hrtimer_start(&alarm->timer, alarm->node.expires,
 				HRTIMER_MODE_ABS);
 	spin_unlock_irqrestore(&base->lock, flags);
+<<<<<<< HEAD
+=======
+	schedule_work(&work);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * alarm_start_relative - Sets a relative alarm to fire
+ * @alarm: ptr to alarm to set
+ * @start: time relative to now to run the alarm
+ */
+int alarm_start_relative(struct alarm *alarm, ktime_t start)
+{
+	struct alarm_base *base = &alarm_bases[alarm->type];
+
+	start = ktime_add(start, base->gettime());
+	return alarm_start(alarm, start);
+}
+
+void alarm_restart(struct alarm *alarm)
+{
+	struct alarm_base *base = &alarm_bases[alarm->type];
+	unsigned long flags;
+
+	spin_lock_irqsave(&base->lock, flags);
+	hrtimer_set_expires(&alarm->timer, alarm->node.expires);
+	hrtimer_restart(&alarm->timer);
+	alarmtimer_enqueue(base, alarm);
+	spin_unlock_irqrestore(&base->lock, flags);
+}
+
+/**
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * alarm_try_to_cancel - Tries to cancel an alarm timer
  * @alarm: ptr to alarm to be canceled
  *
@@ -433,6 +639,15 @@ u64 alarm_forward(struct alarm *alarm, ktime_t now, ktime_t interval)
 	return overrun;
 }
 
+<<<<<<< HEAD
+=======
+u64 alarm_forward_now(struct alarm *alarm, ktime_t interval)
+{
+	struct alarm_base *base = &alarm_bases[alarm->type];
+
+	return alarm_forward(alarm, base->gettime(), interval);
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 
 
@@ -458,6 +673,7 @@ static enum alarmtimer_type clock2alarm(clockid_t clockid)
 static enum alarmtimer_restart alarm_handle_timer(struct alarm *alarm,
 							ktime_t now)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 	struct k_itimer *ptr = container_of(alarm, struct k_itimer,
 						it.alarm.alarmtimer);
@@ -468,16 +684,28 @@ static enum alarmtimer_restart alarm_handle_timer(struct alarm *alarm,
 		if (posix_timer_event(ptr, 0) != 0)
 			ptr->it_overrun++;
 	}
+=======
+	struct k_itimer *ptr = container_of(alarm, struct k_itimer,
+						it.alarm.alarmtimer);
+	if (posix_timer_event(ptr, 0) != 0)
+		ptr->it_overrun++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Re-add periodic timers */
 	if (ptr->it.alarm.interval.tv64) {
 		ptr->it_overrun += alarm_forward(alarm, now,
 						ptr->it.alarm.interval);
+<<<<<<< HEAD
 		result = ALARMTIMER_RESTART;
 	}
 	spin_unlock_irqrestore(&ptr->it_lock, flags);
 
 	return result;
+=======
+		return ALARMTIMER_RESTART;
+	}
+	return ALARMTIMER_NORESTART;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -492,7 +720,11 @@ static int alarm_clock_getres(const clockid_t which_clock, struct timespec *tp)
 	clockid_t baseid = alarm_bases[clock2alarm(which_clock)].base_clockid;
 
 	if (!alarmtimer_get_rtcdev())
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return -ENOTSUPP;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return hrtimer_get_res(baseid, tp);
 }
@@ -509,7 +741,11 @@ static int alarm_clock_get(clockid_t which_clock, struct timespec *tp)
 	struct alarm_base *base = &alarm_bases[clock2alarm(which_clock)];
 
 	if (!alarmtimer_get_rtcdev())
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return -ENOTSUPP;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	*tp = ktime_to_timespec(base->gettime());
 	return 0;
@@ -587,6 +823,7 @@ static int alarm_timer_set(struct k_itimer *timr, int flags,
 				struct itimerspec *new_setting,
 				struct itimerspec *old_setting)
 {
+<<<<<<< HEAD
 	ktime_t exp;
 
 	if (!rtcdev)
@@ -595,6 +832,11 @@ static int alarm_timer_set(struct k_itimer *timr, int flags,
 	if (flags & ~TIMER_ABSTIME)
 		return -EINVAL;
 
+=======
+	if (!rtcdev)
+		return -ENOTSUPP;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (old_setting)
 		alarm_timer_get(timr, old_setting);
 
@@ -604,6 +846,7 @@ static int alarm_timer_set(struct k_itimer *timr, int flags,
 
 	/* start the timer */
 	timr->it.alarm.interval = timespec_to_ktime(new_setting->it_interval);
+<<<<<<< HEAD
 	exp = timespec_to_ktime(new_setting->it_value);
 	/* Convert (if necessary) to absolute time */
 	if (flags != TIMER_ABSTIME) {
@@ -614,6 +857,10 @@ static int alarm_timer_set(struct k_itimer *timr, int flags,
 	}
 
 	alarm_start(&timr->it.alarm.alarmtimer, exp);
+=======
+	alarm_start(&timr->it.alarm.alarmtimer,
+			timespec_to_ktime(new_setting->it_value));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -745,9 +992,12 @@ static int alarm_timer_nsleep(const clockid_t which_clock, int flags,
 	if (!alarmtimer_get_rtcdev())
 		return -ENOTSUPP;
 
+<<<<<<< HEAD
 	if (flags & ~TIMER_ABSTIME)
 		return -EINVAL;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!capable(CAP_WAKE_ALARM))
 		return -EPERM;
 
@@ -793,14 +1043,22 @@ out:
 /* Suspend hook structures */
 static const struct dev_pm_ops alarmtimer_pm_ops = {
 	.suspend = alarmtimer_suspend,
+<<<<<<< HEAD
 	.resume = alarmtimer_resume,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static struct platform_driver alarmtimer_driver = {
 	.driver = {
 		.name = "alarmtimer",
 		.pm = &alarmtimer_pm_ops,
+<<<<<<< HEAD
 	}
+=======
+	},
+	.shutdown = alarmtimer_shutdown,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /**
@@ -834,11 +1092,23 @@ static int __init alarmtimer_init(void)
 	alarm_bases[ALARM_REALTIME].gettime = &ktime_get_real;
 	alarm_bases[ALARM_BOOTTIME].base_clockid = CLOCK_BOOTTIME;
 	alarm_bases[ALARM_BOOTTIME].gettime = &ktime_get_boottime;
+<<<<<<< HEAD
+=======
+	alarm_bases[ALARM_POWEROFF].base_clockid = CLOCK_REALTIME;
+	alarm_bases[ALARM_POWEROFF].gettime = &ktime_get_real;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (i = 0; i < ALARM_NUMTYPE; i++) {
 		timerqueue_init_head(&alarm_bases[i].timerqueue);
 		spin_lock_init(&alarm_bases[i].lock);
 	}
 
+<<<<<<< HEAD
+=======
+	INIT_WORK(&work, set_real_alarm);
+	wake_lock_init(&alarm_wake_lock, WAKE_LOCK_SUSPEND,
+			"alarmtimer");
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	error = alarmtimer_rtc_interface_setup();
 	if (error)
 		return error;

@@ -150,6 +150,7 @@
 #define PR_GET_TID_ADDRESS	40
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Sets the timerslack for arbitrary threads
  * arg2 slack value, 0 means "use default"
  * arg3 pid of the thread whose timer slack needs to be set
@@ -168,4 +169,9 @@
 
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+#define PR_SET_VMA		0x53564d41
+# define PR_SET_VMA_ANON_NAME		0
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _LINUX_PRCTL_H */

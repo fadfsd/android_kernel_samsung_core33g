@@ -1703,6 +1703,19 @@ static int at91udc_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	if (pdev->num_resources != 2) {
+		DBG("invalid num_resources\n");
+		return -ENODEV;
+	}
+	if ((pdev->resource[0].flags != IORESOURCE_MEM)
+			|| (pdev->resource[1].flags != IORESOURCE_IRQ)) {
+		DBG("invalid resource type\n");
+		return -ENODEV;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENXIO;

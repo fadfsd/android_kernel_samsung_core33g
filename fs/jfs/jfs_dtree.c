@@ -3103,7 +3103,11 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 				 * self "."
 				 */
 				filp->f_pos = 1;
+<<<<<<< HEAD
 				if (filldir(dirent, ".", 1, 1, ip->i_ino,
+=======
+				if (filldir(dirent, ".", 1, 0, ip->i_ino,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					    DT_DIR))
 					return 0;
 			}
@@ -3111,7 +3115,11 @@ int jfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			 * parent ".."
 			 */
 			filp->f_pos = 2;
+<<<<<<< HEAD
 			if (filldir(dirent, "..", 2, 2, PARENT(ip), DT_DIR))
+=======
+			if (filldir(dirent, "..", 2, 1, PARENT(ip), DT_DIR))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				return 0;
 
 			/*

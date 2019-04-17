@@ -134,6 +134,59 @@ static void release_task_mempolicy(struct proc_maps_private *priv)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static void seq_print_vma_name(struct seq_file *m, struct vm_area_struct *vma)
+{
+	const char __user *name = vma_get_anon_name(vma);
+	struct mm_struct *mm = vma->vm_mm;
+
+	unsigned long page_start_vaddr;
+	unsigned long page_offset;
+	unsigned long num_pages;
+	unsigned long max_len = NAME_MAX;
+	int i;
+
+	page_start_vaddr = (unsigned long)name & PAGE_MASK;
+	page_offset = (unsigned long)name - page_start_vaddr;
+	num_pages = DIV_ROUND_UP(page_offset + max_len, PAGE_SIZE);
+
+	seq_puts(m, "[anon:");
+
+	for (i = 0; i < num_pages; i++) {
+		int len;
+		int write_len;
+		const char *kaddr;
+		long pages_pinned;
+		struct page *page;
+
+		pages_pinned = get_user_pages(current, mm, page_start_vaddr,
+				1, 0, 0, &page, NULL);
+		if (pages_pinned < 1) {
+			seq_puts(m, "<fault>]");
+			return;
+		}
+
+		kaddr = (const char *)kmap(page);
+		len = min(max_len, PAGE_SIZE - page_offset);
+		write_len = strnlen(kaddr + page_offset, len);
+		seq_write(m, kaddr + page_offset, write_len);
+		kunmap(page);
+		put_page(page);
+
+		/* if strnlen hit a null terminator then we're done */
+		if (write_len != len)
+			break;
+
+		max_len -= len;
+		page_offset = 0;
+		page_start_vaddr += PAGE_SIZE;
+	}
+
+	seq_putc(m, ']');
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void vma_stop(struct proc_maps_private *priv, struct vm_area_struct *vma)
 {
 	if (vma && vma != priv->tail_vma) {
@@ -175,7 +228,11 @@ static void *m_start(struct seq_file *m, loff_t *pos)
 		return mm;
 	down_read(&mm->mmap_sem);
 
+<<<<<<< HEAD
 	tail_vma = get_gate_vma(mm);
+=======
+	tail_vma = get_gate_vma(priv->task->mm);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	priv->tail_vma = tail_vma;
 	hold_task_mempolicy(priv);
 	/* Start with last addr hint */
@@ -335,6 +392,15 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 				pad_len_spaces(m, len);
 				seq_printf(m, "[stack:%d]", tid);
 			}
+<<<<<<< HEAD
+=======
+			goto done;
+		}
+
+		if (vma_get_anon_name(vma)) {
+			pad_len_spaces(m, len);
+			seq_print_vma_name(m, vma);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	}
 
@@ -350,11 +416,19 @@ static int show_map(struct seq_file *m, void *v, int is_pid)
 {
 	struct vm_area_struct *vma = v;
 	struct proc_maps_private *priv = m->private;
+<<<<<<< HEAD
+=======
+	struct task_struct *task = priv->task;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	show_map_vma(m, vma, is_pid);
 
 	if (m->count < m->size)  /* vma is copied successfully */
+<<<<<<< HEAD
 		m->version = (vma != priv->tail_vma)
+=======
+		m->version = (vma != get_gate_vma(task->mm))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			? vma->vm_start : 0;
 	return 0;
 }
@@ -440,8 +514,22 @@ struct mem_size_stats {
 	unsigned long swap;
 	unsigned long nonlinear;
 	u64 pss;
+<<<<<<< HEAD
 };
 
+=======
+	u64 pswap;
+};
+
+#ifdef CONFIG_SWAP
+extern struct swap_info_struct *swap_info_get(swp_entry_t entry);
+
+static inline unsigned char swap_count(unsigned char ent)
+{
+	return ent & ~SWAP_HAS_CACHE;	/* may include SWAP_HAS_CONT flag */
+}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static void smaps_pte_entry(pte_t ptent, unsigned long addr,
 		unsigned long ptent_size, struct mm_walk *walk)
@@ -456,9 +544,29 @@ static void smaps_pte_entry(pte_t ptent, unsigned long addr,
 		page = vm_normal_page(vma, addr, ptent);
 	} else if (is_swap_pte(ptent)) {
 		swp_entry_t swpent = pte_to_swp_entry(ptent);
+<<<<<<< HEAD
 
 		if (!non_swap_entry(swpent))
 			mss->swap += ptent_size;
+=======
+		struct swap_info_struct *p;
+
+		if (!non_swap_entry(swpent)) {
+			mss->swap += ptent_size;
+#ifdef CONFIG_SWAP
+			p = swap_info_get(swpent);
+			if (p) {
+				int swapcount = swap_count(
+					p->swap_map[swp_offset(swpent)]);
+				if (!swapcount)
+					swapcount = 1;
+				mss->pswap +=
+					(ptent_size << PSS_SHIFT) / swapcount;
+				spin_unlock(&p->lock);
+			}
+#endif
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else if (is_migration_entry(swpent))
 			page = migration_entry_to_page(swpent);
 	} else if (pte_file(ptent)) {
@@ -579,6 +687,10 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
 static int show_smap(struct seq_file *m, void *v, int is_pid)
 {
 	struct proc_maps_private *priv = m->private;
+<<<<<<< HEAD
+=======
+	struct task_struct *task = priv->task;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct vm_area_struct *vma = v;
 	struct mem_size_stats mss;
 	struct mm_walk smaps_walk = {
@@ -607,6 +719,10 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 		   "Anonymous:      %8lu kB\n"
 		   "AnonHugePages:  %8lu kB\n"
 		   "Swap:           %8lu kB\n"
+<<<<<<< HEAD
+=======
+		   "PSwap:          %8lu kB\n"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		   "KernelPageSize: %8lu kB\n"
 		   "MMUPageSize:    %8lu kB\n"
 		   "Locked:         %8lu kB\n",
@@ -621,6 +737,10 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 		   mss.anonymous >> 10,
 		   mss.anonymous_thp >> 10,
 		   mss.swap >> 10,
+<<<<<<< HEAD
+=======
+		   (unsigned long)(mss.pswap >> (10 + PSS_SHIFT)),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		   vma_kernel_pagesize(vma) >> 10,
 		   vma_mmu_pagesize(vma) >> 10,
 		   (vma->vm_flags & VM_LOCKED) ?
@@ -632,8 +752,19 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 
 	show_smap_vma_flags(m, vma);
 
+<<<<<<< HEAD
 	if (m->count < m->size)  /* vma is copied successfully */
 		m->version = (vma != priv->tail_vma)
+=======
+	if (vma_get_anon_name(vma)) {
+		seq_puts(m, "Name:           ");
+		seq_print_vma_name(m, vma);
+		seq_putc(m, '\n');
+	}
+
+	if (m->count < m->size)  /* vma is copied successfully */
+		m->version = (vma != get_gate_vma(task->mm))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			? vma->vm_start : 0;
 	return 0;
 }
@@ -1108,6 +1239,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int pagemap_open(struct inode *inode, struct file *file)
 {
 	/* do not disclose physical addresses to unprivileged
@@ -1121,6 +1253,11 @@ const struct file_operations proc_pagemap_operations = {
 	.llseek		= mem_lseek, /* borrow this */
 	.read		= pagemap_read,
 	.open		= pagemap_open,
+=======
+const struct file_operations proc_pagemap_operations = {
+	.llseek		= mem_lseek, /* borrow this */
+	.read		= pagemap_read,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 #endif /* CONFIG_PROC_PAGE_MONITOR */
 

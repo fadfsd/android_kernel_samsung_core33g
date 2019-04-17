@@ -942,7 +942,11 @@ static int tty3270_install(struct tty_driver *driver, struct tty_struct *tty)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	tp->screen = tty3270_alloc_screen(tp->view.rows, tp->view.cols);
+=======
+	tp->screen = tty3270_alloc_screen(tp->view.cols, tp->view.rows);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (IS_ERR(tp->screen)) {
 		rc = PTR_ERR(tp->screen);
 		raw3270_put_view(&tp->view);

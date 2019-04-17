@@ -34,14 +34,20 @@ static unsigned int help(struct sk_buff *skb,
 			 struct nf_conntrack_expect *exp)
 {
 	char buffer[sizeof("4294967296 65635")];
+<<<<<<< HEAD
 	struct nf_conn *ct = exp->master;
 	union nf_inet_addr newaddr;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u_int16_t port;
 	unsigned int ret;
 
 	/* Reply comes from server. */
+<<<<<<< HEAD
 	newaddr = ct->tuplehash[IP_CT_DIR_REPLY].tuple.dst.u3;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	exp->saved_proto.tcp.port = exp->tuple.dst.u.tcp.port;
 	exp->dir = IP_CT_DIR_REPLY;
 	exp->expectfn = nf_nat_follow_master;
@@ -61,6 +67,7 @@ static unsigned int help(struct sk_buff *skb,
 	}
 
 	if (port == 0) {
+<<<<<<< HEAD
 		nf_ct_helper_log(skb, ct, "all ports in use");
 		return NF_DROP;
 	}
@@ -90,6 +97,19 @@ static unsigned int help(struct sk_buff *skb,
 		nf_ct_unexpect_related(exp);
 	}
 
+=======
+		nf_ct_helper_log(skb, exp->master, "all ports in use");
+		return NF_DROP;
+	}
+
+	ret = nf_nat_mangle_tcp_packet(skb, exp->master, ctinfo,
+				       protoff, matchoff, matchlen, buffer,
+				       strlen(buffer));
+	if (ret != NF_ACCEPT) {
+		nf_ct_helper_log(skb, exp->master, "cannot mangle packet");
+		nf_ct_unexpect_related(exp);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 

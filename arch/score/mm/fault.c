@@ -47,7 +47,10 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
 	struct task_struct *tsk = current;
 	struct mm_struct *mm = tsk->mm;
 	const int field = sizeof(unsigned long) * 2;
+<<<<<<< HEAD
 	unsigned long flags = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	siginfo_t info;
 	int fault;
 
@@ -76,9 +79,12 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
 	if (in_atomic() || !mm)
 		goto bad_area_nosemaphore;
 
+<<<<<<< HEAD
 	if (user_mode(regs))
 		flags |= FAULT_FLAG_USER;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
 	if (!vma)
@@ -99,23 +105,37 @@ good_area:
 	if (write) {
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
 		flags |= FAULT_FLAG_WRITE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		if (!(vma->vm_flags & (VM_READ | VM_WRITE | VM_EXEC)))
 			goto bad_area;
 	}
 
+<<<<<<< HEAD
+=======
+survive:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	* If for any reason at all we couldn't handle the fault,
 	* make sure we exit gracefully rather than endlessly redo
 	* the fault.
 	*/
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, flags);
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
 		else if (fault & VM_FAULT_SIGSEGV)
 			goto bad_area;
+=======
+	fault = handle_mm_fault(mm, vma, address, write);
+	if (unlikely(fault & VM_FAULT_ERROR)) {
+		if (fault & VM_FAULT_OOM)
+			goto out_of_memory;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else if (fault & VM_FAULT_SIGBUS)
 			goto do_sigbus;
 		BUG();
@@ -173,10 +193,22 @@ no_context:
 	*/
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (!user_mode(regs))
 		goto no_context;
 	pagefault_out_of_memory();
 	return;
+=======
+	if (is_global_init(tsk)) {
+		yield();
+		down_read(&mm->mmap_sem);
+		goto survive;
+	}
+	printk("VM: killing process %s\n", tsk->comm);
+	if (user_mode(regs))
+		do_group_exit(SIGKILL);
+	goto no_context;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 do_sigbus:
 	up_read(&mm->mmap_sem);

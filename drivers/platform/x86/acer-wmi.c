@@ -572,6 +572,7 @@ static const struct dmi_system_id video_vendor_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5750"),
 		},
 	},
+<<<<<<< HEAD
 	{
 		/*
 		 * Note no video_set_backlight_video_vendor, we must use the
@@ -583,6 +584,8 @@ static const struct dmi_system_id video_vendor_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "KAV80"),
 		},
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{}
 };
 

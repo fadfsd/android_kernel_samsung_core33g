@@ -79,23 +79,39 @@ static inline int phys_to_machine_mapping_valid(unsigned long pfn)
 	return get_phys_to_machine(pfn) != INVALID_P2M_ENTRY;
 }
 
+<<<<<<< HEAD
 static inline unsigned long mfn_to_pfn_no_overrides(unsigned long mfn)
 {
 	unsigned long pfn;
 	int ret;
+=======
+static inline unsigned long mfn_to_pfn(unsigned long mfn)
+{
+	unsigned long pfn;
+	int ret = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (xen_feature(XENFEAT_auto_translated_physmap))
 		return mfn;
 
+<<<<<<< HEAD
 	if (unlikely(mfn >= machine_to_phys_nr))
 		return ~0;
 
+=======
+	if (unlikely(mfn >= machine_to_phys_nr)) {
+		pfn = ~0;
+		goto try_override;
+	}
+	pfn = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * The array access can fail (e.g., device space beyond end of RAM).
 	 * In such cases it doesn't matter what we return (we return garbage),
 	 * but we must handle the fault without crashing!
 	 */
 	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+<<<<<<< HEAD
 	if (ret < 0)
 		return ~0;
 
@@ -111,6 +127,13 @@ static inline unsigned long mfn_to_pfn(unsigned long mfn)
 
 	pfn = mfn_to_pfn_no_overrides(mfn);
 	if (get_phys_to_machine(pfn) != mfn) {
+=======
+try_override:
+	/* ret might be < 0 if there are no entries in the m2p for mfn */
+	if (ret < 0)
+		pfn = ~0;
+	else if (get_phys_to_machine(pfn) != mfn)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*
 		 * If this appears to be a foreign mfn (because the pfn
 		 * doesn't map back to the mfn), then check the local override
@@ -119,7 +142,10 @@ static inline unsigned long mfn_to_pfn(unsigned long mfn)
 		 * m2p_find_override_pfn returns ~0 if it doesn't find anything.
 		 */
 		pfn = m2p_find_override_pfn(mfn, ~0);
+<<<<<<< HEAD
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* 
 	 * pfn is ~0 if there are no entries in the m2p for mfn or if the

@@ -92,7 +92,11 @@ struct dm_block_validator btree_node_validator = {
 
 /*----------------------------------------------------------------*/
 
+<<<<<<< HEAD
 int bn_read_lock(struct dm_btree_info *info, dm_block_t b,
+=======
+static int bn_read_lock(struct dm_btree_info *info, dm_block_t b,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		 struct dm_block **result)
 {
 	return dm_tm_read_lock(info->tm, b, &btree_node_validator, result);

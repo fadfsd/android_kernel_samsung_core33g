@@ -17,8 +17,12 @@
 
 #include <linux/spinlock.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 
 #include "../zsmalloc/zsmalloc.h"
+=======
+#include <linux/zsmalloc.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Some arbitrary value. This is just to catch
@@ -93,9 +97,14 @@ struct zram_meta {
 struct zram {
 	struct zram_meta *meta;
 	spinlock_t stat64_lock;	/* protect 64-bit stats */
+<<<<<<< HEAD
 	struct rw_semaphore lock; /* protect compression buffers, table,
 				   * 32bit stat counters against concurrent
 				   * notifications, reads and writes */
+=======
+	struct rw_semaphore lock; /* protect compression buffers and table
+				   * against concurrent read and writes */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct request_queue *queue;
 	struct gendisk *disk;
 	int init_done;

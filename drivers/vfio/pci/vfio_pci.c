@@ -519,11 +519,20 @@ static const struct vfio_device_ops vfio_pci_ops = {
 
 static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
+<<<<<<< HEAD
+=======
+	u8 type;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct vfio_pci_device *vdev;
 	struct iommu_group *group;
 	int ret;
 
+<<<<<<< HEAD
 	if (pdev->hdr_type != PCI_HEADER_TYPE_NORMAL)
+=======
+	pci_read_config_byte(pdev, PCI_HEADER_TYPE, &type);
+	if ((type & PCI_HEADER_TYPE) != PCI_HEADER_TYPE_NORMAL)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 
 	group = iommu_group_get(&pdev->dev);

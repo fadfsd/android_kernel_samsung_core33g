@@ -95,7 +95,11 @@ struct inode *ialloc(struct inode *parent, umode_t mode)
 
 	if (insert_inode_locked(inode) < 0) {
 		rc = -EINVAL;
+<<<<<<< HEAD
 		goto fail_put;
+=======
+		goto fail_unlock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	inode_init_owner(inode, parent, mode);
@@ -156,6 +160,10 @@ struct inode *ialloc(struct inode *parent, umode_t mode)
 fail_drop:
 	dquot_drop(inode);
 	inode->i_flags |= S_NOQUOTA;
+<<<<<<< HEAD
+=======
+fail_unlock:
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	clear_nlink(inode);
 	unlock_new_inode(inode);
 fail_put:

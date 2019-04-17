@@ -1299,7 +1299,11 @@ isp1301_set_host(struct usb_otg *otg, struct usb_bus *host)
 		return isp1301_otg_enable(isp);
 	return 0;
 
+<<<<<<< HEAD
 #elif !IS_ENABLED(CONFIG_USB_OMAP)
+=======
+#elif	!defined(CONFIG_USB_GADGET_OMAP)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	// FIXME update its refcount
 	otg->host = host;
 

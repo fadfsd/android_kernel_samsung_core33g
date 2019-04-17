@@ -68,7 +68,11 @@ struct rt_signal_frame32 {
 	/* __siginfo_rwin_t * */u32 rwin_save;
 } __attribute__((aligned(8)));
 
+<<<<<<< HEAD
 int copy_siginfo_to_user32(compat_siginfo_t __user *to, const siginfo_t *from)
+=======
+int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int err;
 

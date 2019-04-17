@@ -86,8 +86,11 @@ asmlinkage void do_page_fault(unsigned long ecr, struct pt_regs *regs)
 
 	local_irq_enable();
 
+<<<<<<< HEAD
 	if (user_mode(regs))
 		flags |= FAULT_FLAG_USER;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 retry:
 	down_read(&mm->mmap_sem);
 
@@ -142,8 +145,11 @@ good_area:
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
+<<<<<<< HEAD
 		else if (fault & VM_FAULT_SIGSEGV)
 			goto bad_area;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else if (fault & VM_FAULT_SIGBUS)
 			goto do_sigbus;
 		BUG();
@@ -232,9 +238,15 @@ no_context:
 	 */
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (!user_mode(regs))
 		goto no_context;
 	pagefault_out_of_memory();
+=======
+	pagefault_out_of_memory();
+	if (!user_mode(regs))
+		goto no_context;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return;
 
 do_sigbus:

@@ -17,11 +17,15 @@
 #ifndef _SELINUX_NETIF_H_
 #define _SELINUX_NETIF_H_
 
+<<<<<<< HEAD
 #include <net/net_namespace.h>
 
 void sel_netif_flush(void);
 
 int sel_netif_sid(struct net *ns, int ifindex, u32 *sid);
+=======
+int sel_netif_sid(int ifindex, u32 *sid);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #endif	/* _SELINUX_NETIF_H_ */
 

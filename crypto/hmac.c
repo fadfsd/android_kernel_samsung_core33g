@@ -271,4 +271,7 @@ module_exit(hmac_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("HMAC hash algorithm");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("hmac");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

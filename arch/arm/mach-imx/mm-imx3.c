@@ -65,7 +65,11 @@ static void imx3_idle(void)
 		: "=r" (reg));
 }
 
+<<<<<<< HEAD
 static void __iomem *imx3_ioremap_caller(phys_addr_t phys_addr, size_t size,
+=======
+static void __iomem *imx3_ioremap_caller(unsigned long phys_addr, size_t size,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					 unsigned int mtype, void *caller)
 {
 	if (mtype == MT_DEVICE) {

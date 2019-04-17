@@ -350,10 +350,13 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *
 
 	mm = vma->vm_mm;
 
+<<<<<<< HEAD
 	/* Don't insert a non-valid PTE into the TSB, we'll deadlock.  */
 	if (!pte_accessible(mm, pte))
 		return;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock_irqsave(&mm->context.lock, flags);
 
 #if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
@@ -2768,6 +2771,7 @@ void hugetlb_setup(struct pt_regs *regs)
 	}
 }
 #endif
+<<<<<<< HEAD
 
 #ifdef CONFIG_SMP
 #define do_flush_tlb_kernel_range	smp_flush_tlb_kernel_range
@@ -2791,3 +2795,5 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
 		do_flush_tlb_kernel_range(start, end);
 	}
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

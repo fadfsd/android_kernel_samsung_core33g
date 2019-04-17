@@ -531,7 +531,10 @@ receive:
 
 		buf = node->bclink.deferred_head;
 		node->bclink.deferred_head = buf->next;
+<<<<<<< HEAD
 		buf->next = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		node->bclink.deferred_size--;
 		goto receive;
 	}

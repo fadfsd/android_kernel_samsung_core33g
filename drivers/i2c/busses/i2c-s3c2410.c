@@ -1204,10 +1204,17 @@ static int s3c24xx_i2c_resume(struct device *dev)
 	struct platform_device *pdev = to_platform_device(dev);
 	struct s3c24xx_i2c *i2c = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	clk_prepare_enable(i2c->clk);
 	s3c24xx_i2c_init(i2c);
 	clk_disable_unprepare(i2c->clk);
 	i2c->suspended = 0;
+=======
+	i2c->suspended = 0;
+	clk_prepare_enable(i2c->clk);
+	s3c24xx_i2c_init(i2c);
+	clk_disable_unprepare(i2c->clk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }

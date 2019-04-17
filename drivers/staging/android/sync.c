@@ -79,19 +79,29 @@ static void sync_timeline_free(struct kref *kref)
 		container_of(kref, struct sync_timeline, kref);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (obj->ops->release_obj)
 		obj->ops->release_obj(obj);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_lock_irqsave(&sync_timeline_list_lock, flags);
 	list_del(&obj->sync_timeline_list);
 	spin_unlock_irqrestore(&sync_timeline_list_lock, flags);
 
+<<<<<<< HEAD
+=======
+	if (obj->ops->release_obj)
+		obj->ops->release_obj(obj);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kfree(obj);
 }
 
 void sync_timeline_destroy(struct sync_timeline *obj)
 {
 	obj->destroyed = true;
+<<<<<<< HEAD
 
 	/*
 	 * If this is not the last reference, signal any children
@@ -100,6 +110,16 @@ void sync_timeline_destroy(struct sync_timeline *obj)
 
 	if (!kref_put(&obj->kref, sync_timeline_free))
 		sync_timeline_signal(obj);
+=======
+	smp_wmb();
+
+	/*
+	 * signal any children that their parent is going away.
+	 */
+	sync_timeline_signal(obj);
+
+	kref_put(&obj->kref, sync_timeline_free);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL(sync_timeline_destroy);
 
@@ -318,7 +338,17 @@ static int sync_fence_copy_pts(struct sync_fence *dst, struct sync_fence *src)
 	list_for_each(pos, &src->pt_list_head) {
 		struct sync_pt *orig_pt =
 			container_of(pos, struct sync_pt, pt_list);
+<<<<<<< HEAD
 		struct sync_pt *new_pt = sync_pt_dup(orig_pt);
+=======
+		struct sync_pt *new_pt;
+
+		/* Skip already signaled points */
+		if (1 == orig_pt->status)
+			continue;
+
+		new_pt = sync_pt_dup(orig_pt);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (new_pt == NULL)
 			return -ENOMEM;
@@ -339,6 +369,13 @@ static int sync_fence_merge_pts(struct sync_fence *dst, struct sync_fence *src)
 			container_of(src_pos, struct sync_pt, pt_list);
 		bool collapsed = false;
 
+<<<<<<< HEAD
+=======
+		/* Skip already signaled points */
+		if (1 == src_pt->status)
+			continue;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		list_for_each_safe(dst_pos, n, &dst->pt_list_head) {
 			struct sync_pt *dst_pt =
 				container_of(dst_pos, struct sync_pt, pt_list);
@@ -467,6 +504,19 @@ struct sync_fence *sync_fence_merge(const char *name,
 	if (err < 0)
 		goto err;
 
+<<<<<<< HEAD
+=======
+	/* Make sure there is at least one point in the fence */
+	if (list_empty(&fence->pt_list_head)) {
+		struct sync_pt *orig_pt = list_first_entry(&a->pt_list_head,
+						struct sync_pt, pt_list);
+		struct sync_pt *new_pt = sync_pt_dup(orig_pt);
+
+		new_pt->fence = fence;
+		list_add(&new_pt->pt_list, &fence->pt_list_head);
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_for_each(pos, &fence->pt_list_head) {
 		struct sync_pt *pt =
 			container_of(pos, struct sync_pt, pt_list);

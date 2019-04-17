@@ -39,7 +39,11 @@ int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *a
 {
 	int size, ct, err;
 
+<<<<<<< HEAD
 	if (m->msg_name && m->msg_namelen) {
+=======
+	if (m->msg_namelen) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (mode == VERIFY_READ) {
 			void __user *namep;
 			namep = (void __user __force *) m->msg_name;
@@ -51,7 +55,10 @@ int verify_iovec(struct msghdr *m, struct iovec *iov, struct sockaddr_storage *a
 		m->msg_name = address;
 	} else {
 		m->msg_name = NULL;
+<<<<<<< HEAD
 		m->msg_namelen = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	size = m->msg_iovlen * sizeof(struct iovec);
@@ -107,10 +114,13 @@ EXPORT_SYMBOL(memcpy_toiovecend);
 int memcpy_fromiovecend(unsigned char *kdata, const struct iovec *iov,
 			int offset, int len)
 {
+<<<<<<< HEAD
 	/* No data? Done! */
 	if (len == 0)
 		return 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Skip over the finished iovecs */
 	while (offset >= iov->iov_len) {
 		offset -= iov->iov_len;

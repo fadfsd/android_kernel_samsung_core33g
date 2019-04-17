@@ -34,7 +34,12 @@ static ssize_t ieee80211_if_read(
 	ssize_t ret = -EINVAL;
 
 	read_lock(&dev_base_lock);
+<<<<<<< HEAD
 	ret = (*format)(sdata, buf, sizeof(buf));
+=======
+	if (sdata->dev->reg_state == NETREG_REGISTERED)
+		ret = (*format)(sdata, buf, sizeof(buf));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	read_unlock(&dev_base_lock);
 
 	if (ret >= 0)
@@ -61,7 +66,12 @@ static ssize_t ieee80211_if_write(
 
 	ret = -ENODEV;
 	rtnl_lock();
+<<<<<<< HEAD
 	ret = (*write)(sdata, buf, count);
+=======
+	if (sdata->dev->reg_state == NETREG_REGISTERED)
+		ret = (*write)(sdata, buf, count);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rtnl_unlock();
 
 	return ret;
@@ -697,7 +707,10 @@ void ieee80211_debugfs_remove_netdev(struct ieee80211_sub_if_data *sdata)
 
 	debugfs_remove_recursive(sdata->vif.debugfs_dir);
 	sdata->vif.debugfs_dir = NULL;
+<<<<<<< HEAD
 	sdata->debugfs.subdir_stations = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void ieee80211_debugfs_rename_netdev(struct ieee80211_sub_if_data *sdata)

@@ -944,7 +944,11 @@ config SENSORS_NCT6775
 
 config SENSORS_NTC_THERMISTOR
 	tristate "NTC thermistor support"
+<<<<<<< HEAD
 	depends on !OF || IIO=n || IIO
+=======
+	depends on (!OF && !IIO) || (OF && IIO)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	help
 	  This driver supports NTC thermistors sensor reading and its
 	  interpretation. The driver can also monitor the temperature and

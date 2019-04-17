@@ -163,11 +163,19 @@ static int mcount_adjust = 0;
 
 static int MIPS_is_fake_mcount(Elf_Rel const *rp)
 {
+<<<<<<< HEAD
 	static Elf_Addr old_r_offset = ~(Elf_Addr)0;
 	Elf_Addr current_r_offset = _w(rp->r_offset);
 	int is_fake;
 
 	is_fake = (old_r_offset != ~(Elf_Addr)0) &&
+=======
+	static Elf_Addr old_r_offset;
+	Elf_Addr current_r_offset = _w(rp->r_offset);
+	int is_fake;
+
+	is_fake = old_r_offset &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		(current_r_offset - old_r_offset == MIPS_FAKEMCOUNT_OFFSET);
 	old_r_offset = current_r_offset;
 

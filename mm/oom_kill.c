@@ -39,9 +39,12 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/oom.h>
 
+<<<<<<< HEAD
 #define CREATE_TRACE_POINTS
 #include <trace/events/memkill.h>
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int sysctl_panic_on_oom;
 int sysctl_oom_kill_allocating_task;
 int sysctl_oom_dump_tasks = 1;
@@ -50,13 +53,18 @@ static DEFINE_SPINLOCK(zone_scan_lock);
 #ifdef CONFIG_NUMA
 /**
  * has_intersects_mems_allowed() - check task eligiblity for kill
+<<<<<<< HEAD
  * @start: task struct of which task to consider
+=======
+ * @tsk: task struct of which task to consider
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * @mask: nodemask passed to page allocator for mempolicy ooms
  *
  * Task eligibility is determined by whether or not a candidate task, @tsk,
  * shares the same mempolicy nodes as current if it is bound by such a policy
  * and whether or not it has the same set of allowed cpuset nodes.
  */
+<<<<<<< HEAD
 static bool has_intersects_mems_allowed(struct task_struct *start,
 					const nodemask_t *mask)
 {
@@ -65,6 +73,14 @@ static bool has_intersects_mems_allowed(struct task_struct *start,
 
 	rcu_read_lock();
 	for_each_thread(start, tsk) {
+=======
+static bool has_intersects_mems_allowed(struct task_struct *tsk,
+					const nodemask_t *mask)
+{
+	struct task_struct *start = tsk;
+
+	do {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (mask) {
 			/*
 			 * If this is a mempolicy constrained oom, tsk's
@@ -72,12 +88,18 @@ static bool has_intersects_mems_allowed(struct task_struct *start,
 			 * mempolicy intersects current, otherwise it may be
 			 * needlessly killed.
 			 */
+<<<<<<< HEAD
 			ret = mempolicy_nodemask_intersects(tsk, mask);
+=======
+			if (mempolicy_nodemask_intersects(tsk, mask))
+				return true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		} else {
 			/*
 			 * This is not a mempolicy constrained oom, so only
 			 * check the mems of tsk's cpuset.
 			 */
+<<<<<<< HEAD
 			ret = cpuset_mems_allowed_intersects(current, tsk);
 		}
 		if (ret)
@@ -86,6 +108,14 @@ static bool has_intersects_mems_allowed(struct task_struct *start,
 	rcu_read_unlock();
 
 	return ret;
+=======
+			if (cpuset_mems_allowed_intersects(current, tsk))
+				return true;
+		}
+	} while_each_thread(start, tsk);
+
+	return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #else
 static bool has_intersects_mems_allowed(struct task_struct *tsk,
@@ -103,6 +133,7 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
  */
 struct task_struct *find_lock_task_mm(struct task_struct *p)
 {
+<<<<<<< HEAD
 	struct task_struct *t;
 
 	rcu_read_lock();
@@ -118,6 +149,18 @@ found:
 	rcu_read_unlock();
 
 	return t;
+=======
+	struct task_struct *t = p;
+
+	do {
+		task_lock(t);
+		if (likely(t->mm))
+			return t;
+		task_unlock(t);
+	} while_each_thread(p, t);
+
+	return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* return true if the task is not adequate as candidate victim task. */
@@ -148,6 +191,11 @@ static bool oom_unkillable_task(struct task_struct *p,
  * The heuristic for determining which task to kill is made to be as simple and
  * predictable as possible.  The goal is to return the highest value for the
  * task consuming the most memory to avoid subsequent oom failures.
+<<<<<<< HEAD
+=======
+ *
+ * ps. we don't want to kill the process still in the uninterruptible state
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 unsigned long oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 			  const nodemask_t *nodemask, unsigned long totalpages)
@@ -181,13 +229,27 @@ unsigned long oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 	 * implementation used by LSMs.
 	 */
 	if (has_capability_noaudit(p, CAP_SYS_ADMIN))
+<<<<<<< HEAD
 		points -= (points * 3) / 100;
+=======
+		adj -= 30;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Normalize to oom_score_adj units */
 	adj *= totalpages / 1000;
 	points += adj;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * The unterruptible task cannot be killed,
+	 * which couldn't receive any signal including SIGKILL.
+	 */
+	if (p->state == TASK_UNINTERRUPTIBLE)
+		points /= 16;
+
+	/*
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * Never return 0 for an eligible task regardless of the root bonus and
 	 * oom_score_adj (oom_score_adj can't be OOM_SCORE_ADJ_MIN here).
 	 */
@@ -312,7 +374,11 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 	unsigned long chosen_points = 0;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	for_each_process_thread(g, p) {
+=======
+	do_each_thread(g, p) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		unsigned int points;
 
 		switch (oom_scan_process_thread(p, totalpages, nodemask,
@@ -334,7 +400,11 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 			chosen = p;
 			chosen_points = points;
 		}
+<<<<<<< HEAD
 	}
+=======
+	} while_each_thread(g, p);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (chosen)
 		get_task_struct(chosen);
 	rcu_read_unlock();
@@ -354,7 +424,11 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
  * State information includes task's pid, uid, tgid, vm size, rss, nr_ptes,
  * swapents, oom_score_adj value, and name.
  */
+<<<<<<< HEAD
 void dump_tasks(const struct mem_cgroup *memcg, const nodemask_t *nodemask)
+=======
+static void dump_tasks(const struct mem_cgroup *memcg, const nodemask_t *nodemask)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct task_struct *p;
 	struct task_struct *task;
@@ -406,6 +480,9 @@ static void dump_header(struct task_struct *p, gfp_t gfp_mask, int order,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void set_thread_group_flag(struct task_struct *p, int flag)
 {
 	struct task_struct *tp = p;
@@ -424,6 +501,7 @@ static void set_thread_group_flag(struct task_struct *p, int flag)
 		set_tsk_thread_flag(tp, TIF_MEMDIE);
 	} while_each_thread(p, tp);
 }
+<<<<<<< HEAD
 /*
  * Number of OOM killer invocations (including memcg OOM killer).
  * Primarily used by PM freezer to check for potential races with
@@ -443,6 +521,9 @@ void note_oom_kill(void)
 
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define K(x) ((x) << (PAGE_SHIFT-10))
 /*
  * Must be called while holding a reference to p, which will be released upon
@@ -455,7 +536,11 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 {
 	struct task_struct *victim = p;
 	struct task_struct *child;
+<<<<<<< HEAD
 	struct task_struct *t;
+=======
+	struct task_struct *t = p;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct mm_struct *mm;
 	unsigned int victim_points = 0;
 	static DEFINE_RATELIMIT_STATE(oom_rs, DEFAULT_RATELIMIT_INTERVAL,
@@ -466,7 +551,11 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 * its children or threads, just set TIF_MEMDIE so it can die quickly
 	 */
 	if (p->flags & PF_EXITING) {
+<<<<<<< HEAD
 		set_tsk_thread_flag(p, TIF_MEMDIE);
+=======
+		set_thread_group_flag(p, TIF_MEMDIE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		put_task_struct(p);
 		return;
 	}
@@ -486,7 +575,11 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 * still freeing memory.
 	 */
 	read_lock(&tasklist_lock);
+<<<<<<< HEAD
 	for_each_thread(p, t) {
+=======
+	do {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		list_for_each_entry(child, &t->children, sibling) {
 			unsigned int child_points;
 
@@ -504,11 +597,21 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 				get_task_struct(victim);
 			}
 		}
+<<<<<<< HEAD
 	}
 	read_unlock(&tasklist_lock);
 
 	p = find_lock_task_mm(victim);
 	if (!p) {
+=======
+	} while_each_thread(p, t);
+	read_unlock(&tasklist_lock);
+
+	rcu_read_lock();
+	p = find_lock_task_mm(victim);
+	if (!p) {
+		rcu_read_unlock();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		put_task_struct(victim);
 		return;
 	} else if (victim != p) {
@@ -523,11 +626,14 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 		task_pid_nr(victim), victim->comm, K(victim->mm->total_vm),
 		K(get_mm_counter(victim->mm, MM_ANONPAGES)),
 		K(get_mm_counter(victim->mm, MM_FILEPAGES)));
+<<<<<<< HEAD
 	trace_oom_kill(
 		task_pid_nr(victim), victim->comm, K(victim->mm->total_vm),
 		K(get_mm_counter(victim->mm, MM_ANONPAGES)),
 		K(get_mm_counter(victim->mm, MM_FILEPAGES)),
 		victim->signal->oom_score_adj, order, victim_points);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	task_unlock(victim);
 
 	/*
@@ -539,7 +645,10 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 * That thread will now get access to memory reserves since it has a
 	 * pending fatal signal.
 	 */
+<<<<<<< HEAD
 	rcu_read_lock();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for_each_process(p)
 		if (p->mm == mm && !same_thread_group(p, victim) &&
 		    !(p->flags & PF_KTHREAD)) {
@@ -549,14 +658,21 @@ void oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 			task_lock(p);	/* Protect ->comm from prctl() */
 			pr_err("Kill process %d (%s) sharing same memory\n",
 				task_pid_nr(p), p->comm);
+<<<<<<< HEAD
 			trace_oom_kill_shared(
 				task_pid_nr(p), p->comm);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			task_unlock(p);
 			do_send_sig_info(SIGKILL, SEND_SIG_FORCED, p, true);
 		}
 	rcu_read_unlock();
 
+<<<<<<< HEAD
 	set_tsk_thread_flag(victim, TIF_MEMDIE);
+=======
+	set_thread_group_flag(victim, TIF_MEMDIE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	do_send_sig_info(SIGKILL, SEND_SIG_FORCED, victim, true);
 	put_task_struct(victim);
 }
@@ -683,7 +799,11 @@ void out_of_memory(struct zonelist *zonelist, gfp_t gfp_mask,
 	 * quickly exit and free its memory.
 	 */
 	if (fatal_signal_pending(current) || current->flags & PF_EXITING) {
+<<<<<<< HEAD
 		set_thread_flag(TIF_MEMDIE);
+=======
+		set_thread_group_flag(current, TIF_MEMDIE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 	}
 
@@ -733,12 +853,18 @@ out:
  */
 void pagefault_out_of_memory(void)
 {
+<<<<<<< HEAD
 	struct zonelist *zonelist;
 
 	if (mem_cgroup_oom_synchronize(true))
 		return;
 
 	zonelist = node_zonelist(first_online_node, GFP_KERNEL);
+=======
+	struct zonelist *zonelist = node_zonelist(first_online_node,
+						  GFP_KERNEL);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (try_set_zonelist_oom(zonelist, GFP_KERNEL)) {
 		out_of_memory(NULL, 0, 0, NULL, false);
 		clear_zonelist_oom(zonelist, GFP_KERNEL);

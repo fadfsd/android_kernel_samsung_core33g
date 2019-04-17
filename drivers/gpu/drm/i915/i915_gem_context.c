@@ -291,8 +291,15 @@ void i915_gem_context_close(struct drm_device *dev, struct drm_file *file)
 {
 	struct drm_i915_file_private *file_priv = file->driver_priv;
 
+<<<<<<< HEAD
 	idr_for_each(&file_priv->context_idr, context_idr_cleanup, NULL);
 	idr_destroy(&file_priv->context_idr);
+=======
+	mutex_lock(&dev->struct_mutex);
+	idr_for_each(&file_priv->context_idr, context_idr_cleanup, NULL);
+	idr_destroy(&file_priv->context_idr);
+	mutex_unlock(&dev->struct_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct i915_hw_context *

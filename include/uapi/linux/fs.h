@@ -165,6 +165,7 @@ struct inodes_stat_t {
 #define FS_IOC32_SETVERSION		_IOW('v', 2, int)
 
 /*
+<<<<<<< HEAD
  * File system encryption support
  */
 /* Policy provided via an ioctl on the topmost directory */
@@ -183,6 +184,8 @@ struct fscrypt_policy {
 #define FS_IOC_GET_ENCRYPTION_POLICY	_IOW('f', 21, struct fscrypt_policy)
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * Inode flags (FS_IOC_GETFLAGS / FS_IOC_SETFLAGS)
  */
 #define	FS_SECRM_FL			0x00000001 /* Secure deletion */

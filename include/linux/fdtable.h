@@ -26,7 +26,10 @@ struct fdtable {
 	struct file __rcu **fd;      /* current fd array */
 	unsigned long *close_on_exec;
 	unsigned long *open_fds;
+<<<<<<< HEAD
 	unsigned long *full_fds_bits;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct rcu_head rcu;
 };
 
@@ -57,7 +60,10 @@ struct files_struct {
 	int next_fd;
 	unsigned long close_on_exec_init[1];
 	unsigned long open_fds_init[1];
+<<<<<<< HEAD
 	unsigned long full_fds_bits_init[1];
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct file __rcu * fd_array[NR_OPEN_DEFAULT];
 };
 

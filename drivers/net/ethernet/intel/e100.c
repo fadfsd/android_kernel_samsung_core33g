@@ -3039,7 +3039,11 @@ static void __e100_shutdown(struct pci_dev *pdev, bool *enable_wake)
 		*enable_wake = false;
 	}
 
+<<<<<<< HEAD
 	pci_clear_master(pdev);
+=======
+	pci_disable_device(pdev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int __e100_power_off(struct pci_dev *pdev, bool wake)

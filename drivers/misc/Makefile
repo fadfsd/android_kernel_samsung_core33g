@@ -36,6 +36,10 @@ obj-$(CONFIG_SENSORS_TSL2550)	+= tsl2550.o
 obj-$(CONFIG_EP93XX_PWM)	+= ep93xx_pwm.o
 obj-$(CONFIG_DS1682)		+= ds1682.o
 obj-$(CONFIG_TI_DAC7512)	+= ti_dac7512.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_UID_STAT)		+= uid_stat.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-$(CONFIG_C2PORT)		+= c2port/
 obj-$(CONFIG_HMC6352)		+= hmc6352.o
 obj-y				+= eeprom/
@@ -48,12 +52,25 @@ obj-y				+= ti-st/
 obj-y				+= lis3lv02d/
 obj-y				+= carma/
 obj-$(CONFIG_USB_SWITCH_FSA9480) += fsa9480.o
+<<<<<<< HEAD
 obj-$(CONFIG_ALTERA_STAPL)	+=altera-stapl/
 obj-$(CONFIG_INTEL_MEI)		+= mei/
 obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
 obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
 obj-$(CONFIG_SRAM)		+= sram.o
 <<<<<<< HEAD
+=======
+obj-$(CONFIG_BCM_BT_RFKILL)     += bcm-bt-rfkill.o
+obj-$(CONFIG_BCM_BT_LPM)        += bcm-bt-lpm.o
+obj-$(CONFIG_ALTERA_STAPL)	+=altera-stapl/
+obj-$(CONFIG_SENSORS_ST480)   += st480.o
+obj-$(CONFIG_SENSORS_AK8963)   += akm8963.o
+obj-$(CONFIG_INTEL_MEI)		+= mei/
+obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
+obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
+obj-$(CONFIG_CHECK_SIMSLOT_COUNT) +=sim_slot.o
+obj-$(CONFIG_SRAM)		+= sram.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-y		+= sprd_2351/
 obj-$(CONFIG_CGX)		+= gpsip/
 obj-$(CONFIG_SR2351_FM)		+= fm_2351/
@@ -62,10 +79,17 @@ obj-y		+= sprd_otp/
 obj-y		+= sprd_vsp/
 obj-y		+= sprd_jpg/
 obj-y		+= sprd_cproc/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_SPRD_SIMDET)		+= sprd_simdet/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-$(CONFIG_SPRD_SRT_KO)		+= sprd_srt/
 obj-$(CONFIG_BENCHMARK)  += benchmark/
 obj-$(CONFIG_BOOT_PERF)  += bootperf/
 obj-y	+= sprd_board_type.o
+<<<<<<< HEAD
 obj-$(CONFIG_UID_CPUTIME) += uid_cputime.o
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

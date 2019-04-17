@@ -23,7 +23,10 @@
 #include <linux/irq_work.h>
 #include <linux/posix-timers.h>
 #include <linux/perf_event.h>
+<<<<<<< HEAD
 #include <linux/rq_stats.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/irq_regs.h>
 
@@ -31,10 +34,13 @@
 
 #include <trace/events/timer.h>
 
+<<<<<<< HEAD
 struct rq_data rq_info;
 struct workqueue_struct *rq_wq;
 spinlock_t rq_lock;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Per cpu nohz control structure
  */
@@ -725,10 +731,15 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
 		return false;
 	}
 
+<<<<<<< HEAD
 	if (unlikely(ts->nohz_mode == NOHZ_MODE_INACTIVE)) {
 		ts->sleep_length = (ktime_t) { .tv64 = NSEC_PER_SEC/HZ };
 		return false;
 	}
+=======
+	if (unlikely(ts->nohz_mode == NOHZ_MODE_INACTIVE))
+		return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (need_resched())
 		return false;
@@ -1084,6 +1095,7 @@ void tick_check_idle(int cpu)
  * High resolution timer specific code
  */
 #ifdef CONFIG_HIGH_RES_TIMERS
+<<<<<<< HEAD
 static void update_rq_stats(void)
 {
 	unsigned long jiffy_gap = 0;
@@ -1128,6 +1140,8 @@ static void wakeup_user(void)
 		queue_work(rq_wq, &rq_info.def_timer_work);
 	}
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * We rearm the timer until we get disabled by the idle code.
  * Called with interrupts disabled.
@@ -1145,6 +1159,7 @@ static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
 	 * Do not call, when we are not in irq context and have
 	 * no valid regs pointer
 	 */
+<<<<<<< HEAD
 	if (regs) {
 		tick_sched_handle(ts, regs);
 
@@ -1162,6 +1177,11 @@ static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
 		}
 	}
 
+=======
+	if (regs)
+		tick_sched_handle(ts, regs);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	hrtimer_forward(timer, now, tick_period);
 
 	return HRTIMER_RESTART;

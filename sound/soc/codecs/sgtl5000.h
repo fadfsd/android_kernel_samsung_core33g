@@ -275,7 +275,11 @@
 #define SGTL5000_BIAS_CTRL_MASK			0x000e
 #define SGTL5000_BIAS_CTRL_SHIFT		1
 #define SGTL5000_BIAS_CTRL_WIDTH		3
+<<<<<<< HEAD
 #define SGTL5000_SMALL_POP			0
+=======
+#define SGTL5000_SMALL_POP			0x0001
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * SGTL5000_CHIP_MIC_CTRL

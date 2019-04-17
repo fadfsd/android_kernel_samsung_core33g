@@ -24,7 +24,11 @@
 static __u8 *mr_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 		unsigned int *rsize)
 {
+<<<<<<< HEAD
 	if (*rsize >= 31 && rdesc[29] == 0x05 && rdesc[30] == 0x09) {
+=======
+	if (*rsize >= 30 && rdesc[29] == 0x05 && rdesc[30] == 0x09) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		hid_info(hdev, "fixing up button/consumer in HID report descriptor\n");
 		rdesc[30] = 0x0c;
 	}

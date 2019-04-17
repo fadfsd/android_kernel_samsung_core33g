@@ -77,7 +77,11 @@ static void __iomem *sched_io_base;
 
 static u32 read_sched_clock(void)
 {
+<<<<<<< HEAD
 	return ~__raw_readl(sched_io_base);
+=======
+	return __raw_readl(sched_io_base);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static const struct of_device_id sptimer_ids[] __initconst = {

@@ -222,7 +222,10 @@ void __init ti81xx_init_irq(void)
 static inline void omap_intc_handle_irq(void __iomem *base_addr, struct pt_regs *regs)
 {
 	u32 irqnr;
+<<<<<<< HEAD
 	int handled_irq = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	do {
 		irqnr = readl_relaxed(base_addr + 0x98);
@@ -234,7 +237,11 @@ static inline void omap_intc_handle_irq(void __iomem *base_addr, struct pt_regs 
 			goto out;
 
 		irqnr = readl_relaxed(base_addr + 0xd8);
+<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_SOC_TI81XX) || IS_ENABLED(CONFIG_SOC_AM33XX)
+=======
+#ifdef CONFIG_SOC_TI81XX
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (irqnr)
 			goto out;
 		irqnr = readl_relaxed(base_addr + 0xf8);
@@ -250,6 +257,7 @@ out:
 		if (irqnr) {
 			irqnr = irq_find_mapping(domain, irqnr);
 			handle_IRQ(irqnr, regs);
+<<<<<<< HEAD
 			handled_irq = 1;
 		}
 	} while (irqnr);
@@ -259,6 +267,10 @@ out:
 	 * the INTC with an ack.*/
 	if (!handled_irq)
 		omap_ack_irq(NULL);
+=======
+		}
+	} while (irqnr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 asmlinkage void __exception_irq_entry omap2_intc_handle_irq(struct pt_regs *regs)

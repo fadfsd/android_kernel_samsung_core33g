@@ -878,6 +878,10 @@ int m2p_add_override(unsigned long mfn, struct page *page,
 	unsigned long uninitialized_var(address);
 	unsigned level;
 	pte_t *ptep = NULL;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	pfn = page_to_pfn(page);
 	if (!PageHighMem(page)) {
@@ -924,8 +928,13 @@ int m2p_add_override(unsigned long mfn, struct page *page,
 	 * frontend pages while they are being shared with the backend,
 	 * because mfn_to_pfn (that ends up being called by GUPF) will
 	 * return the backend pfn rather than the frontend pfn. */
+<<<<<<< HEAD
 	pfn = mfn_to_pfn_no_overrides(mfn);
 	if (get_phys_to_machine(pfn) == mfn)
+=======
+	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+	if (ret == 0 && get_phys_to_machine(pfn) == mfn)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		set_phys_to_machine(pfn, FOREIGN_FRAME(mfn));
 
 	return 0;
@@ -940,6 +949,10 @@ int m2p_remove_override(struct page *page,
 	unsigned long uninitialized_var(address);
 	unsigned level;
 	pte_t *ptep = NULL;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	pfn = page_to_pfn(page);
 	mfn = get_phys_to_machine(pfn);
@@ -1017,8 +1030,13 @@ int m2p_remove_override(struct page *page,
 	 * the original pfn causes mfn_to_pfn(mfn) to return the frontend
 	 * pfn again. */
 	mfn &= ~FOREIGN_FRAME_BIT;
+<<<<<<< HEAD
 	pfn = mfn_to_pfn_no_overrides(mfn);
 	if (get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
+=======
+	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+	if (ret == 0 && get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			m2p_find_override(mfn) == NULL)
 		set_phys_to_machine(pfn, mfn);
 

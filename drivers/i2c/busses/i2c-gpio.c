@@ -130,6 +130,10 @@ static int i2c_gpio_probe(struct platform_device *pdev)
 	unsigned int sda_pin, scl_pin;
 	int ret;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* First get the GPIO pins; if it fails, we'll defer the probe. */
 	if (pdev->dev.of_node) {
 		ret = of_i2c_gpio_get_pins(pdev->dev.of_node,
@@ -214,6 +218,15 @@ static int i2c_gpio_probe(struct platform_device *pdev)
 	else
 		snprintf(adap->name, sizeof(adap->name), "i2c-gpio%d", pdev->id);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OF
+	if (pdev->dev.of_node) {
+		pdev->id = of_alias_get_id(pdev->dev.of_node, "i2c_gpio");
+	}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	adap->algo_data = bit_data;
 	adap->class = I2C_CLASS_HWMON | I2C_CLASS_SPD;
 	adap->dev.parent = &pdev->dev;

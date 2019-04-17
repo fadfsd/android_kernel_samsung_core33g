@@ -71,7 +71,11 @@ static int mei_cl_device_probe(struct device *dev)
 
 	dev_dbg(dev, "Device probe\n");
 
+<<<<<<< HEAD
 	strlcpy(id.name, dev_name(dev), sizeof(id.name));
+=======
+	strncpy(id.name, dev_name(dev), MEI_CL_NAME_SIZE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return driver->probe(device, &id);
 }

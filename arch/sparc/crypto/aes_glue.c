@@ -499,6 +499,10 @@ module_exit(aes_sparc64_mod_fini);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("AES Secure Hash Algorithm, sparc64 aes opcode accelerated");
 
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("aes");
+=======
+MODULE_ALIAS("aes");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include "crop_devid.c"

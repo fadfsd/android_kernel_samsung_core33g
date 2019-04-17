@@ -33,6 +33,10 @@
 #define gadget_is_net2280(g)		(!strcmp("net2280", (g)->name))
 #define gadget_is_pxa(g)		(!strcmp("pxa25x_udc", (g)->name))
 #define gadget_is_pxa27x(g)		(!strcmp("pxa27x_udc", (g)->name))
+<<<<<<< HEAD
+=======
+#define gadget_is_sprd_dwc(g)      (!strcmp("dwc_otg", (g)->name))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /**
  * gadget_supports_altsettings - return true if altsettings work
@@ -52,4 +56,17 @@ static inline bool gadget_supports_altsettings(struct usb_gadget *gadget)
 	return true;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * gadget_dma32 - return true if we want buffer aligned on 32 bits (for dma)
+ * @gadget: the gadget in question
+ */
+static inline bool gadget_dma32(struct usb_gadget *gadget)
+{
+        if (gadget_is_sprd_dwc(gadget))
+                return true;
+        return false;
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* __GADGET_CHIPS_H */

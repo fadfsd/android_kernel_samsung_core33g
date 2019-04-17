@@ -835,7 +835,11 @@ int load_free_space_cache(struct btrfs_fs_info *fs_info,
 
 	if (!matched) {
 		__btrfs_remove_free_space_cache(ctl);
+<<<<<<< HEAD
 		btrfs_warn(fs_info, "block group %llu has wrong amount of free space",
+=======
+		btrfs_err(fs_info, "block group %llu has wrong amount of free space",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			block_group->key.objectid);
 		ret = -1;
 	}
@@ -847,7 +851,11 @@ out:
 		spin_unlock(&block_group->lock);
 		ret = 0;
 
+<<<<<<< HEAD
 		btrfs_warn(fs_info, "failed to load free space cache for block group %llu, rebuild it now",
+=======
+		btrfs_err(fs_info, "failed to load free space cache for block group %llu",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			block_group->key.objectid);
 	}
 

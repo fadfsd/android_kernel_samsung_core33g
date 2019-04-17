@@ -119,10 +119,16 @@ static inline void setup_node_to_cpumask_map(void) { }
 
 extern const struct cpumask *cpu_coregroup_mask(int cpu);
 
+<<<<<<< HEAD
 #define topology_physical_package_id(cpu)	(cpu_data(cpu).phys_proc_id)
 #define topology_core_id(cpu)			(cpu_data(cpu).cpu_core_id)
 
 #ifdef ENABLE_TOPO_DEFINES
+=======
+#ifdef ENABLE_TOPO_DEFINES
+#define topology_physical_package_id(cpu)	(cpu_data(cpu).phys_proc_id)
+#define topology_core_id(cpu)			(cpu_data(cpu).cpu_core_id)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define topology_core_cpumask(cpu)		(per_cpu(cpu_core_map, cpu))
 #define topology_thread_cpumask(cpu)		(per_cpu(cpu_sibling_map, cpu))
 

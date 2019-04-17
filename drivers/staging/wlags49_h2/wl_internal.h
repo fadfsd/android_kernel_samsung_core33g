@@ -1014,7 +1014,11 @@ static inline void wl_unlock(struct wl_private *lp,
 /* Interrupt enable disable functions                               */
 /********************************************************************/
 
+<<<<<<< HEAD
 static inline void wl_act_int_on(struct wl_private *lp)
+=======
+extern inline void wl_act_int_on(struct wl_private *lp)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	/*
 	 * Only do something when the driver is handling
@@ -1026,7 +1030,11 @@ static inline void wl_act_int_on(struct wl_private *lp)
 	}
 }
 
+<<<<<<< HEAD
 static inline void wl_act_int_off(struct wl_private *lp)
+=======
+extern inline void wl_act_int_off(struct wl_private *lp)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	/*
 	 * Only do something when the driver is handling

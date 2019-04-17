@@ -2034,6 +2034,10 @@ enum ieee80211_sa_query_action {
 
 #define WLAN_CIPHER_SUITE_SMS4		0x00147201
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* AKM suite selectors */
 #define WLAN_AKM_SUITE_8021X		0x000FAC01
 #define WLAN_AKM_SUITE_PSK		0x000FAC02
@@ -2043,6 +2047,15 @@ enum ieee80211_sa_query_action {
 #define WLAN_AKM_SUITE_SAE		0x000FAC08
 #define WLAN_AKM_SUITE_FT_OVER_SAE	0x000FAC09
 
+<<<<<<< HEAD
+=======
+/*
+WAPI  Add by SPRD for WAPI function
+*/
+#define WLAN_AKM_SUITE_WAPI_PSK         0x000FAC04
+#define WLAN_AKM_SUITE_WAPI_CERT        0x000FAC12
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define WLAN_MAX_KEY_LEN		32
 
 #define WLAN_PMKID_LEN			16

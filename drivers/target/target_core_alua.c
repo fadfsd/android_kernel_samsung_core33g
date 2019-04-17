@@ -409,6 +409,7 @@ static inline int core_alua_state_standby(
 	case REPORT_LUNS:
 	case RECEIVE_DIAGNOSTIC:
 	case SEND_DIAGNOSTIC:
+<<<<<<< HEAD
 	case READ_CAPACITY:
 		return 0;
 	case SERVICE_ACTION_IN:
@@ -419,6 +420,9 @@ static inline int core_alua_state_standby(
 			*alua_ascq = ASCQ_04H_ALUA_TG_PT_STANDBY;
 			return 1;
 		}
+=======
+		return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	case MAINTENANCE_IN:
 		switch (cdb[1] & 0x1f) {
 		case MI_REPORT_TARGET_PGS:

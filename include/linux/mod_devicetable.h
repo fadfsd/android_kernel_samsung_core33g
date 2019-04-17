@@ -282,7 +282,11 @@ struct pcmcia_device_id {
 #define INPUT_DEVICE_ID_LED_MAX		0x0f
 #define INPUT_DEVICE_ID_SND_MAX		0x07
 #define INPUT_DEVICE_ID_FF_MAX		0x7f
+<<<<<<< HEAD
 #define INPUT_DEVICE_ID_SW_MAX		0x0f
+=======
+#define INPUT_DEVICE_ID_SW_MAX		0x1f
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define INPUT_DEVICE_ID_MATCH_BUS	1
 #define INPUT_DEVICE_ID_MATCH_VENDOR	2
@@ -456,8 +460,12 @@ enum dmi_field {
 };
 
 struct dmi_strmatch {
+<<<<<<< HEAD
 	unsigned char slot:7;
 	unsigned char exact_match:1;
+=======
+	unsigned char slot;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	char substr[79];
 };
 
@@ -475,8 +483,12 @@ struct dmi_system_id {
  */
 #define dmi_device_id dmi_system_id
 
+<<<<<<< HEAD
 #define DMI_MATCH(a, b)	{ .slot = a, .substr = b }
 #define DMI_EXACT_MATCH(a, b)	{ .slot = a, .substr = b, .exact_match = 1 }
+=======
+#define DMI_MATCH(a, b)	{ a, b }
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define PLATFORM_NAME_SIZE	20
 #define PLATFORM_MODULE_PREFIX	"platform:"

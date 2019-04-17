@@ -733,7 +733,10 @@ acpi_video_init_brightness(struct acpi_video_device *device)
 	union acpi_object *o;
 	struct acpi_video_device_brightness *br = NULL;
 	int result = -EINVAL;
+<<<<<<< HEAD
 	u32 value;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!ACPI_SUCCESS(acpi_video_device_lcd_query_levels(device, &obj))) {
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Could not query available "
@@ -764,12 +767,16 @@ acpi_video_init_brightness(struct acpi_video_device *device)
 			printk(KERN_ERR PREFIX "Invalid data\n");
 			continue;
 		}
+<<<<<<< HEAD
 		value = (u32) o->integer.value;
 		/* Skip duplicate entries */
 		if (count > 2 && br->levels[count - 1] == value)
 			continue;
 
 		br->levels[count] = value;
+=======
+		br->levels[count] = (u32) o->integer.value;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (br->levels[count] > max_level)
 			max_level = br->levels[count];
@@ -852,7 +859,11 @@ acpi_video_init_brightness(struct acpi_video_device *device)
 		for (i = 2; i < br->count; i++)
 			if (level_old == br->levels[i])
 				break;
+<<<<<<< HEAD
 		if (i == br->count || !level)
+=======
+		if (i == br->count)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			level = max_level;
 	}
 
@@ -1953,6 +1964,7 @@ EXPORT_SYMBOL(acpi_video_unregister);
 
 static int __init acpi_video_init(void)
 {
+<<<<<<< HEAD
 	/*
 	 * Let the module load even if ACPI is disabled (e.g. due to
 	 * a broken BIOS) so that i915.ko can still be loaded on such
@@ -1964,6 +1976,8 @@ static int __init acpi_video_init(void)
 	if (acpi_disabled)
 		return 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	dmi_check_system(video_dmi_table);
 
 	if (intel_opregion_present())

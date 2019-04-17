@@ -551,7 +551,11 @@ static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	struct sja1000_priv *priv;
 	struct peak_pci_chan *chan;
+<<<<<<< HEAD
 	struct net_device *dev, *prev_dev;
+=======
+	struct net_device *dev;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	void __iomem *cfg_base, *reg_base;
 	u16 sub_sys_id, icr;
 	int i, err, channels;
@@ -687,6 +691,7 @@ failure_remove_channels:
 	writew(0x0, cfg_base + PITA_ICR + 2);
 
 	chan = NULL;
+<<<<<<< HEAD
 	for (dev = pci_get_drvdata(pdev); dev; dev = prev_dev) {
 		priv = netdev_priv(dev);
 		chan = priv->priv;
@@ -694,6 +699,13 @@ failure_remove_channels:
 
 		unregister_sja1000dev(dev);
 		free_sja1000dev(dev);
+=======
+	for (dev = pci_get_drvdata(pdev); dev; dev = chan->prev_dev) {
+		unregister_sja1000dev(dev);
+		free_sja1000dev(dev);
+		priv = netdev_priv(dev);
+		chan = priv->priv;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* free any PCIeC resources too */
@@ -727,12 +739,19 @@ static void peak_pci_remove(struct pci_dev *pdev)
 
 	/* Loop over all registered devices */
 	while (1) {
+<<<<<<< HEAD
 		struct net_device *prev_dev = chan->prev_dev;
 
 		dev_info(&pdev->dev, "removing device %s\n", dev->name);
 		unregister_sja1000dev(dev);
 		free_sja1000dev(dev);
 		dev = prev_dev;
+=======
+		dev_info(&pdev->dev, "removing device %s\n", dev->name);
+		unregister_sja1000dev(dev);
+		free_sja1000dev(dev);
+		dev = chan->prev_dev;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (!dev) {
 			/* do that only for first channel */

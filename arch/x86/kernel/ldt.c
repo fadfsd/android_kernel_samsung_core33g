@@ -229,11 +229,14 @@ static int write_ldt(void __user *ptr, unsigned long bytecount, int oldmode)
 		}
 	}
 
+<<<<<<< HEAD
 	if (!IS_ENABLED(CONFIG_X86_16BIT) && !ldt_info.seg_32bit) {
 		error = -EINVAL;
 		goto out_unlock;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	fill_ldt(&ldt, &ldt_info);
 	if (oldmode)
 		ldt.avl = 0;

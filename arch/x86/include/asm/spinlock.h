@@ -233,4 +233,11 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
 #define arch_read_relax(lock)	cpu_relax()
 #define arch_write_relax(lock)	cpu_relax()
 
+<<<<<<< HEAD
+=======
+/* The {read|write|spin}_lock() on x86 are full memory barriers. */
+static inline void smp_mb__after_lock(void) { }
+#define ARCH_HAS_SMP_MB_AFTER_LOCK
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _ASM_X86_SPINLOCK_H */

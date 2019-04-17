@@ -489,7 +489,10 @@ static int pci171x_insn_write_ao(struct comedi_device *dev,
 				 struct comedi_insn *insn, unsigned int *data)
 {
 	struct pci1710_private *devpriv = dev->private;
+<<<<<<< HEAD
 	unsigned int val;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int n, chan, range, ofs;
 
 	chan = CR_CHAN(insn->chanspec);
@@ -505,6 +508,7 @@ static int pci171x_insn_write_ao(struct comedi_device *dev,
 		outw(devpriv->da_ranges, dev->iobase + PCI171x_DAREF);
 		ofs = PCI171x_DA1;
 	}
+<<<<<<< HEAD
 	val = devpriv->ao_data[chan];
 
 	for (n = 0; n < insn->n; n++) {
@@ -513,6 +517,13 @@ static int pci171x_insn_write_ao(struct comedi_device *dev,
 	}
 
 	devpriv->ao_data[chan] = val;
+=======
+
+	for (n = 0; n < insn->n; n++)
+		outw(data[n], dev->iobase + ofs);
+
+	devpriv->ao_data[chan] = data[n];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return n;
 
@@ -682,7 +693,10 @@ static int pci1720_insn_write_ao(struct comedi_device *dev,
 				 struct comedi_insn *insn, unsigned int *data)
 {
 	struct pci1710_private *devpriv = dev->private;
+<<<<<<< HEAD
 	unsigned int val;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int n, rangereg, chan;
 
 	chan = CR_CHAN(insn->chanspec);
@@ -692,6 +706,7 @@ static int pci1720_insn_write_ao(struct comedi_device *dev,
 		outb(rangereg, dev->iobase + PCI1720_RANGE);
 		devpriv->da_ranges = rangereg;
 	}
+<<<<<<< HEAD
 	val = devpriv->ao_data[chan];
 
 	for (n = 0; n < insn->n; n++) {
@@ -701,6 +716,15 @@ static int pci1720_insn_write_ao(struct comedi_device *dev,
 	}
 
 	devpriv->ao_data[chan] = val;
+=======
+
+	for (n = 0; n < insn->n; n++) {
+		outw(data[n], dev->iobase + PCI1720_DA0 + (chan << 1));
+		outb(0, dev->iobase + PCI1720_SYNCOUT);	/*  update outputs */
+	}
+
+	devpriv->ao_data[chan] = data[n];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return n;
 }

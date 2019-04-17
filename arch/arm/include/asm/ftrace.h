@@ -45,7 +45,11 @@ void *return_address(unsigned int);
 
 #else
 
+<<<<<<< HEAD
 static inline void *return_address(unsigned int level)
+=======
+extern inline void *return_address(unsigned int level)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	return NULL;
 }

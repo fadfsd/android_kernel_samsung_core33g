@@ -406,6 +406,7 @@ long drm_ioctl(struct file *filp,
 		cmd = ioctl->cmd_drv;
 	}
 	else if ((nr >= DRM_COMMAND_END) || (nr < DRM_COMMAND_BASE)) {
+<<<<<<< HEAD
 		u32 drv_size;
 
 		ioctl = &drm_ioctls[nr];
@@ -416,6 +417,11 @@ long drm_ioctl(struct file *filp,
 			asize = drv_size;
 
 		cmd = ioctl->cmd;
+=======
+		ioctl = &drm_ioctls[nr];
+		cmd = ioctl->cmd;
+		usize = asize = _IOC_SIZE(cmd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else
 		goto err_i1;
 

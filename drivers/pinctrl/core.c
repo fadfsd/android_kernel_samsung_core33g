@@ -807,9 +807,13 @@ static struct pinctrl *create_pinctrl(struct device *dev)
 	kref_init(&p->users);
 
 	/* Add the pinctrl handle to the global list */
+<<<<<<< HEAD
 	mutex_lock(&pinctrl_list_mutex);
 	list_add_tail(&p->node, &pinctrl_list);
 	mutex_unlock(&pinctrl_list_mutex);
+=======
+	list_add_tail(&p->node, &pinctrl_list);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return p;
 }
@@ -1077,7 +1081,11 @@ void devm_pinctrl_put(struct pinctrl *p)
 EXPORT_SYMBOL_GPL(devm_pinctrl_put);
 
 int pinctrl_register_map(struct pinctrl_map const *maps, unsigned num_maps,
+<<<<<<< HEAD
 			 bool dup)
+=======
+			 bool dup, bool locked)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int i, ret;
 	struct pinctrl_maps *maps_node;
@@ -1145,9 +1153,17 @@ int pinctrl_register_map(struct pinctrl_map const *maps, unsigned num_maps,
 		maps_node->maps = maps;
 	}
 
+<<<<<<< HEAD
 	mutex_lock(&pinctrl_maps_mutex);
 	list_add_tail(&maps_node->node, &pinctrl_maps);
 	mutex_unlock(&pinctrl_maps_mutex);
+=======
+	if (!locked)
+		mutex_lock(&pinctrl_maps_mutex);
+	list_add_tail(&maps_node->node, &pinctrl_maps);
+	if (!locked)
+		mutex_unlock(&pinctrl_maps_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }
@@ -1162,7 +1178,11 @@ int pinctrl_register_map(struct pinctrl_map const *maps, unsigned num_maps,
 int pinctrl_register_mappings(struct pinctrl_map const *maps,
 			      unsigned num_maps)
 {
+<<<<<<< HEAD
 	return pinctrl_register_map(maps, num_maps, true);
+=======
+	return pinctrl_register_map(maps, num_maps, true, false);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void pinctrl_unregister_map(struct pinctrl_map const *map)
@@ -1691,15 +1711,25 @@ void pinctrl_unregister(struct pinctrl_dev *pctldev)
 	if (pctldev == NULL)
 		return;
 
+<<<<<<< HEAD
 	mutex_lock(&pctldev->mutex);
 	pinctrl_remove_device_debugfs(pctldev);
 	mutex_unlock(&pctldev->mutex);
+=======
+	mutex_lock(&pinctrldev_list_mutex);
+	mutex_lock(&pctldev->mutex);
+
+	pinctrl_remove_device_debugfs(pctldev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!IS_ERR(pctldev->p))
 		pinctrl_put(pctldev->p);
 
+<<<<<<< HEAD
 	mutex_lock(&pinctrldev_list_mutex);
 	mutex_lock(&pctldev->mutex);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* TODO: check that no pinmuxes are still active? */
 	list_del(&pctldev->node);
 	/* Destroy descriptor tree */

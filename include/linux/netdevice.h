@@ -1772,6 +1772,7 @@ static inline int dev_parse_header(const struct sk_buff *skb,
 	return dev->header_ops->parse(skb, haddr);
 }
 
+<<<<<<< HEAD
 static inline int dev_rebuild_header(struct sk_buff *skb)
 {
 	const struct net_device *dev = skb->dev;
@@ -1781,6 +1782,8 @@ static inline int dev_rebuild_header(struct sk_buff *skb)
 	return dev->header_ops->rebuild(skb);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 typedef int gifconf_func_t(struct net_device * dev, char __user * bufptr, int len);
 extern int		register_gifconf(unsigned int family, gifconf_func_t * gifconf);
 static inline int unregister_gifconf(unsigned int family)
@@ -2761,12 +2764,16 @@ void netdev_change_features(struct net_device *dev);
 void netif_stacked_transfer_operstate(const struct net_device *rootdev,
 					struct net_device *dev);
 
+<<<<<<< HEAD
 netdev_features_t netif_skb_dev_features(struct sk_buff *skb,
 					 const struct net_device *dev);
 static inline netdev_features_t netif_skb_features(struct sk_buff *skb)
 {
 	return netif_skb_dev_features(skb, skb->dev);
 }
+=======
+netdev_features_t netif_skb_features(struct sk_buff *skb);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static inline bool net_gso_ok(netdev_features_t features, int gso_type)
 {

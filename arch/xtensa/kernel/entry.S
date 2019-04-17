@@ -549,13 +549,20 @@ user_exception_exit:
 	 *	 (if we have restored WSBITS-1 frames).
 	 */
 
+<<<<<<< HEAD
 2:
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #if XCHAL_HAVE_THREADPTR
 	l32i	a3, a1, PT_THREADPTR
 	wur	a3, threadptr
 #endif
 
+<<<<<<< HEAD
 	j	common_exception_exit
+=======
+2:	j	common_exception_exit
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* This is the kernel exception exit.
 	 * We avoided to do a MOVSP when we entered the exception, but we
@@ -1122,8 +1129,14 @@ ENTRY(fast_syscall_xtensa)
 	movi	a7, 4			# sizeof(unsigned int)
 	access_ok a3, a7, a0, a2, .Leac	# a0: scratch reg, a2: sp
 
+<<<<<<< HEAD
 	_bgeui	a6, SYS_XTENSA_COUNT, .Lill
 	_bnei	a6, SYS_XTENSA_ATOMIC_CMP_SWP, .Lnswp
+=======
+	addi	a6, a6, -1		# assuming SYS_XTENSA_ATOMIC_SET = 1
+	_bgeui	a6, SYS_XTENSA_COUNT - 1, .Lill
+	_bnei	a6, SYS_XTENSA_ATOMIC_CMP_SWP - 1, .Lnswp
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Fall through for ATOMIC_CMP_SWP. */
 
@@ -1135,26 +1148,43 @@ TRY	s32i	a5, a3, 0		# different, modify value
 	l32i	a7, a2, PT_AREG7	# restore a7
 	l32i	a0, a2, PT_AREG0	# restore a0
 	movi	a2, 1			# and return 1
+<<<<<<< HEAD
+=======
+	addi	a6, a6, 1		# restore a6 (really necessary?)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rfe
 
 1:	l32i	a7, a2, PT_AREG7	# restore a7
 	l32i	a0, a2, PT_AREG0	# restore a0
 	movi	a2, 0			# return 0 (note that we cannot set
+<<<<<<< HEAD
+=======
+	addi	a6, a6, 1		# restore a6 (really necessary?)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rfe
 
 .Lnswp:	/* Atomic set, add, and exg_add. */
 
 TRY	l32i	a7, a3, 0		# orig
+<<<<<<< HEAD
 	addi	a6, a6, -SYS_XTENSA_ATOMIC_SET
 	add	a0, a4, a7		# + arg
 	moveqz	a0, a4, a6		# set
 	addi	a6, a6, SYS_XTENSA_ATOMIC_SET
+=======
+	add	a0, a4, a7		# + arg
+	moveqz	a0, a4, a6		# set
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 TRY	s32i	a0, a3, 0		# write new value
 
 	mov	a0, a2
 	mov	a2, a7
 	l32i	a7, a0, PT_AREG7	# restore a7
 	l32i	a0, a0, PT_AREG0	# restore a0
+<<<<<<< HEAD
+=======
+	addi	a6, a6, 1		# restore a6 (really necessary?)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rfe
 
 CATCH
@@ -1163,7 +1193,11 @@ CATCH
 	movi	a2, -EFAULT
 	rfe
 
+<<<<<<< HEAD
 .Lill:	l32i	a7, a2, PT_AREG7	# restore a7
+=======
+.Lill:	l32i	a7, a2, PT_AREG0	# restore a7
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	l32i	a0, a2, PT_AREG0	# restore a0
 	movi	a2, -EINVAL
 	rfe
@@ -1702,7 +1736,11 @@ ENTRY(fast_second_level_miss)
 	rsr	a0, excvaddr
 	bltu	a0, a3, 2f
 
+<<<<<<< HEAD
 	addi	a1, a0, -TLBTEMP_SIZE
+=======
+	addi	a1, a0, -(2 << (DCACHE_ALIAS_ORDER + PAGE_SHIFT))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	bgeu	a1, a3, 2f
 
 	/* Check if we have to restore an ITLB mapping. */
@@ -1911,6 +1949,7 @@ ENTRY(system_call)
 
 ENDPROC(system_call)
 
+<<<<<<< HEAD
 /*
  * Spill live registers on the kernel stack macro.
  *
@@ -1948,6 +1987,8 @@ ENDPROC(system_call)
 	mov	a12, a12
 #endif
 	.endm
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Task switch.
@@ -1958,13 +1999,21 @@ ENDPROC(system_call)
 
 ENTRY(_switch_to)
 
+<<<<<<< HEAD
 	entry	a1, 48
 
 	mov	a11, a3			# and 'next' (a3)
+=======
+	entry	a1, 16
+
+	mov	a12, a2			# preserve 'prev' (a2)
+	mov	a13, a3			# and 'next' (a3)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	l32i	a4, a2, TASK_THREAD_INFO
 	l32i	a5, a3, TASK_THREAD_INFO
 
+<<<<<<< HEAD
 	save_xtregs_user a4 a6 a8 a9 a12 a13 THREAD_XTREGS_USER
 
 #if THREAD_RA > 1020 || THREAD_SP > 1020
@@ -1979,6 +2028,17 @@ ENTRY(_switch_to)
 	/* Disable ints while we manipulate the stack pointer. */
 
 	rsil	a14, LOCKLEVEL
+=======
+	save_xtregs_user a4 a6 a8 a9 a10 a11 THREAD_XTREGS_USER
+
+	s32i	a0, a12, THREAD_RA	# save return address
+	s32i	a1, a12, THREAD_SP	# save stack pointer
+
+	/* Disable ints while we manipulate the stack pointer. */
+
+	movi	a14, (1 << PS_EXCM_BIT) | LOCKLEVEL
+	xsr	a14, ps
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rsr	a3, excsave1
 	rsync
 	s32i	a3, a3, EXC_TABLE_FIXUP	/* enter critical section */
@@ -1993,7 +2053,11 @@ ENTRY(_switch_to)
 
 	/* Flush register file. */
 
+<<<<<<< HEAD
 	spill_registers_kernel
+=======
+	call0	_spill_registers	# destroys a3, a4, and SAR
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Set kernel stack (and leave critical section)
 	 * Note: It's save to set it here. The stack will not be overwritten
@@ -2009,12 +2073,22 @@ ENTRY(_switch_to)
 
 	/* restore context of the task 'next' */
 
+<<<<<<< HEAD
 	l32i	a0, a11, THREAD_RA	# restore return address
 	l32i	a1, a11, THREAD_SP	# restore stack pointer
 
 	load_xtregs_user a5 a6 a8 a9 a12 a13 THREAD_XTREGS_USER
 
 	wsr	a14, ps
+=======
+	l32i	a0, a13, THREAD_RA	# restore return address
+	l32i	a1, a13, THREAD_SP	# restore stack pointer
+
+	load_xtregs_user a5 a6 a8 a9 a10 a11 THREAD_XTREGS_USER
+
+	wsr	a14, ps
+	mov	a2, a12			# return 'prev'
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rsync
 
 	retw

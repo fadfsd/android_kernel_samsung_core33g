@@ -400,4 +400,7 @@ module_exit(crypto_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("LRW block cipher mode");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("lrw");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

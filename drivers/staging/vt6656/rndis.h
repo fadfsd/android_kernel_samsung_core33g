@@ -66,8 +66,11 @@
 
 #define VIAUSB20_PACKET_HEADER          0x04
 
+<<<<<<< HEAD
 #define USB_REG4	0x604
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 typedef struct _CMD_MESSAGE
 {
     u8        byData[256];

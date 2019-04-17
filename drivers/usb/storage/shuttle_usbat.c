@@ -1851,7 +1851,11 @@ static int usbat_probe(struct usb_interface *intf,
 	us->transport_name = "Shuttle USBAT";
 	us->transport = usbat_flash_transport;
 	us->transport_reset = usb_stor_CB_reset;
+<<<<<<< HEAD
 	us->max_lun = 0;
+=======
+	us->max_lun = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	result = usb_stor_probe2(us);
 	return result;

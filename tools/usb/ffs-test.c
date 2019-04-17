@@ -116,8 +116,13 @@ static const struct {
 	.header = {
 		.magic = cpu_to_le32(FUNCTIONFS_DESCRIPTORS_MAGIC),
 		.length = cpu_to_le32(sizeof descriptors),
+<<<<<<< HEAD
 		.fs_count = cpu_to_le32(3),
 		.hs_count = cpu_to_le32(3),
+=======
+		.fs_count = 3,
+		.hs_count = 3,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 	.fs_descs = {
 		.intf = {

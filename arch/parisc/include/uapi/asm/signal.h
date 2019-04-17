@@ -69,6 +69,11 @@
 #define SA_NOMASK	SA_NODEFER
 #define SA_ONESHOT	SA_RESETHAND
 
+<<<<<<< HEAD
+=======
+#define SA_RESTORER	0x04000000 /* obsolete -- ignored */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define MINSIGSTKSZ	2048
 #define SIGSTKSZ	8192
 

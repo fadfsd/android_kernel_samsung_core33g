@@ -60,5 +60,9 @@ obj-$(CONFIG_KGDB_KDB) += trace_kdb.o
 endif
 obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
 obj-$(CONFIG_UPROBE_EVENT) += trace_uprobe.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_GPU_TRACEPOINTS) += gpu-traces.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 libftrace-y := ftrace.o

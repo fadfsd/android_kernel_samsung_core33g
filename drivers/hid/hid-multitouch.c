@@ -244,12 +244,20 @@ static struct mt_class mt_classes[] = {
 	{ .name	= MT_CLS_GENERALTOUCH_TWOFINGERS,
 		.quirks	= MT_QUIRK_NOT_SEEN_MEANS_UP |
 			MT_QUIRK_VALID_IS_INRANGE |
+<<<<<<< HEAD
 			MT_QUIRK_SLOT_IS_CONTACTID,
+=======
+			MT_QUIRK_SLOT_IS_CONTACTNUMBER,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.maxcontacts = 2
 	},
 	{ .name	= MT_CLS_GENERALTOUCH_PWT_TENFINGERS,
 		.quirks	= MT_QUIRK_NOT_SEEN_MEANS_UP |
+<<<<<<< HEAD
 			MT_QUIRK_SLOT_IS_CONTACTID
+=======
+			MT_QUIRK_SLOT_IS_CONTACTNUMBER
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 
 	{ .name = MT_CLS_FLATFROG,
@@ -443,6 +451,19 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 	    (usage->hid & HID_USAGE_PAGE) == HID_UP_BUTTON)
 		td->mt_flags |= INPUT_MT_POINTER;
 
+<<<<<<< HEAD
+=======
+	/* Only map fields from TouchScreen or TouchPad collections.
+         * We need to ignore fields that belong to other collections
+         * such as Mouse that might have the same GenericDesktop usages. */
+	if (field->application == HID_DG_TOUCHSCREEN)
+		set_bit(INPUT_PROP_DIRECT, hi->input->propbit);
+	else if (field->application == HID_DG_TOUCHPAD)
+		set_bit(INPUT_PROP_POINTER, hi->input->propbit);
+	else
+		return 0;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (usage->usage_index)
 		prev_usage = &field->usage[usage->usage_index - 1];
 
@@ -772,12 +793,20 @@ static void mt_touch_report(struct hid_device *hid, struct hid_report *report)
 		mt_sync_frame(td, report->field[0]->hidinput->input);
 }
 
+<<<<<<< HEAD
 static void mt_touch_input_configured(struct hid_device *hdev,
+=======
+static int mt_touch_input_configured(struct hid_device *hdev,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					struct hid_input *hi)
 {
 	struct mt_device *td = hid_get_drvdata(hdev);
 	struct mt_class *cls = &td->mtclass;
 	struct input_dev *input = hi->input;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!td->maxcontacts)
 		td->maxcontacts = MT_DEFAULT_MAXCONTACT;
@@ -792,9 +821,18 @@ static void mt_touch_input_configured(struct hid_device *hdev,
 	if (cls->quirks & MT_QUIRK_NOT_SEEN_MEANS_UP)
 		td->mt_flags |= INPUT_MT_DROP_UNUSED;
 
+<<<<<<< HEAD
 	input_mt_init_slots(input, td->maxcontacts, td->mt_flags);
 
 	td->mt_flags = 0;
+=======
+	ret = input_mt_init_slots(input, td->maxcontacts, td->mt_flags);
+	if (ret)
+		return ret;
+
+	td->mt_flags = 0;
+	return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int mt_input_mapping(struct hid_device *hdev, struct hid_input *hi,
@@ -927,19 +965,35 @@ static void mt_post_parse(struct mt_device *td)
 		cls->quirks &= ~MT_QUIRK_CONTACT_CNT_ACCURATE;
 }
 
+<<<<<<< HEAD
 static void mt_input_configured(struct hid_device *hdev, struct hid_input *hi)
 {
 	struct mt_device *td = hid_get_drvdata(hdev);
 	char *name = kstrdup(hdev->name, GFP_KERNEL);
+=======
+static int mt_input_configured(struct hid_device *hdev, struct hid_input *hi)
+{
+	struct mt_device *td = hid_get_drvdata(hdev);
+	char *name = kstrdup(hdev->name, GFP_KERNEL);
+	int ret = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (name)
 		hi->input->name = name;
 
 	if (hi->report->id == td->mt_report_id)
+<<<<<<< HEAD
 		mt_touch_input_configured(hdev, hi);
 
 	if (hi->report->id == td->pen_report_id)
 		mt_pen_input_configured(hdev, hi);
+=======
+		ret = mt_touch_input_configured(hdev, hi);
+
+	if (hi->report->id == td->pen_report_id)
+		mt_pen_input_configured(hdev, hi);
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int mt_probe(struct hid_device *hdev, const struct hid_device_id *id)
@@ -1191,6 +1245,7 @@ static const struct hid_device_id mt_devices[] = {
 	{ .driver_data = MT_CLS_GENERALTOUCH_PWT_TENFINGERS,
 		MT_USB_DEVICE(USB_VENDOR_ID_GENERAL_TOUCH,
 			USB_DEVICE_ID_GENERAL_TOUCH_WIN8_PWT_TENFINGERS) },
+<<<<<<< HEAD
 	{ .driver_data = MT_CLS_GENERALTOUCH_TWOFINGERS,
 		MT_USB_DEVICE(USB_VENDOR_ID_GENERAL_TOUCH,
 			USB_DEVICE_ID_GENERAL_TOUCH_WIN8_PIT_0101) },
@@ -1206,6 +1261,8 @@ static const struct hid_device_id mt_devices[] = {
 	{ .driver_data = MT_CLS_GENERALTOUCH_PWT_TENFINGERS,
 		MT_USB_DEVICE(USB_VENDOR_ID_GENERAL_TOUCH,
 			USB_DEVICE_ID_GENERAL_TOUCH_WIN8_PIT_E100) },
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Gametel game controller */
 	{ .driver_data = MT_CLS_NSMU,
@@ -1345,12 +1402,15 @@ static const struct hid_device_id mt_devices[] = {
 	{ .driver_data = MT_CLS_NSMU,
 		MT_USB_DEVICE(USB_VENDOR_ID_UNITEC,
 			USB_DEVICE_ID_UNITEC_USB_TOUCH_0A19) },
+<<<<<<< HEAD
 
 	/* Wistron panels */
 	{ .driver_data = MT_CLS_NSMU,
 		MT_USB_DEVICE(USB_VENDOR_ID_WISTRON,
 			USB_DEVICE_ID_WISTRON_OPTICAL_TOUCH) },
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* XAT */
 	{ .driver_data = MT_CLS_NSMU,
 		MT_USB_DEVICE(USB_VENDOR_ID_XAT,

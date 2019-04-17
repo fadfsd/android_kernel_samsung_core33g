@@ -342,7 +342,11 @@ struct tracer {
 	void			(*stop)(struct trace_array *tr);
 	void			(*open)(struct trace_iterator *iter);
 	void			(*pipe_open)(struct trace_iterator *iter);
+<<<<<<< HEAD
 	int			(*wait_pipe)(struct trace_iterator *iter);
+=======
+	void			(*wait_pipe)(struct trace_iterator *iter);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	void			(*close)(struct trace_iterator *iter);
 	void			(*pipe_close)(struct trace_iterator *iter);
 	ssize_t			(*read)(struct trace_iterator *iter,
@@ -428,7 +432,10 @@ enum {
 
 	TRACE_CONTROL_BIT,
 
+<<<<<<< HEAD
 	TRACE_BRANCH_BIT,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Abuse of the trace_recursion.
  * As we need a way to maintain state if we are tracing the function
@@ -558,7 +565,11 @@ void trace_init_global_iter(struct trace_iterator *iter);
 
 void tracing_iter_reset(struct trace_iterator *iter, int cpu);
 
+<<<<<<< HEAD
 int poll_wait_pipe(struct trace_iterator *iter);
+=======
+void poll_wait_pipe(struct trace_iterator *iter);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void ftrace(struct trace_array *tr,
 			    struct trace_array_cpu *data,
@@ -654,6 +665,10 @@ static inline void __trace_stack(struct trace_array *tr, unsigned long flags,
 extern cycle_t ftrace_now(int cpu);
 
 extern void trace_find_cmdline(int pid, char comm[]);
+<<<<<<< HEAD
+=======
+extern int trace_find_tgid(int pid);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_DYNAMIC_FTRACE
 extern unsigned long ftrace_update_tot_cnt;
@@ -867,6 +882,10 @@ enum trace_iterator_flags {
 	TRACE_ITER_IRQ_INFO		= 0x800000,
 	TRACE_ITER_MARKERS		= 0x1000000,
 	TRACE_ITER_FUNCTION		= 0x2000000,
+<<<<<<< HEAD
+=======
+	TRACE_ITER_TGID 		= 0x4000000,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /*

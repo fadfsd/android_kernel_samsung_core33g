@@ -534,14 +534,20 @@ static int gntdev_release(struct inode *inode, struct file *flip)
 
 	pr_debug("priv %p\n", priv);
 
+<<<<<<< HEAD
 	mutex_lock(&priv->lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	while (!list_empty(&priv->maps)) {
 		map = list_entry(priv->maps.next, struct grant_map, next);
 		list_del(&map->next);
 		gntdev_put_map(NULL /* already removed */, map);
 	}
 	WARN_ON(!list_empty(&priv->freeable_maps));
+<<<<<<< HEAD
 	mutex_unlock(&priv->lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (use_ptemod)
 		mmu_notifier_unregister(&priv->mn, priv->mm);

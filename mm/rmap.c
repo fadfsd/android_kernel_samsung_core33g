@@ -103,7 +103,10 @@ static inline void anon_vma_free(struct anon_vma *anon_vma)
 	 * LOCK should suffice since the actual taking of the lock must
 	 * happen _before_ what follows.
 	 */
+<<<<<<< HEAD
 	might_sleep();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rwsem_is_locked(&anon_vma->root->rwsem)) {
 		anon_vma_lock_write(anon_vma);
 		anon_vma_unlock_write(anon_vma);
@@ -427,9 +430,14 @@ struct anon_vma *page_get_anon_vma(struct page *page)
 	 * above cannot corrupt).
 	 */
 	if (!page_mapped(page)) {
+<<<<<<< HEAD
 		rcu_read_unlock();
 		put_anon_vma(anon_vma);
 		return NULL;
+=======
+		put_anon_vma(anon_vma);
+		anon_vma = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 out:
 	rcu_read_unlock();
@@ -479,9 +487,15 @@ struct anon_vma *page_lock_anon_vma_read(struct page *page)
 	}
 
 	if (!page_mapped(page)) {
+<<<<<<< HEAD
 		rcu_read_unlock();
 		put_anon_vma(anon_vma);
 		return NULL;
+=======
+		put_anon_vma(anon_vma);
+		anon_vma = NULL;
+		goto out;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* we pinned the anon_vma, its safe to sleep */
@@ -602,11 +616,15 @@ pte_t *__page_check_address(struct page *page, struct mm_struct *mm,
 	spinlock_t *ptl;
 
 	if (unlikely(PageHuge(page))) {
+<<<<<<< HEAD
 		/* when pud is not present, pte will be NULL */
 		pte = huge_pte_offset(mm, address);
 		if (!pte)
 			return NULL;
 
+=======
+		pte = huge_pte_offset(mm, address);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ptl = &mm->page_table_lock;
 		goto check;
 	}
@@ -1392,6 +1410,7 @@ static int try_to_unmap_cluster(unsigned long cursor, unsigned int *mapcount,
 		BUG_ON(!page || PageAnon(page));
 
 		if (locked_vma) {
+<<<<<<< HEAD
 			if (page == check_page) {
 				/* we know we have check_page locked */
 				mlock_vma_page(page);
@@ -1405,6 +1424,11 @@ static int try_to_unmap_cluster(unsigned long cursor, unsigned int *mapcount,
 				mlock_vma_page(page);
 				unlock_page(page);
 			}
+=======
+			mlock_vma_page(page);   /* no-op if already mlocked */
+			if (page == check_page)
+				ret = SWAP_MLOCK;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;	/* don't unmap */
 		}
 
@@ -1677,9 +1701,16 @@ void __put_anon_vma(struct anon_vma *anon_vma)
 {
 	struct anon_vma *root = anon_vma->root;
 
+<<<<<<< HEAD
 	anon_vma_free(anon_vma);
 	if (root != anon_vma && atomic_dec_and_test(&root->refcount))
 		anon_vma_free(root);
+=======
+	if (root != anon_vma && atomic_dec_and_test(&root->refcount))
+		anon_vma_free(root);
+
+	anon_vma_free(anon_vma);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #ifdef CONFIG_MIGRATION

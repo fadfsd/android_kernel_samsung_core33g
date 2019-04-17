@@ -614,7 +614,10 @@ struct se_dev_attrib {
 	u32		unmap_granularity;
 	u32		unmap_granularity_alignment;
 	u32		max_write_same_len;
+<<<<<<< HEAD
 	u32		max_bytes_per_io;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct se_device *da_dev;
 	struct config_group da_group;
 };

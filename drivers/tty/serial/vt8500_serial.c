@@ -559,6 +559,7 @@ static int vt8500_serial_probe(struct platform_device *pdev)
 	if (!mmres || !irqres)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (np) {
 		port = of_alias_get_id(np, "serial");
 		if (port >= VT8500_MAX_PORTS)
@@ -566,6 +567,14 @@ static int vt8500_serial_probe(struct platform_device *pdev)
 	} else {
 		port = -1;
 	}
+=======
+	if (np)
+		port = of_alias_get_id(np, "serial");
+		if (port >= VT8500_MAX_PORTS)
+			port = -1;
+	else
+		port = -1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (port < 0) {
 		/* calculate the port id */

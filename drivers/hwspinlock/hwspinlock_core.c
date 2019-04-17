@@ -558,7 +558,11 @@ int hwspin_lock_free(struct hwspinlock *hwlock)
 	struct hwspinlock *tmp;
 	int ret;
 
+<<<<<<< HEAD
 	if (!hwlock) {
+=======
+	if (!hwlock || !hwlock->bank) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		pr_err("invalid hwlock\n");
 		return -EINVAL;
 	}

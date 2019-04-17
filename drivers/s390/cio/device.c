@@ -1610,7 +1610,11 @@ out_unlock:
 	return rc;
 }
 
+<<<<<<< HEAD
 struct ccw_device *ccw_device_probe_console(struct ccw_driver *drv)
+=======
+struct ccw_device *ccw_device_probe_console(void)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct io_subchannel_private *io_priv;
 	struct ccw_device *cdev;
@@ -1632,7 +1636,10 @@ struct ccw_device *ccw_device_probe_console(struct ccw_driver *drv)
 		kfree(io_priv);
 		return cdev;
 	}
+<<<<<<< HEAD
 	cdev->drv = drv;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	set_io_private(sch, io_priv);
 	ret = ccw_device_console_enable(cdev, sch);
 	if (ret) {

@@ -15,7 +15,10 @@ struct clk_factors_config {
 	u8 mwidth;
 	u8 pshift;
 	u8 pwidth;
+<<<<<<< HEAD
 	u8 n_start;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct clk *clk_register_factors(struct device *dev, const char *name,

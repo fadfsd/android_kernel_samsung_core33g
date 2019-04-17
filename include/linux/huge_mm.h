@@ -159,6 +159,26 @@ static inline int hpage_nr_pages(struct page *page)
 		return HPAGE_PMD_NR;
 	return 1;
 }
+<<<<<<< HEAD
+=======
+static inline struct page *compound_trans_head(struct page *page)
+{
+	if (PageTail(page)) {
+		struct page *head;
+		head = page->first_page;
+		smp_rmb();
+		/*
+		 * head may be a dangling pointer.
+		 * __split_huge_page_refcount clears PageTail before
+		 * overwriting first_page, so if PageTail is still
+		 * there it means the head pointer isn't dangling.
+		 */
+		if (PageTail(page))
+			return head;
+	}
+	return page;
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 extern int do_huge_pmd_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
 				unsigned long addr, pmd_t pmd, pmd_t *pmdp);
@@ -188,6 +208,10 @@ static inline int split_huge_page(struct page *page)
 	do { } while (0)
 #define split_huge_page_pmd_mm(__mm, __address, __pmd)	\
 	do { } while (0)
+<<<<<<< HEAD
+=======
+#define compound_trans_head(page) compound_head(page)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline int hugepage_madvise(struct vm_area_struct *vma,
 				   unsigned long *vm_flags, int advice)
 {

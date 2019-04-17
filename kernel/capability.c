@@ -268,10 +268,13 @@ SYSCALL_DEFINE2(capset, cap_user_header_t, header, const cap_user_data_t, data)
 		i++;
 	}
 
+<<<<<<< HEAD
 	effective.cap[CAP_LAST_U32] &= CAP_LAST_U32_VALID_MASK;
 	permitted.cap[CAP_LAST_U32] &= CAP_LAST_U32_VALID_MASK;
 	inheritable.cap[CAP_LAST_U32] &= CAP_LAST_U32_VALID_MASK;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;
@@ -449,6 +452,7 @@ bool nsown_capable(int cap)
 }
 
 /**
+<<<<<<< HEAD
  * capable_wrt_inode_uidgid - Check nsown_capable and uid and gid mapped
  * @inode: The inode in question
  * @cap: The capability in question
@@ -463,4 +467,24 @@ bool capable_wrt_inode_uidgid(const struct inode *inode, int cap)
 
 	return ns_capable(ns, cap) && kuid_has_mapping(ns, inode->i_uid) &&
 		kgid_has_mapping(ns, inode->i_gid);
+=======
+ * inode_capable - Check superior capability over inode
+ * @inode: The inode in question
+ * @cap: The capability in question
+ *
+ * Return true if the current task has the given superior capability
+ * targeted at it's own user namespace and that the given inode is owned
+ * by the current user namespace or a child namespace.
+ *
+ * Currently we check to see if an inode is owned by the current
+ * user namespace by seeing if the inode's owner maps into the
+ * current user namespace.
+ *
+ */
+bool inode_capable(const struct inode *inode, int cap)
+{
+	struct user_namespace *ns = current_user_ns();
+
+	return ns_capable(ns, cap) && kuid_has_mapping(ns, inode->i_uid);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }

@@ -55,10 +55,17 @@ ifneq ($(CONFIG_LD_NO_RELAX),)
 LDFLAGS := --no-relax
 endif
 
+<<<<<<< HEAD
 ifeq ($(shell echo __XTENSA_EB__ | $(CC) -E - | grep -v "\#"),1)
 CHECKFLAGS += -D__XTENSA_EB__
 endif
 ifeq ($(shell echo __XTENSA_EL__ | $(CC) -E - | grep -v "\#"),1)
+=======
+ifeq ($(shell echo -e __XTENSA_EB__ | $(CC) -E - | grep -v "\#"),1)
+CHECKFLAGS += -D__XTENSA_EB__
+endif
+ifeq ($(shell echo -e __XTENSA_EL__ | $(CC) -E - | grep -v "\#"),1)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 CHECKFLAGS += -D__XTENSA_EL__
 endif
 

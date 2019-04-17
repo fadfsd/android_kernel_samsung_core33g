@@ -1,5 +1,9 @@
 obj-$(CONFIG_TTY)		+= tty_io.o n_tty.o tty_ioctl.o tty_ldisc.o \
+<<<<<<< HEAD
 				   tty_buffer.o tty_port.o tty_mutex.o
+=======
+				   tty_buffer.o tty_port.o tty_mutex.o tty_ldsem.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-$(CONFIG_LEGACY_PTYS)	+= pty.o
 obj-$(CONFIG_UNIX98_PTYS)	+= pty.o
 obj-$(CONFIG_AUDIT)		+= tty_audit.o
@@ -30,4 +34,8 @@ obj-$(CONFIG_PPC_EPAPR_HV_BYTECHAN) += ehv_bytechan.o
 obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
 obj-$(CONFIG_DA_TTY)		+= metag_da.o
 
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_MAGIC_SYSRQ)	+= sprdrq.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-y += ipwireless/

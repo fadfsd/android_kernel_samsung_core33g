@@ -1869,6 +1869,13 @@ unsigned long arch_get_unmapped_area(struct file *file, unsigned long addr,
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
+=======
+void arch_unmap_area(struct mm_struct *mm, unsigned long addr)
+{
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void unmap_mapping_range(struct address_space *mapping,
 			 loff_t const holebegin, loff_t const holelen,
 			 int even_cows)
@@ -1894,7 +1901,11 @@ EXPORT_SYMBOL(unmap_mapping_range);
  */
 int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 {
+<<<<<<< HEAD
 	long free, allowed, reserve;
+=======
+	unsigned long free, allowed, reserve;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	vm_acct_memory(pages);
 
@@ -1959,7 +1970,11 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 	 */
 	if (mm) {
 		reserve = sysctl_user_reserve_kbytes >> (PAGE_SHIFT - 10);
+<<<<<<< HEAD
 		allowed -= min_t(long, mm->total_vm / 32, reserve);
+=======
+		allowed -= min(mm->total_vm / 32, reserve);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	if (percpu_counter_read_positive(&vm_committed_as) < allowed)

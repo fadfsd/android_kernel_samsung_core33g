@@ -34,7 +34,11 @@ struct compat_ucontext {
 
 /* ELF32 signal handling */
 
+<<<<<<< HEAD
 int copy_siginfo_to_user32 (compat_siginfo_t __user *to, const siginfo_t *from);
+=======
+int copy_siginfo_to_user32 (compat_siginfo_t __user *to, siginfo_t *from);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int copy_siginfo_from_user32 (siginfo_t *to, compat_siginfo_t __user *from);
 
 /* In a deft move of uber-hackery, we decide to carry the top half of all

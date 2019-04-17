@@ -52,7 +52,11 @@ extern void edac_device_workq_setup(struct edac_device_ctl_info *edac_dev,
 extern void edac_device_workq_teardown(struct edac_device_ctl_info *edac_dev);
 extern void edac_device_reset_delay_period(struct edac_device_ctl_info
 					   *edac_dev, unsigned long value);
+<<<<<<< HEAD
 extern void edac_mc_reset_delay_period(unsigned long value);
+=======
+extern void edac_mc_reset_delay_period(int value);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 extern void *edac_align_ptr(void **p, unsigned size, int n_elems);
 

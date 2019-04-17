@@ -293,7 +293,11 @@ static int tda7432_s_ctrl(struct v4l2_ctrl *ctrl)
 		if (t->mute->val) {
 			lf |= TDA7432_MUTE;
 			lr |= TDA7432_MUTE;
+<<<<<<< HEAD
 			rf |= TDA7432_MUTE;
+=======
+			lf |= TDA7432_MUTE;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			rr |= TDA7432_MUTE;
 		}
 		/* Mute & update balance*/

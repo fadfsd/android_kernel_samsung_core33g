@@ -108,7 +108,11 @@ int kvm_cpu_get_interrupt(struct kvm_vcpu *v)
 
 	vector = kvm_cpu_get_extint(v);
 
+<<<<<<< HEAD
 	if (vector != -1)
+=======
+	if (kvm_apic_vid_enabled(v->kvm) || vector != -1)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return vector;			/* PIC */
 
 	return kvm_get_apic_interrupt(v);	/* APIC */

@@ -305,10 +305,14 @@ static int nfs3_proc_setacls(struct inode *inode, struct posix_acl *acl,
 		.rpc_argp	= &args,
 		.rpc_resp	= &fattr,
 	};
+<<<<<<< HEAD
 	int status = 0;
 
 	if (acl == NULL && (!S_ISDIR(inode->i_mode) || dfacl == NULL))
 		goto out;
+=======
+	int status;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	status = -EOPNOTSUPP;
 	if (!nfs_server_capable(inode, NFS_CAP_ACLS))

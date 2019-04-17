@@ -81,6 +81,11 @@ extern void arch_send_call_function_single_ipi(int cpu);
 extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
 extern void arch_send_wakeup_ipi_mask(const struct cpumask *mask);
 
+<<<<<<< HEAD
+=======
+extern void smp_send_all_cpu_backtrace(void);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct smp_operations {
 #ifdef CONFIG_SMP
 	/*

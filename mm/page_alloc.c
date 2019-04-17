@@ -56,6 +56,10 @@
 #include <linux/ftrace_event.h>
 #include <linux/memcontrol.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
+=======
+#include <linux/mm_inline.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/migrate.h>
 #include <linux/page-debug-flags.h>
 #include <linux/hugetlb.h>
@@ -100,9 +104,12 @@ nodemask_t node_states[NR_NODE_STATES] __read_mostly = {
 };
 EXPORT_SYMBOL(node_states);
 
+<<<<<<< HEAD
 /* Protect totalram_pages and zone->managed_pages */
 static DEFINE_SPINLOCK(managed_page_count_lock);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 unsigned long totalram_pages __read_mostly;
 unsigned long totalreserve_pages __read_mostly;
 /*
@@ -199,7 +206,24 @@ static char * const zone_names[MAX_NR_ZONES] = {
 	 "Movable",
 };
 
+<<<<<<< HEAD
 int min_free_kbytes = 1024;
+=======
+/*
+ * Try to keep at least this much lowmem free.  Do not allow normal
+ * allocations below this point, only high priority ones. Automatically
+ * tuned according to the amount of memory in the system.
+ */
+int min_free_kbytes = 1024;
+int min_free_order_shift = 1;
+
+/*
+ * Extra memory for the system to try freeing. Used to temporarily
+ * free memory, to make space for new workloads. Anyone can allocate
+ * down to the min watermarks controlled by min_free_kbytes above.
+ */
+int extra_free_kbytes = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static unsigned long __meminitdata nr_kernel_pages;
 static unsigned long __meminitdata nr_all_pages;
@@ -363,11 +387,17 @@ void prep_compound_page(struct page *page, unsigned long order)
 	__SetPageHead(page);
 	for (i = 1; i < nr_pages; i++) {
 		struct page *p = page + i;
+<<<<<<< HEAD
 		set_page_count(p, 0);
 		p->first_page = page;
 		/* Make sure p->first_page is always valid for PageTail() */
 		smp_wmb();
 		__SetPageTail(p);
+=======
+		__SetPageTail(p);
+		set_page_count(p, 0);
+		p->first_page = page;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -644,7 +674,10 @@ static void free_pcppages_bulk(struct zone *zone, int count,
 	int to_free = count;
 
 	spin_lock(&zone->lock);
+<<<<<<< HEAD
 	zone->all_unreclaimable = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	zone->pages_scanned = 0;
 
 	while (to_free) {
@@ -693,7 +726,10 @@ static void free_one_page(struct zone *zone, struct page *page, int order,
 				int migratetype)
 {
 	spin_lock(&zone->lock);
+<<<<<<< HEAD
 	zone->all_unreclaimable = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	zone->pages_scanned = 0;
 
 	__free_one_page(page, zone, order, migratetype);
@@ -751,7 +787,11 @@ static void __free_pages_ok(struct page *page, unsigned int order)
  * at boot time. So for shorter boot time, we shift the burden to
  * put_page_bootmem() to serialize writers.
  */
+<<<<<<< HEAD
 void __free_pages_bootmem(struct page *page, unsigned int order)
+=======
+void __meminit __free_pages_bootmem(struct page *page, unsigned int order)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned int nr_pages = 1 << order;
 	unsigned int loop;
@@ -772,6 +812,14 @@ void __free_pages_bootmem(struct page *page, unsigned int order)
 }
 
 #ifdef CONFIG_CMA
+<<<<<<< HEAD
+=======
+bool is_cma_pageblock(struct page *page)
+{
+	return get_pageblock_migratetype(page) == MIGRATE_CMA;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Free whole pageblock and set it's migration type to MIGRATE_CMA. */
 void __init init_cma_reserved_pageblock(struct page *page)
 {
@@ -908,6 +956,10 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
 		rmv_page_order(page);
 		area->nr_free--;
 		expand(zone, page, order, current_order, area, migratetype);
+<<<<<<< HEAD
+=======
+		set_freepage_migratetype(page, migratetype);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return page;
 	}
 
@@ -934,6 +986,14 @@ static int fallbacks[MIGRATE_TYPES][4] = {
 #endif
 };
 
+<<<<<<< HEAD
+=======
+int *get_migratetype_fallbacks(int mtype)
+{
+	return fallbacks[mtype];
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Move the free pages in a range to the free lists of the requested type.
  * Note that start_page and end_pages are not aligned on a pageblock
@@ -1085,6 +1145,16 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 			       is_migrate_cma(migratetype)
 			     ? migratetype : start_migratetype);
 
+<<<<<<< HEAD
+=======
+			/* The freepage_migratetype may differ from pageblock's
+			 * migratetype depending on the decisions in
+			 * try_to_steal_freepages. This is OK as long as it does
+			 * not differ for MIGRATE_CMA type.
+			 */
+			set_freepage_migratetype(page, migratetype);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			trace_mm_page_alloc_extfrag(page, order, current_order,
 				start_migratetype, migratetype);
 
@@ -1125,6 +1195,40 @@ retry_reserve:
 	return page;
 }
 
+<<<<<<< HEAD
+=======
+static struct page *__rmqueue_cma(struct zone *zone, unsigned int order,
+							int migratetype)
+{
+	struct page *page = 0;
+#ifdef CONFIG_CMA
+	if (migratetype == MIGRATE_MOVABLE && !zone->cma_alloc)
+		page = __rmqueue_smallest(zone, order, MIGRATE_CMA);
+	if (!page)
+#endif
+retry_reserve :
+		page = __rmqueue_smallest(zone, order, migratetype);
+
+
+	if (unlikely(!page) && migratetype != MIGRATE_RESERVE) {
+		page = __rmqueue_fallback(zone, order, migratetype);
+
+		/*
+		 * Use MIGRATE_RESERVE rather than fail an allocation. goto
+		 * is used because __rmqueue_smallest is an inline function
+		 * and we want just one call site
+		 */
+		if (!page) {
+			migratetype = MIGRATE_RESERVE;
+			goto retry_reserve;
+		}
+	}
+
+	trace_mm_page_alloc_zone_locked(page, order, migratetype);
+	return page;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Obtain a specified number of elements from the buddy allocator, all under
  * a single hold of the lock, for efficiency.  Add them to the supplied list.
@@ -1132,6 +1236,7 @@ retry_reserve:
  */
 static int rmqueue_bulk(struct zone *zone, unsigned int order,
 			unsigned long count, struct list_head *list,
+<<<<<<< HEAD
 			int migratetype, int cold)
 {
 	int mt = migratetype, i;
@@ -1139,6 +1244,19 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 	spin_lock(&zone->lock);
 	for (i = 0; i < count; ++i) {
 		struct page *page = __rmqueue(zone, order, migratetype);
+=======
+			int migratetype, int cold, int cma)
+{
+	int i;
+
+	spin_lock(&zone->lock);
+	for (i = 0; i < count; ++i) {
+		struct page *page;
+		if (cma)
+			page = __rmqueue_cma(zone, order, migratetype);
+		else
+			page = __rmqueue(zone, order, migratetype);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (unlikely(page == NULL))
 			break;
 
@@ -1155,6 +1273,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 			list_add(&page->lru, list);
 		else
 			list_add_tail(&page->lru, list);
+<<<<<<< HEAD
 		if (IS_ENABLED(CONFIG_CMA)) {
 			mt = get_pageblock_migratetype(page);
 			if (!is_migrate_cma(mt) && !is_migrate_isolate(mt))
@@ -1163,6 +1282,10 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 		set_freepage_migratetype(page, mt);
 		list = &page->lru;
 		if (is_migrate_cma(mt))
+=======
+		list = &page->lru;
+		if (is_migrate_cma(get_freepage_migratetype(page)))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
 					      -(1 << order));
 	}
@@ -1341,7 +1464,12 @@ void free_hot_cold_page(struct page *page, int cold)
 	 * excessively into the page allocator
 	 */
 	if (migratetype >= MIGRATE_PCPTYPES) {
+<<<<<<< HEAD
 		if (unlikely(is_migrate_isolate(migratetype))) {
+=======
+		if (unlikely(is_migrate_isolate(migratetype)) ||
+			     is_migrate_cma(migratetype)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			free_one_page(zone, page, 0, migratetype);
 			goto out;
 		}
@@ -1416,10 +1544,18 @@ static int __isolate_free_page(struct page *page, unsigned int order)
 	zone = page_zone(page);
 	mt = get_pageblock_migratetype(page);
 
+<<<<<<< HEAD
 	if (!is_migrate_isolate(mt) && !is_migrate_cma(mt)) {
 		/* Obey watermarks as if the page was being allocated */
 		watermark = low_wmark_pages(zone) + (1 << order);
 		if (!zone_watermark_ok(zone, 0, watermark, 0, 0))
+=======
+	if (!is_migrate_isolate(mt)) {
+		/* Obey watermarks as if the page was being allocated */
+		watermark = low_wmark_pages(zone) + (1 << order);
+		if (!is_migrate_cma(mt) &&
+		    !zone_watermark_ok(zone, 0, watermark, 0, 0))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return 0;
 
 		__mod_zone_freepage_state(zone, -(1UL << order), mt);
@@ -1496,7 +1632,12 @@ again:
 		if (list_empty(list)) {
 			pcp->count += rmqueue_bulk(zone, 0,
 					pcp->batch, list,
+<<<<<<< HEAD
 					migratetype, cold);
+=======
+					migratetype, cold,
+					gfp_flags & __GFP_CMA);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (unlikely(list_empty(list)))
 				goto failed;
 		}
@@ -1523,12 +1664,23 @@ again:
 			WARN_ON_ONCE(order > 1);
 		}
 		spin_lock_irqsave(&zone->lock, flags);
+<<<<<<< HEAD
 		page = __rmqueue(zone, order, migratetype);
+=======
+		if (gfp_flags & __GFP_CMA)
+			page = __rmqueue_cma(zone, order, migratetype);
+		else
+			page = __rmqueue(zone, order, migratetype);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		spin_unlock(&zone->lock);
 		if (!page)
 			goto failed;
 		__mod_zone_freepage_state(zone, -(1 << order),
+<<<<<<< HEAD
 					  get_pageblock_migratetype(page));
+=======
+					  get_freepage_migratetype(page));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	__count_zone_vm_events(PGALLOC, zone, 1 << order);
@@ -1653,7 +1805,11 @@ static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 		free_pages -= z->free_area[o].nr_free << o;
 
 		/* Require fewer higher order pages to be free */
+<<<<<<< HEAD
 		min >>= 1;
+=======
+		min >>= min_free_order_shift;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (free_pages <= min)
 			return false;
@@ -2123,6 +2279,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * PM-freezer should be notified that there might be an OOM killer on
 	 * its way to kill and wake somebody up. This is too early and we might
 	 * end up not killing anything but false positives are acceptable.
@@ -2131,6 +2288,8 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
 	note_oom_kill();
 
 	/*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * Go through the zonelist yet one more time, keep very high watermark
 	 * here, this is only to catch a parallel oom killing, we must fail if
 	 * we're still under heavy pressure.
@@ -2240,6 +2399,12 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
 	bool *contended_compaction, bool *deferred_compaction,
 	unsigned long *did_some_progress)
 {
+<<<<<<< HEAD
+=======
+	/* Mark deferred_compaction as true to avoid direct reclaim
+	 * for high-order allocation */
+	*deferred_compaction = true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return NULL;
 }
 #endif /* CONFIG_COMPACTION */
@@ -2350,7 +2515,11 @@ static inline int
 gfp_to_alloc_flags(gfp_t gfp_mask)
 {
 	int alloc_flags = ALLOC_WMARK_MIN | ALLOC_CPUSET;
+<<<<<<< HEAD
 	const bool atomic = !(gfp_mask & (__GFP_WAIT | __GFP_NO_KSWAPD));
+=======
+	const gfp_t wait = gfp_mask & __GFP_WAIT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* __GFP_HIGH is assumed to be the same as ALLOC_HIGH to save a branch. */
 	BUILD_BUG_ON(__GFP_HIGH != (__force gfp_t) ALLOC_HIGH);
@@ -2359,6 +2528,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
 	 * The caller may dip into page reserves a bit more if the caller
 	 * cannot run direct reclaim, or if the caller has realtime scheduling
 	 * policy or is asking for __GFP_HIGH memory.  GFP_ATOMIC requests will
+<<<<<<< HEAD
 	 * set both ALLOC_HARDER (atomic == true) and ALLOC_HIGH (__GFP_HIGH).
 	 */
 	alloc_flags |= (__force int) (gfp_mask & __GFP_HIGH);
@@ -2373,6 +2543,22 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
 		/*
 		 * Ignore cpuset mems for GFP_ATOMIC rather than fail, see the
 		 * comment for __cpuset_node_allowed_softwall().
+=======
+	 * set both ALLOC_HARDER (!wait) and ALLOC_HIGH (__GFP_HIGH).
+	 */
+	alloc_flags |= (__force int) (gfp_mask & __GFP_HIGH);
+
+	if (!wait) {
+		/*
+		 * Not worth trying to allocate harder for
+		 * __GFP_NOMEMALLOC even if it can't schedule.
+		 */
+		if  (!(gfp_mask & __GFP_NOMEMALLOC))
+			alloc_flags |= ALLOC_HARDER;
+		/*
+		 * Ignore cpuset if GFP_ATOMIC (!wait) rather than fail alloc.
+		 * See also cpuset_zone_allowed() comment in kernel/cpuset.c.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		 */
 		alloc_flags &= ~ALLOC_CPUSET;
 	} else if (unlikely(rt_task(current)) && !in_interrupt())
@@ -2400,6 +2586,14 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask)
 	return !!(gfp_to_alloc_flags(gfp_mask) & ALLOC_NO_WATERMARKS);
 }
 
+<<<<<<< HEAD
+=======
+static uint  debug_high_order_alloc = 0;
+
+module_param_named(debug_high_order_alloc, debug_high_order_alloc, uint, S_IRUGO | S_IWUSR);
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline struct page *
 __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 	struct zonelist *zonelist, enum zone_type high_zoneidx,
@@ -2414,7 +2608,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 	bool sync_migration = false;
 	bool deferred_compaction = false;
 	bool contended_compaction = false;
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_SEC_OOM_KILLER
+	unsigned long oom_invoke_timeout = jiffies + HZ;
+#endif
+
+#ifdef CONFIG_SPRD_MEM_POOL
+	/*sprd alloc*/
+	if(-1 == sprd_page_mask_check(current->pid))
+		return NULL;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * In the slowpath, we sanity check order to avoid ever trying to
 	 * reclaim >= MAX_ORDER areas which will never succeed. Callers may
@@ -2521,6 +2727,16 @@ rebalance:
 						(gfp_mask & __GFP_NO_KSWAPD))
 		goto nopage;
 
+<<<<<<< HEAD
+=======
+
+	if(debug_high_order_alloc && (order > 1))
+	{
+		printk("%s: pid:%d, name:%s, mask:0x%X, order:%d \r\n", __func__, current->pid, current->comm, gfp_mask, order);
+		WARN_ON(1);
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Try direct reclaim and then allocating */
 	page = __alloc_pages_direct_reclaim(gfp_mask, order,
 					zonelist, high_zoneidx,
@@ -2530,11 +2746,30 @@ rebalance:
 	if (page)
 		goto got_pg;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPRD_MEM_POOL
+	/*for sprd page alloc*/
+	page  = sprd_page_alloc(gfp_mask, order, high_zoneidx);
+	if (page)
+		goto got_pg;
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * If we failed to make any progress reclaiming, then we are
 	 * running out of options and have to consider going OOM
 	 */
+<<<<<<< HEAD
 	if (!did_some_progress) {
+=======
+#ifdef CONFIG_SEC_OOM_KILLER
+#define SHOULD_CONSIDER_OOM !did_some_progress || time_after(jiffies, oom_invoke_timeout)
+#else
+#define SHOULD_CONSIDER_OOM !did_some_progress
+#endif
+	if (SHOULD_CONSIDER_OOM) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if ((gfp_mask & __GFP_FS) && !(gfp_mask & __GFP_NORETRY)) {
 			if (oom_killer_disabled)
 				goto nopage;
@@ -2542,6 +2777,16 @@ rebalance:
 			if ((current->flags & PF_DUMPCORE) &&
 			    !(gfp_mask & __GFP_NOFAIL))
 				goto nopage;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SEC_OOM_KILLER
+			if (did_some_progress)
+				pr_info("time's up : calling "
+					"__alloc_pages_may_oom(o:%d, gfp:0x%x)\n", order, gfp_mask);
+
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			page = __alloc_pages_may_oom(gfp_mask, order,
 					zonelist, high_zoneidx,
 					nodemask, preferred_zone,
@@ -2567,6 +2812,12 @@ rebalance:
 					goto nopage;
 			}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SEC_OOM_KILLER
+			oom_invoke_timeout = jiffies + HZ/4;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto restart;
 		}
 	}
@@ -2957,7 +3208,11 @@ out:
 
 #define K(x) ((x) << (PAGE_SHIFT-10))
 
+<<<<<<< HEAD
 static void show_migration_types(unsigned char type)
+=======
+static void show_migration_types(unsigned char type, unsigned long *nr_migrate)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	static const char types[MIGRATE_TYPES] = {
 		[MIGRATE_UNMOVABLE]	= 'U',
@@ -2971,13 +3226,21 @@ static void show_migration_types(unsigned char type)
 		[MIGRATE_ISOLATE]	= 'I',
 #endif
 	};
+<<<<<<< HEAD
 	char tmp[MIGRATE_TYPES + 1];
+=======
+	char tmp[128];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	char *p = tmp;
 	int i;
 
 	for (i = 0; i < MIGRATE_TYPES; i++) {
 		if (type & (1 << i))
+<<<<<<< HEAD
 			*p++ = types[i];
+=======
+			p += sprintf(p, "%c%d", types[i], nr_migrate[i]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	*p = '\0';
@@ -3104,7 +3367,11 @@ void show_free_areas(unsigned int filter)
 			K(zone_page_state(zone, NR_FREE_CMA_PAGES)),
 			K(zone_page_state(zone, NR_WRITEBACK_TEMP)),
 			zone->pages_scanned,
+<<<<<<< HEAD
 			(zone->all_unreclaimable ? "yes" : "no")
+=======
+			(!zone_reclaimable(zone) ? "yes" : "no")
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			);
 		printk("lowmem_reserve[]:");
 		for (i = 0; i < MAX_NR_ZONES; i++)
@@ -3115,6 +3382,10 @@ void show_free_areas(unsigned int filter)
 	for_each_populated_zone(zone) {
  		unsigned long nr[MAX_ORDER], flags, order, total = 0;
 		unsigned char types[MAX_ORDER];
+<<<<<<< HEAD
+=======
+		unsigned long nr_migrate[MAX_ORDER][MIGRATE_TYPES] = {0};
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (skip_free_areas_node(filter, zone_to_nid(zone)))
 			continue;
@@ -3125,6 +3396,10 @@ void show_free_areas(unsigned int filter)
 		for (order = 0; order < MAX_ORDER; order++) {
 			struct free_area *area = &zone->free_area[order];
 			int type;
+<<<<<<< HEAD
+=======
+			struct list_head *temp;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 			nr[order] = area->nr_free;
 			total += nr[order] << order;
@@ -3133,13 +3408,23 @@ void show_free_areas(unsigned int filter)
 			for (type = 0; type < MIGRATE_TYPES; type++) {
 				if (!list_empty(&area->free_list[type]))
 					types[order] |= 1 << type;
+<<<<<<< HEAD
+=======
+				list_for_each(temp, &area->free_list[type]) {
+					nr_migrate[order][type]++;
+				}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 		}
 		spin_unlock_irqrestore(&zone->lock, flags);
 		for (order = 0; order < MAX_ORDER; order++) {
 			printk("%lu*%lukB ", nr[order], K(1UL) << order);
 			if (nr[order])
+<<<<<<< HEAD
 				show_migration_types(types[order]);
+=======
+				show_migration_types(types[order], nr_migrate[order]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 		printk("= %lukB\n", K(total));
 	}
@@ -5163,6 +5448,7 @@ early_param("movablecore", cmdline_parse_movablecore);
 
 #endif /* CONFIG_HAVE_MEMBLOCK_NODE_MAP */
 
+<<<<<<< HEAD
 void adjust_managed_page_count(struct page *page, long count)
 {
 	spin_lock(&managed_page_count_lock);
@@ -5171,6 +5457,8 @@ void adjust_managed_page_count(struct page *page, long count)
 	spin_unlock(&managed_page_count_lock);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 unsigned long free_reserved_area(unsigned long start, unsigned long end,
 				 int poison, char *s)
 {
@@ -5196,7 +5484,10 @@ void free_highmem_page(struct page *page)
 {
 	__free_reserved_page(page);
 	totalram_pages++;
+<<<<<<< HEAD
 	page_zone(page)->managed_pages++;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	totalhigh_pages++;
 }
 #endif
@@ -5342,6 +5633,10 @@ static void setup_per_zone_lowmem_reserve(void)
 static void __setup_per_zone_wmarks(void)
 {
 	unsigned long pages_min = min_free_kbytes >> (PAGE_SHIFT - 10);
+<<<<<<< HEAD
+=======
+	unsigned long pages_low = extra_free_kbytes >> (PAGE_SHIFT - 10);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long lowmem_pages = 0;
 	struct zone *zone;
 	unsigned long flags;
@@ -5353,11 +5648,22 @@ static void __setup_per_zone_wmarks(void)
 	}
 
 	for_each_zone(zone) {
+<<<<<<< HEAD
 		u64 tmp;
 
 		spin_lock_irqsave(&zone->lock, flags);
 		tmp = (u64)pages_min * zone->managed_pages;
 		do_div(tmp, lowmem_pages);
+=======
+		u64 min, low;
+
+		spin_lock_irqsave(&zone->lock, flags);
+		min = (u64)pages_min * zone->managed_pages;
+		do_div(min, lowmem_pages);
+		low = (u64)pages_low * zone->managed_pages;
+		do_div(low, vm_total_pages);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (is_highmem(zone)) {
 			/*
 			 * __GFP_HIGH and PF_MEMALLOC allocations usually don't
@@ -5378,11 +5684,21 @@ static void __setup_per_zone_wmarks(void)
 			 * If it's a lowmem zone, reserve a number of pages
 			 * proportionate to the zone's size.
 			 */
+<<<<<<< HEAD
 			zone->watermark[WMARK_MIN] = tmp;
 		}
 
 		zone->watermark[WMARK_LOW]  = min_wmark_pages(zone) + (tmp >> 2);
 		zone->watermark[WMARK_HIGH] = min_wmark_pages(zone) + (tmp >> 1);
+=======
+			zone->watermark[WMARK_MIN] = min;
+		}
+
+		zone->watermark[WMARK_LOW]  = min_wmark_pages(zone) +
+					low + (min >> 2);
+		zone->watermark[WMARK_HIGH] = min_wmark_pages(zone) +
+					low + (min >> 1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		setup_zone_migrate_reserve(zone);
 		spin_unlock_irqrestore(&zone->lock, flags);
@@ -5429,6 +5745,12 @@ void setup_per_zone_wmarks(void)
  */
 static void __meminit calculate_zone_inactive_ratio(struct zone *zone)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_FIX_INACTIVE_RATIO
+	zone->inactive_ratio = 1;
+#else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int gb, ratio;
 
 	/* Zone size in gigabytes */
@@ -5439,6 +5761,10 @@ static void __meminit calculate_zone_inactive_ratio(struct zone *zone)
 		ratio = 1;
 
 	zone->inactive_ratio = ratio;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void __meminit setup_per_zone_inactive_ratio(void)
@@ -5495,7 +5821,11 @@ module_init(init_per_zone_wmark_min)
 /*
  * min_free_kbytes_sysctl_handler - just a wrapper around proc_dointvec() so 
  *	that we can call two helper functions whenever min_free_kbytes
+<<<<<<< HEAD
  *	changes.
+=======
+ *	or extra_free_kbytes changes.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 int min_free_kbytes_sysctl_handler(ctl_table *table, int write, 
 	void __user *buffer, size_t *length, loff_t *ppos)
@@ -5992,6 +6322,11 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+=======
+	cc.zone->cma_alloc = 1;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = __alloc_contig_migrate_range(&cc, start, end);
 	if (ret)
 		goto done;
@@ -6051,6 +6386,10 @@ int alloc_contig_range(unsigned long start, unsigned long end,
 done:
 	undo_isolate_page_range(pfn_max_align_down(start),
 				pfn_max_align_up(end), migratetype);
+<<<<<<< HEAD
+=======
+	cc.zone->cma_alloc = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 
@@ -6235,7 +6574,10 @@ static const struct trace_print_flags pageflag_names[] = {
 #ifdef CONFIG_TRANSPARENT_HUGEPAGE
 	{1UL << PG_compound_lock,	"compound_lock"	},
 #endif
+<<<<<<< HEAD
 	{1UL << PG_readahead,           "PG_readahead"  },
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static void dump_page_flags(unsigned long flags)

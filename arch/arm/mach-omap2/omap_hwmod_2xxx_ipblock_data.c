@@ -796,7 +796,11 @@ struct omap_hwmod omap2xxx_counter_32k_hwmod = {
 
 /* gpmc */
 static struct omap_hwmod_irq_info omap2xxx_gpmc_irqs[] = {
+<<<<<<< HEAD
 	{ .irq = 20 + OMAP_INTC_START, },
+=======
+	{ .irq = 20 },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ .irq = -1 }
 };
 
@@ -841,7 +845,11 @@ static struct omap_hwmod_class omap2_rng_hwmod_class = {
 };
 
 static struct omap_hwmod_irq_info omap2_rng_mpu_irqs[] = {
+<<<<<<< HEAD
 	{ .irq = 52 + OMAP_INTC_START, },
+=======
+	{ .irq = 52 },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ .irq = -1 }
 };
 

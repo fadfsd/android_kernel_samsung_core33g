@@ -399,7 +399,11 @@ static int _set_clockactivity(struct omap_hwmod *oh, u8 clockact, u32 *v)
 }
 
 /**
+<<<<<<< HEAD
  * _set_softreset: set OCP_SYSCONFIG.SOFTRESET bit in @v
+=======
+ * _set_softreset: set OCP_SYSCONFIG.CLOCKACTIVITY bits in @v
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * @oh: struct omap_hwmod *
  * @v: pointer to register contents to modify
  *
@@ -427,6 +431,7 @@ static int _set_softreset(struct omap_hwmod *oh, u32 *v)
 }
 
 /**
+<<<<<<< HEAD
  * _clear_softreset: clear OCP_SYSCONFIG.SOFTRESET bit in @v
  * @oh: struct omap_hwmod *
  * @v: pointer to register contents to modify
@@ -457,6 +462,8 @@ static int _clear_softreset(struct omap_hwmod *oh, u32 *v)
 }
 
 /**
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * _wait_softreset_complete - wait for an OCP softreset to complete
  * @oh: struct omap_hwmod * to wait on
  *
@@ -1939,12 +1946,15 @@ static int _ocp_softreset(struct omap_hwmod *oh)
 	ret = _set_softreset(oh, &v);
 	if (ret)
 		goto dis_opt_clks;
+<<<<<<< HEAD
 
 	_write_sysconfig(v, oh);
 	ret = _clear_softreset(oh, &v);
 	if (ret)
 		goto dis_opt_clks;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	_write_sysconfig(v, oh);
 
 	if (oh->class->sysc->srst_udelay)
@@ -2177,8 +2187,11 @@ static int _enable(struct omap_hwmod *oh)
 			 oh->mux->pads_dynamic))) {
 		omap_hwmod_mux(oh->mux, _HWMOD_STATE_ENABLED);
 		_reconfigure_io_chain();
+<<<<<<< HEAD
 	} else if (oh->flags & HWMOD_FORCE_MSTANDBY) {
 		_reconfigure_io_chain();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	_add_initiator_dep(oh, mpu_oh);
@@ -2285,8 +2298,11 @@ static int _idle(struct omap_hwmod *oh)
 	if (oh->mux && oh->mux->pads_dynamic) {
 		omap_hwmod_mux(oh->mux, _HWMOD_STATE_IDLE);
 		_reconfigure_io_chain();
+<<<<<<< HEAD
 	} else if (oh->flags & HWMOD_FORCE_MSTANDBY) {
 		_reconfigure_io_chain();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	oh->_state = _HWMOD_STATE_IDLE;
@@ -3188,11 +3204,14 @@ int omap_hwmod_softreset(struct omap_hwmod *oh)
 		goto error;
 	_write_sysconfig(v, oh);
 
+<<<<<<< HEAD
 	ret = _clear_softreset(oh, &v);
 	if (ret)
 		goto error;
 	_write_sysconfig(v, oh);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 error:
 	return ret;
 }

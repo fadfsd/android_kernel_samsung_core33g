@@ -18,7 +18,10 @@ static inline void pm_runtime_early_init(struct device *dev)
 }
 
 extern void pm_runtime_init(struct device *dev);
+<<<<<<< HEAD
 extern void pm_runtime_reinit(struct device *dev);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern void pm_runtime_remove(struct device *dev);
 
 #else /* !CONFIG_PM_RUNTIME */
@@ -29,7 +32,10 @@ static inline void pm_runtime_early_init(struct device *dev)
 }
 
 static inline void pm_runtime_init(struct device *dev) {}
+<<<<<<< HEAD
 static inline void pm_runtime_reinit(struct device *dev) {}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void pm_runtime_remove(struct device *dev) {}
 
 #endif /* !CONFIG_PM_RUNTIME */

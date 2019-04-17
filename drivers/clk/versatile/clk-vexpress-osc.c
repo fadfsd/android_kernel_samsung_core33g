@@ -102,7 +102,11 @@ void __init vexpress_osc_of_setup(struct device_node *node)
 
 	osc = kzalloc(sizeof(*osc), GFP_KERNEL);
 	if (!osc)
+<<<<<<< HEAD
 		return;
+=======
+		goto error;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	osc->func = vexpress_config_func_get_by_node(node);
 	if (!osc->func) {

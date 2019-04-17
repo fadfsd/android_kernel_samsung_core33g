@@ -5225,7 +5225,11 @@ static void intel_set_pipe_csc(struct drm_crtc *crtc)
 		uint16_t postoff = 0;
 
 		if (intel_crtc->config.limited_color_range)
+<<<<<<< HEAD
 			postoff = (16 * (1 << 12) / 255) & 0x1fff;
+=======
+			postoff = (16 * (1 << 13) / 255) & 0x1fff;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		I915_WRITE(PIPE_CSC_POSTOFF_HI(pipe), postoff);
 		I915_WRITE(PIPE_CSC_POSTOFF_ME(pipe), postoff);
@@ -6262,9 +6266,13 @@ static void i9xx_update_cursor(struct drm_crtc *crtc, u32 base)
 		intel_crtc->cursor_visible = visible;
 	}
 	/* and commit changes on next vblank */
+<<<<<<< HEAD
 	POSTING_READ(CURCNTR(pipe));
 	I915_WRITE(CURBASE(pipe), base);
 	POSTING_READ(CURBASE(pipe));
+=======
+	I915_WRITE(CURBASE(pipe), base);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void ivb_update_cursor(struct drm_crtc *crtc, u32 base)
@@ -6291,9 +6299,13 @@ static void ivb_update_cursor(struct drm_crtc *crtc, u32 base)
 		intel_crtc->cursor_visible = visible;
 	}
 	/* and commit changes on next vblank */
+<<<<<<< HEAD
 	POSTING_READ(CURCNTR_IVB(pipe));
 	I915_WRITE(CURBASE_IVB(pipe), base);
 	POSTING_READ(CURBASE_IVB(pipe));
+=======
+	I915_WRITE(CURBASE_IVB(pipe), base);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* If no-part of the cursor is visible on the framebuffer, then the GPU may hang... */
@@ -9123,6 +9135,18 @@ void intel_modeset_init(struct drm_device *dev)
 	intel_disable_fbc(dev);
 }
 
+<<<<<<< HEAD
+=======
+static void
+intel_connector_break_all_links(struct intel_connector *connector)
+{
+	connector->base.dpms = DRM_MODE_DPMS_OFF;
+	connector->base.encoder = NULL;
+	connector->encoder->connectors_active = false;
+	connector->encoder->base.crtc = NULL;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void intel_enable_pipe_a(struct drm_device *dev)
 {
 	struct intel_connector *connector;
@@ -9204,6 +9228,7 @@ static void intel_sanitize_crtc(struct intel_crtc *crtc)
 			if (connector->encoder->base.crtc != &crtc->base)
 				continue;
 
+<<<<<<< HEAD
 			connector->base.dpms = DRM_MODE_DPMS_OFF;
 			connector->base.encoder = NULL;
 		}
@@ -9215,6 +9240,10 @@ static void intel_sanitize_crtc(struct intel_crtc *crtc)
 				connector->encoder->base.crtc = NULL;
 				connector->encoder->connectors_active = false;
 			}
+=======
+			intel_connector_break_all_links(connector);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		WARN_ON(crtc->active);
 		crtc->base.enabled = false;
@@ -9285,8 +9314,11 @@ static void intel_sanitize_encoder(struct intel_encoder *encoder)
 				      drm_get_encoder_name(&encoder->base));
 			encoder->disable(encoder);
 		}
+<<<<<<< HEAD
 		encoder->base.crtc = NULL;
 		encoder->connectors_active = false;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* Inconsistent output/port/pipe state happens presumably due to
 		 * a bug in one of the get_hw_state functions. Or someplace else
@@ -9297,8 +9329,13 @@ static void intel_sanitize_encoder(struct intel_encoder *encoder)
 				    base.head) {
 			if (connector->encoder != encoder)
 				continue;
+<<<<<<< HEAD
 			connector->base.dpms = DRM_MODE_DPMS_OFF;
 			connector->base.encoder = NULL;
+=======
+
+			intel_connector_break_all_links(connector);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	}
 	/* Enabled encoders without active connectors will be fixed in
@@ -9458,9 +9495,13 @@ void intel_modeset_gem_init(struct drm_device *dev)
 
 	intel_setup_overlay(dev);
 
+<<<<<<< HEAD
 	mutex_lock(&dev->mode_config.mutex);
 	intel_modeset_setup_hw_state(dev, false);
 	mutex_unlock(&dev->mode_config.mutex);
+=======
+	intel_modeset_setup_hw_state(dev, false);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void intel_modeset_cleanup(struct drm_device *dev)
@@ -9534,15 +9575,25 @@ void intel_connector_attach_encoder(struct intel_connector *connector,
 int intel_modeset_vga_set_state(struct drm_device *dev, bool state)
 {
 	struct drm_i915_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	unsigned reg = INTEL_INFO(dev)->gen >= 6 ? SNB_GMCH_CTRL : INTEL_GMCH_CTRL;
 	u16 gmch_ctrl;
 
 	pci_read_config_word(dev_priv->bridge_dev, reg, &gmch_ctrl);
+=======
+	u16 gmch_ctrl;
+
+	pci_read_config_word(dev_priv->bridge_dev, INTEL_GMCH_CTRL, &gmch_ctrl);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (state)
 		gmch_ctrl &= ~INTEL_GMCH_VGA_DISABLE;
 	else
 		gmch_ctrl |= INTEL_GMCH_VGA_DISABLE;
+<<<<<<< HEAD
 	pci_write_config_word(dev_priv->bridge_dev, reg, gmch_ctrl);
+=======
+	pci_write_config_word(dev_priv->bridge_dev, INTEL_GMCH_CTRL, gmch_ctrl);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

@@ -95,7 +95,11 @@ struct backing_dev_info {
 	unsigned int max_ratio, max_prop_frac;
 
 	struct bdi_writeback wb;  /* default writeback info for this bdi */
+<<<<<<< HEAD
 	spinlock_t wb_lock;	  /* protects work_list */
+=======
+	spinlock_t wb_lock;	  /* protects work_list & wb.dwork scheduling */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct list_head work_list;
 

@@ -51,8 +51,11 @@
  *	document number TBD : Lynx Point
  *	document number TBD : Lynx Point-LP
  *	document number TBD : Wellsburg
+<<<<<<< HEAD
  *	document number TBD : Avoton SoC
  *	document number TBD : Coleto Creek
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -209,8 +212,11 @@ enum lpc_chipsets {
 	LPC_LPT,	/* Lynx Point */
 	LPC_LPT_LP,	/* Lynx Point-LP */
 	LPC_WBG,	/* Wellsburg */
+<<<<<<< HEAD
 	LPC_AVN,	/* Avoton SoC */
 	LPC_COLETO,	/* Coleto Creek */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct lpc_ich_info lpc_chipset_info[] = {
@@ -495,6 +501,7 @@ struct lpc_ich_info lpc_chipset_info[] = {
 		.name = "Wellsburg",
 		.iTCO_version = 2,
 	},
+<<<<<<< HEAD
 	[LPC_AVN] = {
 		.name = "Avoton SoC",
 		.iTCO_version = 1,
@@ -503,6 +510,8 @@ struct lpc_ich_info lpc_chipset_info[] = {
 		.name = "Coleto Creek",
 		.iTCO_version = 2,
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /*
@@ -716,11 +725,14 @@ static DEFINE_PCI_DEVICE_TABLE(lpc_ich_ids) = {
 	{ PCI_VDEVICE(INTEL, 0x8d5d), LPC_WBG},
 	{ PCI_VDEVICE(INTEL, 0x8d5e), LPC_WBG},
 	{ PCI_VDEVICE(INTEL, 0x8d5f), LPC_WBG},
+<<<<<<< HEAD
 	{ PCI_VDEVICE(INTEL, 0x1f38), LPC_AVN},
 	{ PCI_VDEVICE(INTEL, 0x1f39), LPC_AVN},
 	{ PCI_VDEVICE(INTEL, 0x1f3a), LPC_AVN},
 	{ PCI_VDEVICE(INTEL, 0x1f3b), LPC_AVN},
 	{ PCI_VDEVICE(INTEL, 0x2390), LPC_COLETO},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ 0, },			/* End of list */
 };
 MODULE_DEVICE_TABLE(pci, lpc_ich_ids);

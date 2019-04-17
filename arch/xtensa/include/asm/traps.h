@@ -22,6 +22,7 @@ extern void do_unhandled(struct pt_regs *regs, unsigned long exccause);
 
 static inline void spill_registers(void)
 {
+<<<<<<< HEAD
 #if XCHAL_NUM_AREGS > 16
 	__asm__ __volatile__ (
 		"	call8	1f\n"
@@ -62,6 +63,27 @@ static inline void spill_registers(void)
 		"	mov	a12, a12\n"
 		: : : "memory");
 #endif
+=======
+
+	__asm__ __volatile__ (
+		"movi	a14, "__stringify((1 << PS_EXCM_BIT) | LOCKLEVEL)"\n\t"
+		"mov	a12, a0\n\t"
+		"rsr	a13, sar\n\t"
+		"xsr	a14, ps\n\t"
+		"movi	a0, _spill_registers\n\t"
+		"rsync\n\t"
+		"callx0 a0\n\t"
+		"mov	a0, a12\n\t"
+		"wsr	a13, sar\n\t"
+		"wsr	a14, ps\n\t"
+		: :
+#if defined(CONFIG_FRAME_POINTER)
+		: "a2", "a3", "a4",       "a11", "a12", "a13", "a14", "a15",
+#else
+		: "a2", "a3", "a4", "a7", "a11", "a12", "a13", "a14", "a15",
+#endif
+		  "memory");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #endif /* _XTENSA_TRAPS_H */

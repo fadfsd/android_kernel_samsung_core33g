@@ -51,7 +51,11 @@ struct task_struct;
 extern void debug_show_all_locks(void);
 extern void debug_show_held_locks(struct task_struct *task);
 extern void debug_check_no_locks_freed(const void *from, unsigned long len);
+<<<<<<< HEAD
 extern void debug_check_no_locks_held(struct task_struct *task);
+=======
+extern void debug_check_no_locks_held(void);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else
 static inline void debug_show_all_locks(void)
 {
@@ -67,7 +71,11 @@ debug_check_no_locks_freed(const void *from, unsigned long len)
 }
 
 static inline void
+<<<<<<< HEAD
 debug_check_no_locks_held(struct task_struct *task)
+=======
+debug_check_no_locks_held(void)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 }
 #endif

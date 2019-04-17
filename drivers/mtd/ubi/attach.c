@@ -408,7 +408,11 @@ int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
 		second_is_newer = !second_is_newer;
 	} else {
 		dbg_bld("PEB %d CRC is OK", pnum);
+<<<<<<< HEAD
 		bitflips |= !!err;
+=======
+		bitflips = !!err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	mutex_unlock(&ubi->buf_mutex);
 

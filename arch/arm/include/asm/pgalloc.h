@@ -59,6 +59,13 @@ extern void pgd_free(struct mm_struct *mm, pgd_t *pgd);
 
 #define PGALLOC_GFP	(GFP_KERNEL | __GFP_NOTRACK | __GFP_REPEAT | __GFP_ZERO)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPRD_MEM_POOL
+#include <mach/sprd_mem_pool.h>
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void clean_pte_table(pte_t *pte)
 {
 	clean_dcache_area(pte + PTE_HWTABLE_PTRS, PTE_HWTABLE_SIZE);

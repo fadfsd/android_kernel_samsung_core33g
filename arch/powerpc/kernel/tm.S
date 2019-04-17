@@ -296,7 +296,11 @@ dont_backup_fp:
 	 *	Call with IRQs off, stacks get all out of sync for
 	 *	some periods in here!
 	 */
+<<<<<<< HEAD
 _GLOBAL(__tm_recheckpoint)
+=======
+_GLOBAL(tm_recheckpoint)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mfcr	r5
 	mflr	r0
 	std	r5, 8(r1)

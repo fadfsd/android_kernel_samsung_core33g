@@ -158,7 +158,11 @@ static int pseries_remove_memory(struct device_node *np)
 static inline int pseries_remove_memblock(unsigned long base,
 					  unsigned int memblock_size)
 {
+<<<<<<< HEAD
 	return 0;
+=======
+	return -EOPNOTSUPP;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 static inline int pseries_remove_memory(struct device_node *np)
 {

@@ -44,6 +44,7 @@
  *  parentheses and have some accompanying text comment.
  */
 
+<<<<<<< HEAD
 /*
  * Notes on lockless lookups:
  *
@@ -68,6 +69,8 @@
  * pointers.
  */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void rb_set_black(struct rb_node *rb)
 {
 	rb->__rb_parent_color |= RB_BLACK;
@@ -153,9 +156,14 @@ __rb_insert(struct rb_node *node, struct rb_root *root,
 				 * This still leaves us in violation of 4), the
 				 * continuation into Case 3 will fix that.
 				 */
+<<<<<<< HEAD
 				tmp = node->rb_left;
 				WRITE_ONCE(parent->rb_right, tmp);
 				WRITE_ONCE(node->rb_left, parent);
+=======
+				parent->rb_right = tmp = node->rb_left;
+				node->rb_left = parent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				if (tmp)
 					rb_set_parent_color(tmp, parent,
 							    RB_BLACK);
@@ -174,8 +182,13 @@ __rb_insert(struct rb_node *node, struct rb_root *root,
 			 *     /                 \
 			 *    n                   U
 			 */
+<<<<<<< HEAD
 			WRITE_ONCE(gparent->rb_left, tmp); /* == parent->rb_right */
 			WRITE_ONCE(parent->rb_right, gparent);
+=======
+			gparent->rb_left = tmp;  /* == parent->rb_right */
+			parent->rb_right = gparent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (tmp)
 				rb_set_parent_color(tmp, gparent, RB_BLACK);
 			__rb_rotate_set_parents(gparent, parent, root, RB_RED);
@@ -196,9 +209,14 @@ __rb_insert(struct rb_node *node, struct rb_root *root,
 			tmp = parent->rb_left;
 			if (node == tmp) {
 				/* Case 2 - right rotate at parent */
+<<<<<<< HEAD
 				tmp = node->rb_right;
 				WRITE_ONCE(parent->rb_left, tmp);
 				WRITE_ONCE(node->rb_right, parent);
+=======
+				parent->rb_left = tmp = node->rb_right;
+				node->rb_right = parent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				if (tmp)
 					rb_set_parent_color(tmp, parent,
 							    RB_BLACK);
@@ -209,8 +227,13 @@ __rb_insert(struct rb_node *node, struct rb_root *root,
 			}
 
 			/* Case 3 - left rotate at gparent */
+<<<<<<< HEAD
 			WRITE_ONCE(gparent->rb_right, tmp); /* == parent->rb_left */
 			WRITE_ONCE(parent->rb_left, gparent);
+=======
+			gparent->rb_right = tmp;  /* == parent->rb_left */
+			parent->rb_left = gparent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (tmp)
 				rb_set_parent_color(tmp, gparent, RB_BLACK);
 			__rb_rotate_set_parents(gparent, parent, root, RB_RED);
@@ -250,9 +273,14 @@ ____rb_erase_color(struct rb_node *parent, struct rb_root *root,
 				 *      / \         / \
 				 *     Sl  Sr      N   Sl
 				 */
+<<<<<<< HEAD
 				tmp1 = sibling->rb_left;
 				WRITE_ONCE(parent->rb_right, tmp1);
 				WRITE_ONCE(sibling->rb_left, parent);
+=======
+				parent->rb_right = tmp1 = sibling->rb_left;
+				sibling->rb_left = parent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				rb_set_parent_color(tmp1, parent, RB_BLACK);
 				__rb_rotate_set_parents(parent, sibling, root,
 							RB_RED);
@@ -302,10 +330,16 @@ ____rb_erase_color(struct rb_node *parent, struct rb_root *root,
 				 *                       \
 				 *                        Sr
 				 */
+<<<<<<< HEAD
 				tmp1 = tmp2->rb_right;
 				WRITE_ONCE(sibling->rb_left, tmp1);
 				WRITE_ONCE(tmp2->rb_right, sibling);
 				WRITE_ONCE(parent->rb_right, tmp2);
+=======
+				sibling->rb_left = tmp1 = tmp2->rb_right;
+				tmp2->rb_right = sibling;
+				parent->rb_right = tmp2;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				if (tmp1)
 					rb_set_parent_color(tmp1, sibling,
 							    RB_BLACK);
@@ -325,9 +359,14 @@ ____rb_erase_color(struct rb_node *parent, struct rb_root *root,
 			 *        / \         / \
 			 *      (sl) sr      N  (sl)
 			 */
+<<<<<<< HEAD
 			tmp2 = sibling->rb_left;
 			WRITE_ONCE(parent->rb_right, tmp2);
 			WRITE_ONCE(sibling->rb_left, parent);
+=======
+			parent->rb_right = tmp2 = sibling->rb_left;
+			sibling->rb_left = parent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			rb_set_parent_color(tmp1, sibling, RB_BLACK);
 			if (tmp2)
 				rb_set_parent(tmp2, parent);
@@ -339,9 +378,14 @@ ____rb_erase_color(struct rb_node *parent, struct rb_root *root,
 			sibling = parent->rb_left;
 			if (rb_is_red(sibling)) {
 				/* Case 1 - right rotate at parent */
+<<<<<<< HEAD
 				tmp1 = sibling->rb_right;
 				WRITE_ONCE(parent->rb_left, tmp1);
 				WRITE_ONCE(sibling->rb_right, parent);
+=======
+				parent->rb_left = tmp1 = sibling->rb_right;
+				sibling->rb_right = parent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				rb_set_parent_color(tmp1, parent, RB_BLACK);
 				__rb_rotate_set_parents(parent, sibling, root,
 							RB_RED);
@@ -366,10 +410,16 @@ ____rb_erase_color(struct rb_node *parent, struct rb_root *root,
 					break;
 				}
 				/* Case 3 - right rotate at sibling */
+<<<<<<< HEAD
 				tmp1 = tmp2->rb_left;
 				WRITE_ONCE(sibling->rb_right, tmp1);
 				WRITE_ONCE(tmp2->rb_left, sibling);
 				WRITE_ONCE(parent->rb_left, tmp2);
+=======
+				sibling->rb_right = tmp1 = tmp2->rb_left;
+				tmp2->rb_left = sibling;
+				parent->rb_left = tmp2;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				if (tmp1)
 					rb_set_parent_color(tmp1, sibling,
 							    RB_BLACK);
@@ -378,9 +428,14 @@ ____rb_erase_color(struct rb_node *parent, struct rb_root *root,
 				sibling = tmp2;
 			}
 			/* Case 4 - left rotate at parent + color flips */
+<<<<<<< HEAD
 			tmp2 = sibling->rb_right;
 			WRITE_ONCE(parent->rb_left, tmp2);
 			WRITE_ONCE(sibling->rb_right, parent);
+=======
+			parent->rb_left = tmp2 = sibling->rb_right;
+			sibling->rb_right = parent;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			rb_set_parent_color(tmp1, sibling, RB_BLACK);
 			if (tmp2)
 				rb_set_parent(tmp2, parent);

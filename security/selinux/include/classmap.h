@@ -151,5 +151,9 @@ struct security_class_mapping secclass_map[] = {
 	{ "kernel_service", { "use_as_override", "create_files_as", NULL } },
 	{ "tun_socket",
 	  { COMMON_SOCK_PERMS, "attach_queue", NULL } },
+<<<<<<< HEAD
+=======
+	{ "binder", { "impersonate", "call", "set_context_mgr", "transfer", NULL } },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ NULL }
   };

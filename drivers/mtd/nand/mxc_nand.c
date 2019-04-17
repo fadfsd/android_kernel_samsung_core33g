@@ -676,6 +676,10 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
 		ecc_stat >>= 4;
 	} while (--no_subpages);
 
+<<<<<<< HEAD
+=======
+	mtd->ecc_stats.corrected += ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pr_debug("%d Symbol Correctable RS-ECC Error\n", ret);
 
 	return ret;

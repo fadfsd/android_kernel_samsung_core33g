@@ -9,9 +9,17 @@
 #include <asm/hibernate.h>
 #include <asm/visasm.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #include <asm/sections.h>
 #include <asm/tlb.h>
 
+=======
+#include <asm/tlb.h>
+
+/* References to section boundaries */
+extern const void __nosave_begin, __nosave_end;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct saved_context saved_context;
 
 /*

@@ -86,7 +86,10 @@ struct multipath {
 	unsigned queue_if_no_path:1;	/* Queue I/O if last path fails? */
 	unsigned saved_queue_if_no_path:1; /* Saved state during suspension */
 	unsigned retain_attached_hw_handler:1; /* If there's already a hw_handler present, don't change it. */
+<<<<<<< HEAD
 	unsigned pg_init_disabled:1;	/* pg_init is not currently allowed */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	unsigned pg_init_retries;	/* Number of times to retry pg_init */
 	unsigned pg_init_count;		/* Number of times pg_init called */
@@ -498,8 +501,12 @@ static void process_queued_ios(struct work_struct *work)
 	    (!pgpath && !m->queue_if_no_path))
 		must_queue = 0;
 
+<<<<<<< HEAD
 	if (m->pg_init_required && !m->pg_init_in_progress && pgpath &&
 	    !m->pg_init_disabled)
+=======
+	if (m->pg_init_required && !m->pg_init_in_progress && pgpath)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__pg_init_all_paths(m);
 
 	spin_unlock_irqrestore(&m->lock, flags);
@@ -944,20 +951,26 @@ static void multipath_wait_for_pg_init_completion(struct multipath *m)
 
 static void flush_multipath_work(struct multipath *m)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&m->lock, flags);
 	m->pg_init_disabled = 1;
 	spin_unlock_irqrestore(&m->lock, flags);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	flush_workqueue(kmpath_handlerd);
 	multipath_wait_for_pg_init_completion(m);
 	flush_workqueue(kmultipathd);
 	flush_work(&m->trigger_event);
+<<<<<<< HEAD
 
 	spin_lock_irqsave(&m->lock, flags);
 	m->pg_init_disabled = 0;
 	spin_unlock_irqrestore(&m->lock, flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void multipath_dtr(struct dm_target *ti)
@@ -1176,7 +1189,11 @@ static int pg_init_limit_reached(struct multipath *m, struct pgpath *pgpath)
 
 	spin_lock_irqsave(&m->lock, flags);
 
+<<<<<<< HEAD
 	if (m->pg_init_count <= m->pg_init_retries && !m->pg_init_disabled)
+=======
+	if (m->pg_init_count <= m->pg_init_retries)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		m->pg_init_required = 1;
 	else
 		limit_reached = 1;
@@ -1608,11 +1625,16 @@ static int multipath_ioctl(struct dm_target *ti, unsigned int cmd,
 	/*
 	 * Only pass ioctls through if the device sizes match exactly.
 	 */
+<<<<<<< HEAD
 	if (!bdev || ti->len != i_size_read(bdev->bd_inode) >> SECTOR_SHIFT) {
 		int err = scsi_verify_blk_ioctl(NULL, cmd);
 		if (err)
 			r = err;
 	}
+=======
+	if (!r && ti->len != i_size_read(bdev->bd_inode) >> SECTOR_SHIFT)
+		r = scsi_verify_blk_ioctl(NULL, cmd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (r == -ENOTCONN && !fatal_signal_pending(current))
 		queue_work(kmultipathd, &m->process_queued_ios);
@@ -1714,7 +1736,11 @@ out:
  *---------------------------------------------------------------*/
 static struct target_type multipath_target = {
 	.name = "multipath",
+<<<<<<< HEAD
 	.version = {1, 6, 0},
+=======
+	.version = {1, 5, 1},
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.module = THIS_MODULE,
 	.ctr = multipath_ctr,
 	.dtr = multipath_dtr,

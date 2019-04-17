@@ -1797,7 +1797,11 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
 				w->active ? "active" : "inactive");
 
 	list_for_each_entry(p, &w->sources, list_sink) {
+<<<<<<< HEAD
 		if (p->connected && !p->connected(w, p->source))
+=======
+		if (p->connected && !p->connected(w, p->sink))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;
 
 		if (p->connect)

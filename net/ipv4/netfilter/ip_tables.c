@@ -1226,10 +1226,15 @@ __do_replace(struct net *net, const char *name, unsigned int valid_hooks,
 
 	xt_free_table_info(oldinfo);
 	if (copy_to_user(counters_ptr, counters,
+<<<<<<< HEAD
 			 sizeof(struct xt_counters) * num_counters) != 0) {
 		/* Silent error, can't fail, new table is already in place */
 		net_warn_ratelimited("iptables: counters copy to user failed while replacing table\n");
 	}
+=======
+			 sizeof(struct xt_counters) * num_counters) != 0)
+		ret = -EFAULT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	vfree(counters);
 	xt_table_unlock(t);
 	return ret;

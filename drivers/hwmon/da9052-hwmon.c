@@ -194,7 +194,11 @@ static ssize_t da9052_hwmon_show_name(struct device *dev,
 				      struct device_attribute *devattr,
 				      char *buf)
 {
+<<<<<<< HEAD
 	return sprintf(buf, "da9052\n");
+=======
+	return sprintf(buf, "da9052-hwmon\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static ssize_t show_label(struct device *dev,

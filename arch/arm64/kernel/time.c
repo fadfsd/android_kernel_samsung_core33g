@@ -68,6 +68,15 @@ unsigned long long notrace sched_clock(void)
 	return arch_timer_read_counter() * sched_clock_mult;
 }
 
+<<<<<<< HEAD
+=======
+int read_current_timer(unsigned long *timer_value)
+{
+	*timer_value = arch_timer_read_counter();
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void __init time_init(void)
 {
 	u32 arch_timer_rate;

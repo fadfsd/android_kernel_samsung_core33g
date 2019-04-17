@@ -22,6 +22,7 @@ struct device_node;
 
 static inline int cpu_to_node(int cpu)
 {
+<<<<<<< HEAD
 	int nid;
 
 	nid = numa_cpu_lookup_table[cpu];
@@ -31,6 +32,9 @@ static inline int cpu_to_node(int cpu)
 	 * setup for all CPUs yet. In such cases, default to node 0.
 	 */
 	return (nid < 0) ? 0 : nid;
+=======
+	return numa_cpu_lookup_table[cpu];
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #define parent_node(node)	(node)

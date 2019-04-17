@@ -1083,7 +1083,11 @@ static void randomize_choice_values(struct symbol *csym)
 	csym->flags &= ~(SYMBOL_VALID);
 }
 
+<<<<<<< HEAD
 static void set_all_choice_values(struct symbol *csym)
+=======
+void set_all_choice_values(struct symbol *csym)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct property *prop;
 	struct symbol *sym;
@@ -1100,7 +1104,11 @@ static void set_all_choice_values(struct symbol *csym)
 	}
 	csym->flags |= SYMBOL_DEF_USER;
 	/* clear VALID to get value calculated */
+<<<<<<< HEAD
 	csym->flags &= ~(SYMBOL_VALID);
+=======
+	csym->flags &= ~(SYMBOL_VALID | SYMBOL_NEED_SET_CHOICE_VALUES);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void conf_set_all_new_symbols(enum conf_def_mode mode)
@@ -1202,6 +1210,17 @@ void conf_set_all_new_symbols(enum conf_def_mode mode)
 	 * selected in a choice block and we set it to yes,
 	 * and the rest to no.
 	 */
+<<<<<<< HEAD
+=======
+	if (mode != def_random) {
+		for_all_symbols(i, csym) {
+			if ((sym_is_choice(csym) && !sym_has_value(csym)) ||
+			    sym_is_choice_value(csym))
+				csym->flags |= SYMBOL_NEED_SET_CHOICE_VALUES;
+		}
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for_all_symbols(i, csym) {
 		if (sym_has_value(csym) || !sym_is_choice(csym))
 			continue;
@@ -1209,7 +1228,10 @@ void conf_set_all_new_symbols(enum conf_def_mode mode)
 		sym_calc_value(csym);
 		if (mode == def_random)
 			randomize_choice_values(csym);
+<<<<<<< HEAD
 		else
 			set_all_choice_values(csym);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }

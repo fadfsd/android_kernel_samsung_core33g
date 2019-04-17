@@ -3161,8 +3161,11 @@ static int barrier_all_devices(struct btrfs_fs_info *info)
 	/* send down all the barriers */
 	head = &info->fs_devices->devices;
 	list_for_each_entry_rcu(dev, head, dev_list) {
+<<<<<<< HEAD
 		if (dev->missing)
 			continue;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (!dev->bdev) {
 			errors_send++;
 			continue;
@@ -3177,8 +3180,11 @@ static int barrier_all_devices(struct btrfs_fs_info *info)
 
 	/* wait for all the barriers */
 	list_for_each_entry_rcu(dev, head, dev_list) {
+<<<<<<< HEAD
 		if (dev->missing)
 			continue;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (!dev->bdev) {
 			errors_wait++;
 			continue;
@@ -3518,11 +3524,14 @@ int close_ctree(struct btrfs_root *root)
 
 	btrfs_free_block_groups(fs_info);
 
+<<<<<<< HEAD
 	/*
 	 * we must make sure there is not any read request to
 	 * submit after we stopping all workers.
 	 */
 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	btrfs_stop_all_workers(fs_info);
 
 	del_fs_roots(fs_info);
@@ -3857,6 +3866,15 @@ again:
 		if (ret)
 			break;
 
+<<<<<<< HEAD
+=======
+		/* opt_discard */
+		if (btrfs_test_opt(root, DISCARD))
+			ret = btrfs_error_discard_extent(root, start,
+							 end + 1 - start,
+							 NULL);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		clear_extent_dirty(unpin, start, end, GFP_NOFS);
 		btrfs_error_unpin_extent_range(root, start, end);
 		cond_resched();

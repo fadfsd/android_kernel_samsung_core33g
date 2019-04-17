@@ -25,21 +25,46 @@ void __fat_fs_error(struct super_block *sb, int report, const char *fmt, ...)
 	struct fat_mount_options *opts = &MSDOS_SB(sb)->options;
 	va_list args;
 	struct va_format vaf;
+<<<<<<< HEAD
+=======
+	struct block_device *bdev = sb->s_bdev;
+	dev_t bd_dev = bdev ? bdev->bd_dev : 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (report) {
 		va_start(args, fmt);
 		vaf.fmt = fmt;
 		vaf.va = &args;
+<<<<<<< HEAD
 		printk(KERN_ERR "FAT-fs (%s): error, %pV\n", sb->s_id, &vaf);
+=======
+		printk(KERN_ERR "FAT-fs (%s[%d:%d]): error, %pV\n", 
+				sb->s_id, MAJOR(bd_dev), MINOR(bd_dev), &vaf);
+		if (opts->errors == FAT_ERRORS_RO && !(sb->s_flags & MS_RDONLY))
+			ST_LOG("FAT-fs (%s[%d:%d]): error, %pV\n",
+					sb->s_id, MAJOR(bd_dev), MINOR(bd_dev), &vaf);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		va_end(args);
 	}
 
 	if (opts->errors == FAT_ERRORS_PANIC)
+<<<<<<< HEAD
 		panic("FAT-fs (%s): fs panic from previous error\n", sb->s_id);
 	else if (opts->errors == FAT_ERRORS_RO && !(sb->s_flags & MS_RDONLY)) {
 		sb->s_flags |= MS_RDONLY;
 		printk(KERN_ERR "FAT-fs (%s): Filesystem has been "
 				"set read-only\n", sb->s_id);
+=======
+		panic("FAT-fs (%s[%d:%d]): fs panic from previous error\n", 
+				sb->s_id, MAJOR(bd_dev), MINOR(bd_dev));
+	else if (opts->errors == FAT_ERRORS_RO && !(sb->s_flags & MS_RDONLY)) {
+		sb->s_flags |= MS_RDONLY;
+		printk(KERN_ERR "FAT-fs (%s[%d:%d]): Filesystem has been "
+				"set read-only\n", 
+				sb->s_id, MAJOR(bd_dev), MINOR(bd_dev));
+		ST_LOG("FAT-fs (%s[%d:%d]): Filesystem has been set read-only\n",
+				sb->s_id, MAJOR(bd_dev), MINOR(bd_dev));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 EXPORT_SYMBOL_GPL(__fat_fs_error);
@@ -90,7 +115,11 @@ int fat_clusters_flush(struct super_block *sb)
 			fsinfo->free_clusters = cpu_to_le32(sbi->free_clusters);
 		if (sbi->prev_free != -1)
 			fsinfo->next_cluster = cpu_to_le32(sbi->prev_free);
+<<<<<<< HEAD
 		mark_buffer_dirty(bh);
+=======
+		mark_buffer_dirty_sync(bh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	brelse(bh);
 

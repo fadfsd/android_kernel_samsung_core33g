@@ -79,7 +79,11 @@ struct mvebu_gpio_chip {
 	spinlock_t	   lock;
 	void __iomem	  *membase;
 	void __iomem	  *percpu_membase;
+<<<<<<< HEAD
 	int		   irqbase;
+=======
+	unsigned int       irqbase;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct irq_domain *domain;
 	int                soc_variant;
 };

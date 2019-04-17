@@ -148,9 +148,15 @@ int ipc_parse_version (int *cmd);
 #endif
 
 extern void free_msg(struct msg_msg *msg);
+<<<<<<< HEAD
 extern struct msg_msg *load_msg(const void __user *src, size_t len);
 extern struct msg_msg *copy_msg(struct msg_msg *src, struct msg_msg *dst);
 extern int store_msg(void __user *dest, struct msg_msg *msg, size_t len);
+=======
+extern struct msg_msg *load_msg(const void __user *src, int len);
+extern struct msg_msg *copy_msg(struct msg_msg *src, struct msg_msg *dst);
+extern int store_msg(void __user *dest, struct msg_msg *msg, int len);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 extern void recompute_msgmni(struct ipc_namespace *);
 

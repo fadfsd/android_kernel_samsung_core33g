@@ -142,7 +142,10 @@ struct slave_connector {
 static void slave_connector_destroy(struct drm_connector *connector)
 {
 	struct slave_connector *slave_connector = to_slave_connector(connector);
+<<<<<<< HEAD
 	drm_sysfs_connector_remove(connector);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	drm_connector_cleanup(connector);
 	kfree(slave_connector);
 }

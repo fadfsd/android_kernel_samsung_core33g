@@ -445,7 +445,11 @@ static unsigned omap_usbhs_rev1_hostconfig(struct usbhs_hcd_omap *omap,
 
 		for (i = 0; i < omap->nports; i++) {
 			if (is_ehci_phy_mode(pdata->port_mode[i])) {
+<<<<<<< HEAD
 				reg &= ~OMAP_UHH_HOSTCONFIG_ULPI_BYPASS;
+=======
+				reg &= OMAP_UHH_HOSTCONFIG_ULPI_BYPASS;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				break;
 			}
 		}

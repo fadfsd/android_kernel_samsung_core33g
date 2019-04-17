@@ -792,6 +792,10 @@ void rfkill_pause_polling(struct rfkill *rfkill)
 }
 EXPORT_SYMBOL(rfkill_pause_polling);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RFKILL_PM
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void rfkill_resume_polling(struct rfkill *rfkill)
 {
 	BUG_ON(!rfkill);
@@ -826,14 +830,25 @@ static int rfkill_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static struct class rfkill_class = {
 	.name		= "rfkill",
 	.dev_release	= rfkill_release,
 	.dev_attrs	= rfkill_dev_attrs,
 	.dev_uevent	= rfkill_dev_uevent,
+<<<<<<< HEAD
 	.suspend	= rfkill_suspend,
 	.resume		= rfkill_resume,
+=======
+#ifdef CONFIG_RFKILL_PM
+	.suspend	= rfkill_suspend,
+	.resume		= rfkill_resume,
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 bool rfkill_blocked(struct rfkill *rfkill)

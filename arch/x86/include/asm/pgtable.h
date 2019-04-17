@@ -415,6 +415,7 @@ static inline int pte_present(pte_t a)
 }
 
 #define pte_accessible pte_accessible
+<<<<<<< HEAD
 static inline bool pte_accessible(struct mm_struct *mm, pte_t a)
 {
 	if (pte_flags(a) & _PAGE_PRESENT)
@@ -425,6 +426,11 @@ static inline bool pte_accessible(struct mm_struct *mm, pte_t a)
 		return true;
 
 	return false;
+=======
+static inline int pte_accessible(pte_t a)
+{
+	return pte_flags(a) & _PAGE_PRESENT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline int pte_hidden(pte_t pte)

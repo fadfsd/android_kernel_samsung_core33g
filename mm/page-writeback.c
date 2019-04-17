@@ -36,8 +36,16 @@
 #include <linux/pagevec.h>
 #include <linux/timer.h>
 #include <linux/sched/rt.h>
+<<<<<<< HEAD
 #include <trace/events/writeback.h>
 
+=======
+#include <linux/mm_inline.h>
+#include <trace/events/writeback.h>
+
+#include "internal.h"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Sleep at most 200ms at a time in balance_dirty_pages().
  */
@@ -188,6 +196,7 @@ static unsigned long writeout_period_time = 0;
  * global dirtyable memory first.
  */
 
+<<<<<<< HEAD
 /**
  * zone_dirtyable_memory - number of dirtyable pages in a zone
  * @zone: the zone
@@ -208,6 +217,8 @@ static unsigned long zone_dirtyable_memory(struct zone *zone)
 	return nr_pages;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static unsigned long highmem_dirtyable_memory(unsigned long total)
 {
 #ifdef CONFIG_HIGHMEM
@@ -215,9 +226,17 @@ static unsigned long highmem_dirtyable_memory(unsigned long total)
 	unsigned long x = 0;
 
 	for_each_node_state(node, N_HIGH_MEMORY) {
+<<<<<<< HEAD
 		struct zone *z = &NODE_DATA(node)->node_zones[ZONE_HIGHMEM];
 
 		x += zone_dirtyable_memory(z);
+=======
+		struct zone *z =
+			&NODE_DATA(node)->node_zones[ZONE_HIGHMEM];
+
+		x += zone_page_state(z, NR_FREE_PAGES) +
+		     zone_reclaimable_pages(z) - z->dirty_balance_reserve;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	/*
 	 * Unreclaimable memory (kernel memory or anonymous memory
@@ -253,12 +272,18 @@ static unsigned long global_dirtyable_memory(void)
 {
 	unsigned long x;
 
+<<<<<<< HEAD
 	x = global_page_state(NR_FREE_PAGES);
 	x -= min(x, dirty_balance_reserve);
 
 	x += global_page_state(NR_INACTIVE_FILE);
 	x += global_page_state(NR_ACTIVE_FILE);
 
+=======
+	x = global_page_state(NR_FREE_PAGES) + global_reclaimable_pages();
+	x -= min(x, dirty_balance_reserve);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!vm_highmem_is_dirtyable)
 		x -= highmem_dirtyable_memory(x);
 
@@ -297,6 +322,17 @@ void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
 	else
 		background = (dirty_background_ratio * available_memory) / 100;
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_MIN_DIRTY_THRESH_PAGES) && CONFIG_MIN_DIRTY_THRESH_PAGES > 0
+	if (!vm_dirty_bytes && dirty < CONFIG_MIN_DIRTY_THRESH_PAGES) {
+		dirty = CONFIG_MIN_DIRTY_THRESH_PAGES;
+		if (!dirty_background_bytes)
+			background = dirty / 2;
+	}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (background >= dirty)
 		background = dirty / 2;
 	tsk = current;
@@ -310,6 +346,35 @@ void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * zone_dirtyable_memory - number of dirtyable pages in a zone
+ * @zone: the zone
+ *
+ * Returns the zone's number of pages potentially available for dirty
+ * page cache.  This is the base value for the per-zone dirty limits.
+ */
+static unsigned long zone_dirtyable_memory(struct zone *zone)
+{
+	/*
+	 * The effective global number of dirtyable pages may exclude
+	 * highmem as a big-picture measure to keep the ratio between
+	 * dirty memory and lowmem reasonable.
+	 *
+	 * But this function is purely about the individual zone and a
+	 * highmem zone can hold its share of dirty pages, so we don't
+	 * care about vm_highmem_is_dirtyable here.
+	 */
+	unsigned long nr_pages = zone_page_state(zone, NR_FREE_PAGES) +
+		zone_reclaimable_pages(zone);
+
+	/* don't allow this to underflow */
+	nr_pages -= min(nr_pages, zone->dirty_balance_reserve);
+	return nr_pages;
+}
+
+/**
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * zone_dirty_limit - maximum number of dirty pages allowed in a zone
  * @zone: the zone
  *
@@ -793,11 +858,16 @@ static void bdi_update_write_bandwidth(struct backing_dev_info *bdi,
 	 *                   bw * elapsed + write_bandwidth * (period - elapsed)
 	 * write_bandwidth = ---------------------------------------------------
 	 *                                          period
+<<<<<<< HEAD
 	 *
 	 * @written may have decreased due to account_page_redirty().
 	 * Avoid underflowing @bw calculation.
 	 */
 	bw = written - min(written, bdi->written_stamp);
+=======
+	 */
+	bw = written - bdi->written_stamp;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	bw *= HZ;
 	if (unlikely(elapsed > period)) {
 		do_div(bw, elapsed);
@@ -861,7 +931,11 @@ static void global_update_bandwidth(unsigned long thresh,
 				    unsigned long now)
 {
 	static DEFINE_SPINLOCK(dirty_lock);
+<<<<<<< HEAD
 	static unsigned long update_time = INITIAL_JIFFIES;
+=======
+	static unsigned long update_time;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * check locklessly first to optimize away locking for the most time
@@ -1102,11 +1176,19 @@ static unsigned long dirty_poll_interval(unsigned long dirty,
 	return 1;
 }
 
+<<<<<<< HEAD
 static unsigned long bdi_max_pause(struct backing_dev_info *bdi,
 				   unsigned long bdi_dirty)
 {
 	unsigned long bw = bdi->avg_write_bandwidth;
 	unsigned long t;
+=======
+static long bdi_max_pause(struct backing_dev_info *bdi,
+			  unsigned long bdi_dirty)
+{
+	long bw = bdi->avg_write_bandwidth;
+	long t;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * Limit pause time for small memory systems. If sleeping for too long
@@ -1118,7 +1200,11 @@ static unsigned long bdi_max_pause(struct backing_dev_info *bdi,
 	t = bdi_dirty / (1 + bw / roundup_pow_of_two(1 + HZ / 8));
 	t++;
 
+<<<<<<< HEAD
 	return min_t(unsigned long, t, MAX_PAUSE);
+=======
+	return min_t(long, t, MAX_PAUSE);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static long bdi_min_pause(struct backing_dev_info *bdi,
@@ -2029,12 +2115,19 @@ int __set_page_dirty_nobuffers(struct page *page)
 	if (!TestSetPageDirty(page)) {
 		struct address_space *mapping = page_mapping(page);
 		struct address_space *mapping2;
+<<<<<<< HEAD
 		unsigned long flags;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (!mapping)
 			return 1;
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&mapping->tree_lock, flags);
+=======
+		spin_lock_irq(&mapping->tree_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		mapping2 = page_mapping(page);
 		if (mapping2) { /* Race with truncate? */
 			BUG_ON(mapping2 != mapping);
@@ -2043,7 +2136,11 @@ int __set_page_dirty_nobuffers(struct page *page)
 			radix_tree_tag_set(&mapping->page_tree,
 				page_index(page), PAGECACHE_TAG_DIRTY);
 		}
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&mapping->tree_lock, flags);
+=======
+		spin_unlock_irq(&mapping->tree_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (mapping->host) {
 			/* !PageAnon && !swapper_space */
 			__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);

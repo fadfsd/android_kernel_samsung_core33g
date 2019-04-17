@@ -7,10 +7,14 @@
 #define FD_DEVICE_QUEUE_DEPTH	32
 #define FD_MAX_DEVICE_QUEUE_DEPTH 128
 #define FD_BLOCKSIZE		512
+<<<<<<< HEAD
 /*
  * Limited by the number of iovecs (2048) per vfs_[writev,readv] call
  */
 #define FD_MAX_BYTES		8388608
+=======
+#define FD_MAX_SECTORS		2048
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define RRF_EMULATE_CDB		0x01
 #define RRF_GOT_LBA		0x02

@@ -1179,18 +1179,24 @@ static int pm860x_probe(struct i2c_client *client,
 		chip->companion_addr = pdata->companion_addr;
 		chip->companion = i2c_new_dummy(chip->client->adapter,
 						chip->companion_addr);
+<<<<<<< HEAD
 		if (!chip->companion) {
 			dev_err(&client->dev,
 				"Failed to allocate I2C companion device\n");
 			return -ENODEV;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		chip->regmap_companion = regmap_init_i2c(chip->companion,
 							&pm860x_regmap_config);
 		if (IS_ERR(chip->regmap_companion)) {
 			ret = PTR_ERR(chip->regmap_companion);
 			dev_err(&chip->companion->dev,
 				"Failed to allocate register map: %d\n", ret);
+<<<<<<< HEAD
 			i2c_unregister_device(chip->companion);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return ret;
 		}
 		i2c_set_clientdata(chip->companion, chip);

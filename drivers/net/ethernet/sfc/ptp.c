@@ -1319,6 +1319,7 @@ void efx_ptp_event(struct efx_nic *efx, efx_qword_t *ev)
 	struct efx_ptp_data *ptp = efx->ptp_data;
 	int code = EFX_QWORD_FIELD(*ev, MCDI_EVENT_CODE);
 
+<<<<<<< HEAD
 	if (!ptp) {
 		if (net_ratelimit())
 			netif_warn(efx, drv, efx->net_dev,
@@ -1326,6 +1327,8 @@ void efx_ptp_event(struct efx_nic *efx, efx_qword_t *ev)
 		return;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!ptp->enabled)
 		return;
 

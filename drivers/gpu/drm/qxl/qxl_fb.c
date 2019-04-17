@@ -91,7 +91,11 @@ static void qxl_fb_dirty_flush(struct fb_info *info)
 	u32 x1, x2, y1, y2;
 
 	/* TODO: hard coding 32 bpp */
+<<<<<<< HEAD
 	int stride = qfbdev->qfb.base.pitches[0];
+=======
+	int stride = qfbdev->qfb.base.pitches[0] * 4;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	x1 = qfbdev->dirty.x1;
 	x2 = qfbdev->dirty.x2;

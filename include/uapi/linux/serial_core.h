@@ -226,4 +226,10 @@
 /* Rocketport EXPRESS/INFINITY */
 #define PORT_RP2	102
 
+<<<<<<< HEAD
+=======
+/* SPRD UARTs */
+#define PORT_SPRD 103
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _UAPILINUX_SERIAL_CORE_H */

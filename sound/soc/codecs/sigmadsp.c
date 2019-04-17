@@ -176,6 +176,7 @@ static int _process_sigma_firmware(struct device *dev,
 		goto done;
 	}
 
+<<<<<<< HEAD
 	if (ssfw_head->version != 1) {
 		dev_err(dev,
 			"Failed to load firmware: Invalid version %d. Supported firmware versions: 1\n",
@@ -183,6 +184,8 @@ static int _process_sigma_firmware(struct device *dev,
 		goto done;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	crc = crc32(0, fw->data + sizeof(*ssfw_head),
 			fw->size - sizeof(*ssfw_head));
 	pr_debug("%s: crc=%x\n", __func__, crc);

@@ -381,7 +381,11 @@ COMPAT_SYSCALL_DEFINE6(ipc, u32, call, int, first, int, second,
 			uptr = compat_ptr(ipck.msgp);
 			fifth = ipck.msgtyp;
 		}
+<<<<<<< HEAD
 		return do_msgrcv(first, uptr, second, (s32)fifth, third,
+=======
+		return do_msgrcv(first, uptr, second, fifth, third,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				 compat_do_msg_fill);
 	}
 	case MSGGET:

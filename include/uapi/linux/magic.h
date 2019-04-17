@@ -60,6 +60,11 @@
 
 #define V9FS_MAGIC		0x01021997
 
+<<<<<<< HEAD
+=======
+#define SDCARDFS_SUPER_MAGIC    0xb550ca10
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define BDEVFS_MAGIC            0x62646576
 #define BINFMTFS_MAGIC          0x42494e4d
 #define DEVPTS_SUPER_MAGIC	0x1cd1

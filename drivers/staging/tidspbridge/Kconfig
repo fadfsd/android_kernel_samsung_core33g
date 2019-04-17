@@ -4,7 +4,11 @@
 
 menuconfig TIDSPBRIDGE
 	tristate "DSP Bridge driver"
+<<<<<<< HEAD
 	depends on ARCH_OMAP3 && !ARCH_MULTIPLATFORM && BROKEN
+=======
+	depends on ARCH_OMAP3 && !ARCH_MULTIPLATFORM
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	select OMAP_MBOX_FWK
 	help
 	  DSP/BIOS Bridge is designed for platforms that contain a GPP and

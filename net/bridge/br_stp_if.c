@@ -134,7 +134,11 @@ static void br_stp_start(struct net_bridge *br)
 
 	if (br->bridge_forward_delay < BR_MIN_FORWARD_DELAY)
 		__br_set_forward_delay(br, BR_MIN_FORWARD_DELAY);
+<<<<<<< HEAD
 	else if (br->bridge_forward_delay > BR_MAX_FORWARD_DELAY)
+=======
+	else if (br->bridge_forward_delay < BR_MAX_FORWARD_DELAY)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__br_set_forward_delay(br, BR_MAX_FORWARD_DELAY);
 
 	if (r == 0) {
@@ -241,13 +245,20 @@ bool br_stp_recalculate_bridge_id(struct net_bridge *br)
 	return true;
 }
 
+<<<<<<< HEAD
 /* Acquires and releases bridge lock */
+=======
+/* called under bridge lock */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void br_stp_set_bridge_priority(struct net_bridge *br, u16 newprio)
 {
 	struct net_bridge_port *p;
 	int wasroot;
 
+<<<<<<< HEAD
 	spin_lock_bh(&br->lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	wasroot = br_is_root_bridge(br);
 
 	list_for_each_entry(p, &br->port_list, list) {
@@ -265,7 +276,10 @@ void br_stp_set_bridge_priority(struct net_bridge *br, u16 newprio)
 	br_port_state_selection(br);
 	if (br_is_root_bridge(br) && !wasroot)
 		br_become_root_bridge(br);
+<<<<<<< HEAD
 	spin_unlock_bh(&br->lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* called under bridge lock */

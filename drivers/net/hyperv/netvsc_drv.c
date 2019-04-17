@@ -138,7 +138,10 @@ static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
 	struct hv_netvsc_packet *packet;
 	int ret;
 	unsigned int i, num_pages, npg_data;
+<<<<<<< HEAD
 	u32 skb_length = skb->len;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Add multipages for skb->data and additional 2 for RNDIS */
 	npg_data = (((unsigned long)skb->data + skb_headlen(skb) - 1)
@@ -209,7 +212,11 @@ static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
 	ret = rndis_filter_send(net_device_ctx->device_ctx,
 				  packet);
 	if (ret == 0) {
+<<<<<<< HEAD
 		net->stats.tx_bytes += skb_length;
+=======
+		net->stats.tx_bytes += skb->len;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		net->stats.tx_packets++;
 	} else {
 		kfree(packet);
@@ -329,6 +336,10 @@ static int netvsc_change_mtu(struct net_device *ndev, int mtu)
 		return -EINVAL;
 
 	nvdev->start_remove = true;
+<<<<<<< HEAD
+=======
+	cancel_delayed_work_sync(&ndevctx->dwork);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cancel_work_sync(&ndevctx->work);
 	netif_tx_disable(ndev);
 	rndis_filter_device_remove(hdev);

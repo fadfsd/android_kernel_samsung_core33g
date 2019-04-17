@@ -237,6 +237,7 @@ struct packet_skb_cb {
 static void __fanout_unlink(struct sock *sk, struct packet_sock *po);
 static void __fanout_link(struct sock *sk, struct packet_sock *po);
 
+<<<<<<< HEAD
 static struct net_device *packet_cached_dev_get(struct packet_sock *po)
 {
 	struct net_device *dev;
@@ -261,6 +262,8 @@ static void packet_cached_dev_reset(struct packet_sock *po)
 	RCU_INIT_POINTER(po->cached_dev, NULL);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* register_prot_hook must be invoked with the po->bind_lock held,
  * or from a context in which asynchronous accesses to the packet
  * socket is not possible (packet_create()).
@@ -268,13 +271,19 @@ static void packet_cached_dev_reset(struct packet_sock *po)
 static void register_prot_hook(struct sock *sk)
 {
 	struct packet_sock *po = pkt_sk(sk);
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!po->running) {
 		if (po->fanout)
 			__fanout_link(sk, po);
 		else
 			dev_add_pack(&po->prot_hook);
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		sock_hold(sk);
 		po->running = 1;
 	}
@@ -292,12 +301,18 @@ static void __unregister_prot_hook(struct sock *sk, bool sync)
 	struct packet_sock *po = pkt_sk(sk);
 
 	po->running = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (po->fanout)
 		__fanout_unlink(sk, po);
 	else
 		__dev_remove_pack(&po->prot_hook);
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__sock_put(sk);
 
 	if (sync) {
@@ -460,9 +475,15 @@ static void prb_shutdown_retire_blk_timer(struct packet_sock *po,
 
 	pkc = tx_ring ? &po->tx_ring.prb_bdqc : &po->rx_ring.prb_bdqc;
 
+<<<<<<< HEAD
 	spin_lock_bh(&rb_queue->lock);
 	pkc->delete_blk_timer = 1;
 	spin_unlock_bh(&rb_queue->lock);
+=======
+	spin_lock(&rb_queue->lock);
+	pkc->delete_blk_timer = 1;
+	spin_unlock(&rb_queue->lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	prb_del_retire_blk_timer(pkc);
 }
@@ -565,7 +586,10 @@ static void init_prb_bdqc(struct packet_sock *po,
 	p1->tov_in_jiffies = msecs_to_jiffies(p1->retire_blk_tov);
 	p1->blk_sizeof_priv = req_u->req3.tp_sizeof_priv;
 
+<<<<<<< HEAD
 	p1->max_frame_len = p1->kblk_size - BLK_PLUS_PRIV(p1->blk_sizeof_priv);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	prb_init_ft_ops(p1, req_u);
 	prb_setup_retire_blk_timer(po, tx_ring);
 	prb_open_block(p1, pbd);
@@ -1150,6 +1174,19 @@ static void packet_sock_destruct(struct sock *sk)
 	sk_refcnt_debug_dec(sk);
 }
 
+<<<<<<< HEAD
+=======
+static int fanout_rr_next(struct packet_fanout *f, unsigned int num)
+{
+	int x = atomic_read(&f->rr_cur) + 1;
+
+	if (x >= num)
+		x = 0;
+
+	return x;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static unsigned int fanout_demux_hash(struct packet_fanout *f,
 				      struct sk_buff *skb,
 				      unsigned int num)
@@ -1161,9 +1198,19 @@ static unsigned int fanout_demux_lb(struct packet_fanout *f,
 				    struct sk_buff *skb,
 				    unsigned int num)
 {
+<<<<<<< HEAD
 	unsigned int val = atomic_inc_return(&f->rr_cur);
 
 	return val % num;
+=======
+	int cur, old;
+
+	cur = atomic_read(&f->rr_cur);
+	while ((old = atomic_cmpxchg(&f->rr_cur, cur,
+				     fanout_rr_next(f, num))) != cur)
+		cur = old;
+	return cur;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static unsigned int fanout_demux_cpu(struct packet_fanout *f,
@@ -1203,7 +1250,11 @@ static int packet_rcv_fanout(struct sk_buff *skb, struct net_device *dev,
 			     struct packet_type *pt, struct net_device *orig_dev)
 {
 	struct packet_fanout *f = pt->af_packet_priv;
+<<<<<<< HEAD
 	unsigned int num = ACCESS_ONCE(f->num_members);
+=======
+	unsigned int num = f->num_members;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct packet_sock *po;
 	unsigned int idx;
 
@@ -1790,6 +1841,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 			if ((int)snaplen < 0)
 				snaplen = 0;
 		}
+<<<<<<< HEAD
 	} else if (unlikely(macoff + snaplen >
 			    GET_PBDQC_FROM_RB(&po->rx_ring)->max_frame_len)) {
 		u32 nval;
@@ -1802,6 +1854,8 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
 			snaplen = 0;
 			macoff = GET_PBDQC_FROM_RB(&po->rx_ring)->max_frame_len;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	spin_lock(&sk->sk_receive_queue.lock);
 	h.raw = packet_current_rx_frame(po, skb,
@@ -2073,6 +2127,10 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 	struct sk_buff *skb;
 	struct net_device *dev;
 	__be16 proto;
+<<<<<<< HEAD
+=======
+	bool need_rls_dev = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int err, reserve = 0;
 	void *ph;
 	struct sockaddr_ll *saddr = (struct sockaddr_ll *)msg->msg_name;
@@ -2084,8 +2142,13 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 
 	mutex_lock(&po->pg_vec_lock);
 
+<<<<<<< HEAD
 	if (likely(saddr == NULL)) {
 		dev	= packet_cached_dev_get(po);
+=======
+	if (saddr == NULL) {
+		dev = po->prot_hook.dev;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		proto	= po->num;
 		addr	= NULL;
 	} else {
@@ -2099,17 +2162,30 @@ static int tpacket_snd(struct packet_sock *po, struct msghdr *msg)
 		proto	= saddr->sll_protocol;
 		addr	= saddr->sll_addr;
 		dev = dev_get_by_index(sock_net(&po->sk), saddr->sll_ifindex);
+<<<<<<< HEAD
+=======
+		need_rls_dev = true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	err = -ENXIO;
 	if (unlikely(dev == NULL))
 		goto out;
+<<<<<<< HEAD
+=======
+
+	reserve = dev->hard_header_len;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	err = -ENETDOWN;
 	if (unlikely(!(dev->flags & IFF_UP)))
 		goto out_put;
 
+<<<<<<< HEAD
 	reserve = dev->hard_header_len;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	size_max = po->tx_ring.frame_size
 		- (po->tp_hdrlen - sizeof(struct sockaddr_ll));
 
@@ -2186,7 +2262,12 @@ out_status:
 	__packet_set_status(po, ph, status);
 	kfree_skb(skb);
 out_put:
+<<<<<<< HEAD
 	dev_put(dev);
+=======
+	if (need_rls_dev)
+		dev_put(dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out:
 	mutex_unlock(&po->pg_vec_lock);
 	return err;
@@ -2224,6 +2305,10 @@ static int packet_snd(struct socket *sock,
 	struct sk_buff *skb;
 	struct net_device *dev;
 	__be16 proto;
+<<<<<<< HEAD
+=======
+	bool need_rls_dev = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned char *addr;
 	int err, reserve = 0;
 	struct virtio_net_hdr vnet_hdr = { 0 };
@@ -2238,8 +2323,13 @@ static int packet_snd(struct socket *sock,
 	 *	Get and verify the address.
 	 */
 
+<<<<<<< HEAD
 	if (likely(saddr == NULL)) {
 		dev	= packet_cached_dev_get(po);
+=======
+	if (saddr == NULL) {
+		dev = po->prot_hook.dev;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		proto	= po->num;
 		addr	= NULL;
 	} else {
@@ -2251,6 +2341,7 @@ static int packet_snd(struct socket *sock,
 		proto	= saddr->sll_protocol;
 		addr	= saddr->sll_addr;
 		dev = dev_get_by_index(sock_net(sk), saddr->sll_ifindex);
+<<<<<<< HEAD
 	}
 
 	err = -ENXIO;
@@ -2262,6 +2353,21 @@ static int packet_snd(struct socket *sock,
 
 	if (sock->type == SOCK_RAW)
 		reserve = dev->hard_header_len;
+=======
+		need_rls_dev = true;
+	}
+
+	err = -ENXIO;
+	if (dev == NULL)
+		goto out_unlock;
+	if (sock->type == SOCK_RAW)
+		reserve = dev->hard_header_len;
+
+	err = -ENETDOWN;
+	if (!(dev->flags & IFF_UP))
+		goto out_unlock;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (po->has_vnet_hdr) {
 		vnet_hdr_len = sizeof(vnet_hdr);
 
@@ -2395,14 +2501,23 @@ static int packet_snd(struct socket *sock,
 	if (err > 0 && (err = net_xmit_errno(err)) != 0)
 		goto out_unlock;
 
+<<<<<<< HEAD
 	dev_put(dev);
+=======
+	if (need_rls_dev)
+		dev_put(dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return len;
 
 out_free:
 	kfree_skb(skb);
 out_unlock:
+<<<<<<< HEAD
 	if (dev)
+=======
+	if (dev && need_rls_dev)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		dev_put(dev);
 out:
 	return err;
@@ -2447,8 +2562,11 @@ static int packet_release(struct socket *sock)
 
 	spin_lock(&po->bind_lock);
 	unregister_prot_hook(sk, false);
+<<<<<<< HEAD
 	packet_cached_dev_reset(po);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (po->prot_hook.dev) {
 		dev_put(po->prot_hook.dev);
 		po->prot_hook.dev = NULL;
@@ -2504,16 +2622,25 @@ static int packet_do_bind(struct sock *sk, struct net_device *dev, __be16 protoc
 
 	spin_lock(&po->bind_lock);
 	unregister_prot_hook(sk, true);
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	po->num = protocol;
 	po->prot_hook.type = protocol;
 	if (po->prot_hook.dev)
 		dev_put(po->prot_hook.dev);
+<<<<<<< HEAD
 
 	po->prot_hook.dev = dev;
 	po->ifindex = dev ? dev->ifindex : 0;
 
 	packet_cached_dev_assign(po, dev);
+=======
+	po->prot_hook.dev = dev;
+
+	po->ifindex = dev ? dev->ifindex : 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (protocol == 0)
 		goto out_unlock;
@@ -2628,8 +2755,11 @@ static int packet_create(struct net *net, struct socket *sock, int protocol,
 	sk->sk_family = PF_PACKET;
 	po->num = proto;
 
+<<<<<<< HEAD
 	packet_cached_dev_reset(po);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sk->sk_destruct = packet_sock_destruct;
 	sk_refcnt_debug_inc(sk);
 
@@ -2720,6 +2850,10 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sock *sk = sock->sk;
 	struct sk_buff *skb;
 	int copied, err;
+<<<<<<< HEAD
+=======
+	struct sockaddr_ll *sll;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int vnet_hdr_len = 0;
 
 	err = -EINVAL;
@@ -2802,10 +2936,29 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 			goto out_free;
 	}
 
+<<<<<<< HEAD
 	/* You lose any data beyond the buffer you gave. If it worries
 	 * a user program they can ask the device for its MTU
 	 * anyway.
 	 */
+=======
+	/*
+	 *	If the address length field is there to be filled in, we fill
+	 *	it in now.
+	 */
+
+	sll = &PACKET_SKB_CB(skb)->sa.ll;
+	if (sock->type == SOCK_PACKET)
+		msg->msg_namelen = sizeof(struct sockaddr_pkt);
+	else
+		msg->msg_namelen = sll->sll_halen + offsetof(struct sockaddr_ll, sll_addr);
+
+	/*
+	 *	You lose any data beyond the buffer you gave. If it worries a
+	 *	user program they can ask the device for its MTU anyway.
+	 */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	copied = skb->len;
 	if (copied > len) {
 		copied = len;
@@ -2818,6 +2971,7 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 	sock_recv_ts_and_drops(msg, sk, skb);
 
+<<<<<<< HEAD
 	if (msg->msg_name) {
 		/* If the address length field is there to be filled
 		 * in, we fill it in now.
@@ -2832,6 +2986,11 @@ static int packet_recvmsg(struct kiocb *iocb, struct socket *sock,
 		memcpy(msg->msg_name, &PACKET_SKB_CB(skb)->sa,
 		       msg->msg_namelen);
 	}
+=======
+	if (msg->msg_name)
+		memcpy(msg->msg_name, &PACKET_SKB_CB(skb)->sa,
+		       msg->msg_namelen);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (pkt_sk(sk)->auxdata) {
 		struct tpacket_auxdata aux;
@@ -3382,7 +3541,10 @@ static int packet_notifier(struct notifier_block *this, unsigned long msg, void 
 						sk->sk_error_report(sk);
 				}
 				if (msg == NETDEV_UNREGISTER) {
+<<<<<<< HEAD
 					packet_cached_dev_reset(po);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					po->ifindex = -1;
 					if (po->prot_hook.dev)
 						dev_put(po->prot_hook.dev);
@@ -3641,10 +3803,13 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
 			goto out;
 		if (unlikely(req->tp_block_size & (PAGE_SIZE - 1)))
 			goto out;
+<<<<<<< HEAD
 		if (po->tp_version >= TPACKET_V3 &&
 		    (int)(req->tp_block_size -
 			  BLK_PLUS_PRIV(req_u->req3.tp_sizeof_priv)) <= 0)
 			goto out;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (unlikely(req->tp_frame_size < po->tp_hdrlen +
 					po->tp_reserve))
 			goto out;

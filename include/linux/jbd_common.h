@@ -1,6 +1,7 @@
 #ifndef _LINUX_JBD_STATE_H
 #define _LINUX_JBD_STATE_H
 
+<<<<<<< HEAD
 enum jbd_state_bits {
 	BH_JBD			/* Has an attached ext3 journal_head */
 	  = BH_PrivateStart,
@@ -27,6 +28,8 @@ TAS_BUFFER_FNS(RevokeValid, revokevalid)
 BUFFER_FNS(Freed, freed)
 BUFFER_FNS(Verified, verified)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline struct buffer_head *jh2bh(struct journal_head *jh)
 {
 	return jh->b_bh;

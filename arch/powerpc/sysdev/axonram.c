@@ -155,7 +155,11 @@ axon_ram_direct_access(struct block_device *device, sector_t sector,
 	}
 
 	*kaddr = (void *)(bank->ph_addr + offset);
+<<<<<<< HEAD
 	*pfn = virt_to_phys(*kaddr) >> PAGE_SHIFT;
+=======
+	*pfn = virt_to_phys(kaddr) >> PAGE_SHIFT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }

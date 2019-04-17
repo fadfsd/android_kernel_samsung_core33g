@@ -180,4 +180,7 @@ module_exit(nx842_mod_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("842 Compression Algorithm");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("842");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

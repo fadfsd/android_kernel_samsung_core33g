@@ -96,7 +96,11 @@ static inline struct request *__elv_next_request(struct request_queue *q)
 			q->flush_queue_delayed = 1;
 			return NULL;
 		}
+<<<<<<< HEAD
 		if (unlikely(blk_queue_bypass(q)) ||
+=======
+		if (unlikely(blk_queue_dying(q)) ||
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		    !q->elevator->type->ops.elevator_dispatch_fn(q, 0))
 			return NULL;
 	}

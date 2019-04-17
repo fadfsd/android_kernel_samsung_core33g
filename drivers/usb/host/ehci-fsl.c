@@ -261,8 +261,12 @@ static int ehci_fsl_setup_phy(struct usb_hcd *hcd,
 		break;
 	}
 
+<<<<<<< HEAD
 	if (pdata->have_sysif_regs &&
 	    pdata->controller_ver > FSL_USB_VER_1_6 &&
+=======
+	if (pdata->have_sysif_regs && pdata->controller_ver &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	    (phy_mode == FSL_USB2_PHY_ULPI)) {
 		/* check PHY_CLK_VALID to get phy clk valid */
 		if (!spin_event_timeout(in_be32(non_ehci + FSL_SOC_USB_CTRL) &

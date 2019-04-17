@@ -1201,8 +1201,13 @@ static unsigned long kmem_cache_flags(unsigned long object_size,
 	/*
 	 * Enable debugging if selected on the kernel commandline.
 	 */
+<<<<<<< HEAD
 	if (slub_debug && (!slub_debug_slabs || (name &&
 		!strncmp(slub_debug_slabs, name, strlen(slub_debug_slabs)))))
+=======
+	if (slub_debug && (!slub_debug_slabs ||
+		!strncmp(slub_debug_slabs, name, strlen(slub_debug_slabs))))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		flags |= slub_debug;
 
 	return flags;
@@ -1287,7 +1292,12 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
 	 * Let the initial higher-order allocation fail under memory pressure
 	 * so we fall-back to the minimum order allocation.
 	 */
+<<<<<<< HEAD
 	alloc_gfp = (flags | __GFP_NOWARN | __GFP_NORETRY) & ~__GFP_NOFAIL;
+=======
+	alloc_gfp = (flags | __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC
+			| __GFP_NO_KSWAPD) & ~(__GFP_NOFAIL|__GFP_WAIT);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	page = alloc_slab_page(alloc_gfp, node, oo);
 	if (unlikely(!page)) {
@@ -4285,6 +4295,7 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
 
 			page = ACCESS_ONCE(c->partial);
 			if (page) {
+<<<<<<< HEAD
 				node = page_to_nid(page);
 				if (flags & SO_TOTAL)
 					WARN_ON_ONCE(1);
@@ -4292,6 +4303,9 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
 					WARN_ON_ONCE(1);
 				else
 					x = page->pages;
+=======
+				x = page->pobjects;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				total += x;
 				nodes[node] += x;
 			}

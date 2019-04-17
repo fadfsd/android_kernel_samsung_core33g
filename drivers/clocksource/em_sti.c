@@ -301,7 +301,11 @@ static void em_sti_register_clockevent(struct em_sti_priv *p)
 	ced->name = dev_name(&p->pdev->dev);
 	ced->features = CLOCK_EVT_FEAT_ONESHOT;
 	ced->rating = 200;
+<<<<<<< HEAD
 	ced->cpumask = cpu_possible_mask;
+=======
+	ced->cpumask = cpumask_of(0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ced->set_next_event = em_sti_clock_event_next;
 	ced->set_mode = em_sti_clock_event_mode;
 

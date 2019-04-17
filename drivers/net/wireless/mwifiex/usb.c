@@ -511,6 +511,16 @@ static int mwifiex_usb_resume(struct usb_interface *intf)
 						   MWIFIEX_BSS_ROLE_ANY),
 				  MWIFIEX_ASYNC_CMD);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+	/* Resume handler may be called due to remote wakeup,
+	 * force to exit suspend anyway
+	 */
+	usb_disable_autosuspend(card->udev);
+#endif /* CONFIG_PM */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -569,6 +579,10 @@ static struct usb_driver mwifiex_usb_driver = {
 	.id_table = mwifiex_usb_table,
 	.suspend = mwifiex_usb_suspend,
 	.resume = mwifiex_usb_resume,
+<<<<<<< HEAD
+=======
+	.supports_autosuspend = 1,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static int mwifiex_usb_tx_init(struct mwifiex_adapter *adapter)

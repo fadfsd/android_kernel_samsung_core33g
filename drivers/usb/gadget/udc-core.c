@@ -335,7 +335,19 @@ static int udc_bind_to_driver(struct usb_udc *udc, struct usb_gadget_driver *dri
 		driver->unbind(udc->gadget);
 		goto err1;
 	}
+<<<<<<< HEAD
 	usb_gadget_connect(udc->gadget);
+=======
+	/*
+	 * HACK: The Android gadget driver disconnects the gadget
+	 * on bind and expects the gadget to stay disconnected until
+	 * it calls usb_gadget_connect when userspace is ready. Remove
+	 * the call to usb_gadget_connect bellow to avoid enabling the
+	 * pullup before userspace is ready.
+	 *
+	 * usb_gadget_connect(udc->gadget);
+	 */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
 	return 0;
@@ -439,11 +451,14 @@ static ssize_t usb_udc_softconn_store(struct device *dev,
 {
 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
 
+<<<<<<< HEAD
 	if (!udc->driver) {
 		dev_err(dev, "soft-connect without a gadget driver\n");
 		return -EOPNOTSUPP;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (sysfs_streq(buf, "connect")) {
 		usb_gadget_udc_start(udc->gadget, udc->driver);
 		usb_gadget_connect(udc->gadget);

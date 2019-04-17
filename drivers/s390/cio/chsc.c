@@ -500,6 +500,7 @@ static void chsc_process_sei_nt0(struct chsc_sei_nt0_area *sei_area)
 
 static void chsc_process_event_information(struct chsc_sei *sei, u64 ntsm)
 {
+<<<<<<< HEAD
 	static int ntsm_unsupported;
 
 	while (true) {
@@ -508,11 +509,19 @@ static void chsc_process_event_information(struct chsc_sei *sei, u64 ntsm)
 		sei->request.code = 0x000e;
 		if (!ntsm_unsupported)
 			sei->ntsm = ntsm;
+=======
+	do {
+		memset(sei, 0, sizeof(*sei));
+		sei->request.length = 0x0010;
+		sei->request.code = 0x000e;
+		sei->ntsm = ntsm;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (chsc(sei))
 			break;
 
 		if (sei->response.code != 0x0001) {
+<<<<<<< HEAD
 			CIO_CRW_EVENT(2, "chsc: sei failed (rc=%04x, ntsm=%llx)\n",
 				      sei->response.code, sei->ntsm);
 
@@ -521,6 +530,10 @@ static void chsc_process_event_information(struct chsc_sei *sei, u64 ntsm)
 				ntsm_unsupported = 1;
 				continue;
 			}
+=======
+			CIO_CRW_EVENT(2, "chsc: sei failed (rc=%04x)\n",
+				      sei->response.code);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			break;
 		}
 
@@ -536,10 +549,14 @@ static void chsc_process_event_information(struct chsc_sei *sei, u64 ntsm)
 			CIO_CRW_EVENT(2, "chsc: unhandled nt: %d\n", sei->nt);
 			break;
 		}
+<<<<<<< HEAD
 
 		if (!(sei->u.nt0_area.flags & 0x80))
 			break;
 	}
+=======
+	} while (sei->u.nt0_area.flags & 0x80);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*

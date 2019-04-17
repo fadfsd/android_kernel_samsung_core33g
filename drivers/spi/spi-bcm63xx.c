@@ -180,6 +180,11 @@ static int bcm63xx_txrx_bufs(struct spi_device *spi, struct spi_transfer *first,
 			       transfer_list);
 	}
 
+<<<<<<< HEAD
+=======
+	len -= prepend_len;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	init_completion(&bs->done);
 
 	/* Fill in the Message control register */

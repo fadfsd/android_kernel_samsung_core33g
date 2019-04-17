@@ -812,8 +812,16 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
 	  unsigned int fault)
 {
 	struct task_struct *tsk = current;
+<<<<<<< HEAD
 	int code = BUS_ADRERR;
 
+=======
+	struct mm_struct *mm = tsk->mm;
+	int code = BUS_ADRERR;
+
+	up_read(&mm->mmap_sem);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Kernel mode? Handle exceptions or die: */
 	if (!(error_code & PF_USER)) {
 		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
@@ -839,6 +847,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
 	force_sig_info_fault(SIGBUS, code, address, tsk, fault);
 }
 
+<<<<<<< HEAD
 static noinline void
 mm_fault_error(struct pt_regs *regs, unsigned long error_code,
 	       unsigned long address, unsigned int fault)
@@ -847,15 +856,45 @@ mm_fault_error(struct pt_regs *regs, unsigned long error_code,
 		no_context(regs, error_code, address, 0, 0);
 		return;
 	}
+=======
+static noinline int
+mm_fault_error(struct pt_regs *regs, unsigned long error_code,
+	       unsigned long address, unsigned int fault)
+{
+	/*
+	 * Pagefault was interrupted by SIGKILL. We have no reason to
+	 * continue pagefault.
+	 */
+	if (fatal_signal_pending(current)) {
+		if (!(fault & VM_FAULT_RETRY))
+			up_read(&current->mm->mmap_sem);
+		if (!(error_code & PF_USER))
+			no_context(regs, error_code, address, 0, 0);
+		return 1;
+	}
+	if (!(fault & VM_FAULT_ERROR))
+		return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (fault & VM_FAULT_OOM) {
 		/* Kernel mode? Handle exceptions or die: */
 		if (!(error_code & PF_USER)) {
+<<<<<<< HEAD
 			no_context(regs, error_code, address,
 				   SIGSEGV, SEGV_MAPERR);
 			return;
 		}
 
+=======
+			up_read(&current->mm->mmap_sem);
+			no_context(regs, error_code, address,
+				   SIGSEGV, SEGV_MAPERR);
+			return 1;
+		}
+
+		up_read(&current->mm->mmap_sem);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*
 		 * We ran out of memory, call the OOM killer, and return the
 		 * userspace (which will retry the fault, or kill us if we got
@@ -866,11 +905,18 @@ mm_fault_error(struct pt_regs *regs, unsigned long error_code,
 		if (fault & (VM_FAULT_SIGBUS|VM_FAULT_HWPOISON|
 			     VM_FAULT_HWPOISON_LARGE))
 			do_sigbus(regs, error_code, address, fault);
+<<<<<<< HEAD
 		else if (fault & VM_FAULT_SIGSEGV)
 			bad_area_nosemaphore(regs, error_code, address);
 		else
 			BUG();
 	}
+=======
+		else
+			BUG();
+	}
+	return 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int spurious_fault_check(unsigned long error_code, pte_t *pte)
@@ -975,12 +1021,15 @@ static int fault_in_kernel_space(unsigned long address)
 
 static inline bool smap_violation(int error_code, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	if (!IS_ENABLED(CONFIG_X86_SMAP))
 		return false;
 
 	if (!static_cpu_has(X86_FEATURE_SMAP))
 		return false;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (error_code & PF_USER)
 		return false;
 
@@ -1003,7 +1052,13 @@ __do_page_fault(struct pt_regs *regs, unsigned long error_code)
 	unsigned long address;
 	struct mm_struct *mm;
 	int fault;
+<<<<<<< HEAD
 	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+=======
+	int write = error_code & PF_WRITE;
+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
+					(write ? FAULT_FLAG_WRITE : 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tsk = current;
 	mm = tsk->mm;
@@ -1073,7 +1128,10 @@ __do_page_fault(struct pt_regs *regs, unsigned long error_code)
 	if (user_mode_vm(regs)) {
 		local_irq_enable();
 		error_code |= PF_USER;
+<<<<<<< HEAD
 		flags |= FAULT_FLAG_USER;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		if (regs->flags & X86_EFLAGS_IF)
 			local_irq_enable();
@@ -1082,9 +1140,17 @@ __do_page_fault(struct pt_regs *regs, unsigned long error_code)
 	if (unlikely(error_code & PF_RSVD))
 		pgtable_bad(regs, error_code, address);
 
+<<<<<<< HEAD
 	if (unlikely(smap_violation(error_code, regs))) {
 		bad_area_nosemaphore(regs, error_code, address);
 		return;
+=======
+	if (static_cpu_has(X86_FEATURE_SMAP)) {
+		if (unlikely(smap_violation(error_code, regs))) {
+			bad_area_nosemaphore(regs, error_code, address);
+			return;
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
@@ -1098,9 +1164,12 @@ __do_page_fault(struct pt_regs *regs, unsigned long error_code)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (error_code & PF_WRITE)
 		flags |= FAULT_FLAG_WRITE;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * When running in the kernel we expect faults to occur only to
 	 * addresses in user space.  All other faults represent errors in
@@ -1179,6 +1248,7 @@ good_area:
 	 */
 	fault = handle_mm_fault(mm, vma, address, flags);
 
+<<<<<<< HEAD
 	/*
 	 * If we need to retry but a fatal signal is pending, handle the
 	 * signal first. We do not need to release the mmap_sem because it
@@ -1191,6 +1261,11 @@ good_area:
 		up_read(&mm->mmap_sem);
 		mm_fault_error(regs, error_code, address, fault);
 		return;
+=======
+	if (unlikely(fault & (VM_FAULT_RETRY|VM_FAULT_ERROR))) {
+		if (mm_fault_error(regs, error_code, address, fault))
+			return;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/*

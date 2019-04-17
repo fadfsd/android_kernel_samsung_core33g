@@ -68,7 +68,10 @@ struct hci_uart {
 	unsigned long		hdev_flags;
 
 	struct work_struct	init_ready;
+<<<<<<< HEAD
 	struct work_struct	write_work;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct hci_uart_proto	*proto;
 	void			*priv;

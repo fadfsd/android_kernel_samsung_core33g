@@ -290,8 +290,12 @@ int
 cifsConvertToUTF16(__le16 *target, const char *source, int srclen,
 		 const struct nls_table *cp, int mapChars)
 {
+<<<<<<< HEAD
 	int i, charlen;
 	int j = 0;
+=======
+	int i, j, charlen;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	char src_char;
 	__le16 dst_char;
 	wchar_t tmp;
@@ -299,11 +303,19 @@ cifsConvertToUTF16(__le16 *target, const char *source, int srclen,
 	if (!mapChars)
 		return cifs_strtoUTF16(target, source, PATH_MAX, cp);
 
+<<<<<<< HEAD
 	for (i = 0; i < srclen; j++) {
+=======
+	for (i = 0, j = 0; i < srclen; j++) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		src_char = source[i];
 		charlen = 1;
 		switch (src_char) {
 		case 0:
+<<<<<<< HEAD
+=======
+			put_unaligned(0, &target[j]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto ctoUTF16_out;
 		case ':':
 			dst_char = cpu_to_le16(UNI_COLON);
@@ -350,7 +362,10 @@ cifsConvertToUTF16(__le16 *target, const char *source, int srclen,
 	}
 
 ctoUTF16_out:
+<<<<<<< HEAD
 	put_unaligned(0, &target[j]); /* Null terminate target unicode string */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return j;
 }
 

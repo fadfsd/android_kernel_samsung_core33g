@@ -12,8 +12,11 @@
 #include <linux/mm.h>
 #include <linux/gfp.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <asm/setup.h>
 #include <asm/ipl.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define ESSA_SET_STABLE		1
 #define ESSA_SET_UNUSED		2
@@ -43,6 +46,7 @@ void __init cmma_init(void)
 
 	if (!cmma_flag)
 		return;
+<<<<<<< HEAD
 	/*
 	 * Disable CMM for dump, otherwise  the tprot based memory
 	 * detection can fail because of unstable pages.
@@ -51,6 +55,8 @@ void __init cmma_init(void)
 		cmma_flag = 0;
 		return;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	asm volatile(
 		"       .insn rrf,0xb9ab0000,%1,%1,0,0\n"
 		"0:     la      %0,0\n"

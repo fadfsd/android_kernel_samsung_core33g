@@ -927,7 +927,11 @@ bool dev_valid_name(const char *name)
 		return false;
 
 	while (*name) {
+<<<<<<< HEAD
 		if (*name == '/' || *name == ':' || isspace(*name))
+=======
+		if (*name == '/' || isspace(*name))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return false;
 		name++;
 	}
@@ -2374,7 +2378,11 @@ EXPORT_SYMBOL(netdev_rx_csum_fault);
  * 2. No high memory really exists on this machine.
  */
 
+<<<<<<< HEAD
 static int illegal_highdma(const struct net_device *dev, struct sk_buff *skb)
+=======
+static int illegal_highdma(struct net_device *dev, struct sk_buff *skb)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 #ifdef CONFIG_HIGHMEM
 	int i;
@@ -2454,20 +2462,29 @@ static int dev_gso_segment(struct sk_buff *skb, netdev_features_t features)
 }
 
 static netdev_features_t harmonize_features(struct sk_buff *skb,
+<<<<<<< HEAD
 					    __be16 protocol,
 					    const struct net_device *dev,
 					    netdev_features_t features)
+=======
+	__be16 protocol, netdev_features_t features)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	if (skb->ip_summed != CHECKSUM_NONE &&
 	    !can_checksum_protocol(features, protocol)) {
 		features &= ~NETIF_F_ALL_CSUM;
+<<<<<<< HEAD
 	} else if (illegal_highdma(dev, skb)) {
+=======
+	} else if (illegal_highdma(skb->dev, skb)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		features &= ~NETIF_F_SG;
 	}
 
 	return features;
 }
 
+<<<<<<< HEAD
 netdev_features_t netif_skb_dev_features(struct sk_buff *skb,
 					 const struct net_device *dev)
 {
@@ -2475,12 +2492,21 @@ netdev_features_t netif_skb_dev_features(struct sk_buff *skb,
 	netdev_features_t features = dev->features;
 
 	if (skb_shinfo(skb)->gso_segs > dev->gso_max_segs)
+=======
+netdev_features_t netif_skb_features(struct sk_buff *skb)
+{
+	__be16 protocol = skb->protocol;
+	netdev_features_t features = skb->dev->features;
+
+	if (skb_shinfo(skb)->gso_segs > skb->dev->gso_max_segs)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		features &= ~NETIF_F_GSO_MASK;
 
 	if (protocol == htons(ETH_P_8021Q) || protocol == htons(ETH_P_8021AD)) {
 		struct vlan_ethhdr *veh = (struct vlan_ethhdr *)skb->data;
 		protocol = veh->h_vlan_encapsulated_proto;
 	} else if (!vlan_tx_tag_present(skb)) {
+<<<<<<< HEAD
 		return harmonize_features(skb, protocol, dev, features);
 	}
 
@@ -2489,16 +2515,33 @@ netdev_features_t netif_skb_dev_features(struct sk_buff *skb,
 
 	if (protocol != htons(ETH_P_8021Q) && protocol != htons(ETH_P_8021AD)) {
 		return harmonize_features(skb, protocol, dev, features);
+=======
+		return harmonize_features(skb, protocol, features);
+	}
+
+	features &= (skb->dev->vlan_features | NETIF_F_HW_VLAN_CTAG_TX |
+					       NETIF_F_HW_VLAN_STAG_TX);
+
+	if (protocol != htons(ETH_P_8021Q) && protocol != htons(ETH_P_8021AD)) {
+		return harmonize_features(skb, protocol, features);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		features &= NETIF_F_SG | NETIF_F_HIGHDMA | NETIF_F_FRAGLIST |
 				NETIF_F_GEN_CSUM | NETIF_F_HW_VLAN_CTAG_TX |
 				NETIF_F_HW_VLAN_STAG_TX;
+<<<<<<< HEAD
 		return harmonize_features(skb, protocol, dev, features);
 	}
 
 	return harmonize_features(skb, protocol, dev, features);
 }
 EXPORT_SYMBOL(netif_skb_dev_features);
+=======
+		return harmonize_features(skb, protocol, features);
+	}
+}
+EXPORT_SYMBOL(netif_skb_features);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Returns true if either:
@@ -3898,7 +3941,10 @@ static void napi_reuse_skb(struct napi_struct *napi, struct sk_buff *skb)
 	skb->vlan_tci = 0;
 	skb->dev = napi->dev;
 	skb->skb_iif = 0;
+<<<<<<< HEAD
 	skb->truesize = SKB_TRUESIZE(skb_end_offset(skb));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	napi->skb = skb;
 }
@@ -4484,7 +4530,11 @@ static void dev_change_rx_flags(struct net_device *dev, int flags)
 {
 	const struct net_device_ops *ops = dev->netdev_ops;
 
+<<<<<<< HEAD
 	if (ops->ndo_change_rx_flags)
+=======
+	if ((dev->flags & IFF_UP) && ops->ndo_change_rx_flags)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ops->ndo_change_rx_flags(dev, flags);
 }
 
@@ -4635,7 +4685,10 @@ void __dev_set_rx_mode(struct net_device *dev)
 	if (ops->ndo_set_rx_mode)
 		ops->ndo_set_rx_mode(dev);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(__dev_set_rx_mode);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void dev_set_rx_mode(struct net_device *dev)
 {
@@ -5827,9 +5880,12 @@ EXPORT_SYMBOL(unregister_netdevice_queue);
 /**
  *	unregister_netdevice_many - unregister many devices
  *	@head: list of devices
+<<<<<<< HEAD
  *
  *  Note: As most callers use a stack allocated list_head,
  *  we force a list_del() to make sure stack wont be corrupted later.
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 void unregister_netdevice_many(struct list_head *head)
 {
@@ -5839,7 +5895,10 @@ void unregister_netdevice_many(struct list_head *head)
 		rollback_registered_many(head);
 		list_for_each_entry(dev, head, unreg_list)
 			net_set_todo(dev);
+<<<<<<< HEAD
 		list_del(head);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 EXPORT_SYMBOL(unregister_netdevice_many);
@@ -6015,6 +6074,7 @@ static int dev_cpu_callback(struct notifier_block *nfb,
 		oldsd->output_queue = NULL;
 		oldsd->output_queue_tailp = &oldsd->output_queue;
 	}
+<<<<<<< HEAD
 	/* Append NAPI poll list from offline CPU, with one exception :
 	 * process_backlog() must be called by cpu owning percpu backlog.
 	 * We properly handle process_queue & input_pkt_queue later.
@@ -6029,6 +6089,12 @@ static int dev_cpu_callback(struct notifier_block *nfb,
 			napi->state = 0;
 		else
 			____napi_schedule(sd, napi);
+=======
+	/* Append NAPI poll list from offline CPU. */
+	if (!list_empty(&oldsd->poll_list)) {
+		list_splice_init(&oldsd->poll_list, &sd->poll_list);
+		raise_softirq_irqoff(NET_RX_SOFTIRQ);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	raise_softirq_irqoff(NET_TX_SOFTIRQ);
@@ -6039,7 +6105,11 @@ static int dev_cpu_callback(struct notifier_block *nfb,
 		netif_rx(skb);
 		input_queue_head_incr(oldsd);
 	}
+<<<<<<< HEAD
 	while ((skb = skb_dequeue(&oldsd->input_pkt_queue))) {
+=======
+	while ((skb = __skb_dequeue(&oldsd->input_pkt_queue))) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		netif_rx(skb);
 		input_queue_head_incr(oldsd);
 	}
@@ -6266,6 +6336,10 @@ static void __net_exit default_device_exit_batch(struct list_head *net_list)
 		}
 	}
 	unregister_netdevice_many(&dev_kill_list);
+<<<<<<< HEAD
+=======
+	list_del(&dev_kill_list);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	rtnl_unlock();
 }
 

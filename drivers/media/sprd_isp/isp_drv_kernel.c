@@ -330,8 +330,13 @@ static int32_t _isp_lnc_param_load(struct isp_reg_bits *reg_bits_ptr, uint32_t c
 #endif
 		reg_value=ISP_READL(ISP_INT_RAW);
 
+<<<<<<< HEAD
 		while((0x00==(reg_value&ISP_INT_LENS_LOAD)) && (time_out_cnt < ISP_TIME_OUT_MAX)) {
 			msleep(1);
+=======
+		while ((0x00 == (reg_value&ISP_INT_LENS_LOAD)) && (time_out_cnt < ISP_TIME_OUT_MAX)) {
+			udelay(1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			reg_value=ISP_READL(ISP_INT_RAW);
 			time_out_cnt++;
 		}
@@ -871,6 +876,7 @@ static long _isp_kernel_ioctl( struct file *fl, unsigned int cmd, unsigned long 
 	{
 		ret = down_interruptible(&g_isp_dev_ptr->sem_isr);
 		if (ret) {
+<<<<<<< HEAD
 			ISP_PRINT("isp_k: ioctl irq: down failed ret = %d",ret);
 			memset(&irq_param, 0, sizeof(irq_param));
 			irq_param.ret_val = ret;
@@ -878,6 +884,8 @@ static long _isp_kernel_ioctl( struct file *fl, unsigned int cmd, unsigned long 
 			if ( 0 != ret) {
 				ISP_PRINT("isp_k: ioctl irq: copy_to_user failed ret = %d", ret);
 			}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			ret = -ERESTARTSYS;
 			goto ISP_IOCTL_EXIT;
 		}

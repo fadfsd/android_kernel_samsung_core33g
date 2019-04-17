@@ -155,9 +155,14 @@ do {						\
 #define elf_check_arch(x)			\
 	((x)->e_machine == EM_X86_64)
 
+<<<<<<< HEAD
 #define compat_elf_check_arch(x)					\
 	(elf_check_arch_ia32(x) ||					\
 	 (IS_ENABLED(CONFIG_X86_X32_ABI) && (x)->e_machine == EM_X86_64))
+=======
+#define compat_elf_check_arch(x)		\
+	(elf_check_arch_ia32(x) || (x)->e_machine == EM_X86_64)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #if __USER32_DS != __USER_DS
 # error "The following code assumes __USER32_DS == __USER_DS"

@@ -209,11 +209,18 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 			}
 			PPC_DIVWU(r_A, r_A, r_X);
 			break;
+<<<<<<< HEAD
 		case BPF_S_ALU_DIV_K: /* A /= K */
 			if (K == 1)
 				break;
 			PPC_LI32(r_scratch1, K);
 			PPC_DIVWU(r_A, r_A, r_scratch1);
+=======
+		case BPF_S_ALU_DIV_K: /* A = reciprocal_divide(A, K); */
+			PPC_LI32(r_scratch1, K);
+			/* Top 32 bits of 64bit result -> A */
+			PPC_MULHWU(r_A, r_A, r_scratch1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			break;
 		case BPF_S_ALU_AND_X:
 			ctx->seen |= SEEN_XREG;

@@ -2277,6 +2277,7 @@ g4x_dp_detect(struct intel_dp *intel_dp)
 		return status;
 	}
 
+<<<<<<< HEAD
 	if (IS_VALLEYVIEW(dev)) {
 		switch (intel_dig_port->port) {
 		case PORT_B:
@@ -2305,6 +2306,20 @@ g4x_dp_detect(struct intel_dp *intel_dp)
 		default:
 			return connector_status_unknown;
 		}
+=======
+	switch (intel_dig_port->port) {
+	case PORT_B:
+		bit = PORTB_HOTPLUG_LIVE_STATUS;
+		break;
+	case PORT_C:
+		bit = PORTC_HOTPLUG_LIVE_STATUS;
+		break;
+	case PORT_D:
+		bit = PORTD_HOTPLUG_LIVE_STATUS;
+		break;
+	default:
+		return connector_status_unknown;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	if ((I915_READ(PORT_HOTPLUG_STAT) & bit) == 0)

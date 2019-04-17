@@ -11,7 +11,10 @@
 #include <linux/fs.h>
 #include <linux/f2fs_fs.h>
 #include <linux/buffer_head.h>
+<<<<<<< HEAD
 #include <linux/backing-dev.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/writeback.h>
 
 #include "f2fs.h"
@@ -19,6 +22,7 @@
 
 #include <trace/events/f2fs.h>
 
+<<<<<<< HEAD
 void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
 {
 	if (f2fs_inode_dirtied(inode, sync))
@@ -102,20 +106,49 @@ static void __recover_inline_status(struct inode *inode, struct page *ipage)
 		}
 	}
 	return;
+=======
+void f2fs_set_inode_flags(struct inode *inode)
+{
+	unsigned int flags = F2FS_I(inode)->i_flags;
+
+	inode->i_flags &= ~(S_SYNC | S_APPEND | S_IMMUTABLE |
+			S_NOATIME | S_DIRSYNC);
+
+	if (flags & FS_SYNC_FL)
+		inode->i_flags |= S_SYNC;
+	if (flags & FS_APPEND_FL)
+		inode->i_flags |= S_APPEND;
+	if (flags & FS_IMMUTABLE_FL)
+		inode->i_flags |= S_IMMUTABLE;
+	if (flags & FS_NOATIME_FL)
+		inode->i_flags |= S_NOATIME;
+	if (flags & FS_DIRSYNC_FL)
+		inode->i_flags |= S_DIRSYNC;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int do_read_inode(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
 	struct f2fs_inode_info *fi = F2FS_I(inode);
 	struct page *node_page;
+=======
+	struct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);
+	struct f2fs_inode_info *fi = F2FS_I(inode);
+	struct page *node_page;
+	struct f2fs_node *rn;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct f2fs_inode *ri;
 
 	/* Check if ino is within scope */
 	if (check_nid_range(sbi, inode->i_ino)) {
 		f2fs_msg(inode->i_sb, KERN_ERR, "bad inode number: %lu",
 			 (unsigned long) inode->i_ino);
+<<<<<<< HEAD
 		WARN_ON(1);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 	}
 
@@ -123,7 +156,12 @@ static int do_read_inode(struct inode *inode)
 	if (IS_ERR(node_page))
 		return PTR_ERR(node_page);
 
+<<<<<<< HEAD
 	ri = F2FS_INODE(node_page);
+=======
+	rn = page_address(node_page);
+	ri = &(rn->i);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	inode->i_mode = le16_to_cpu(ri->i_mode);
 	i_uid_write(inode, le32_to_cpu(ri->i_uid));
@@ -139,6 +177,13 @@ static int do_read_inode(struct inode *inode)
 	inode->i_ctime.tv_nsec = le32_to_cpu(ri->i_ctime_nsec);
 	inode->i_mtime.tv_nsec = le32_to_cpu(ri->i_mtime_nsec);
 	inode->i_generation = le32_to_cpu(ri->i_generation);
+<<<<<<< HEAD
+=======
+	if (ri->i_addr[0])
+		inode->i_rdev = old_decode_dev(le32_to_cpu(ri->i_addr[0]));
+	else
+		inode->i_rdev = new_decode_dev(le32_to_cpu(ri->i_addr[1]));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	fi->i_current_depth = le32_to_cpu(ri->i_current_depth);
 	fi->i_xattr_nid = le32_to_cpu(ri->i_xattr_nid);
@@ -146,6 +191,7 @@ static int do_read_inode(struct inode *inode)
 	fi->flags = 0;
 	fi->i_advise = ri->i_advise;
 	fi->i_pino = le32_to_cpu(ri->i_pino);
+<<<<<<< HEAD
 	fi->i_dir_level = ri->i_dir_level;
 
 	if (f2fs_init_extent_tree(inode, &ri->i_ext))
@@ -172,6 +218,10 @@ static int do_read_inode(struct inode *inode)
 	stat_inc_inline_inode(inode);
 	stat_inc_inline_dir(inode);
 
+=======
+	get_extent_info(&fi->ext, ri->i_ext);
+	f2fs_put_page(node_page, 1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -195,6 +245,15 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
 	ret = do_read_inode(inode);
 	if (ret)
 		goto bad_inode;
+<<<<<<< HEAD
+=======
+
+	if (!sbi->por_doing && inode->i_nlink == 0) {
+		ret = -ENOENT;
+		goto bad_inode;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 make_now:
 	if (ino == F2FS_NODE_INO(sbi)) {
 		inode->i_mapping->a_ops = &f2fs_node_aops;
@@ -210,6 +269,7 @@ make_now:
 		inode->i_op = &f2fs_dir_inode_operations;
 		inode->i_fop = &f2fs_dir_operations;
 		inode->i_mapping->a_ops = &f2fs_dblock_aops;
+<<<<<<< HEAD
 		mapping_set_gfp_mask(inode->i_mapping, GFP_F2FS_HIGH_ZERO);
 	} else if (S_ISLNK(inode->i_mode)) {
 		if (f2fs_encrypted_inode(inode))
@@ -217,6 +277,12 @@ make_now:
 		else
 			inode->i_op = &f2fs_symlink_inode_operations;
 		inode_nohighmem(inode);
+=======
+		mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER_MOVABLE |
+				__GFP_ZERO);
+	} else if (S_ISLNK(inode->i_mode)) {
+		inode->i_op = &f2fs_symlink_inode_operations;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		inode->i_mapping->a_ops = &f2fs_dblock_aops;
 	} else if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
 			S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
@@ -236,6 +302,7 @@ bad_inode:
 	return ERR_PTR(ret);
 }
 
+<<<<<<< HEAD
 struct inode *f2fs_iget_retry(struct super_block *sb, unsigned long ino)
 {
 	struct inode *inode;
@@ -260,6 +327,17 @@ int update_inode(struct inode *inode, struct page *node_page)
 	f2fs_wait_on_page_writeback(node_page, NODE, true);
 
 	ri = F2FS_INODE(node_page);
+=======
+void update_inode(struct inode *inode, struct page *node_page)
+{
+	struct f2fs_node *rn;
+	struct f2fs_inode *ri;
+
+	wait_on_page_writeback(node_page);
+
+	rn = page_address(node_page);
+	ri = &(rn->i);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ri->i_mode = cpu_to_le16(inode->i_mode);
 	ri->i_advise = F2FS_I(inode)->i_advise;
@@ -268,6 +346,7 @@ int update_inode(struct inode *inode, struct page *node_page)
 	ri->i_links = cpu_to_le32(inode->i_nlink);
 	ri->i_size = cpu_to_le64(i_size_read(inode));
 	ri->i_blocks = cpu_to_le64(inode->i_blocks);
+<<<<<<< HEAD
 
 	if (et) {
 		read_lock(&et->lock);
@@ -277,6 +356,9 @@ int update_inode(struct inode *inode, struct page *node_page)
 		memset(&ri->i_ext, 0, sizeof(ri->i_ext));
 	}
 	set_raw_inline(inode, ri);
+=======
+	set_raw_extent(&F2FS_I(inode)->ext, &ri->i_ext);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ri->i_atime = cpu_to_le64(inode->i_atime.tv_sec);
 	ri->i_ctime = cpu_to_le64(inode->i_ctime.tv_sec);
@@ -289,6 +371,7 @@ int update_inode(struct inode *inode, struct page *node_page)
 	ri->i_flags = cpu_to_le32(F2FS_I(inode)->i_flags);
 	ri->i_pino = cpu_to_le32(F2FS_I(inode)->i_pino);
 	ri->i_generation = cpu_to_le32(inode->i_generation);
+<<<<<<< HEAD
 	ri->i_dir_level = F2FS_I(inode)->i_dir_level;
 
 	__set_inode_rdev(inode, ri);
@@ -299,10 +382,29 @@ int update_inode(struct inode *inode, struct page *node_page)
 		clear_inline_node(node_page);
 
 	return set_page_dirty(node_page);
+=======
+
+	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
+		if (old_valid_dev(inode->i_rdev)) {
+			ri->i_addr[0] =
+				cpu_to_le32(old_encode_dev(inode->i_rdev));
+			ri->i_addr[1] = 0;
+		} else {
+			ri->i_addr[0] = 0;
+			ri->i_addr[1] =
+				cpu_to_le32(new_encode_dev(inode->i_rdev));
+			ri->i_addr[2] = 0;
+		}
+	}
+
+	set_cold_node(inode, node_page);
+	set_page_dirty(node_page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 int update_inode_page(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
 	struct page *node_page;
 	int ret = 0;
@@ -322,16 +424,34 @@ retry:
 	ret = update_inode(inode, node_page);
 	f2fs_put_page(node_page, 1);
 	return ret;
+=======
+	struct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);
+	struct page *node_page;
+
+	node_page = get_node_page(sbi, inode->i_ino);
+	if (IS_ERR(node_page))
+		return PTR_ERR(node_page);
+
+	update_inode(inode, node_page);
+	f2fs_put_page(node_page, 1);
+	return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 int f2fs_write_inode(struct inode *inode, struct writeback_control *wbc)
 {
+<<<<<<< HEAD
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+=======
+	struct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);
+	int ret, ilock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (inode->i_ino == F2FS_NODE_INO(sbi) ||
 			inode->i_ino == F2FS_META_INO(sbi))
 		return 0;
 
+<<<<<<< HEAD
 	if (!is_inode_flag_set(inode, FI_DIRTY_INODE))
 		return 0;
 
@@ -342,6 +462,19 @@ int f2fs_write_inode(struct inode *inode, struct writeback_control *wbc)
 	if (update_inode_page(inode) && wbc && wbc->nr_to_write)
 		f2fs_balance_fs(sbi, true);
 	return 0;
+=======
+	if (wbc)
+		f2fs_balance_fs(sbi);
+
+	/*
+	 * We need to lock here to prevent from producing dirty node pages
+	 * during the urgent cleaning time when runing out of free sections.
+	 */
+	ilock = mutex_lock_op(sbi);
+	ret = update_inode_page(inode);
+	mutex_unlock_op(sbi, ilock);
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -349,6 +482,7 @@ int f2fs_write_inode(struct inode *inode, struct writeback_control *wbc)
  */
 void f2fs_evict_inode(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
 	nid_t xnid = F2FS_I(inode)->i_xattr_nid;
 	int err = 0;
@@ -356,22 +490,34 @@ void f2fs_evict_inode(struct inode *inode)
 	/* some remained atomic pages should discarded */
 	if (f2fs_is_atomic_file(inode))
 		drop_inmem_pages(inode);
+=======
+	struct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);
+	int ilock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	trace_f2fs_evict_inode(inode);
 	truncate_inode_pages(&inode->i_data, 0);
 
 	if (inode->i_ino == F2FS_NODE_INO(sbi) ||
 			inode->i_ino == F2FS_META_INO(sbi))
+<<<<<<< HEAD
 		goto out_clear;
 
 	f2fs_bug_on(sbi, get_dirty_pages(inode));
 	remove_dirty_inode(inode);
 
 	f2fs_destroy_extent_tree(inode);
+=======
+		goto no_delete;
+
+	BUG_ON(atomic_read(&F2FS_I(inode)->dirty_dents));
+	remove_dirty_dir_inode(inode);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (inode->i_nlink || is_bad_inode(inode))
 		goto no_delete;
 
+<<<<<<< HEAD
 #ifdef CONFIG_F2FS_FAULT_INJECTION
 	if (time_to_inject(sbi, FAULT_EVICT_INODE))
 		goto no_delete;
@@ -476,3 +622,20 @@ void handle_failed_inode(struct inode *inode)
 	/* iput will drop the inode object */
 	iput(inode);
 }
+=======
+	sb_start_intwrite(inode->i_sb);
+	set_inode_flag(F2FS_I(inode), FI_NO_ALLOC);
+	i_size_write(inode, 0);
+
+	if (F2FS_HAS_BLOCKS(inode))
+		f2fs_truncate(inode);
+
+	ilock = mutex_lock_op(sbi);
+	remove_inode_page(inode);
+	mutex_unlock_op(sbi, ilock);
+
+	sb_end_intwrite(inode->i_sb);
+no_delete:
+	clear_inode(inode);
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

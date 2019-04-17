@@ -18,7 +18,11 @@
  * Inputs:	r0 contains the address
  *		r1 contains the address limit, which must be preserved
  * Outputs:	r0 is the error code
+<<<<<<< HEAD
  *		r2, r3 contains the zero-extended value
+=======
+ *		r2 contains the zero-extended value
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *		lr corrupted
  *
  * No other registers must be altered.  (see <asm/uaccess.h>
@@ -66,6 +70,7 @@ ENTRY(__get_user_4)
 	mov	pc, lr
 ENDPROC(__get_user_4)
 
+<<<<<<< HEAD
 ENTRY(__get_user_8)
 	check_uaccess r0, 8, r1, r2, __get_user_bad
 #ifdef CONFIG_THUMB2_KERNEL
@@ -95,21 +100,29 @@ ENDPROC(__get_user_lo8)
 
 __get_user_bad8:
 	mov	r3, #0
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 __get_user_bad:
 	mov	r2, #0
 	mov	r0, #-EFAULT
 	mov	pc, lr
 ENDPROC(__get_user_bad)
+<<<<<<< HEAD
 ENDPROC(__get_user_bad8)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 .pushsection __ex_table, "a"
 	.long	1b, __get_user_bad
 	.long	2b, __get_user_bad
 	.long	3b, __get_user_bad
 	.long	4b, __get_user_bad
+<<<<<<< HEAD
 	.long	5b, __get_user_bad8
 	.long	6b, __get_user_bad8
 #ifdef __ARMEB__
 	.long   7b, __get_user_bad
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 .popsection

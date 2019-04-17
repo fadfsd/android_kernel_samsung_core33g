@@ -287,8 +287,12 @@ validate_fini_list(struct list_head *list, struct nouveau_fence *fence)
 	list_for_each_safe(entry, tmp, list) {
 		nvbo = list_entry(entry, struct nouveau_bo, entry);
 
+<<<<<<< HEAD
 		if (likely(fence))
 			nouveau_bo_fence(nvbo, fence);
+=======
+		nouveau_bo_fence(nvbo, fence);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		if (unlikely(nvbo->validate_mapped)) {
 			ttm_bo_kunmap(&nvbo->kmap);

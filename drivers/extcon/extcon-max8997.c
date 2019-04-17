@@ -712,7 +712,11 @@ static int max8997_muic_probe(struct platform_device *pdev)
 		goto err_irq;
 	}
 
+<<<<<<< HEAD
 	if (pdata && pdata->muic_pdata) {
+=======
+	if (pdata->muic_pdata) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		struct max8997_muic_platform_data *muic_pdata
 			= pdata->muic_pdata;
 

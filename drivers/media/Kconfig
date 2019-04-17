@@ -2,6 +2,17 @@
 # Multimedia device configuration
 #
 
+<<<<<<< HEAD
+=======
+config MACH_GRANDNEOVE3G_rev_1
+	bool "Cameras/sensor support"
+       default n
+	---help---
+	  Enable support for camera sensor.
+
+	  Say Y when you have a sensor.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 menuconfig MEDIA_SUPPORT
 	tristate "Multimedia support"
 	depends on HAS_IOMEM
@@ -18,6 +29,19 @@ comment "Multimedia core support"
 #
 # Multimedia support - automatically enable V4L2 and DVB core
 #
+<<<<<<< HEAD
+=======
+
+source "drivers/media/sprd_gsp/Kconfig"
+config VIDEO_DCAM_SPRD
+	tristate "SPRD DCAM driver"
+	select VIDEOBUF_VMALLOC
+	help
+	  Support digital camera for SPRD
+
+source "drivers/media/sprd_dcam/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config MEDIA_CAMERA_SUPPORT
 	bool "Cameras/video grabbers support"
 	---help---
@@ -199,4 +223,11 @@ source "drivers/media/i2c/Kconfig"
 source "drivers/media/tuners/Kconfig"
 source "drivers/media/dvb-frontends/Kconfig"
 
+<<<<<<< HEAD
+=======
+# MTV Drivers
+#
+source "drivers/media/mtv/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endif # MEDIA_SUPPORT

@@ -971,7 +971,11 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 			err = PTR_ERR(rt);
 			rt = NULL;
 			if (err == -ENETUNREACH)
+<<<<<<< HEAD
 				IP_INC_STATS(net, IPSTATS_MIB_OUTNOROUTES);
+=======
+				IP_INC_STATS_BH(net, IPSTATS_MIB_OUTNOROUTES);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto out;
 		}
 
@@ -1070,9 +1074,12 @@ int udp_sendpage(struct sock *sk, struct page *page, int offset,
 	struct udp_sock *up = udp_sk(sk);
 	int ret;
 
+<<<<<<< HEAD
 	if (flags & MSG_SENDPAGE_NOTLAST)
 		flags |= MSG_MORE;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!up->pending) {
 		struct msghdr msg = {	.msg_flags = flags|MSG_MORE };
 
@@ -1298,8 +1305,15 @@ csum_copy_err:
 	}
 	unlock_sock_fast(sk, slow);
 
+<<<<<<< HEAD
 	/* starting over for a new packet, but check if we need to yield */
 	cond_resched();
+=======
+	if (noblock)
+		return -EAGAIN;
+
+	/* starting over for a new packet */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	msg->msg_flags &= ~MSG_TRUNC;
 	goto try_again;
 }

@@ -186,6 +186,7 @@ u32 arch_timer_get_rate(void)
 	return arch_timer_rate;
 }
 
+<<<<<<< HEAD
 u64 arch_timer_read_counter(void)
 {
 	return arch_counter_get_cntvct();
@@ -194,11 +195,33 @@ u64 arch_timer_read_counter(void)
 static cycle_t arch_counter_read(struct clocksource *cs)
 {
 	return arch_counter_get_cntvct();
+=======
+/*
+ * Some external users of arch_timer_read_counter (e.g. sched_clock) may try to
+ * call it before it has been initialised. Rather than incur a performance
+ * penalty checking for initialisation, provide a default implementation that
+ * won't lead to time appearing to jump backwards.
+ */
+static u64 arch_timer_read_zero(void)
+{
+	return 0;
+}
+
+u64 (*arch_timer_read_counter)(void) = arch_timer_read_zero;
+
+static cycle_t arch_counter_read(struct clocksource *cs)
+{
+	return arch_timer_read_counter();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static cycle_t arch_counter_read_cc(const struct cyclecounter *cc)
 {
+<<<<<<< HEAD
 	return arch_counter_get_cntvct();
+=======
+	return arch_timer_read_counter();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static struct clocksource clocksource_counter = {
@@ -279,7 +302,11 @@ static int __init arch_timer_register(void)
 	cyclecounter.mult = clocksource_counter.mult;
 	cyclecounter.shift = clocksource_counter.shift;
 	timecounter_init(&timecounter, &cyclecounter,
+<<<<<<< HEAD
 			 arch_counter_get_cntvct());
+=======
+			 arch_counter_get_cntpct());
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (arch_timer_use_virtual) {
 		ppi = arch_timer_ppi[VIRT_PPI];
@@ -368,6 +395,14 @@ static void __init arch_timer_init(struct device_node *np)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (arch_timer_use_virtual)
+		arch_timer_read_counter = arch_counter_get_cntvct;
+	else
+		arch_timer_read_counter = arch_counter_get_cntpct;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	arch_timer_register();
 	arch_timer_arch_init();
 }

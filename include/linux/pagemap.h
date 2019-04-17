@@ -221,7 +221,20 @@ extern struct page *__page_cache_alloc(gfp_t gfp);
 #else
 static inline struct page *__page_cache_alloc(gfp_t gfp)
 {
+<<<<<<< HEAD
 	return alloc_pages(gfp, 0);
+=======
+	struct page *page;
+
+	page = alloc_pages(gfp, 0);
+
+	if (page && is_cma_pageblock(page)) {
+		__free_page(page);
+		page = alloc_pages(gfp & ~__GFP_MOVABLE, 0);
+	}
+
+	return page;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 #endif
 

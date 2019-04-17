@@ -24,6 +24,11 @@
 #include <linux/timer.h>
 #include <linux/mod_devicetable.h>
 
+<<<<<<< HEAD
+=======
+#define KEY_RECENT              254
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * struct input_value - input value representation
  * @type: type of value (EV_KEY, EV_ABS, etc)
@@ -39,6 +44,11 @@ struct input_value {
 /**
  * struct input_dev - represents an input device
  * @name: name of the device
+<<<<<<< HEAD
+=======
+ * @device_node_name: name of the device node (must be unique). Used to set name 
+ *  instead of number
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * @phys: physical path to the device in the system hierarchy
  * @uniq: unique identification code for the device (if device has it)
  * @id: id of the device (struct input_id)
@@ -120,6 +130,10 @@ struct input_value {
  */
 struct input_dev {
 	const char *name;
+<<<<<<< HEAD
+=======
+	const char *device_node_name;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	const char *phys;
 	const char *uniq;
 	struct input_id id;

@@ -27,8 +27,11 @@
 #ifndef _SELINUX_NETNODE_H
 #define _SELINUX_NETNODE_H
 
+<<<<<<< HEAD
 void sel_netnode_flush(void);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int sel_netnode_sid(void *addr, u16 family, u32 *sid);
 
 #endif

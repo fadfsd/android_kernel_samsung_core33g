@@ -499,7 +499,11 @@ static int do_one_mathemu(u32 insn, unsigned long *pfsr, unsigned long *fregs)
 		case 0: fsr = *pfsr;
 			if (IR == -1) IR = 2;
 			/* fcc is always fcc0 */
+<<<<<<< HEAD
 			fsr &= ~0xc00; fsr |= (IR << 10);
+=======
+			fsr &= ~0xc00; fsr |= (IR << 10); break;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			*pfsr = fsr;
 			break;
 		case 1: rd->s = IR; break;

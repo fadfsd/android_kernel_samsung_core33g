@@ -34,6 +34,10 @@ enum bh_state_bits {
 	BH_Write_EIO,	/* I/O error on write */
 	BH_Unwritten,	/* Buffer is allocated on disk but not written */
 	BH_Quiet,	/* Buffer Error Prinks to be quiet */
+<<<<<<< HEAD
+=======
+	BH_Sync_Flush,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	BH_Meta,	/* Buffer contains metadata */
 	BH_Prio,	/* Buffer should be submitted with REQ_PRIO */
 
@@ -126,6 +130,10 @@ BUFFER_FNS(Delay, delay)
 BUFFER_FNS(Boundary, boundary)
 BUFFER_FNS(Write_EIO, write_io_error)
 BUFFER_FNS(Unwritten, unwritten)
+<<<<<<< HEAD
+=======
+BUFFER_FNS(Sync_Flush, sync_flush)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 BUFFER_FNS(Meta, meta)
 BUFFER_FNS(Prio, prio)
 
@@ -144,6 +152,10 @@ BUFFER_FNS(Prio, prio)
  */
 
 void mark_buffer_dirty(struct buffer_head *bh);
+<<<<<<< HEAD
+=======
+void mark_buffer_dirty_sync(struct buffer_head *bh);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 void init_buffer(struct buffer_head *, bh_end_io_t *, void *);
 void touch_buffer(struct buffer_head *bh);
 void set_bh_page(struct buffer_head *bh,
@@ -159,6 +171,10 @@ void end_buffer_async_write(struct buffer_head *bh, int uptodate);
 
 /* Things to do with buffers at mapping->private_list */
 void mark_buffer_dirty_inode(struct buffer_head *bh, struct inode *inode);
+<<<<<<< HEAD
+=======
+void mark_buffer_dirty_inode_sync(struct buffer_head *bh, struct inode *inode);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int inode_has_buffers(struct inode *);
 void invalidate_inode_buffers(struct inode *);
 int remove_inode_buffers(struct inode *inode);

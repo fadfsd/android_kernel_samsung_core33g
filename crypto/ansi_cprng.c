@@ -230,11 +230,19 @@ remainder:
 	 */
 	if (byte_count < DEFAULT_BLK_SZ) {
 empty_rbuf:
+<<<<<<< HEAD
 		while (ctx->rand_data_valid < DEFAULT_BLK_SZ) {
 			*ptr = ctx->rand_data[ctx->rand_data_valid];
 			ptr++;
 			byte_count--;
 			ctx->rand_data_valid++;
+=======
+		for (; ctx->rand_data_valid < DEFAULT_BLK_SZ;
+			ctx->rand_data_valid++) {
+			*ptr = ctx->rand_data[ctx->rand_data_valid];
+			ptr++;
+			byte_count--;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (byte_count == 0)
 				goto done;
 		}
@@ -476,5 +484,9 @@ module_param(dbg, int, 0);
 MODULE_PARM_DESC(dbg, "Boolean to enable debugging (0/1 == off/on)");
 module_init(prng_mod_init);
 module_exit(prng_mod_fini);
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("stdrng");
 MODULE_ALIAS_CRYPTO("ansi_cprng");
+=======
+MODULE_ALIAS("stdrng");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

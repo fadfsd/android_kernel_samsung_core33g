@@ -62,10 +62,13 @@ int __fib_lookup(struct net *net, struct flowi4 *flp, struct fib_result *res)
 	else
 		res->tclassid = 0;
 #endif
+<<<<<<< HEAD
 
 	if (err == -ESRCH)
 		err = -ENETUNREACH;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return err;
 }
 EXPORT_SYMBOL_GPL(__fib_lookup);

@@ -505,7 +505,11 @@ static int dn_fib_rtm_delroute(struct sk_buff *skb, struct nlmsghdr *nlh)
 	struct nlattr *attrs[RTA_MAX+1];
 	int err;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (!net_eq(net, &init_net))
@@ -530,7 +534,11 @@ static int dn_fib_rtm_newroute(struct sk_buff *skb, struct nlmsghdr *nlh)
 	struct nlattr *attrs[RTA_MAX+1];
 	int err;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (!net_eq(net, &init_net))

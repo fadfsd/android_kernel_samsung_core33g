@@ -10,6 +10,10 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/cred.h>
+<<<<<<< HEAD
+=======
+#include <linux/vmalloc.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/uaccess.h>
 #include <asm/page.h>
@@ -135,8 +139,22 @@ static int traverse(struct seq_file *m, loff_t offset)
 
 Eoverflow:
 	m->op->stop(m, p);
+<<<<<<< HEAD
 	kfree(m->buf);
 	m->buf = kmalloc(m->size <<= 1, GFP_KERNEL);
+=======
+	if (m->size > PAGE_SIZE) {
+		vfree(m->buf);
+	} else {
+		kfree(m->buf);
+	}
+	m->size <<= 1;
+	if (m->size > PAGE_SIZE) {
+		m->buf = vmalloc(m->size);
+	} else {
+		m->buf = kmalloc(m->size, GFP_KERNEL);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return !m->buf ? -ENOMEM : -EAGAIN;
 }
 
@@ -231,9 +249,24 @@ ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
 		if (m->count < m->size)
 			goto Fill;
 		m->op->stop(m, p);
+<<<<<<< HEAD
 		kfree(m->buf);
 		m->buf = kmalloc(m->size <<= 1, GFP_KERNEL);
 		if (!m->buf)
+=======
+		if (m->size > PAGE_SIZE) {
+                    vfree(m->buf);
+                } else {
+                    kfree(m->buf);
+                }
+                m->size <<= 1;
+                if (m->size > PAGE_SIZE) {
+                    m->buf = vmalloc(m->size);
+                } else {
+                    m->buf = kmalloc(m->size, GFP_KERNEL);
+                }
+                if (!m->buf)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto Enomem;
 		m->count = 0;
 		m->version = 0;
@@ -328,8 +361,11 @@ loff_t seq_lseek(struct file *file, loff_t offset, int whence)
 				m->read_pos = offset;
 				retval = file->f_pos = offset;
 			}
+<<<<<<< HEAD
 		} else {
 			file->f_pos = offset;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	}
 	file->f_version = m->version;
@@ -349,7 +385,15 @@ EXPORT_SYMBOL(seq_lseek);
 int seq_release(struct inode *inode, struct file *file)
 {
 	struct seq_file *m = file->private_data;
+<<<<<<< HEAD
 	kfree(m->buf);
+=======
+	if (m->size > PAGE_SIZE) {
+		vfree(m->buf);
+	} else {
+		kfree(m->buf);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kfree(m);
 	return 0;
 }

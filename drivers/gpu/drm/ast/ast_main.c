@@ -100,7 +100,11 @@ static int ast_detect_chip(struct drm_device *dev)
 			}
 			ast->vga2_clone = false;
 		} else {
+<<<<<<< HEAD
 			ast->chip = AST2000;
+=======
+			ast->chip = 2000;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			DRM_INFO("AST 2000 detected\n");
 		}
 	}

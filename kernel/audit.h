@@ -85,7 +85,10 @@ struct audit_names {
 
 	struct filename		*name;
 	int			name_len;	/* number of chars to log */
+<<<<<<< HEAD
 	bool			hidden;		/* don't log this record */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	bool			name_put;	/* call __putname()? */
 
 	unsigned long		ino;

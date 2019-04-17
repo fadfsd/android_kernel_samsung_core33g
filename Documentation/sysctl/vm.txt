@@ -29,6 +29,10 @@ Currently, these files are in /proc/sys/vm:
 - dirty_writeback_centisecs
 - drop_caches
 - extfrag_threshold
+<<<<<<< HEAD
+=======
+- extra_free_kbytes
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 - hugepages_treat_as_movable
 - hugetlb_shm_group
 - laptop_mode
@@ -41,8 +45,11 @@ Currently, these files are in /proc/sys/vm:
 - min_slab_ratio
 - min_unmapped_ratio
 - mmap_min_addr
+<<<<<<< HEAD
 - mmap_rnd_bits
 - mmap_rnd_compat_bits
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 - nr_hugepages
 - nr_overcommit_hugepages
 - nr_trim_pages         (only if CONFIG_MMU=n)
@@ -200,6 +207,24 @@ fragmentation index is <= extfrag_threshold. The default value is 500.
 
 ==============================================================
 
+<<<<<<< HEAD
+=======
+extra_free_kbytes
+
+This parameter tells the VM to keep extra free memory between the threshold
+where background reclaim (kswapd) kicks in, and the threshold where direct
+reclaim (by allocating processes) kicks in.
+
+This is useful for workloads that require low latency memory allocations
+and have a bounded burstiness in memory allocations, for example a
+realtime application that receives and transmits network traffic
+(causing in-kernel memory allocations) with a maximum total message burst
+size of 200MB may need 200MB of extra free memory to avoid direct reclaim
+related latencies.
+
+==============================================================
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 hugepages_treat_as_movable
 
 This parameter is only useful when kernelcore= is specified at boot time to
@@ -441,6 +466,7 @@ against future potential kernel bugs.
 
 ==============================================================
 
+<<<<<<< HEAD
 mmap_rnd_bits:
 
 This value can be used to select the number of bits to use to
@@ -468,6 +494,8 @@ This value can be changed after boot using the
 
 ==============================================================
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 nr_hugepages
 
 Change the minimum size of the hugepage pool.

@@ -80,6 +80,18 @@ static inline u32 arch_timer_get_cntfrq(void)
 	return val;
 }
 
+<<<<<<< HEAD
+=======
+static inline u64 arch_counter_get_cntpct(void)
+{
+	u64 cval;
+
+	isb();
+	asm volatile("mrrc p15, 0, %Q0, %R0, c14" : "=r" (cval));
+	return cval;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline u64 arch_counter_get_cntvct(void)
 {
 	u64 cval;

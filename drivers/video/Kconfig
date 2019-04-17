@@ -23,6 +23,13 @@ source "drivers/gpu/drm/Kconfig"
 
 source "drivers/gpu/host1x/Kconfig"
 
+<<<<<<< HEAD
+=======
+source "drivers/gpu/ion/Kconfig"
+
+source "drivers/gpu/sprd_iommu/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 config VGASTATE
        tristate
        default n
@@ -2470,6 +2477,11 @@ config FB_SIMPLE
 	  through device tree, or potentially plain old platform data in the
 	  future.
 
+<<<<<<< HEAD
+=======
+source "drivers/video/sprdfb/Kconfig"
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "drivers/video/omap/Kconfig"
 source "drivers/video/omap2/Kconfig"
 source "drivers/video/exynos/Kconfig"

@@ -133,7 +133,11 @@ static int snd_compr_open(struct inode *inode, struct file *f)
 		kfree(data);
 	}
 	snd_card_unref(compr->card);
+<<<<<<< HEAD
 	return ret;
+=======
+	return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int snd_compr_free(struct inode *inode, struct file *f)
@@ -668,13 +672,19 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
 		return -EPERM;
 	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_STOP);
 	if (!retval) {
+<<<<<<< HEAD
 		snd_compr_drain_notify(stream);
+=======
+		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
+		wake_up(&stream->runtime->sleep);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		stream->runtime->total_bytes_available = 0;
 		stream->runtime->total_bytes_transferred = 0;
 	}
 	return retval;
 }
 
+<<<<<<< HEAD
 static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
 {
 	int ret;
@@ -710,6 +720,8 @@ static int snd_compress_wait_for_drain(struct snd_compr_stream *stream)
 	return ret;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int snd_compr_drain(struct snd_compr_stream *stream)
 {
 	int retval;
@@ -717,6 +729,7 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
 	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
 			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
 		return -EPERM;
+<<<<<<< HEAD
 
 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
 	if (retval) {
@@ -726,6 +739,14 @@ static int snd_compr_drain(struct snd_compr_stream *stream)
 	}
 
 	return snd_compress_wait_for_drain(stream);
+=======
+	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
+	if (!retval) {
+		stream->runtime->state = SNDRV_PCM_STATE_DRAINING;
+		wake_up(&stream->runtime->sleep);
+	}
+	return retval;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int snd_compr_next_track(struct snd_compr_stream *stream)
@@ -761,6 +782,7 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
 		return -EPERM;
 
 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
+<<<<<<< HEAD
 	if (retval) {
 		pr_debug("Partial drain returned failure\n");
 		wake_up(&stream->runtime->sleep);
@@ -769,6 +791,11 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
 
 	stream->next_track = false;
 	return snd_compress_wait_for_drain(stream);
+=======
+
+	stream->next_track = false;
+	return retval;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)

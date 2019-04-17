@@ -206,6 +206,12 @@ static void intr_complete (struct urb *urb)
 		break;
 	}
 
+<<<<<<< HEAD
+=======
+	if (!netif_running (dev->net))
+		return;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	status = usb_submit_urb (urb, GFP_ATOMIC);
 	if (status != 0)
 		netif_err(dev, timer, dev->net,
@@ -517,6 +523,7 @@ static inline void rx_process (struct usbnet *dev, struct sk_buff *skb)
 	}
 	// else network stack removes extra byte if we forced a short packet
 
+<<<<<<< HEAD
 	/* all data was already cloned from skb inside the driver */
 	if (dev->driver_info->flags & FLAG_MULTI_PACKET)
 		goto done;
@@ -530,6 +537,19 @@ static inline void rx_process (struct usbnet *dev, struct sk_buff *skb)
 		return;
 	}
 
+=======
+	if (skb->len) {
+		/* all data was already cloned from skb inside the driver */
+		if (dev->driver_info->flags & FLAG_MULTI_PACKET)
+			dev_kfree_skb_any(skb);
+		else
+			usbnet_skb_return(dev, skb);
+		return;
+	}
+
+	netif_dbg(dev, rx_err, dev->net, "drop\n");
+	dev->net->stats.rx_errors++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 done:
 	skb_queue_tail(&dev->done, skb);
 }
@@ -551,6 +571,16 @@ static void rx_complete (struct urb *urb)
 	switch (urb_status) {
 	/* success */
 	case 0:
+<<<<<<< HEAD
+=======
+		if (skb->len < dev->net->hard_header_len) {
+			state = rx_cleanup;
+			dev->net->stats.rx_errors++;
+			dev->net->stats.rx_length_errors++;
+			netif_dbg(dev, rx_err, dev->net,
+				  "rx length %d\n", skb->len);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 
 	/* stalls need manual reset. this is rare ... except that
@@ -727,12 +757,22 @@ EXPORT_SYMBOL_GPL(usbnet_unlink_rx_urbs);
 // precondition: never called in_interrupt
 static void usbnet_terminate_urbs(struct usbnet *dev)
 {
+<<<<<<< HEAD
+=======
+	DECLARE_WAIT_QUEUE_HEAD_ONSTACK(unlink_wakeup);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	DECLARE_WAITQUEUE(wait, current);
 	int temp;
 
 	/* ensure there are no more active urbs */
+<<<<<<< HEAD
 	add_wait_queue(&dev->wait, &wait);
 	set_current_state(TASK_UNINTERRUPTIBLE);
+=======
+	add_wait_queue(&unlink_wakeup, &wait);
+	set_current_state(TASK_UNINTERRUPTIBLE);
+	dev->wait = &unlink_wakeup;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	temp = unlink_urbs(dev, &dev->txq) +
 		unlink_urbs(dev, &dev->rxq);
 
@@ -746,14 +786,23 @@ static void usbnet_terminate_urbs(struct usbnet *dev)
 				  "waited for %d urb completions\n", temp);
 	}
 	set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
 	remove_wait_queue(&dev->wait, &wait);
+=======
+	dev->wait = NULL;
+	remove_wait_queue(&unlink_wakeup, &wait);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 int usbnet_stop (struct net_device *net)
 {
 	struct usbnet		*dev = netdev_priv(net);
 	struct driver_info	*info = dev->driver_info;
+<<<<<<< HEAD
 	int			retval, pm;
+=======
+	int			retval;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	clear_bit(EVENT_DEV_OPEN, &dev->flags);
 	netif_stop_queue (net);
@@ -763,8 +812,11 @@ int usbnet_stop (struct net_device *net)
 		   net->stats.rx_packets, net->stats.tx_packets,
 		   net->stats.rx_errors, net->stats.tx_errors);
 
+<<<<<<< HEAD
 	/* to not race resume */
 	pm = usb_autopm_get_interface(dev->intf);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* allow minidriver to stop correctly (wireless devices to turn off
 	 * radio etc) */
 	if (info->stop) {
@@ -791,9 +843,12 @@ int usbnet_stop (struct net_device *net)
 	dev->flags = 0;
 	del_timer_sync (&dev->delay);
 	tasklet_kill (&dev->bh);
+<<<<<<< HEAD
 	if (!pm)
 		usb_autopm_put_interface(dev->intf);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (info->manage_power &&
 	    !test_and_clear_bit(EVENT_NO_RUNTIME_PM, &dev->flags))
 		info->manage_power(dev, 0);
@@ -1362,12 +1417,20 @@ static void usbnet_bh (unsigned long param)
 	/* restart RX again after disabling due to high error rate */
 	clear_bit(EVENT_RX_KILL, &dev->flags);
 
+<<<<<<< HEAD
 	/* waiting for all pending urbs to complete?
 	 * only then can we forgo submitting anew
 	 */
 	if (waitqueue_active(&dev->wait)) {
 		if (dev->txq.qlen + dev->rxq.qlen + dev->done.qlen == 0)
 			wake_up_all(&dev->wait);
+=======
+	// waiting for all pending urbs to complete?
+	if (dev->wait) {
+		if ((dev->txq.qlen + dev->rxq.qlen + dev->done.qlen) == 0) {
+			wake_up (dev->wait);
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	// or are we maybe short a few urbs?
 	} else if (netif_running (dev->net) &&
@@ -1505,7 +1568,10 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 	dev->driver_name = name;
 	dev->msg_enable = netif_msg_init (msg_level, NETIF_MSG_DRV
 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
+<<<<<<< HEAD
 	init_waitqueue_head(&dev->wait);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	skb_queue_head_init (&dev->rxq);
 	skb_queue_head_init (&dev->txq);
 	skb_queue_head_init (&dev->done);
@@ -1698,10 +1764,16 @@ int usbnet_resume (struct usb_interface *intf)
 		spin_unlock_irq(&dev->txq.lock);
 
 		if (test_bit(EVENT_DEV_OPEN, &dev->flags)) {
+<<<<<<< HEAD
 			/* handle remote wakeup ASAP
 			 * we cannot race against stop
 			 */
 			if (netif_device_present(dev->net) &&
+=======
+			/* handle remote wakeup ASAP */
+			if (!dev->wait &&
+				netif_device_present(dev->net) &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				!timer_pending(&dev->delay) &&
 				!test_bit(EVENT_RX_HALT, &dev->flags))
 					rx_alloc_submit(dev, GFP_NOIO);

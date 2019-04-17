@@ -106,6 +106,10 @@ error_no_sig:
 static int x509_key_preparse(struct key_preparsed_payload *prep)
 {
 	struct x509_certificate *cert;
+<<<<<<< HEAD
+=======
+	struct tm now;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	size_t srlen, sulen;
 	char *desc = NULL;
 	int ret;
@@ -136,6 +140,46 @@ static int x509_key_preparse(struct key_preparsed_payload *prep)
 		goto error_free_cert;
 	}
 
+<<<<<<< HEAD
+=======
+	time_to_tm(CURRENT_TIME.tv_sec, 0, &now);
+	pr_devel("Now: %04ld-%02d-%02d %02d:%02d:%02d\n",
+		 now.tm_year + 1900, now.tm_mon + 1, now.tm_mday,
+		 now.tm_hour, now.tm_min,  now.tm_sec);
+	if (now.tm_year < cert->valid_from.tm_year ||
+	    (now.tm_year == cert->valid_from.tm_year &&
+	     (now.tm_mon < cert->valid_from.tm_mon ||
+	      (now.tm_mon == cert->valid_from.tm_mon &&
+	       (now.tm_mday < cert->valid_from.tm_mday ||
+		(now.tm_mday == cert->valid_from.tm_mday &&
+		 (now.tm_hour < cert->valid_from.tm_hour ||
+		  (now.tm_hour == cert->valid_from.tm_hour &&
+		   (now.tm_min < cert->valid_from.tm_min ||
+		    (now.tm_min == cert->valid_from.tm_min &&
+		     (now.tm_sec < cert->valid_from.tm_sec
+		      ))))))))))) {
+		pr_warn("Cert %s is not yet valid\n", cert->fingerprint);
+		ret = -EKEYREJECTED;
+		goto error_free_cert;
+	}
+	if (now.tm_year > cert->valid_to.tm_year ||
+	    (now.tm_year == cert->valid_to.tm_year &&
+	     (now.tm_mon > cert->valid_to.tm_mon ||
+	      (now.tm_mon == cert->valid_to.tm_mon &&
+	       (now.tm_mday > cert->valid_to.tm_mday ||
+		(now.tm_mday == cert->valid_to.tm_mday &&
+		 (now.tm_hour > cert->valid_to.tm_hour ||
+		  (now.tm_hour == cert->valid_to.tm_hour &&
+		   (now.tm_min > cert->valid_to.tm_min ||
+		    (now.tm_min == cert->valid_to.tm_min &&
+		     (now.tm_sec > cert->valid_to.tm_sec
+		      ))))))))))) {
+		pr_warn("Cert %s has expired\n", cert->fingerprint);
+		ret = -EKEYEXPIRED;
+		goto error_free_cert;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cert->pub->algo = x509_public_key_algorithms[cert->pkey_algo];
 	cert->pub->id_type = PKEY_ID_X509;
 

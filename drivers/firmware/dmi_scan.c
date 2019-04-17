@@ -551,6 +551,7 @@ static bool dmi_matches(const struct dmi_system_id *dmi)
 		int s = dmi->matches[i].slot;
 		if (s == DMI_NONE)
 			break;
+<<<<<<< HEAD
 		if (dmi_ident[s]) {
 			if (!dmi->matches[i].exact_match &&
 			    strstr(dmi_ident[s], dmi->matches[i].substr))
@@ -560,6 +561,11 @@ static bool dmi_matches(const struct dmi_system_id *dmi)
 				continue;
 		}
 
+=======
+		if (dmi_ident[s]
+		    && strstr(dmi_ident[s], dmi->matches[i].substr))
+			continue;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* No match */
 		return false;
 	}

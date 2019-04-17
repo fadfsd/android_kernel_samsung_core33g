@@ -9,6 +9,15 @@
 #include <linux/blktrace_api.h>
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BLOCK_SUPPORT_STLOG
+#include <linux/stlog.h>
+#else
+#define ST_LOG(fmt,...)
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int blkpg_ioctl(struct block_device *bdev, struct blkpg_ioctl_arg __user *arg)
 {
 	struct block_device *bdevp;
@@ -182,6 +191,12 @@ static int blk_ioctl_discard(struct block_device *bdev, uint64_t start,
 		return -EINVAL;
 	if (secure)
 		flags |= BLKDEV_DISCARD_SECURE;
+<<<<<<< HEAD
+=======
+
+	ST_LOG("%s %d:%d %lu %lu",secure?"SECDIS":"DIS",MAJOR(bdev->bd_dev),MINOR(bdev->bd_dev),start,len);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return blkdev_issue_discard(bdev, start, len, GFP_KERNEL, flags);
 }
 

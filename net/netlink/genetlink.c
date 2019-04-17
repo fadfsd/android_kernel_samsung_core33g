@@ -592,7 +592,11 @@ static int genl_family_rcv_msg(struct genl_family *family,
 		return -EOPNOTSUPP;
 
 	if ((ops->flags & GENL_ADMIN_PERM) &&
+<<<<<<< HEAD
 	    !netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	    !capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (nlh->nlmsg_flags & NLM_F_DUMP) {

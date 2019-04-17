@@ -1614,7 +1614,11 @@ static struct se_wwn *usbg_make_tport(
 		return ERR_PTR(-ENOMEM);
 	}
 	tport->tport_wwpn = wwpn;
+<<<<<<< HEAD
 	snprintf(tport->tport_name, sizeof(tport->tport_name), "%s", wnn_name);
+=======
+	snprintf(tport->tport_name, sizeof(tport->tport_name), wnn_name);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return &tport->tport_wwn;
 }
 

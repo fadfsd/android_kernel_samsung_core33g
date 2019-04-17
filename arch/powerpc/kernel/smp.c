@@ -544,8 +544,13 @@ int __cpuinit __cpu_up(unsigned int cpu, struct task_struct *tidle)
 	if (smp_ops->give_timebase)
 		smp_ops->give_timebase();
 
+<<<<<<< HEAD
 	/* Wait until cpu puts itself in the online & active maps */
 	while (!cpu_online(cpu) || !cpu_active(cpu))
+=======
+	/* Wait until cpu puts itself in the online map */
+	while (!cpu_online(cpu))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		cpu_relax();
 
 	return 0;

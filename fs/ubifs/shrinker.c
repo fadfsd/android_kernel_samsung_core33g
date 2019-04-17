@@ -128,7 +128,10 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
 			freed = ubifs_destroy_tnc_subtree(znode);
 			atomic_long_sub(freed, &ubifs_clean_zn_cnt);
 			atomic_long_sub(freed, &c->clean_zn_cnt);
+<<<<<<< HEAD
 			ubifs_assert(atomic_long_read(&c->clean_zn_cnt) >= 0);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			total_freed += freed;
 			znode = zprev;
 		}

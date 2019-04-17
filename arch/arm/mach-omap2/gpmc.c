@@ -1335,7 +1335,11 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
 		of_property_read_bool(np, "gpmc,time-para-granularity");
 }
 
+<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_MTD_NAND)
+=======
+#ifdef CONFIG_MTD_NAND
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static const char * const nand_ecc_opts[] = {
 	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "sw",
@@ -1391,7 +1395,11 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
 }
 #endif
 
+<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_MTD_ONENAND)
+=======
+#ifdef CONFIG_MTD_ONENAND
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int gpmc_probe_onenand_child(struct platform_device *pdev,
 				 struct device_node *child)
 {

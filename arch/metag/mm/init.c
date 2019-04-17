@@ -380,12 +380,15 @@ void __init mem_init(void)
 
 #ifdef CONFIG_HIGHMEM
 	unsigned long tmp;
+<<<<<<< HEAD
 
 	/*
 	 * Explicitly reset zone->managed_pages because highmem pages are
 	 * freed before calling free_all_bootmem_node();
 	 */
 	reset_all_zones_managed_pages();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (tmp = highstart_pfn; tmp < highend_pfn; tmp++)
 		free_highmem_page(pfn_to_page(tmp));
 	num_physpages += totalhigh_pages;

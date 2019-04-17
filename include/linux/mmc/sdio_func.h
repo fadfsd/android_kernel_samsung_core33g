@@ -23,6 +23,17 @@ struct sdio_func;
 typedef void (sdio_irq_handler_t)(struct sdio_func *);
 
 /*
+<<<<<<< HEAD
+=======
+ * Structure used to hold embedded SDIO device data from platform layer
+ */
+struct sdio_embedded_func {
+	uint8_t f_class;
+	uint32_t f_maxblksize;
+};
+
+/*
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * SDIO function CIS tuple (unknown to the core)
  */
 struct sdio_func_tuple {
@@ -130,6 +141,11 @@ extern int sdio_release_irq(struct sdio_func *func);
 extern unsigned int sdio_align_size(struct sdio_func *func, unsigned int sz);
 
 extern u8 sdio_readb(struct sdio_func *func, unsigned int addr, int *err_ret);
+<<<<<<< HEAD
+=======
+extern u8 sdio_readb_ext(struct sdio_func *func, unsigned int addr, int *err_ret,
+	unsigned in);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern u16 sdio_readw(struct sdio_func *func, unsigned int addr, int *err_ret);
 extern u32 sdio_readl(struct sdio_func *func, unsigned int addr, int *err_ret);
 

@@ -15,7 +15,10 @@
 #include <linux/vmalloc.h>
 #include <linux/fs.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
 #include <asm/fpu.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/page.h>
 #include <asm/cacheflush.h>
 #include <asm/mmu_context.h>
@@ -150,7 +153,13 @@ void kvm_mips_free_vcpus(struct kvm *kvm)
 		if (kvm->arch.guest_pmap[i] != KVM_INVALID_PAGE)
 			kvm_mips_release_pfn_clean(kvm->arch.guest_pmap[i]);
 	}
+<<<<<<< HEAD
 	kfree(kvm->arch.guest_pmap);
+=======
+
+	if (kvm->arch.guest_pmap)
+		kfree(kvm->arch.guest_pmap);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	kvm_for_each_vcpu(i, vcpu, kvm) {
 		kvm_arch_vcpu_free(vcpu);
@@ -298,7 +307,11 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
 	if (cpu_has_veic || cpu_has_vint) {
 		size = 0x200 + VECTORSPACING * 64;
 	} else {
+<<<<<<< HEAD
 		size = 0x4000;
+=======
+		size = 0x200;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/* Save Linux EBASE */
@@ -383,9 +396,18 @@ void kvm_arch_vcpu_free(struct kvm_vcpu *vcpu)
 
 	kvm_mips_dump_stats(vcpu);
 
+<<<<<<< HEAD
 	kfree(vcpu->arch.guest_ebase);
 	kfree(vcpu->arch.kseg0_commpage);
 	kfree(vcpu);
+=======
+	if (vcpu->arch.guest_ebase)
+		kfree(vcpu->arch.guest_ebase);
+
+	if (vcpu->arch.kseg0_commpage)
+		kfree(vcpu->arch.kseg0_commpage);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
@@ -414,13 +436,20 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
 		vcpu->mmio_needed = 0;
 	}
 
+<<<<<<< HEAD
 	lose_fpu(1);
 
 	local_irq_disable();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Check if we have any exceptions/interrupts pending */
 	kvm_mips_deliver_interrupts(vcpu,
 				    kvm_read_c0_guest_cause(vcpu->arch.cop0));
 
+<<<<<<< HEAD
+=======
+	local_irq_disable();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kvm_guest_enter();
 
 	r = __kvm_mips_vcpu_run(run, vcpu);
@@ -1020,6 +1049,12 @@ void kvm_mips_set_c0_status(void)
 {
 	uint32_t status = read_c0_status();
 
+<<<<<<< HEAD
+=======
+	if (cpu_has_fpu)
+		status |= (ST0_CU1);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (cpu_has_dsp)
 		status |= (ST0_MX);
 

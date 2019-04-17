@@ -116,7 +116,10 @@ extern void flush_dcache_page(struct page *);
 static inline void __flush_icache_all(void)
 {
 	asm("ic	ialluis");
+<<<<<<< HEAD
 	dsb();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #define flush_dcache_mmap_lock(mapping) \

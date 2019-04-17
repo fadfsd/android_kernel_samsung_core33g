@@ -1544,7 +1544,11 @@ static void mlx4_master_deactivate_admin_state(struct mlx4_priv *priv, int slave
 			vp_oper->vlan_idx = NO_INDX;
 		}
 		if (NO_INDX != vp_oper->mac_idx) {
+<<<<<<< HEAD
 			__mlx4_unregister_mac(&priv->dev, port, vp_oper->state.mac);
+=======
+			__mlx4_unregister_mac(&priv->dev, port, vp_oper->mac_idx);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			vp_oper->mac_idx = NO_INDX;
 		}
 	}

@@ -23,7 +23,11 @@
 
 #include "pci.h"
 
+<<<<<<< HEAD
 static void __iomem *__iop13xx_ioremap_caller(phys_addr_t cookie,
+=======
+static void __iomem *__iop13xx_ioremap_caller(unsigned long cookie,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	size_t size, unsigned int mtype, void *caller)
 {
 	void __iomem * retval;

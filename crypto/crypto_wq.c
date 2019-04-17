@@ -33,7 +33,11 @@ static void __exit crypto_wq_exit(void)
 	destroy_workqueue(kcrypto_wq);
 }
 
+<<<<<<< HEAD
 subsys_initcall(crypto_wq_init);
+=======
+module_init(crypto_wq_init);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 module_exit(crypto_wq_exit);
 
 MODULE_LICENSE("GPL");

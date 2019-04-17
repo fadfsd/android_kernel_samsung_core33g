@@ -522,7 +522,11 @@ static ssize_t
 sg_new_read(Sg_fd * sfp, char __user *buf, size_t count, Sg_request * srp)
 {
 	sg_io_hdr_t *hp = &srp->header;
+<<<<<<< HEAD
 	int err = 0, err2;
+=======
+	int err = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int len;
 
 	if (count < SZ_SG_IO_HDR) {
@@ -551,8 +555,13 @@ sg_new_read(Sg_fd * sfp, char __user *buf, size_t count, Sg_request * srp)
 		goto err_out;
 	}
 err_out:
+<<<<<<< HEAD
 	err2 = sg_finish_rem_req(srp);
 	return err ? : err2 ? : count;
+=======
+	err = sg_finish_rem_req(srp);
+	return (0 == err) ? count : err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static ssize_t
@@ -1694,9 +1703,12 @@ static int sg_start_req(Sg_request *srp, unsigned char *cmd)
 			md->from_user = 0;
 	}
 
+<<<<<<< HEAD
 	if (unlikely(iov_count > UIO_MAXIOV))
 		return -EINVAL;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (iov_count) {
 		int len, size = sizeof(struct sg_iovec) * iov_count;
 		struct iovec *iov;

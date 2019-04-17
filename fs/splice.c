@@ -555,6 +555,7 @@ static const struct pipe_buf_operations default_pipe_buf_ops = {
 	.get = generic_pipe_buf_get,
 };
 
+<<<<<<< HEAD
 static int generic_pipe_buf_nosteal(struct pipe_inode_info *pipe,
 				    struct pipe_buffer *buf)
 {
@@ -573,6 +574,8 @@ const struct pipe_buf_operations nosteal_pipe_buf_ops = {
 };
 EXPORT_SYMBOL(nosteal_pipe_buf_ops);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static ssize_t kernel_readv(struct file *file, const struct iovec *vec,
 			    unsigned long vlen, loff_t offset)
 {
@@ -1012,17 +1015,26 @@ generic_file_splice_write(struct pipe_inode_info *pipe, struct file *out,
 	struct address_space *mapping = out->f_mapping;
 	struct inode *inode = mapping->host;
 	struct splice_desc sd = {
+<<<<<<< HEAD
 		.flags = flags,
+=======
+		.total_len = len,
+		.flags = flags,
+		.pos = *ppos,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.u.file = out,
 	};
 	ssize_t ret;
 
+<<<<<<< HEAD
 	ret = generic_write_checks(out, ppos, &len, S_ISBLK(inode->i_mode));
 	if (ret)
 		return ret;
 	sd.total_len = len;
 	sd.pos = *ppos;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pipe_lock(pipe);
 
 	splice_from_pipe_begin(&sd);

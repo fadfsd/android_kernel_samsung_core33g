@@ -389,7 +389,11 @@ phys_addr_t slow_virt_to_phys(void *__virt_addr)
 	psize = page_level_size(level);
 	pmask = page_level_mask(level);
 	offset = virt_addr & ~pmask;
+<<<<<<< HEAD
 	phys_addr = (phys_addr_t)pte_pfn(*pte) << PAGE_SHIFT;
+=======
+	phys_addr = pte_pfn(*pte) << PAGE_SHIFT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return (phys_addr | offset);
 }
 EXPORT_SYMBOL_GPL(slow_virt_to_phys);

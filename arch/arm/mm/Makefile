@@ -7,11 +7,19 @@ obj-y				:= dma-mapping.o extable.o fault.o init.o \
 
 obj-$(CONFIG_MMU)		+= fault-armv.o flush.o idmap.o ioremap.o \
 				   mmap.o pgd.o mmu.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_DEBUG_RODATA)	+= rodata.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 ifneq ($(CONFIG_MMU),y)
 obj-y				+= nommu.o
 endif
+<<<<<<< HEAD
 
+=======
+obj-$(CONFIG_ARM_PTDUMP)	+= dump.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-$(CONFIG_MODULES)		+= proc-syms.o
 
 obj-$(CONFIG_ALIGNMENT_TRAP)	+= alignment.o

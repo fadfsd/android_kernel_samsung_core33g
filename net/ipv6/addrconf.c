@@ -1111,11 +1111,16 @@ retry:
 	 * Lifetime is greater than REGEN_ADVANCE time units.  In particular,
 	 * an implementation must not create a temporary address with a zero
 	 * Preferred Lifetime.
+<<<<<<< HEAD
 	 * Use age calculation as in addrconf_verify to avoid unnecessary
 	 * temporary addresses being generated.
 	 */
 	age = (now - tmp_tstamp + ADDRCONF_TIMER_FUZZ_MINUS) / HZ;
 	if (tmp_prefered_lft <= regen_advance + age) {
+=======
+	 */
+	if (tmp_prefered_lft <= regen_advance) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		in6_ifa_put(ifp);
 		in6_dev_put(idev);
 		ret = -1;
@@ -1737,8 +1742,19 @@ static void addrconf_leave_anycast(struct inet6_ifaddr *ifp)
 
 static int addrconf_ifid_eui48(u8 *eui, struct net_device *dev)
 {
+<<<<<<< HEAD
 	if (dev->addr_len != ETH_ALEN)
 		return -1;
+=======
+	struct in6_addr lladdr;
+	if (dev->addr_len != ETH_ALEN)
+		return -1;
+        if (!ipv6_get_lladdr(dev, &lladdr, 0)) {
+		memcpy(eui, lladdr.s6_addr+8, 8);
+                return 0;
+        }
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	memcpy(eui, dev->dev_addr, 3);
 	memcpy(eui + 5, dev->dev_addr + 3, 3);
 
@@ -2691,6 +2707,7 @@ static void init_loopback(struct net_device *dev)
 			if (sp_ifa->flags & (IFA_F_DADFAILED | IFA_F_TENTATIVE))
 				continue;
 
+<<<<<<< HEAD
 			if (sp_ifa->rt) {
 				/* This dst has been added to garbage list when
 				 * lo device down, release this obsolete dst and
@@ -2703,6 +2720,10 @@ static void init_loopback(struct net_device *dev)
 					continue;
 				}
 			}
+=======
+			if (sp_ifa->rt)
+				continue;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 			sp_rt = addrconf_dst_alloc(idev, &sp_ifa->addr, 0);
 

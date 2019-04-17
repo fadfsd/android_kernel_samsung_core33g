@@ -29,6 +29,13 @@
 #include <linux/rcupdate.h>
 #include "input-compat.h"
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SPRD_DEBUG)
+	#include <mach/sprd_debug.h>
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
 MODULE_DESCRIPTION("Input core");
 MODULE_LICENSE("GPL");
@@ -257,10 +264,16 @@ static int input_handle_abs_event(struct input_dev *dev,
 }
 
 static int input_get_disposition(struct input_dev *dev,
+<<<<<<< HEAD
 			  unsigned int type, unsigned int code, int *pval)
 {
 	int disposition = INPUT_IGNORE_EVENT;
 	int value = *pval;
+=======
+			  unsigned int type, unsigned int code, int value)
+{
+	int disposition = INPUT_IGNORE_EVENT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	switch (type) {
 
@@ -291,9 +304,29 @@ static int input_get_disposition(struct input_dev *dev,
 			if (!!test_bit(code, dev->key) != !!value) {
 
 				__change_bit(code, dev->key);
+<<<<<<< HEAD
 				disposition = INPUT_PASS_TO_HANDLERS;
 			}
 		}
+=======
+
+				#if defined(CONFIG_SPRD_DEBUG)
+					if(code != BTN_TOUCH) {
+						sprd_debug_check_crash_key(code,value);
+					}
+				#endif
+
+				disposition = INPUT_PASS_TO_HANDLERS;
+			}
+		}
+		else {
+			#if defined(CONFIG_SPRD_DEBUG)
+				if(code != BTN_TOUCH && value == 0) {
+					sprd_debug_check_crash_key(code,value);
+				}
+			#endif
+		}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 
 	case EV_SW:
@@ -358,16 +391,30 @@ static int input_get_disposition(struct input_dev *dev,
 		break;
 	}
 
+<<<<<<< HEAD
 	*pval = value;
 	return disposition;
 }
 
+=======
+	return disposition;
+}
+
+#if defined(CONFIG_SEC_DEBUG)
+extern void sec_debug_check_crash_key(unsigned int code, int value);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void input_handle_event(struct input_dev *dev,
 			       unsigned int type, unsigned int code, int value)
 {
 	int disposition;
 
+<<<<<<< HEAD
 	disposition = input_get_disposition(dev, type, code, &value);
+=======
+	disposition = input_get_disposition(dev, type, code, value);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if ((disposition & INPUT_PASS_TO_DEVICE) && dev->event)
 		dev->event(dev, type, code, value);
@@ -425,6 +472,13 @@ void input_event(struct input_dev *dev,
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEC_DEBUG)
+	sec_debug_check_crash_key(code, value);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
 
 		spin_lock_irqsave(&dev->event_lock, flags);
@@ -1664,9 +1718,17 @@ void input_reset_device(struct input_dev *dev)
 		 * Keys that have been pressed at suspend time are unlikely
 		 * to be still pressed when we resume.
 		 */
+<<<<<<< HEAD
 		spin_lock_irq(&dev->event_lock);
 		input_dev_release_keys(dev);
 		spin_unlock_irq(&dev->event_lock);
+=======
+	#if 0  // SAMSUNG_DO_NOT_USE this functionality
+		spin_lock_irq(&dev->event_lock);
+		input_dev_release_keys(dev);
+		spin_unlock_irq(&dev->event_lock);
+	#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	mutex_unlock(&dev->mutex);
@@ -1683,6 +1745,14 @@ static int input_dev_suspend(struct device *dev)
 	if (input_dev->users)
 		input_dev_toggle(input_dev, false);
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SEC_DEBUG)   // send dummy release event to avoid invalid key crash case
+	sec_debug_check_crash_key(KEY_VOLUMEUP, 0);
+	sec_debug_check_crash_key(KEY_VOLUMEDOWN, 0);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(&input_dev->mutex);
 
 	return 0;
@@ -1868,10 +1938,13 @@ void input_set_capability(struct input_dev *dev, unsigned int type, unsigned int
 		break;
 
 	case EV_ABS:
+<<<<<<< HEAD
 		input_alloc_absinfo(dev);
 		if (!dev->absinfo)
 			return;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__set_bit(code, dev->absbit);
 		break;
 
@@ -2079,7 +2152,15 @@ int input_register_device(struct input_dev *dev)
 	if (!dev->setkeycode)
 		dev->setkeycode = input_default_setkeycode;
 
+<<<<<<< HEAD
 	dev_set_name(&dev->dev, "input%ld",
+=======
+	if (dev->device_node_name) {
+		dev_set_name(&dev->dev, "input_%s", dev->device_node_name);
+		atomic_inc_return(&input_no);
+	} else
+		dev_set_name(&dev->dev, "input%ld",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		     (unsigned long) atomic_inc_return(&input_no) - 1);
 
 	error = device_add(&dev->dev);

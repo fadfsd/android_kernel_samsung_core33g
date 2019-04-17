@@ -935,6 +935,7 @@ static void pcmuio_detach(struct comedi_device *dev)
 	struct pcmuio_private *devpriv = dev->private;
 	int i;
 
+<<<<<<< HEAD
 	if (devpriv) {
 		for (i = 0; i < MAX_ASICS; ++i) {
 			if (devpriv->asics[i].irq)
@@ -942,6 +943,14 @@ static void pcmuio_detach(struct comedi_device *dev)
 		}
 		kfree(devpriv->sprivs);
 	}
+=======
+	for (i = 0; i < MAX_ASICS; ++i) {
+		if (devpriv->asics[i].irq)
+			free_irq(devpriv->asics[i].irq, dev);
+	}
+	if (devpriv && devpriv->sprivs)
+		kfree(devpriv->sprivs);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	comedi_legacy_detach(dev);
 }
 

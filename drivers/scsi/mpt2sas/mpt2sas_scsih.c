@@ -8174,6 +8174,10 @@ _scsih_suspend(struct pci_dev *pdev, pm_message_t state)
 
 	mpt2sas_base_free_resources(ioc);
 	pci_save_state(pdev);
+<<<<<<< HEAD
+=======
+	pci_disable_device(pdev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pci_set_power_state(pdev, device_state);
 	return 0;
 }

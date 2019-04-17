@@ -21,7 +21,10 @@
 #include <linux/module.h>
 #include <linux/net.h>
 #include <linux/rwsem.h>
+<<<<<<< HEAD
 #include <linux/security.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct alg_type_list {
 	const struct af_alg_type *type;
@@ -244,7 +247,10 @@ int af_alg_accept(struct sock *sk, struct socket *newsock)
 
 	sock_init_data(newsock, sk2);
 	sock_graft(sk2, newsock);
+<<<<<<< HEAD
 	security_sk_clone(sk, sk2);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = type->accept(ask->private, sk2);
 	if (err) {
@@ -449,9 +455,12 @@ void af_alg_complete(struct crypto_async_request *req, int err)
 {
 	struct af_alg_completion *completion = req->data;
 
+<<<<<<< HEAD
 	if (err == -EINPROGRESS)
 		return;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	completion->err = err;
 	complete(&completion->completion);
 }

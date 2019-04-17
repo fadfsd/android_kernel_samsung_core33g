@@ -788,9 +788,12 @@ static void remove_cache_dir(struct cache_dir *cache_dir)
 {
 	remove_index_dirs(cache_dir);
 
+<<<<<<< HEAD
 	/* Remove cache dir from sysfs */
 	kobject_del(cache_dir->kobj);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kobject_put(cache_dir->kobj);
 
 	kfree(cache_dir);

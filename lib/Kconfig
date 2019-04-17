@@ -189,6 +189,7 @@ config LZO_COMPRESS
 config LZO_DECOMPRESS
 	tristate
 
+<<<<<<< HEAD
 config LZ4_COMPRESS
 	tristate
 
@@ -198,6 +199,8 @@ config LZ4HC_COMPRESS
 config LZ4_DECOMPRESS
 	tristate
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source "lib/xz/Kconfig"
 
 #
@@ -222,6 +225,25 @@ config DECOMPRESS_LZO
 	select LZO_DECOMPRESS
 	tristate
 
+<<<<<<< HEAD
+=======
+config LZO_SOFT_ALGO
+	tristate "Soft LZO Algo"
+	select LZO_COMPRESS
+	select LZO_DECOMPRESS
+	default y
+	help
+	Support for Soft LZO ALGO.
+
+config LZO_HW_ALGO
+	tristate "HW LZO Algo"
+	select LZO_COMPRESS
+	select LZO_DECOMPRESS
+	default n
+	help
+	Support for HW LZO ALGO.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #
 # Generic allocator support is selected if needed
 #

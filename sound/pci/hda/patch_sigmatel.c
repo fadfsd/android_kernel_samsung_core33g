@@ -83,9 +83,12 @@ enum {
 	STAC_DELL_M6_BOTH,
 	STAC_DELL_EQ,
 	STAC_ALIENWARE_M17X,
+<<<<<<< HEAD
 	STAC_92HD89XX_HP_FRONT_JACK,
 	STAC_92HD89XX_HP_Z1_G2_RIGHT_MIC_JACK,
 	STAC_92HD73XX_ASUS_MOBO,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	STAC_92HD73XX_MODELS
 };
 
@@ -100,7 +103,10 @@ enum {
 	STAC_92HD83XXX_HP_LED,
 	STAC_92HD83XXX_HP_INV_LED,
 	STAC_92HD83XXX_HP_MIC_LED,
+<<<<<<< HEAD
 	STAC_HP_LED_GPIO10,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	STAC_92HD83XXX_HEADSET_JACK,
 	STAC_92HD83XXX_HP,
 	STAC_HP_ENVY_BASS,
@@ -540,8 +546,13 @@ static void stac_init_power_map(struct hda_codec *codec)
 		if (snd_hda_jack_tbl_get(codec, nid))
 			continue;
 		if (def_conf == AC_JACK_PORT_COMPLEX &&
+<<<<<<< HEAD
 		    spec->vref_mute_led_nid != nid &&
 		    is_jack_detectable(codec, nid)) {
+=======
+		    !(spec->vref_mute_led_nid == nid ||
+		      is_jack_detectable(codec, nid))) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			snd_hda_jack_detect_enable_callback(codec, nid,
 							    STAC_PWR_EVENT,
 							    jack_update_power);
@@ -574,9 +585,15 @@ static void stac_store_hints(struct hda_codec *codec)
 			spec->gpio_mask;
 	}
 	if (get_int_hint(codec, "gpio_dir", &spec->gpio_dir))
+<<<<<<< HEAD
 		spec->gpio_dir &= spec->gpio_mask;
 	if (get_int_hint(codec, "gpio_data", &spec->gpio_data))
 		spec->gpio_data &= spec->gpio_mask;
+=======
+		spec->gpio_mask &= spec->gpio_mask;
+	if (get_int_hint(codec, "gpio_data", &spec->gpio_data))
+		spec->gpio_dir &= spec->gpio_mask;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (get_int_hint(codec, "eapd_mask", &spec->eapd_mask))
 		spec->eapd_mask &= spec->gpio_mask;
 	if (get_int_hint(codec, "gpio_mute", &spec->gpio_mute))
@@ -1779,6 +1796,7 @@ static const struct hda_pintbl intel_dg45id_pin_configs[] = {
 	{}
 };
 
+<<<<<<< HEAD
 static const struct hda_pintbl stac92hd89xx_hp_front_jack_pin_configs[] = {
 	{ 0x0a, 0x02214030 },
 	{ 0x0b, 0x02A19010 },
@@ -1790,6 +1808,8 @@ static const struct hda_pintbl stac92hd89xx_hp_z1_g2_right_mic_jack_pin_configs[
 	{}
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void stac92hd73xx_fixup_ref(struct hda_codec *codec,
 				   const struct hda_fixup *fix, int action)
 {
@@ -1908,6 +1928,7 @@ static const struct hda_fixup stac92hd73xx_fixups[] = {
 	[STAC_92HD73XX_NO_JD] = {
 		.type = HDA_FIXUP_FUNC,
 		.v.func = stac92hd73xx_fixup_no_jd,
+<<<<<<< HEAD
 	},
 	[STAC_92HD89XX_HP_FRONT_JACK] = {
 		.type = HDA_FIXUP_PINS,
@@ -1928,6 +1949,9 @@ static const struct hda_fixup stac92hd73xx_fixups[] = {
 			{ }
 		}
 	},
+=======
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static const struct hda_model_fixup stac92hd73xx_models[] = {
@@ -1939,7 +1963,10 @@ static const struct hda_model_fixup stac92hd73xx_models[] = {
 	{ .id = STAC_DELL_M6_BOTH, .name = "dell-m6" },
 	{ .id = STAC_DELL_EQ, .name = "dell-eq" },
 	{ .id = STAC_ALIENWARE_M17X, .name = "alienware" },
+<<<<<<< HEAD
 	{ .id = STAC_92HD73XX_ASUS_MOBO, .name = "asus-mobo" },
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{}
 };
 
@@ -1988,12 +2015,15 @@ static const struct snd_pci_quirk stac92hd73xx_fixup_tbl[] = {
 		      "Alienware M17x", STAC_ALIENWARE_M17X),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x0490,
 		      "Alienware M17x R3", STAC_DELL_EQ),
+<<<<<<< HEAD
 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1927,
 				"HP Z1 G2", STAC_92HD89XX_HP_Z1_G2_RIGHT_MIC_JACK),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x2b17,
 				"unknown HP", STAC_92HD89XX_HP_FRONT_JACK),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_ASUSTEK, 0x83f8, "ASUS AT4NM10",
 		      STAC_92HD73XX_ASUS_MOBO),
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{} /* terminator */
 };
 
@@ -2135,6 +2165,7 @@ static void stac92hd83xxx_fixup_hp_mic_led(struct hda_codec *codec,
 		spec->mic_mute_led_gpio = 0x08; /* GPIO3 */
 }
 
+<<<<<<< HEAD
 static void stac92hd83xxx_fixup_hp_led_gpio10(struct hda_codec *codec,
 				   const struct hda_fixup *fix, int action)
 {
@@ -2146,6 +2177,8 @@ static void stac92hd83xxx_fixup_hp_led_gpio10(struct hda_codec *codec,
 	}
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void stac92hd83xxx_fixup_headset_jack(struct hda_codec *codec,
 				   const struct hda_fixup *fix, int action)
 {
@@ -2212,12 +2245,15 @@ static const struct hda_fixup stac92hd83xxx_fixups[] = {
 		.chained = true,
 		.chain_id = STAC_92HD83XXX_HP,
 	},
+<<<<<<< HEAD
 	[STAC_HP_LED_GPIO10] = {
 		.type = HDA_FIXUP_FUNC,
 		.v.func = stac92hd83xxx_fixup_hp_led_gpio10,
 		.chained = true,
 		.chain_id = STAC_92HD83XXX_HP,
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	[STAC_92HD83XXX_HEADSET_JACK] = {
 		.type = HDA_FIXUP_FUNC,
 		.v.func = stac92hd83xxx_fixup_headset_jack,
@@ -2289,8 +2325,11 @@ static const struct snd_pci_quirk stac92hd83xxx_fixup_tbl[] = {
 			  "HP", STAC_92HD83XXX_HP_cNB11_INTQUAD),
 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1888,
 			  "HP Envy Spectre", STAC_HP_ENVY_BASS),
+<<<<<<< HEAD
 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1899,
 			  "HP Folio 13", STAC_HP_LED_GPIO10),
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x18df,
 			  "HP Folio", STAC_92HD83XXX_HP_MIC_LED),
 	SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xff00, 0x1900,
@@ -3662,6 +3701,7 @@ static int stac_parse_auto_config(struct hda_codec *codec)
 			return err;
 	}
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -3675,6 +3715,14 @@ static int stac_build_controls(struct hda_codec *codec)
 	return 0;
 }
 
+=======
+	stac_init_power_map(codec);
+
+	return 0;
+}
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int stac_init(struct hda_codec *codec)
 {
 	struct sigmatel_spec *spec = codec->spec;
@@ -3816,7 +3864,11 @@ static void stac_set_power_state(struct hda_codec *codec, hda_nid_t fg,
 #endif /* CONFIG_PM */
 
 static const struct hda_codec_ops stac_patch_ops = {
+<<<<<<< HEAD
 	.build_controls = stac_build_controls,
+=======
+	.build_controls = snd_hda_gen_build_controls,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.build_pcms = snd_hda_gen_build_pcms,
 	.init = stac_init,
 	.free = stac_free,

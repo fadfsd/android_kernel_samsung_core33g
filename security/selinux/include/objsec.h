@@ -24,7 +24,10 @@
 #include <linux/binfmts.h>
 #include <linux/in.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <net/net_namespace.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include "flask.h"
 #include "avc.h"
 
@@ -39,10 +42,14 @@ struct task_security_struct {
 
 struct inode_security_struct {
 	struct inode *inode;	/* back pointer to inode object */
+<<<<<<< HEAD
 	union {
 		struct list_head list;	/* list of inode_security_struct */
 		struct rcu_head rcu;	/* for freeing the inode_security_struct */
 	};
+=======
+	struct list_head list;	/* list of inode_security_struct */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u32 task_sid;		/* SID of creating task */
 	u32 sid;		/* SID of this object */
 	u16 sclass;		/* security class of this object */
@@ -79,7 +86,10 @@ struct ipc_security_struct {
 };
 
 struct netif_security_struct {
+<<<<<<< HEAD
 	struct net *ns;			/* network namespace */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ifindex;			/* device index */
 	u32 sid;			/* SID for this interface */
 };

@@ -451,4 +451,13 @@ EXPORT_SYMBOL_GPL(fat_setattr);
 const struct inode_operations fat_file_inode_operations = {
 	.setattr	= fat_setattr,
 	.getattr	= fat_getattr,
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_FAT_VIRTUAL_XATTR
+	.setxattr	= fat_setxattr,
+	.getxattr	= fat_getxattr,
+	.listxattr	= fat_listxattr,
+	.removexattr	= fat_removexattr,
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };

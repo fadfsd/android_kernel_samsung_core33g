@@ -1530,12 +1530,20 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
 
 	dn = dev->of_node;
 	if (!dn) {
+<<<<<<< HEAD
 		strcpy(buf, "\n");
+=======
+		strcat(buf, "\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return strlen(buf);
 	}
 	cp = of_get_property(dn, "compatible", NULL);
 	if (!cp) {
+<<<<<<< HEAD
 		strcpy(buf, "\n");
+=======
+		strcat(buf, "\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return strlen(buf);
 	}
 

@@ -400,7 +400,10 @@ unsigned int speedstep_get_freqs(enum speedstep_processor processor,
 
 	pr_debug("previous speed is %u\n", prev_speed);
 
+<<<<<<< HEAD
 	preempt_disable();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	local_irq_save(flags);
 
 	/* switch to low state */
@@ -465,8 +468,11 @@ unsigned int speedstep_get_freqs(enum speedstep_processor processor,
 
 out:
 	local_irq_restore(flags);
+<<<<<<< HEAD
 	preempt_enable();
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 EXPORT_SYMBOL_GPL(speedstep_get_freqs);

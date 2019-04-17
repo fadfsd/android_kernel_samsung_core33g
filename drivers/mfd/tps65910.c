@@ -254,10 +254,15 @@ static int tps65910_irq_init(struct tps65910 *tps65910, int irq,
 	ret = regmap_add_irq_chip(tps65910->regmap, tps65910->chip_irq,
 		IRQF_ONESHOT, pdata->irq_base,
 		tps6591x_irqs_chip, &tps65910->irq_data);
+<<<<<<< HEAD
 	if (ret < 0) {
 		dev_warn(tps65910->dev, "Failed to add irq_chip %d\n", ret);
 		tps65910->chip_irq = 0;
 	}
+=======
+	if (ret < 0)
+		dev_warn(tps65910->dev, "Failed to add irq_chip %d\n", ret);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 

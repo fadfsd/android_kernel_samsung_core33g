@@ -1049,8 +1049,11 @@ static int fib_netdev_event(struct notifier_block *this, unsigned long event, vo
 	}
 
 	in_dev = __in_dev_get_rtnl(dev);
+<<<<<<< HEAD
 	if (!in_dev)
 		return NOTIFY_DONE;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	switch (event) {
 	case NETDEV_UP:

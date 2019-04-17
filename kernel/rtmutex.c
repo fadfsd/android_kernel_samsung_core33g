@@ -82,6 +82,7 @@ static inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
 		owner = *p;
 	} while (cmpxchg(p, owner, owner | RT_MUTEX_HAS_WAITERS) != owner);
 }
+<<<<<<< HEAD
 
 /*
  * Safe fastpath aware unlock:
@@ -123,6 +124,8 @@ static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock)
 	return rt_mutex_cmpxchg(lock, owner, NULL);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else
 # define rt_mutex_cmpxchg(l,c,n)	(0)
 static inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
@@ -130,6 +133,7 @@ static inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
 	lock->owner = (struct task_struct *)
 			((unsigned long)lock->owner | RT_MUTEX_HAS_WAITERS);
 }
+<<<<<<< HEAD
 
 /*
  * Simple slow path only version: lock->owner is protected by lock->wait_lock.
@@ -141,6 +145,8 @@ static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock)
 	raw_spin_unlock(&lock->wait_lock);
 	return true;
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 /*
@@ -194,11 +200,14 @@ static void rt_mutex_adjust_prio(struct task_struct *task)
  */
 int max_lock_depth = 1024;
 
+<<<<<<< HEAD
 static inline struct rt_mutex *task_blocked_on_lock(struct task_struct *p)
 {
 	return p->pi_blocked_on ? p->pi_blocked_on->lock : NULL;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Adjust the priority chain. Also used for deadlock detection.
  * Decreases task's usage by one - may thus free the task.
@@ -207,7 +216,10 @@ static inline struct rt_mutex *task_blocked_on_lock(struct task_struct *p)
 static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 				      int deadlock_detect,
 				      struct rt_mutex *orig_lock,
+<<<<<<< HEAD
 				      struct rt_mutex *next_lock,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				      struct rt_mutex_waiter *orig_waiter,
 				      struct task_struct *top_task)
 {
@@ -241,7 +253,11 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		}
 		put_task_struct(task);
 
+<<<<<<< HEAD
 		return -EDEADLK;
+=======
+		return deadlock_detect ? -EDEADLK : 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
  retry:
 	/*
@@ -266,6 +282,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		goto out_unlock_pi;
 
 	/*
+<<<<<<< HEAD
 	 * We dropped all locks after taking a refcount on @task, so
 	 * the task might have moved on in the lock chain or even left
 	 * the chain completely and blocks now on an unrelated lock or
@@ -278,10 +295,13 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		goto out_unlock_pi;
 
 	/*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * Drop out, when the task has no waiters. Note,
 	 * top_waiter can be NULL, when we are in the deboosting
 	 * mode!
 	 */
+<<<<<<< HEAD
 	if (top_waiter) {
 		if (!task_has_pi_waiters(task))
 			goto out_unlock_pi;
@@ -292,6 +312,11 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		if (!detect_deadlock && top_waiter != task_top_pi_waiter(task))
 			goto out_unlock_pi;
 	}
+=======
+	if (top_waiter && (!task_has_pi_waiters(task) ||
+			   top_waiter != task_top_pi_waiter(task)))
+		goto out_unlock_pi;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * When deadlock detection is off then we check, if further
@@ -307,6 +332,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		goto retry;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Deadlock detection. If the lock is the same as the original
 	 * lock which caused us to walk the lock chain or if the
@@ -317,6 +343,13 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		debug_rt_mutex_deadlock(deadlock_detect, orig_waiter, lock);
 		raw_spin_unlock(&lock->wait_lock);
 		ret = -EDEADLK;
+=======
+	/* Deadlock detection */
+	if (lock == orig_lock || rt_mutex_owner(lock) == top_task) {
+		debug_rt_mutex_deadlock(deadlock_detect, orig_waiter, lock);
+		raw_spin_unlock(&lock->wait_lock);
+		ret = deadlock_detect ? -EDEADLK : 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out_unlock_pi;
 	}
 
@@ -363,6 +396,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 		__rt_mutex_adjust_prio(task);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Check whether the task which owns the current lock is pi
 	 * blocked itself. If yes we store a pointer to the lock for
@@ -371,11 +405,14 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 	 */
 	next_lock = task_blocked_on_lock(task);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
 
 	top_waiter = rt_mutex_top_waiter(lock);
 	raw_spin_unlock(&lock->wait_lock);
 
+<<<<<<< HEAD
 	/*
 	 * We reached the end of the lock chain. Stop right here. No
 	 * point to go back just to figure that out.
@@ -383,6 +420,8 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
 	if (!next_lock)
 		goto out_put_task;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!detect_deadlock && waiter != top_waiter)
 		goto out_put_task;
 
@@ -493,6 +532,7 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
 {
 	struct task_struct *owner = rt_mutex_owner(lock);
 	struct rt_mutex_waiter *top_waiter = waiter;
+<<<<<<< HEAD
 	struct rt_mutex *next_lock;
 	int chain_walk = 0, res;
 	unsigned long flags;
@@ -508,6 +548,10 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
 	 */
 	if (owner == task)
 		return -EDEADLK;
+=======
+	unsigned long flags;
+	int chain_walk = 0, res;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	raw_spin_lock_irqsave(&task->pi_lock, flags);
 	__rt_mutex_adjust_prio(task);
@@ -528,14 +572,20 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
 	if (!owner)
 		return 0;
 
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&owner->pi_lock, flags);
 	if (waiter == rt_mutex_top_waiter(lock)) {
+=======
+	if (waiter == rt_mutex_top_waiter(lock)) {
+		raw_spin_lock_irqsave(&owner->pi_lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		plist_del(&top_waiter->pi_list_entry, &owner->pi_waiters);
 		plist_add(&waiter->pi_list_entry, &owner->pi_waiters);
 
 		__rt_mutex_adjust_prio(owner);
 		if (owner->pi_blocked_on)
 			chain_walk = 1;
+<<<<<<< HEAD
 	} else if (debug_rt_mutex_detect_deadlock(waiter, detect_deadlock)) {
 		chain_walk = 1;
 	}
@@ -550,6 +600,14 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
 	 * walk.
 	 */
 	if (!chain_walk || !next_lock)
+=======
+		raw_spin_unlock_irqrestore(&owner->pi_lock, flags);
+	}
+	else if (debug_rt_mutex_detect_deadlock(waiter, detect_deadlock))
+		chain_walk = 1;
+
+	if (!chain_walk)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 
 	/*
@@ -561,8 +619,13 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
 
 	raw_spin_unlock(&lock->wait_lock);
 
+<<<<<<< HEAD
 	res = rt_mutex_adjust_prio_chain(owner, detect_deadlock, lock,
 					 next_lock, waiter, task);
+=======
+	res = rt_mutex_adjust_prio_chain(owner, detect_deadlock, lock, waiter,
+					 task);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	raw_spin_lock(&lock->wait_lock);
 
@@ -572,8 +635,12 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
 /*
  * Wake up the next waiter on the lock.
  *
+<<<<<<< HEAD
  * Remove the top waiter from the current tasks pi waiter list and
  * wake it up.
+=======
+ * Remove the top waiter from the current tasks waiter list and wake it up.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *
  * Called with lock->wait_lock held.
  */
@@ -594,6 +661,7 @@ static void wakeup_next_waiter(struct rt_mutex *lock)
 	 */
 	plist_del(&waiter->pi_list_entry, &current->pi_waiters);
 
+<<<<<<< HEAD
 	/*
 	 * As we are waking up the top waiter, and the waiter stays
 	 * queued on the lock until it gets the lock, this lock
@@ -611,6 +679,12 @@ static void wakeup_next_waiter(struct rt_mutex *lock)
 	 * long as we hold lock->wait_lock. The waiter task needs to
 	 * acquire it in order to dequeue the waiter.
 	 */
+=======
+	rt_mutex_set_owner(lock, NULL);
+
+	raw_spin_unlock_irqrestore(&current->pi_lock, flags);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	wake_up_process(waiter->task);
 }
 
@@ -625,8 +699,13 @@ static void remove_waiter(struct rt_mutex *lock,
 {
 	int first = (waiter == rt_mutex_top_waiter(lock));
 	struct task_struct *owner = rt_mutex_owner(lock);
+<<<<<<< HEAD
 	struct rt_mutex *next_lock = NULL;
 	unsigned long flags;
+=======
+	unsigned long flags;
+	int chain_walk = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	raw_spin_lock_irqsave(&current->pi_lock, flags);
 	plist_del(&waiter->list_entry, &lock->wait_list);
@@ -650,15 +729,24 @@ static void remove_waiter(struct rt_mutex *lock,
 		}
 		__rt_mutex_adjust_prio(owner);
 
+<<<<<<< HEAD
 		/* Store the lock on which owner is blocked or NULL */
 		next_lock = task_blocked_on_lock(owner);
+=======
+		if (owner->pi_blocked_on)
+			chain_walk = 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		raw_spin_unlock_irqrestore(&owner->pi_lock, flags);
 	}
 
 	WARN_ON(!plist_node_empty(&waiter->pi_list_entry));
 
+<<<<<<< HEAD
 	if (!next_lock)
+=======
+	if (!chain_walk)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return;
 
 	/* gets dropped in rt_mutex_adjust_prio_chain()! */
@@ -666,7 +754,11 @@ static void remove_waiter(struct rt_mutex *lock,
 
 	raw_spin_unlock(&lock->wait_lock);
 
+<<<<<<< HEAD
 	rt_mutex_adjust_prio_chain(owner, 0, lock, next_lock, NULL, current);
+=======
+	rt_mutex_adjust_prio_chain(owner, 0, lock, NULL, current);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	raw_spin_lock(&lock->wait_lock);
 }
@@ -679,7 +771,10 @@ static void remove_waiter(struct rt_mutex *lock,
 void rt_mutex_adjust_pi(struct task_struct *task)
 {
 	struct rt_mutex_waiter *waiter;
+<<<<<<< HEAD
 	struct rt_mutex *next_lock;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&task->pi_lock, flags);
@@ -689,13 +784,21 @@ void rt_mutex_adjust_pi(struct task_struct *task)
 		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
 		return;
 	}
+<<<<<<< HEAD
 	next_lock = waiter->lock;
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
 
 	/* gets dropped in rt_mutex_adjust_prio_chain()! */
 	get_task_struct(task);
+<<<<<<< HEAD
 
 	rt_mutex_adjust_prio_chain(task, 0, NULL, next_lock, NULL, task);
+=======
+	rt_mutex_adjust_prio_chain(task, 0, NULL, NULL, task);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -747,6 +850,7 @@ __rt_mutex_slowlock(struct rt_mutex *lock, int state,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void rt_mutex_handle_deadlock(int res, int detect_deadlock,
 				     struct rt_mutex_waiter *w)
 {
@@ -767,6 +871,8 @@ static void rt_mutex_handle_deadlock(int res, int detect_deadlock,
 	}
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Slow path lock function:
  */
@@ -804,10 +910,15 @@ rt_mutex_slowlock(struct rt_mutex *lock, int state,
 
 	set_current_state(TASK_RUNNING);
 
+<<<<<<< HEAD
 	if (unlikely(ret)) {
 		remove_waiter(lock, &waiter);
 		rt_mutex_handle_deadlock(ret, detect_deadlock, &waiter);
 	}
+=======
+	if (unlikely(ret))
+		remove_waiter(lock, &waiter);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * try_to_take_rt_mutex() sets the waiter bit
@@ -863,6 +974,7 @@ rt_mutex_slowunlock(struct rt_mutex *lock)
 
 	rt_mutex_deadlock_account_unlock(current);
 
+<<<<<<< HEAD
 	/*
 	 * We must be careful here if the fast path is enabled. If we
 	 * have no waiters queued we cannot set owner to NULL here
@@ -906,6 +1018,14 @@ rt_mutex_slowunlock(struct rt_mutex *lock)
 	 * The wakeup next waiter path does not suffer from the above
 	 * race. See the comments there.
 	 */
+=======
+	if (!rt_mutex_has_waiters(lock)) {
+		lock->owner = NULL;
+		raw_spin_unlock(&lock->wait_lock);
+		return;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	wakeup_next_waiter(lock);
 
 	raw_spin_unlock(&lock->wait_lock);
@@ -1152,8 +1272,12 @@ int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
 		return 1;
 	}
 
+<<<<<<< HEAD
 	/* We enforce deadlock detection for futexes */
 	ret = task_blocks_on_rt_mutex(lock, waiter, task, 1);
+=======
+	ret = task_blocks_on_rt_mutex(lock, waiter, task, detect_deadlock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (ret && !rt_mutex_owner(lock)) {
 		/*

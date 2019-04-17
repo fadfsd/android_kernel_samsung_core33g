@@ -262,9 +262,13 @@ static int usb_stream_hwdep_mmap(struct snd_hwdep *hw,
 	}
 
 	area->vm_ops = &usb_stream_hwdep_vm_ops;
+<<<<<<< HEAD
 	area->vm_flags |= VM_DONTDUMP;
 	if (!read)
 		area->vm_flags |= VM_DONTEXPAND;
+=======
+	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	area->vm_private_data = us122l;
 	atomic_inc(&us122l->mmap_count);
 out:

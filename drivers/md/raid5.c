@@ -60,10 +60,13 @@
 #include "raid0.h"
 #include "bitmap.h"
 
+<<<<<<< HEAD
 static bool devices_handle_discard_safely = false;
 module_param(devices_handle_discard_safely, bool, 0644);
 MODULE_PARM_DESC(devices_handle_discard_safely,
 		 "Set to Y if all devices in each array reliably return zeroes on reads from discarded regions");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Stripe cache
  */
@@ -672,12 +675,15 @@ static void ops_run_io(struct stripe_head *sh, struct stripe_head_state *s)
 			bi->bi_io_vec[0].bv_len = STRIPE_SIZE;
 			bi->bi_io_vec[0].bv_offset = 0;
 			bi->bi_size = STRIPE_SIZE;
+<<<<<<< HEAD
 			/*
 			 * If this is discard request, set bi_vcnt 0. We don't
 			 * want to confuse SCSI because SCSI will replace payload
 			 */
 			if (rw & REQ_DISCARD)
 				bi->bi_vcnt = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (rrdev)
 				set_bit(R5_DOUBLE_LOCKED, &sh->dev[i].flags);
 
@@ -716,12 +722,15 @@ static void ops_run_io(struct stripe_head *sh, struct stripe_head_state *s)
 			rbi->bi_io_vec[0].bv_len = STRIPE_SIZE;
 			rbi->bi_io_vec[0].bv_offset = 0;
 			rbi->bi_size = STRIPE_SIZE;
+<<<<<<< HEAD
 			/*
 			 * If this is discard request, set bi_vcnt 0. We don't
 			 * want to confuse SCSI because SCSI will replace payload
 			 */
 			if (rw & REQ_DISCARD)
 				rbi->bi_vcnt = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (conf->mddev->gendisk)
 				trace_block_bio_remap(bdev_get_queue(rbi->bi_bdev),
 						      rbi, disk_devt(conf->mddev->gendisk),
@@ -1701,8 +1710,12 @@ static int resize_stripes(struct r5conf *conf, int newsize)
 
 	conf->slab_cache = sc;
 	conf->active_name = 1-conf->active_name;
+<<<<<<< HEAD
 	if (!err)
 		conf->pool_size = newsize;
+=======
+	conf->pool_size = newsize;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return err;
 }
 
@@ -1898,7 +1911,10 @@ static void raid5_end_write_request(struct bio *bi, int error)
 			set_bit(R5_MadeGoodRepl, &sh->dev[i].flags);
 	} else {
 		if (!uptodate) {
+<<<<<<< HEAD
 			set_bit(STRIPE_DEGRADED, &sh->state);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			set_bit(WriteErrorSeen, &rdev->flags);
 			set_bit(R5_WriteError, &sh->dev[i].flags);
 			if (!test_and_set_bit(WantReplacement, &rdev->flags))
@@ -2679,8 +2695,12 @@ static int fetch_block(struct stripe_head *sh, struct stripe_head_state *s,
 	     (s->failed >= 2 && fdev[1]->toread) ||
 	     (sh->raid_conf->level <= 5 && s->failed && fdev[0]->towrite &&
 	      !test_bit(R5_OVERWRITE, &fdev[0]->flags)) ||
+<<<<<<< HEAD
 	     ((sh->raid_conf->level == 6 || sh->sector >= sh->raid_conf->mddev->recovery_cp)
 	      && s->failed && s->to_write))) {
+=======
+	     (sh->raid_conf->level == 6 && s->failed && s->to_write))) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* we would like to get this block, possibly by computing it,
 		 * otherwise read it if the backing disk is insync
 		 */
@@ -2819,6 +2839,7 @@ static void handle_stripe_clean_event(struct r5conf *conf,
 		}
 		/* now that discard is done we can proceed with any sync */
 		clear_bit(STRIPE_DISCARD, &sh->state);
+<<<<<<< HEAD
 		/*
 		 * SCSI discard will change some bio fields and the stripe has
 		 * no updated data, so remove it from hash list and the stripe
@@ -2827,6 +2848,8 @@ static void handle_stripe_clean_event(struct r5conf *conf,
 		spin_lock_irq(&conf->device_lock);
 		remove_hash(sh);
 		spin_unlock_irq(&conf->device_lock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (test_bit(STRIPE_SYNC_REQUESTED, &sh->state))
 			set_bit(STRIPE_HANDLE, &sh->state);
 
@@ -2854,8 +2877,12 @@ static void handle_stripe_dirtying(struct r5conf *conf,
 	 * generate correct data from the parity.
 	 */
 	if (conf->max_degraded == 2 ||
+<<<<<<< HEAD
 	    (recovery_cp < MaxSector && sh->sector >= recovery_cp &&
 	     s->failed == 0)) {
+=======
+	    (recovery_cp < MaxSector && sh->sector >= recovery_cp)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* Calculate the real rcw later - for now make it
 		 * look like rcw is cheaper
 		 */
@@ -3399,7 +3426,11 @@ static void analyse_stripe(struct stripe_head *sh, struct stripe_head_state *s)
 			 */
 			set_bit(R5_Insync, &dev->flags);
 
+<<<<<<< HEAD
 		if (test_bit(R5_WriteError, &dev->flags)) {
+=======
+		if (rdev && test_bit(R5_WriteError, &dev->flags)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			/* This flag does not apply to '.replacement'
 			 * only to .rdev, so make sure to check that*/
 			struct md_rdev *rdev2 = rcu_dereference(
@@ -3412,7 +3443,11 @@ static void analyse_stripe(struct stripe_head *sh, struct stripe_head_state *s)
 			} else
 				clear_bit(R5_WriteError, &dev->flags);
 		}
+<<<<<<< HEAD
 		if (test_bit(R5_MadeGood, &dev->flags)) {
+=======
+		if (rdev && test_bit(R5_MadeGood, &dev->flags)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			/* This flag does not apply to '.replacement'
 			 * only to .rdev, so make sure to check that*/
 			struct md_rdev *rdev2 = rcu_dereference(
@@ -3568,8 +3603,11 @@ static void handle_stripe(struct stripe_head *sh)
 				set_bit(R5_Wantwrite, &dev->flags);
 				if (prexor)
 					continue;
+<<<<<<< HEAD
 				if (s.failed > 1)
 					continue;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				if (!test_bit(R5_Insync, &dev->flags) ||
 				    ((i == sh->pd_idx || i == sh->qd_idx)  &&
 				     s.failed == 0))
@@ -5046,6 +5084,7 @@ raid5_size(struct mddev *mddev, sector_t sectors, int raid_disks)
 	return sectors * (raid_disks - conf->max_degraded);
 }
 
+<<<<<<< HEAD
 static void free_scratch_buffer(struct r5conf *conf, struct raid5_percpu *percpu)
 {
 	safe_put_page(percpu->spare_page);
@@ -5071,11 +5110,17 @@ static int alloc_scratch_buffer(struct r5conf *conf, struct raid5_percpu *percpu
 
 static void raid5_free_percpu(struct r5conf *conf)
 {
+=======
+static void raid5_free_percpu(struct r5conf *conf)
+{
+	struct raid5_percpu *percpu;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long cpu;
 
 	if (!conf->percpu)
 		return;
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG_CPU
 	unregister_cpu_notifier(&conf->cpu_notify);
 #endif
@@ -5083,6 +5128,17 @@ static void raid5_free_percpu(struct r5conf *conf)
 	get_online_cpus();
 	for_each_possible_cpu(cpu)
 		free_scratch_buffer(conf, per_cpu_ptr(conf->percpu, cpu));
+=======
+	get_online_cpus();
+	for_each_possible_cpu(cpu) {
+		percpu = per_cpu_ptr(conf->percpu, cpu);
+		safe_put_page(percpu->spare_page);
+		kfree(percpu->scribble);
+	}
+#ifdef CONFIG_HOTPLUG_CPU
+	unregister_cpu_notifier(&conf->cpu_notify);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	put_online_cpus();
 
 	free_percpu(conf->percpu);
@@ -5108,7 +5164,19 @@ static int raid456_cpu_notify(struct notifier_block *nfb, unsigned long action,
 	switch (action) {
 	case CPU_UP_PREPARE:
 	case CPU_UP_PREPARE_FROZEN:
+<<<<<<< HEAD
 		if (alloc_scratch_buffer(conf, percpu)) {
+=======
+		if (conf->level == 6 && !percpu->spare_page)
+			percpu->spare_page = alloc_page(GFP_KERNEL);
+		if (!percpu->scribble)
+			percpu->scribble = kmalloc(conf->scribble_len, GFP_KERNEL);
+
+		if (!percpu->scribble ||
+		    (conf->level == 6 && !percpu->spare_page)) {
+			safe_put_page(percpu->spare_page);
+			kfree(percpu->scribble);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			pr_err("%s: failed memory allocation for cpu%ld\n",
 			       __func__, cpu);
 			return notifier_from_errno(-ENOMEM);
@@ -5116,7 +5184,14 @@ static int raid456_cpu_notify(struct notifier_block *nfb, unsigned long action,
 		break;
 	case CPU_DEAD:
 	case CPU_DEAD_FROZEN:
+<<<<<<< HEAD
 		free_scratch_buffer(conf, per_cpu_ptr(conf->percpu, cpu));
+=======
+		safe_put_page(percpu->spare_page);
+		kfree(percpu->scribble);
+		percpu->spare_page = NULL;
+		percpu->scribble = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	default:
 		break;
@@ -5128,6 +5203,7 @@ static int raid456_cpu_notify(struct notifier_block *nfb, unsigned long action,
 static int raid5_alloc_percpu(struct r5conf *conf)
 {
 	unsigned long cpu;
+<<<<<<< HEAD
 	int err = 0;
 
 	conf->percpu = alloc_percpu(struct raid5_percpu);
@@ -5151,6 +5227,42 @@ static int raid5_alloc_percpu(struct r5conf *conf)
 			break;
 		}
 	}
+=======
+	struct page *spare_page;
+	struct raid5_percpu __percpu *allcpus;
+	void *scribble;
+	int err;
+
+	allcpus = alloc_percpu(struct raid5_percpu);
+	if (!allcpus)
+		return -ENOMEM;
+	conf->percpu = allcpus;
+
+	get_online_cpus();
+	err = 0;
+	for_each_present_cpu(cpu) {
+		if (conf->level == 6) {
+			spare_page = alloc_page(GFP_KERNEL);
+			if (!spare_page) {
+				err = -ENOMEM;
+				break;
+			}
+			per_cpu_ptr(conf->percpu, cpu)->spare_page = spare_page;
+		}
+		scribble = kmalloc(conf->scribble_len, GFP_KERNEL);
+		if (!scribble) {
+			err = -ENOMEM;
+			break;
+		}
+		per_cpu_ptr(conf->percpu, cpu)->scribble = scribble;
+	}
+#ifdef CONFIG_HOTPLUG_CPU
+	conf->cpu_notify.notifier_call = raid456_cpu_notify;
+	conf->cpu_notify.priority = 0;
+	if (err == 0)
+		err = register_cpu_notifier(&conf->cpu_notify);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	put_online_cpus();
 
 	return err;
@@ -5618,7 +5730,11 @@ static int run(struct mddev *mddev)
 		mddev->queue->limits.discard_granularity = stripe;
 		/*
 		 * unaligned part of discard request will be ignored, so can't
+<<<<<<< HEAD
 		 * guarantee discard_zeroes_data
+=======
+		 * guarantee discard_zerors_data
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		 */
 		mddev->queue->limits.discard_zeroes_data = 0;
 
@@ -5643,6 +5759,7 @@ static int run(struct mddev *mddev)
 			    !bdev_get_queue(rdev->bdev)->
 						limits.discard_zeroes_data)
 				discard_supported = false;
+<<<<<<< HEAD
 			/* Unfortunately, discard_zeroes_data is not currently
 			 * a guarantee - just a hint.  So we only allow DISCARD
 			 * if the sysadmin has confirmed that only safe devices
@@ -5655,6 +5772,8 @@ static int run(struct mddev *mddev)
 				}
 				discard_supported = false;
 			}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 		if (discard_supported &&

@@ -1165,9 +1165,12 @@ static void x86_pmu_del(struct perf_event *event, int flags)
 	for (i = 0; i < cpuc->n_events; i++) {
 		if (event == cpuc->event_list[i]) {
 
+<<<<<<< HEAD
 			if (i >= cpuc->n_events - cpuc->n_added)
 				--cpuc->n_added;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (x86_pmu.put_event_constraints)
 				x86_pmu.put_event_constraints(cpuc, event);
 
@@ -1252,6 +1255,7 @@ void perf_events_lapic_init(void)
 static int __kprobes
 perf_event_nmi_handler(unsigned int cmd, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	int ret;
 	u64 start_clock;
 	u64 finish_clock;
@@ -1266,6 +1270,12 @@ perf_event_nmi_handler(unsigned int cmd, struct pt_regs *regs)
 	perf_sample_event_took(finish_clock - start_clock);
 
 	return ret;
+=======
+	if (!atomic_read(&active_events))
+		return NMI_DONE;
+
+	return x86_pmu.handle_irq(regs);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 struct event_constraint emptyconstraint;

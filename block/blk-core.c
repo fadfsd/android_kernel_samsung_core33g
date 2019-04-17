@@ -309,6 +309,7 @@ inline void __blk_run_queue_uncond(struct request_queue *q)
 	 * can wait until all these request_fn calls have finished.
 	 */
 	q->request_fn_active++;
+<<<<<<< HEAD
 	if (!q->notified_urgent &&
 		q->elevator->type->ops.elevator_is_urgent_fn &&
 		q->urgent_request_fn &&
@@ -318,6 +319,9 @@ inline void __blk_run_queue_uncond(struct request_queue *q)
 		q->urgent_request_fn(q);
 	} else
 		q->request_fn(q);
+=======
+	q->request_fn(q);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	q->request_fn_active--;
 }
 
@@ -328,12 +332,15 @@ inline void __blk_run_queue_uncond(struct request_queue *q)
  * Description:
  *    See @blk_run_queue. This variant must be called with the queue lock
  *    held and interrupts disabled.
+<<<<<<< HEAD
  *    Device driver will be notified of an urgent request
  *    pending under the following conditions:
  *    1. The driver and the current scheduler support urgent reques handling
  *    2. There is an urgent request pending in the scheduler
  *    3. There isn't already an urgent request in flight, meaning previously
  *       notified urgent request completed (!q->notified_urgent)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 void __blk_run_queue(struct request_queue *q)
 {
@@ -659,12 +666,19 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
 	__set_bit(QUEUE_FLAG_BYPASS, &q->queue_flags);
 
 	if (blkcg_init_queue(q))
+<<<<<<< HEAD
 		goto fail_bdi;
 
 	return q;
 
 fail_bdi:
 	bdi_destroy(&q->backing_dev_info);
+=======
+		goto fail_id;
+
+	return q;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 fail_id:
 	ida_simple_remove(&blk_queue_ida, q->id);
 fail_q:
@@ -755,6 +769,7 @@ blk_init_allocated_queue(struct request_queue *q, request_fn_proc *rfn,
 
 	q->sg_reserved_size = INT_MAX;
 
+<<<<<<< HEAD
 	/* Protect q->elevator from elevator_change */
 	mutex_lock(&q->sysfs_lock);
 
@@ -766,6 +781,11 @@ blk_init_allocated_queue(struct request_queue *q, request_fn_proc *rfn,
 
 	mutex_unlock(&q->sysfs_lock);
 
+=======
+	/* init elevator */
+	if (elevator_init(q, NULL))
+		return NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return q;
 }
 EXPORT_SYMBOL(blk_init_allocated_queue);
@@ -1228,6 +1248,7 @@ void blk_requeue_request(struct request_queue *q, struct request *rq)
 
 	BUG_ON(blk_queued_rq(rq));
 
+<<<<<<< HEAD
 	if (rq->cmd_flags & REQ_URGENT) {
 		/*
 		 * It's not compliant with the design to re-insert
@@ -1238,10 +1259,13 @@ void blk_requeue_request(struct request_queue *q, struct request *rq)
 		WARN_ON(!q->dispatched_urgent);
 		q->dispatched_urgent = false;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	elv_requeue_request(q, rq);
 }
 EXPORT_SYMBOL(blk_requeue_request);
 
+<<<<<<< HEAD
 /**
  * blk_reinsert_request() - Insert a request back to the scheduler
  * @q:		request queue
@@ -1296,6 +1320,8 @@ bool blk_reinsert_req_sup(struct request_queue *q)
 }
 EXPORT_SYMBOL(blk_reinsert_req_sup);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void add_acct_request(struct request_queue *q, struct request *rq,
 			     int where)
 {
@@ -2152,7 +2178,12 @@ static void blk_account_io_done(struct request *req)
 static struct request *blk_pm_peek_request(struct request_queue *q,
 					   struct request *rq)
 {
+<<<<<<< HEAD
 	if (q->dev && q->rpm_status != RPM_ACTIVE && !(rq->cmd_flags & REQ_PM))
+=======
+	if (q->dev && (q->rpm_status == RPM_SUSPENDED ||
+	    (q->rpm_status != RPM_ACTIVE && !(rq->cmd_flags & REQ_PM))))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return NULL;
 	else
 		return rq;
@@ -2207,10 +2238,13 @@ struct request *blk_peek_request(struct request_queue *q)
 			 * not be passed by new incoming requests
 			 */
 			rq->cmd_flags |= REQ_STARTED;
+<<<<<<< HEAD
 			if (rq->cmd_flags & REQ_URGENT) {
 				WARN_ON(q->dispatched_urgent);
 				q->dispatched_urgent = true;
 			}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			trace_block_rq_issue(q, rq);
 		}
 
@@ -2320,7 +2354,10 @@ void blk_start_request(struct request *req)
 	if (unlikely(blk_bidi_rq(req)))
 		req->next_rq->resid_len = blk_rq_bytes(req->next_rq);
 
+<<<<<<< HEAD
 	BUG_ON(test_bit(REQ_ATOM_COMPLETE, &req->atomic_flags));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	blk_add_timer(req);
 }
 EXPORT_SYMBOL(blk_start_request);
@@ -2380,7 +2417,11 @@ bool blk_update_request(struct request *req, int error, unsigned int nr_bytes)
 	if (!req->bio)
 		return false;
 
+<<<<<<< HEAD
 	trace_block_rq_complete(req->q, req, nr_bytes);
+=======
+	trace_block_rq_complete(req->q, req);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * For fs requests, rq is just carrier of independent bio's

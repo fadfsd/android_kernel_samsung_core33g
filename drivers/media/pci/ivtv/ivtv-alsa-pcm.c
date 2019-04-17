@@ -159,12 +159,15 @@ static int snd_ivtv_pcm_capture_open(struct snd_pcm_substream *substream)
 
 	/* Instruct the CX2341[56] to start sending packets */
 	snd_ivtv_lock(itvsc);
+<<<<<<< HEAD
 
 	if (ivtv_init_on_first_open(itv)) {
 		snd_ivtv_unlock(itvsc);
 		return -ENXIO;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	s = &itv->streams[IVTV_ENC_STREAM_TYPE_PCM];
 
 	v4l2_fh_init(&item.fh, s->vdev);

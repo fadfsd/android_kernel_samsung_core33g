@@ -126,6 +126,13 @@ EXPORT_SYMBOL(copy_user_page);
 void VISenter(void);
 EXPORT_SYMBOL(VISenter);
 
+<<<<<<< HEAD
+=======
+/* CRYPTO code needs this */
+void VISenterhalf(void);
+EXPORT_SYMBOL(VISenterhalf);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern void xor_vis_2(unsigned long, unsigned long *, unsigned long *);
 extern void xor_vis_3(unsigned long, unsigned long *, unsigned long *,
 		unsigned long *);

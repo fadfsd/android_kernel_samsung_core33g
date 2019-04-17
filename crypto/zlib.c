@@ -378,4 +378,7 @@ module_exit(zlib_mod_fini);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Zlib Compression Algorithm");
 MODULE_AUTHOR("Sony Corporation");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("zlib");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

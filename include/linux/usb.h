@@ -206,6 +206,7 @@ void usb_put_intf(struct usb_interface *intf);
 #define USB_MAXINTERFACES	32
 #define USB_MAXIADS		(USB_MAXINTERFACES/2)
 
+<<<<<<< HEAD
 /*
  * USB Resume Timer: Every Host controller driver should drive the resume
  * signalling on the bus for the amount of time defined by this macro.
@@ -232,6 +233,8 @@ void usb_put_intf(struct usb_interface *intf);
  */
 #define USB_RESUME_TIMEOUT	40 /* ms */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * struct usb_interface_cache - long-term representation of a device interface
  * @num_altsetting: number of altsettings defined.
@@ -1663,7 +1666,11 @@ extern int usb_driver_set_configuration(struct usb_device *udev, int config);
  * USB identifies 5 second timeouts, maybe more in a few cases, and a few
  * slow devices (like some MGE Ellipse UPSes) actually push that limit.
  */
+<<<<<<< HEAD
 #define USB_CTRL_GET_TIMEOUT	5000
+=======
+#define USB_CTRL_GET_TIMEOUT	3000
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define USB_CTRL_SET_TIMEOUT	5000
 
 

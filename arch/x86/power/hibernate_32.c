@@ -13,11 +13,20 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/mmzone.h>
+<<<<<<< HEAD
 #include <asm/sections.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Defined in hibernate_asm_32.S */
 extern int restore_image(void);
 
+<<<<<<< HEAD
+=======
+/* References to section boundaries */
+extern const void __nosave_begin, __nosave_end;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* Pointer to the temporary resume page tables */
 pgd_t *resume_pg_dir;
 

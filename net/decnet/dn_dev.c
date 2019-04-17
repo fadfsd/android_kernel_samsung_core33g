@@ -573,7 +573,11 @@ static int dn_nl_deladdr(struct sk_buff *skb, struct nlmsghdr *nlh)
 	struct dn_ifaddr __rcu **ifap;
 	int err = -EINVAL;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (!net_eq(net, &init_net))
@@ -617,7 +621,11 @@ static int dn_nl_newaddr(struct sk_buff *skb, struct nlmsghdr *nlh)
 	struct dn_ifaddr *ifa;
 	int err;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	if (!net_eq(net, &init_net))

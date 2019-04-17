@@ -120,6 +120,7 @@ static void cdc_mbim_unbind(struct usbnet *dev, struct usb_interface *intf)
 	cdc_ncm_unbind(dev, intf);
 }
 
+<<<<<<< HEAD
 /* verify that the ethernet protocol is IPv4 or IPv6 */
 static bool is_ip_proto(__be16 proto)
 {
@@ -130,6 +131,8 @@ static bool is_ip_proto(__be16 proto)
 	}
 	return false;
 }
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static struct sk_buff *cdc_mbim_tx_fixup(struct usbnet *dev, struct sk_buff *skb, gfp_t flags)
 {
@@ -138,7 +141,10 @@ static struct sk_buff *cdc_mbim_tx_fixup(struct usbnet *dev, struct sk_buff *skb
 	struct cdc_ncm_ctx *ctx = info->ctx;
 	__le32 sign = cpu_to_le32(USB_CDC_MBIM_NDP16_IPS_SIGN);
 	u16 tci = 0;
+<<<<<<< HEAD
 	bool is_ip;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u8 *c;
 
 	if (!ctx)
@@ -148,6 +154,7 @@ static struct sk_buff *cdc_mbim_tx_fixup(struct usbnet *dev, struct sk_buff *skb
 		if (skb->len <= ETH_HLEN)
 			goto error;
 
+<<<<<<< HEAD
 		/* Some applications using e.g. packet sockets will
 		 * bypass the VLAN acceleration and create tagged
 		 * ethernet frames directly.  We primarily look for
@@ -164,16 +171,34 @@ static struct sk_buff *cdc_mbim_tx_fixup(struct usbnet *dev, struct sk_buff *skb
 			skb_pull(skb, ETH_HLEN);
 		}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* mapping VLANs to MBIM sessions:
 		 *   no tag     => IPS session <0>
 		 *   1 - 255    => IPS session <vlanid>
 		 *   256 - 511  => DSS session <vlanid - 256>
 		 *   512 - 4095 => unsupported, drop
 		 */
+<<<<<<< HEAD
 		switch (tci & 0x0f00) {
 		case 0x0000: /* VLAN ID 0 - 255 */
 			if (!is_ip)
 				goto error;
+=======
+		vlan_get_tag(skb, &tci);
+
+		switch (tci & 0x0f00) {
+		case 0x0000: /* VLAN ID 0 - 255 */
+			/* verify that datagram is IPv4 or IPv6 */
+			skb_reset_mac_header(skb);
+			switch (eth_hdr(skb)->h_proto) {
+			case htons(ETH_P_IP):
+			case htons(ETH_P_IPV6):
+				break;
+			default:
+				goto error;
+			}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			c = (u8 *)&sign;
 			c[3] = tci;
 			break;
@@ -187,6 +212,10 @@ static struct sk_buff *cdc_mbim_tx_fixup(struct usbnet *dev, struct sk_buff *skb
 				  "unsupported tci=0x%04x\n", tci);
 			goto error;
 		}
+<<<<<<< HEAD
+=======
+		skb_pull(skb, ETH_HLEN);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	spin_lock_bh(&ctx->mtx);

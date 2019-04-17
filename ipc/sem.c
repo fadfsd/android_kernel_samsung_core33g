@@ -253,6 +253,7 @@ static void sem_rcu_free(struct rcu_head *head)
 }
 
 /*
+<<<<<<< HEAD
  * spin_unlock_wait() and !spin_is_locked() are not memory barriers, they
  * are only control barriers.
  * The code must pair with spin_unlock(&sem->lock) or
@@ -263,6 +264,8 @@ static void sem_rcu_free(struct rcu_head *head)
 #define ipc_smp_acquire__after_spin_is_unlocked()	smp_rmb()
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * Wait until all currently ongoing simple ops have completed.
  * Caller must own sem_perm.lock.
  * New simple ops cannot start, because simple ops first check
@@ -285,7 +288,10 @@ static void sem_wait_array(struct sem_array *sma)
 		sem = sma->sem_base + i;
 		spin_unlock_wait(&sem->lock);
 	}
+<<<<<<< HEAD
 	ipc_smp_acquire__after_spin_is_unlocked();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -337,6 +343,7 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
 
 		/* Then check that the global lock is free */
 		if (!spin_is_locked(&sma->sem_perm.lock)) {
+<<<<<<< HEAD
 			/*
 			 * We need a memory barrier with acquire semantics,
 			 * otherwise we can race with another thread that does:
@@ -344,6 +351,10 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
 			 *	spin_unlock(sem_perm.lock);
 			 */
 			ipc_smp_acquire__after_spin_is_unlocked();
+=======
+			/* spin_is_locked() is not a memory barrier */
+			smp_mb();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 			/* Now repeat the test of complex_count:
 			 * It can't change anymore until we drop sem->lock.
@@ -1298,12 +1309,15 @@ static int semctl_setval(struct ipc_namespace *ns, int semid, int semnum,
 
 	sem_lock(sma, NULL, -1);
 
+<<<<<<< HEAD
 	if (sma->sem_perm.deleted) {
 		sem_unlock(sma, -1);
 		rcu_read_unlock();
 		return -EIDRM;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	curr = &sma->sem_base[semnum];
 
 	ipc_assert_locked_object(&sma->sem_perm);
@@ -1358,6 +1372,7 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
 		int i;
 
 		sem_lock(sma, NULL, -1);
+<<<<<<< HEAD
 		if (sma->sem_perm.deleted) {
 			err = -EIDRM;
 			goto out_unlock;
@@ -1366,6 +1381,14 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
 			if (!ipc_rcu_getref(sma)) {
 				err = -EIDRM;
 				goto out_unlock;
+=======
+		if(nsems > SEMMSL_FAST) {
+			if (!ipc_rcu_getref(sma)) {
+				sem_unlock(sma, -1);
+				rcu_read_unlock();
+				err = -EIDRM;
+				goto out_free;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			sem_unlock(sma, -1);
 			rcu_read_unlock();
@@ -1378,8 +1401,15 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
 			rcu_read_lock();
 			sem_lock_and_putref(sma);
 			if (sma->sem_perm.deleted) {
+<<<<<<< HEAD
 				err = -EIDRM;
 				goto out_unlock;
+=======
+				sem_unlock(sma, -1);
+				rcu_read_unlock();
+				err = -EIDRM;
+				goto out_free;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 		}
 		for (i = 0; i < sma->sem_nsems; i++)
@@ -1397,8 +1427,13 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
 		struct sem_undo *un;
 
 		if (!ipc_rcu_getref(sma)) {
+<<<<<<< HEAD
 			err = -EIDRM;
 			goto out_rcu_wakeup;
+=======
+			rcu_read_unlock();
+			return -EIDRM;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 		rcu_read_unlock();
 
@@ -1426,8 +1461,15 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
 		rcu_read_lock();
 		sem_lock_and_putref(sma);
 		if (sma->sem_perm.deleted) {
+<<<<<<< HEAD
 			err = -EIDRM;
 			goto out_unlock;
+=======
+			sem_unlock(sma, -1);
+			rcu_read_unlock();
+			err = -EIDRM;
+			goto out_free;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 		for (i = 0; i < nsems; i++)
@@ -1451,10 +1493,13 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
 		goto out_rcu_wakeup;
 
 	sem_lock(sma, NULL, -1);
+<<<<<<< HEAD
 	if (sma->sem_perm.deleted) {
 		err = -EIDRM;
 		goto out_unlock;
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	curr = &sma->sem_base[semnum];
 
 	switch (cmd) {
@@ -1860,10 +1905,13 @@ SYSCALL_DEFINE4(semtimedop, int, semid, struct sembuf __user *, tsops,
 	if (error)
 		goto out_rcu_wakeup;
 
+<<<<<<< HEAD
 	error = -EIDRM;
 	locknum = sem_lock(sma, sops, nsops);
 	if (sma->sem_perm.deleted)
 		goto out_unlock_free;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * semid identifiers are not unique - find_alloc_undo may have
 	 * allocated an undo structure, it was invalidated by an RMID
@@ -1871,6 +1919,11 @@ SYSCALL_DEFINE4(semtimedop, int, semid, struct sembuf __user *, tsops,
 	 * This case can be detected checking un->semid. The existence of
 	 * "un" itself is guaranteed by rcu.
 	 */
+<<<<<<< HEAD
+=======
+	error = -EIDRM;
+	locknum = sem_lock(sma, sops, nsops);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (un && un->semid == -1)
 		goto out_unlock_free;
 
@@ -2065,6 +2118,7 @@ void exit_sem(struct task_struct *tsk)
 		rcu_read_lock();
 		un = list_entry_rcu(ulp->list_proc.next,
 				    struct sem_undo, list_proc);
+<<<<<<< HEAD
 		if (&un->list_proc == &ulp->list_proc) {
 			/*
 			 * We must wait for freeary() before freeing this ulp,
@@ -2087,6 +2141,19 @@ void exit_sem(struct task_struct *tsk)
 		}
 
 		sma = sem_obtain_object_check(tsk->nsproxy->ipc_ns, semid);
+=======
+		if (&un->list_proc == &ulp->list_proc)
+			semid = -1;
+		 else
+			semid = un->semid;
+
+		if (semid == -1) {
+			rcu_read_unlock();
+			break;
+		}
+
+		sma = sem_obtain_object_check(tsk->nsproxy->ipc_ns, un->semid);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* exit_sem raced with IPC_RMID, nothing to do */
 		if (IS_ERR(sma)) {
 			rcu_read_unlock();
@@ -2094,12 +2161,15 @@ void exit_sem(struct task_struct *tsk)
 		}
 
 		sem_lock(sma, NULL, -1);
+<<<<<<< HEAD
 		/* exit_sem raced with IPC_RMID, nothing to do */
 		if (sma->sem_perm.deleted) {
 			sem_unlock(sma, -1);
 			rcu_read_unlock();
 			continue;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		un = __lookup_undo(ulp, semid);
 		if (un == NULL) {
 			/* exit_sem raced with IPC_RMID+semget() that created

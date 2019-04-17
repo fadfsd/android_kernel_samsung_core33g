@@ -34,9 +34,15 @@ struct ipc_namespace {
 	int		sem_ctls[4];
 	int		used_sems;
 
+<<<<<<< HEAD
 	unsigned int	msg_ctlmax;
 	unsigned int	msg_ctlmnb;
 	unsigned int	msg_ctlmni;
+=======
+	int		msg_ctlmax;
+	int		msg_ctlmnb;
+	int		msg_ctlmni;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	atomic_t	msg_bytes;
 	atomic_t	msg_hdrs;
 	int		auto_msgmni;
@@ -119,7 +125,13 @@ extern int mq_init_ns(struct ipc_namespace *ns);
  *     the new maximum will handle anyone else.  I may have to revisit this
  *     in the future.
  */
+<<<<<<< HEAD
 #define DFLT_QUEUESMAX		      256
+=======
+#define MIN_QUEUESMAX			1
+#define DFLT_QUEUESMAX		      256
+#define HARD_QUEUESMAX		     1024
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define MIN_MSGMAX			1
 #define DFLT_MSG		       10U
 #define DFLT_MSGMAX		       10

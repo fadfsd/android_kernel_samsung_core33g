@@ -563,6 +563,11 @@ static int gen_ndis_set_resp(u8 configNr, u32 OID, u8 *buf, u32 buf_len,
  * Response Functions
  */
 
+<<<<<<< HEAD
+=======
+#define RNDIS_MSG_MAX_NUM 1
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int rndis_init_response(int configNr, rndis_init_msg_type *buf)
 {
 	rndis_init_cmplt_type *resp;
@@ -585,12 +590,21 @@ static int rndis_init_response(int configNr, rndis_init_msg_type *buf)
 	resp->MinorVersion = cpu_to_le32(RNDIS_MINOR_VERSION);
 	resp->DeviceFlags = cpu_to_le32(RNDIS_DF_CONNECTIONLESS);
 	resp->Medium = cpu_to_le32(RNDIS_MEDIUM_802_3);
+<<<<<<< HEAD
 	resp->MaxPacketsPerTransfer = cpu_to_le32(1);
 	resp->MaxTransferSize = cpu_to_le32(
 		  params->dev->mtu
 		+ sizeof(struct ethhdr)
 		+ sizeof(struct rndis_packet_msg_type)
 		+ 22);
+=======
+	resp->MaxPacketsPerTransfer = cpu_to_le32(RNDIS_MSG_MAX_NUM);
+	resp->MaxTransferSize = cpu_to_le32(
+		  (params->dev->mtu
+		+ sizeof(struct ethhdr)
+		+ sizeof(struct rndis_packet_msg_type)
+		+ 22)*RNDIS_MSG_MAX_NUM);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	resp->PacketAlignmentFactor = cpu_to_le32(0);
 	resp->AFListOffset = cpu_to_le32(0);
 	resp->AFListSize = cpu_to_le32(0);
@@ -1003,7 +1017,10 @@ static rndis_resp_t *rndis_add_response(int configNr, u32 length)
 		&(rndis_per_dev_params[configNr].resp_queue));
 	return r;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int rndis_rm_hdr(struct gether *port,
 			struct sk_buff *skb,
 			struct sk_buff_head *list)
@@ -1127,11 +1144,21 @@ static struct proc_dir_entry *rndis_connect_state [RNDIS_MAX_CONFIGS];
 
 #endif /* CONFIG_USB_GADGET_DEBUG_FILES */
 
+<<<<<<< HEAD
+=======
+static bool rndis_initialized;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 int rndis_init(void)
 {
 	u8 i;
 
+<<<<<<< HEAD
+=======
+	if (rndis_initialized)
+		return 0;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 #ifdef	CONFIG_USB_GADGET_DEBUG_FILES
 		char name [20];
@@ -1158,6 +1185,10 @@ int rndis_init(void)
 		INIT_LIST_HEAD(&(rndis_per_dev_params[i].resp_queue));
 	}
 
+<<<<<<< HEAD
+=======
+	rndis_initialized = true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -1166,7 +1197,17 @@ void rndis_exit(void)
 #ifdef CONFIG_USB_GADGET_DEBUG_FILES
 	u8 i;
 	char name[20];
+<<<<<<< HEAD
 
+=======
+#endif
+
+	if (!rndis_initialized)
+		return;
+	rndis_initialized = false;
+
+#ifdef CONFIG_USB_GADGET_DEBUG_FILES
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 		sprintf(name, NAME_TEMPLATE, i);
 		remove_proc_entry(name, NULL);

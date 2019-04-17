@@ -170,7 +170,10 @@ static void free_page_cgroup(void *addr)
 			sizeof(struct page_cgroup) * PAGES_PER_SECTION;
 
 		BUG_ON(PageReserved(page));
+<<<<<<< HEAD
 		kmemleak_free(addr);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		free_pages_exact(addr, table_size);
 	}
 }

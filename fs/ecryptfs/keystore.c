@@ -649,9 +649,21 @@ ecryptfs_write_tag_70_packet(char *dest, size_t *remaining_bytes,
 		       mount_crypt_stat->global_default_fnek_sig, rc);
 		goto out;
 	}
+<<<<<<< HEAD
 	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(
 		&s->desc.tfm,
 		&s->tfm_mutex, mount_crypt_stat->global_default_fn_cipher_name);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(
+		&s->desc.tfm,
+		&s->tfm_mutex, mount_crypt_stat->global_default_fn_cipher_name, mount_crypt_stat->flags);
+#else
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(
+		&s->desc.tfm,
+		&s->tfm_mutex, mount_crypt_stat->global_default_fn_cipher_name);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(rc)) {
 		printk(KERN_ERR "Internal error whilst attempting to get "
 		       "tfm and mutex for cipher name [%s]; rc = [%d]\n",
@@ -993,9 +1005,21 @@ ecryptfs_parse_tag_70_packet(char **filename, size_t *filename_size,
 		       rc);
 		goto out;
 	}
+<<<<<<< HEAD
 	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&s->desc.tfm,
 							&s->tfm_mutex,
 							s->cipher_string);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&s->desc.tfm,
+							&s->tfm_mutex,
+							s->cipher_string, mount_crypt_stat->flags);
+#else
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&s->desc.tfm,
+							&s->tfm_mutex,
+							s->cipher_string);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(rc)) {
 		printk(KERN_ERR "Internal error whilst attempting to get "
 		       "tfm and mutex for cipher name [%s]; rc = [%d]\n",
@@ -1148,12 +1172,17 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 	u8 cipher_code = 0;
 	struct ecryptfs_msg_ctx *msg_ctx;
 	struct ecryptfs_message *msg = NULL;
+<<<<<<< HEAD
 	char *auth_tok_sig;
 <<<<<<< HEAD
 	char *payload = NULL;
 =======
 	char *payload;
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+	char *auth_tok_sig = NULL;
+	char *payload = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	size_t payload_len = 0;
 	int rc;
 
@@ -1206,11 +1235,18 @@ decrypt_pki_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 				  crypt_stat->key_size);
 	}
 out:
+<<<<<<< HEAD
 	kfree(msg);
 <<<<<<< HEAD
 	kfree(payload);
 =======
 >>>>>>> parent of 59a54da8838... core33g: Import SM-G360H_KK_Opensource
+=======
+	if (msg)
+	kfree(msg);
+	if (payload)
+		kfree(payload);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return rc;
 }
 
@@ -1679,6 +1715,12 @@ decrypt_passphrase_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 		.flags = CRYPTO_TFM_REQ_MAY_SLEEP
 	};
 	int rc = 0;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	char iv[ECRYPTFS_DEFAULT_IV_BYTES];
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (unlikely(ecryptfs_verbosity > 0)) {
 		ecryptfs_printk(
@@ -1688,8 +1730,18 @@ decrypt_passphrase_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 			auth_tok->token.password.session_key_encryption_key,
 			auth_tok->token.password.session_key_encryption_key_bytes);
 	}
+<<<<<<< HEAD
 	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
 							crypt_stat->cipher);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
+							crypt_stat->cipher, crypt_stat->mount_crypt_stat->flags);
+#else
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
+							crypt_stat->cipher);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(rc)) {
 		printk(KERN_ERR "Internal error whilst attempting to get "
 		       "tfm and mutex for cipher name [%s]; rc = [%d]\n",
@@ -1728,17 +1780,58 @@ decrypt_passphrase_encrypted_session_key(struct ecryptfs_auth_tok *auth_tok,
 		rc = -EINVAL;
 		goto out;
 	}
+<<<<<<< HEAD
 	rc = crypto_blkcipher_decrypt(&desc, dst_sg, src_sg,
 				      auth_tok->session_key.encrypted_key_size);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	if (crypt_stat->mount_crypt_stat->flags & ECRYPTFS_ENABLE_CC)
+		crypto_blkcipher_get_iv(desc.tfm, iv, ECRYPTFS_DEFAULT_IV_BYTES);
+#endif
+	rc = crypto_blkcipher_decrypt(&desc, dst_sg, src_sg,
+				      auth_tok->session_key.encrypted_key_size);
+#ifdef CONFIG_CRYPTO_FIPS
+	if (crypt_stat->mount_crypt_stat->flags & ECRYPTFS_ENABLE_CC)
+		crypto_blkcipher_set_iv(desc.tfm, iv, ECRYPTFS_DEFAULT_IV_BYTES);
+	if (unlikely(rc)) {
+		mutex_unlock(tfm_mutex);
+		printk(KERN_ERR "Error decrypting; rc = [%d]\n", rc);
+		goto out;
+	}
+	/* Session key(the key to decrypt file encryption keys) CLEAR! */
+	memset(auth_tok->token.password.session_key_encryption_key, 0, ECRYPTFS_MAX_KEY_BYTES);
+	rc = crypto_blkcipher_setkey(desc.tfm, auth_tok->token.password.session_key_encryption_key, crypt_stat->key_size);
+	mutex_unlock(tfm_mutex);
+	if (unlikely(rc < 0)) {
+		printk(KERN_ERR "Error(decrypt) Session Key CLEAR in desc.tfm; rc = [%d]\n", rc);
+	}
+	rc = 0;
+#else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(tfm_mutex);
 	if (unlikely(rc)) {
 		printk(KERN_ERR "Error decrypting; rc = [%d]\n", rc);
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	auth_tok->session_key.flags |= ECRYPTFS_CONTAINS_DECRYPTED_KEY;
 	memcpy(crypt_stat->key, auth_tok->session_key.decrypted_key,
 	       auth_tok->session_key.decrypted_key_size);
 	crypt_stat->flags |= ECRYPTFS_KEY_VALID;
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_CRYPTO_FIPS
+	/* File encryption key CLEAR! */
+	memset(auth_tok->session_key.decrypted_key, 0, auth_tok->session_key.decrypted_key_size);
+	auth_tok->session_key.decrypted_key_size = 0;
+	auth_tok->session_key.flags &= ~ECRYPTFS_CONTAINS_DECRYPTED_KEY;
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(ecryptfs_verbosity > 0)) {
 		ecryptfs_printk(KERN_DEBUG, "FEK of size [%zd]:\n",
 				crypt_stat->key_size);
@@ -2191,7 +2284,11 @@ write_tag_3_packet(char *dest, size_t *remaining_bytes,
 {
 	size_t i;
 	size_t encrypted_session_key_valid = 0;
+<<<<<<< HEAD
 	char session_key_encryption_key[ECRYPTFS_MAX_KEY_BYTES];
+=======
+	char session_key_encryption_key[ECRYPTFS_MAX_KEY_BYTES] = {0, };
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct scatterlist dst_sg[2];
 	struct scatterlist src_sg[2];
 	struct mutex *tfm_mutex = NULL;
@@ -2205,12 +2302,28 @@ write_tag_3_packet(char *dest, size_t *remaining_bytes,
 		.flags = CRYPTO_TFM_REQ_MAY_SLEEP
 	};
 	int rc = 0;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	char iv[ECRYPTFS_DEFAULT_IV_BYTES];
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	(*packet_size) = 0;
 	ecryptfs_from_hex(key_rec->sig, auth_tok->token.password.signature,
 			  ECRYPTFS_SIG_SIZE);
+<<<<<<< HEAD
 	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
 							crypt_stat->cipher);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
+							crypt_stat->cipher, crypt_stat->mount_crypt_stat->flags);
+#else
+	rc = ecryptfs_get_tfm_and_mutex_for_cipher_name(&desc.tfm, &tfm_mutex,
+							crypt_stat->cipher);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (unlikely(rc)) {
 		printk(KERN_ERR "Internal error whilst attempting to get "
 		       "tfm and mutex for cipher name [%s]; rc = [%d]\n",
@@ -2304,13 +2417,43 @@ write_tag_3_packet(char *dest, size_t *remaining_bytes,
 	rc = 0;
 	ecryptfs_printk(KERN_DEBUG, "Encrypting [%zd] bytes of the key\n",
 			crypt_stat->key_size);
+<<<<<<< HEAD
 	rc = crypto_blkcipher_encrypt(&desc, dst_sg, src_sg,
 				      (*key_rec).enc_key_size);
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+	if (crypt_stat->mount_crypt_stat->flags & ECRYPTFS_ENABLE_CC)
+		crypto_blkcipher_get_iv(desc.tfm, iv, ECRYPTFS_DEFAULT_IV_BYTES);
+#endif
+	rc = crypto_blkcipher_encrypt(&desc, dst_sg, src_sg,
+				      (*key_rec).enc_key_size);
+#ifdef CONFIG_CRYPTO_FIPS
+	if (crypt_stat->mount_crypt_stat->flags & ECRYPTFS_ENABLE_CC)
+		crypto_blkcipher_set_iv(desc.tfm, iv, ECRYPTFS_DEFAULT_IV_BYTES);
+	if (rc) {
+		mutex_unlock(tfm_mutex);
+		printk(KERN_ERR "Error encrypting; rc = [%d]\n", rc);
+		goto out;
+	}
+	/* Session key(the key to encrypt file encryption keys) CLEAR! */
+	memset( session_key_encryption_key, 0, ECRYPTFS_MAX_KEY_BYTES );
+	rc = crypto_blkcipher_setkey(desc.tfm, session_key_encryption_key, crypt_stat->key_size);
+	mutex_unlock(tfm_mutex);
+	if (rc) {
+		printk(KERN_ERR "Error(encrypt) Session Key CLEAR in desc.tfm; rc = [%d]\n", rc);
+	}
+	rc = 0;
+#else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mutex_unlock(tfm_mutex);
 	if (rc) {
 		printk(KERN_ERR "Error encrypting; rc = [%d]\n", rc);
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ecryptfs_printk(KERN_DEBUG, "This should be the encrypted key:\n");
 	if (ecryptfs_verbosity > 0) {
 		ecryptfs_printk(KERN_DEBUG, "EFEK of size [%zd]:\n",

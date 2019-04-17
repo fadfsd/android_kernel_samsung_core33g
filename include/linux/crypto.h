@@ -26,6 +26,7 @@
 #include <linux/uaccess.h>
 
 /*
+<<<<<<< HEAD
  * Autoloaded crypto modules should only use a prefixed name to avoid allowing
  * arbitrary modules to be loaded. Loading from userspace may still need the
  * unprefixed names, so retains those aliases as well.
@@ -39,6 +40,8 @@
 		__MODULE_INFO(alias, alias_crypto, "crypto-" name)
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * Algorithm masks and types.
  */
 #define CRYPTO_ALG_TYPE_MASK		0x0000000f

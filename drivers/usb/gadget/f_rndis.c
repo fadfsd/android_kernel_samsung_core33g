@@ -685,6 +685,19 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 
 	status = -ENODEV;
 
+<<<<<<< HEAD
+=======
+	/* NOTE:  a status/notification endpoint is, strictly speaking,
+	 * optional.  We don't treat it that way though!  It's simpler,
+	 * and some newer profiles don't treat it as optional.
+	 */
+	ep = usb_ep_autoconfig(cdev->gadget, &fs_notify_desc);
+	if (!ep)
+		goto fail;
+	rndis->notify = ep;
+	ep->driver_data = cdev;	/* claim */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* allocate instance-specific endpoints */
 	ep = usb_ep_autoconfig(cdev->gadget, &fs_in_desc);
 	if (!ep)
@@ -698,6 +711,7 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis->port.out_ep = ep;
 	ep->driver_data = cdev;	/* claim */
 
+<<<<<<< HEAD
 	/* NOTE:  a status/notification endpoint is, strictly speaking,
 	 * optional.  We don't treat it that way though!  It's simpler,
 	 * and some newer profiles don't treat it as optional.
@@ -708,6 +722,8 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis->notify = ep;
 	ep->driver_data = cdev;	/* claim */
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	status = -ENOMEM;
 
 	/* allocate notification request and buffer */
@@ -821,12 +837,21 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 	if (!can_support_rndis(c) || !ethaddr)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (rndis_string_defs[0].id == 0) {
 		/* ... and setup RNDIS itself */
 		status = rndis_init();
 		if (status < 0)
 			return status;
 
+=======
+	/* setup RNDIS itself */
+	status = rndis_init();
+	if (status < 0)
+		return status;
+
+	if (rndis_string_defs[0].id == 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		status = usb_string_ids_tab(c->cdev, rndis_string_defs);
 		if (status)
 			return status;

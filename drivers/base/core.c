@@ -765,12 +765,19 @@ class_dir_create_and_add(struct class *class, struct kobject *parent_kobj)
 	return &dir->kobj;
 }
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(gdp_mutex);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static struct kobject *get_device_parent(struct device *dev,
 					 struct device *parent)
 {
 	if (dev->class) {
+<<<<<<< HEAD
+=======
+		static DEFINE_MUTEX(gdp_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		struct kobject *kobj = NULL;
 		struct kobject *parent_kobj;
 		struct kobject *k;
@@ -827,6 +834,7 @@ static struct kobject *get_device_parent(struct device *dev,
 	return NULL;
 }
 
+<<<<<<< HEAD
 static inline bool live_in_glue_dir(struct kobject *kobj,
 				    struct device *dev)
 {
@@ -855,6 +863,21 @@ static void cleanup_glue_dir(struct device *dev, struct kobject *glue_dir)
 	mutex_lock(&gdp_mutex);
 	kobject_put(glue_dir);
 	mutex_unlock(&gdp_mutex);
+=======
+static void cleanup_glue_dir(struct device *dev, struct kobject *glue_dir)
+{
+	/* see if we live in a "glue" directory */
+	if (!glue_dir || !dev->class ||
+	    glue_dir->kset != &dev->class->p->glue_dirs)
+		return;
+
+	kobject_put(glue_dir);
+}
+
+static void cleanup_device_parent(struct device *dev)
+{
+	cleanup_glue_dir(dev, dev->kobj.parent);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int device_add_class_symlinks(struct device *dev)
@@ -1020,7 +1043,10 @@ int device_add(struct device *dev)
 	struct kobject *kobj;
 	struct class_interface *class_intf;
 	int error = -EINVAL;
+<<<<<<< HEAD
 	struct kobject *glue_dir = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	dev = get_device(dev);
 	if (!dev)
@@ -1065,10 +1091,15 @@ int device_add(struct device *dev)
 	/* first, register with generic layer. */
 	/* we require the name to be set before, and pass NULL */
 	error = kobject_add(&dev->kobj, dev->kobj.parent, NULL);
+<<<<<<< HEAD
 	if (error) {
 		glue_dir = get_glue_dir(dev);
 		goto Error;
 	}
+=======
+	if (error)
+		goto Error;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* notify platform of device entry */
 	if (platform_notify)
@@ -1151,11 +1182,19 @@ done:
 	device_remove_file(dev, &uevent_attr);
  attrError:
 	kobject_uevent(&dev->kobj, KOBJ_REMOVE);
+<<<<<<< HEAD
 	glue_dir = get_glue_dir(dev);
 	kobject_del(&dev->kobj);
  Error:
 	cleanup_glue_dir(dev, glue_dir);
 	put_device(parent);
+=======
+	kobject_del(&dev->kobj);
+ Error:
+	cleanup_device_parent(dev);
+	if (parent)
+		put_device(parent);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 name_error:
 	kfree(dev->p);
 	dev->p = NULL;
@@ -1226,7 +1265,10 @@ void put_device(struct device *dev)
 void device_del(struct device *dev)
 {
 	struct device *parent = dev->parent;
+<<<<<<< HEAD
 	struct kobject *glue_dir = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct class_interface *class_intf;
 
 	/* Notify clients of device removal.  This call must come
@@ -1268,9 +1310,14 @@ void device_del(struct device *dev)
 	if (platform_notify_remove)
 		platform_notify_remove(dev);
 	kobject_uevent(&dev->kobj, KOBJ_REMOVE);
+<<<<<<< HEAD
 	glue_dir = get_glue_dir(dev);
 	kobject_del(&dev->kobj);
 	cleanup_glue_dir(dev, glue_dir);
+=======
+	cleanup_device_parent(dev);
+	kobject_del(&dev->kobj);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	put_device(parent);
 }
 

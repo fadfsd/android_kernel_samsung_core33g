@@ -311,8 +311,14 @@ static inline struct Scsi_Host *to_shost(struct isci_host *ihost)
 }
 
 #define for_each_isci_host(id, ihost, pdev) \
+<<<<<<< HEAD
 	for (id = 0; id < SCI_MAX_CONTROLLERS && \
 	     (ihost = to_pci_info(pdev)->hosts[id]); id++)
+=======
+	for (id = 0, ihost = to_pci_info(pdev)->hosts[id]; \
+	     id < ARRAY_SIZE(to_pci_info(pdev)->hosts) && ihost; \
+	     ihost = to_pci_info(pdev)->hosts[++id])
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static inline void wait_for_start(struct isci_host *ihost)
 {

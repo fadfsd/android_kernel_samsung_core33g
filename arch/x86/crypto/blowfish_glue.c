@@ -465,5 +465,10 @@ module_exit(fini);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Blowfish Cipher Algorithm, asm optimized");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("blowfish");
 MODULE_ALIAS_CRYPTO("blowfish-asm");
+=======
+MODULE_ALIAS("blowfish");
+MODULE_ALIAS("blowfish-asm");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

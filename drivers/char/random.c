@@ -283,14 +283,30 @@
  * The minimum number of bits of entropy before we wake up a read on
  * /dev/random.  Should be enough to do a significant reseed.
  */
+<<<<<<< HEAD
 static int random_read_wakeup_thresh = 64;
 
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+static int random_read_wakeup_thresh = 256;
+#else
+static int random_read_wakeup_thresh = 64;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * If the entropy count falls under this number of bits, then we
  * should wake up processes which are selecting or polling on write
  * access to /dev/random.
  */
+<<<<<<< HEAD
 static int random_write_wakeup_thresh = 128;
+=======
+#ifdef CONFIG_CRYPTO_FIPS
+static int random_write_wakeup_thresh = 320;
+#else
+static int random_write_wakeup_thresh = 128;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * When the input pool goes over trickle_thresh, start dropping most
@@ -933,8 +949,13 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	 * pool while mixing, and hash one final time.
 	 */
 	sha_transform(hash.w, extract, workspace);
+<<<<<<< HEAD
 	memzero_explicit(extract, sizeof(extract));
 	memzero_explicit(workspace, sizeof(workspace));
+=======
+	memset(extract, 0, sizeof(extract));
+	memset(workspace, 0, sizeof(workspace));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * In case the hash function has some recognizable output
@@ -957,7 +978,11 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	}
 
 	memcpy(out, &hash, EXTRACT_SIZE);
+<<<<<<< HEAD
 	memzero_explicit(&hash, sizeof(hash));
+=======
+	memset(&hash, 0, sizeof(hash));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static ssize_t extract_entropy(struct entropy_store *r, void *buf,
@@ -1005,7 +1030,11 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
 	}
 
 	/* Wipe data just returned from memory */
+<<<<<<< HEAD
 	memzero_explicit(tmp, sizeof(tmp));
+=======
+	memset(tmp, 0, sizeof(tmp));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }
@@ -1043,7 +1072,11 @@ static ssize_t extract_entropy_user(struct entropy_store *r, void __user *buf,
 	}
 
 	/* Wipe data just returned from memory */
+<<<<<<< HEAD
 	memzero_explicit(tmp, sizeof(tmp));
+=======
+	memset(tmp, 0, sizeof(tmp));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }

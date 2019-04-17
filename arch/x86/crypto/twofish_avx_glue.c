@@ -589,4 +589,8 @@ module_exit(twofish_exit);
 
 MODULE_DESCRIPTION("Twofish Cipher Algorithm, AVX optimized");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("twofish");
+=======
+MODULE_ALIAS("twofish");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

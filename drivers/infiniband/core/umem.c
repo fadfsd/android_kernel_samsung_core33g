@@ -94,6 +94,7 @@ struct ib_umem *ib_umem_get(struct ib_ucontext *context, unsigned long addr,
 	if (dmasync)
 		dma_set_attr(DMA_ATTR_WRITE_BARRIER, &attrs);
 
+<<<<<<< HEAD
 	if (!size)
 		return ERR_PTR(-EINVAL);
 
@@ -105,6 +106,8 @@ struct ib_umem *ib_umem_get(struct ib_ucontext *context, unsigned long addr,
 	    PAGE_ALIGN(addr + size) < (addr + size))
 		return ERR_PTR(-EINVAL);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!can_do_mlock())
 		return ERR_PTR(-EPERM);
 

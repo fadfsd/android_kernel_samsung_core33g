@@ -566,10 +566,13 @@ ENDPROC(early_idt_handlers)
 	/* This is global to keep gas from relaxing the jumps */
 ENTRY(early_idt_handler)
 	cld
+<<<<<<< HEAD
 
 	cmpl $2,(%esp)		# X86_TRAP_NMI
 	je is_nmi		# Ignore NMI
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cmpl $2,%ss:early_recursion_flag
 	je hlt_loop
 	incl %ss:early_recursion_flag
@@ -620,9 +623,14 @@ ex_entry:
 	pop %edx
 	pop %ecx
 	pop %eax
+<<<<<<< HEAD
 	decl %ss:early_recursion_flag
 is_nmi:
 	addl $8,%esp		/* drop vector number and error code */
+=======
+	addl $8,%esp		/* drop vector number and error code */
+	decl %ss:early_recursion_flag
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	iret
 ENDPROC(early_idt_handler)
 

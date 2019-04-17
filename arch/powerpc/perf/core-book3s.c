@@ -112,6 +112,7 @@ static inline void power_pmu_bhrb_read(struct cpu_hw_events *cpuhw) {}
 
 static bool regs_use_siar(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	/*
 	 * When we take a performance monitor exception the regs are setup
 	 * using perf_read_regs() which overloads some fields, in particular
@@ -122,6 +123,9 @@ static bool regs_use_siar(struct pt_regs *regs)
 	 * is something random.
 	 */
 	return ((TRAP(regs) == 0xf00) && regs->result);
+=======
+	return !!regs->result;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -758,6 +762,7 @@ static void power_pmu_read(struct perf_event *event)
 	} while (local64_cmpxchg(&event->hw.prev_count, prev, val) != prev);
 
 	local64_add(delta, &event->count);
+<<<<<<< HEAD
 
 	/*
 	 * A number of places program the PMC with (0x80000000 - period_left).
@@ -774,6 +779,9 @@ static void power_pmu_read(struct perf_event *event)
 		if (val < 1)
 			val = 1;
 	} while (local64_cmpxchg(&event->hw.period_left, prev, val) != prev);
+=======
+	local64_sub(delta, &event->hw.period_left);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -1351,9 +1359,12 @@ static int can_go_on_limited_pmc(struct perf_event *event, u64 ev,
 	if (ppmu->limited_pmc_event(ev))
 		return 1;
 
+<<<<<<< HEAD
 	if (ppmu->flags & PPMU_ARCH_207S)
 		mtspr(SPRN_MMCR2, 0);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * The requested event_id isn't on a limited PMC already;
 	 * see if any alternative code goes on a limited PMC.
@@ -1448,7 +1459,11 @@ static int power_pmu_event_init(struct perf_event *event)
 
 	if (has_branch_stack(event)) {
 	        /* PMU has BHRB enabled */
+<<<<<<< HEAD
 		if (!(ppmu->flags & PPMU_ARCH_207S))
+=======
+		if (!(ppmu->flags & PPMU_BHRB))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -EOPNOTSUPP;
 	}
 

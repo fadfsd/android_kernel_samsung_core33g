@@ -31,7 +31,10 @@
 
 #include <linux/kernel.h>
 #include <linux/stddef.h>
+<<<<<<< HEAD
 #include <linux/rcupdate.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct rb_node {
 	unsigned long  __rb_parent_color;
@@ -52,7 +55,11 @@ struct rb_root {
 
 #define RB_EMPTY_ROOT(root)  ((root)->rb_node == NULL)
 
+<<<<<<< HEAD
 /* 'empty' nodes are nodes that are known not to be inserted in an rbtree */
+=======
+/* 'empty' nodes are nodes that are known not to be inserted in an rbree */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define RB_EMPTY_NODE(node)  \
 	((node)->__rb_parent_color == (unsigned long)(node))
 #define RB_CLEAR_NODE(node)  \
@@ -74,11 +81,19 @@ extern struct rb_node *rb_first_postorder(const struct rb_root *);
 extern struct rb_node *rb_next_postorder(const struct rb_node *);
 
 /* Fast replacement of a single node without remove/rebalance/add/rebalance */
+<<<<<<< HEAD
 extern void rb_replace_node(struct rb_node *victim, struct rb_node *new,
 			    struct rb_root *root);
 
 static inline void rb_link_node(struct rb_node *node, struct rb_node *parent,
 				struct rb_node **rb_link)
+=======
+extern void rb_replace_node(struct rb_node *victim, struct rb_node *new, 
+			    struct rb_root *root);
+
+static inline void rb_link_node(struct rb_node * node, struct rb_node * parent,
+				struct rb_node ** rb_link)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	node->__rb_parent_color = (unsigned long)parent;
 	node->rb_left = node->rb_right = NULL;
@@ -86,6 +101,7 @@ static inline void rb_link_node(struct rb_node *node, struct rb_node *parent,
 	*rb_link = node;
 }
 
+<<<<<<< HEAD
 static inline void rb_link_node_rcu(struct rb_node *node, struct rb_node *parent,
 				    struct rb_node **rb_link)
 {
@@ -95,19 +111,27 @@ static inline void rb_link_node_rcu(struct rb_node *node, struct rb_node *parent
 	rcu_assign_pointer(*rb_link, node);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define rb_entry_safe(ptr, type, member) \
 	({ typeof(ptr) ____ptr = (ptr); \
 	   ____ptr ? rb_entry(____ptr, type, member) : NULL; \
 	})
 
 /**
+<<<<<<< HEAD
  * rbtree_postorder_for_each_entry_safe - iterate in post-order over rb_root of
  * given type allowing the backing memory of @pos to be invalidated
+=======
+ * rbtree_postorder_for_each_entry_safe - iterate over rb_root in post order of
+ * given type safe against removal of rb_node entry
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  *
  * @pos:	the 'type *' to use as a loop cursor.
  * @n:		another 'type *' to use as temporary storage
  * @root:	'rb_root *' of the rbtree.
  * @field:	the name of the rb_node field within 'type'.
+<<<<<<< HEAD
  *
  * rbtree_postorder_for_each_entry_safe() provides a similar guarantee as
  * list_for_each_entry_safe() and allows the iteration to continue independent
@@ -116,6 +140,8 @@ static inline void rb_link_node_rcu(struct rb_node *node, struct rb_node *parent
  * Note, however, that it cannot handle other modifications that re-order the
  * rbtree it is iterating over. This includes calling rb_erase() on @pos, as
  * rb_erase() may rebalance the tree, causing us to miss some nodes.
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 #define rbtree_postorder_for_each_entry_safe(pos, n, root, field) \
 	for (pos = rb_entry_safe(rb_first_postorder(root), typeof(*pos), field); \

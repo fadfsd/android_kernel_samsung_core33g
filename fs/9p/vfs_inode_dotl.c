@@ -151,7 +151,12 @@ static struct inode *v9fs_qid_iget_dotl(struct super_block *sb,
 	unlock_new_inode(inode);
 	return inode;
 error:
+<<<<<<< HEAD
 	iget_failed(inode);
+=======
+	unlock_new_inode(inode);
+	iput(inode);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ERR_PTR(retval);
 
 }

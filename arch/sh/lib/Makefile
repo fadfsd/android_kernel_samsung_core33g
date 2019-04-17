@@ -6,7 +6,11 @@ lib-y  = delay.o memmove.o memchr.o \
 	 checksum.o strlen.o div64.o div64-generic.o
 
 # Extracted from libgcc
+<<<<<<< HEAD
 obj-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
+=======
+lib-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 ashlsi3.o ashrsi3.o ashiftrt.o lshrsi3.o \
 	 udiv_qrnnd.o
 

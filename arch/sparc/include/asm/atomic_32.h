@@ -21,7 +21,11 @@
 
 extern int __atomic_add_return(int, atomic_t *);
 extern int atomic_cmpxchg(atomic_t *, int, int);
+<<<<<<< HEAD
 extern int atomic_xchg(atomic_t *, int);
+=======
+#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern int __atomic_add_unless(atomic_t *, int, int);
 extern void atomic_set(atomic_t *, int);
 

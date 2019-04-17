@@ -272,7 +272,11 @@ xfs_readlink_bmap(
 			cur_chunk += sizeof(struct xfs_dsymlink_hdr);
 		}
 
+<<<<<<< HEAD
 		memcpy(link + offset, cur_chunk, byte_cnt);
+=======
+		memcpy(link + offset, bp->b_addr, byte_cnt);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		pathlen -= byte_cnt;
 		offset += byte_cnt;

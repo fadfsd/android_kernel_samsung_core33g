@@ -975,6 +975,7 @@ unknown:
 		break;
 	}
 	/* host either stalls (value < 0) or reports success */
+<<<<<<< HEAD
 	if (value >= 0) {
 		req->length = value;
 		req->zero = value < wLength;
@@ -984,6 +985,8 @@ unknown:
 			req->status = 0;
 		}
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return value;
 }
 

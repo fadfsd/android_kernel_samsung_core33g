@@ -119,7 +119,11 @@ static int _usbctrl_vendorreq_sync_read(struct usb_device *udev, u8 request,
 
 	do {
 		status = usb_control_msg(udev, pipe, request, reqtype, value,
+<<<<<<< HEAD
 					 index, pdata, len, 1000);
+=======
+					 index, pdata, len, 0); /*max. timeout*/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (status < 0) {
 			/* firmware download is checksumed, don't retry */
 			if ((value >= FW_8192C_START_ADDRESS &&
@@ -477,8 +481,11 @@ static void _rtl_usb_rx_process_agg(struct ieee80211_hw *hw,
 			if (unicast)
 				rtlpriv->link_info.num_rx_inperiod++;
 		}
+<<<<<<< HEAD
 		/* static bcn for roaming */
 		rtl_beacon_statistic(hw, skb);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -550,7 +557,11 @@ static void _rtl_rx_pre_process(struct ieee80211_hw *hw, struct sk_buff *skb)
 	}
 }
 
+<<<<<<< HEAD
 #define __RX_SKB_MAX_QUEUED	64
+=======
+#define __RX_SKB_MAX_QUEUED	32
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static void _rtl_rx_work(unsigned long param)
 {

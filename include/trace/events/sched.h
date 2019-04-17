@@ -182,6 +182,7 @@ TRACE_EVENT(sched_migrate_task,
 		  __entry->orig_cpu, __entry->dest_cpu)
 );
 
+<<<<<<< HEAD
 /*
  * Tracepoint for a CPU going offline/online:
  */
@@ -257,6 +258,8 @@ TRACE_EVENT(sched_load_balance,
 		  __entry->balance_interval)
 );
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 DECLARE_EVENT_CLASS(sched_process_template,
 
 	TP_PROTO(struct task_struct *p),

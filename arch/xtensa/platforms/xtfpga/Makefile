@@ -6,5 +6,9 @@
 #
 # Note 2! The CFLAGS definitions are in the main makefile...
 
+<<<<<<< HEAD
 obj-y			+= setup.o
 obj-$(CONFIG_XTFPGA_LCD) += lcd.o
+=======
+obj-y			= setup.o lcd.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

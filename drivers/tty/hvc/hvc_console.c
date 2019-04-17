@@ -31,7 +31,10 @@
 #include <linux/list.h>
 #include <linux/module.h>
 #include <linux/major.h>
+<<<<<<< HEAD
 #include <linux/atomic.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/sysrq.h>
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
@@ -71,9 +74,12 @@ static struct task_struct *hvc_task;
 /* Picks up late kicks after list walk but before schedule() */
 static int hvc_kicked;
 
+<<<<<<< HEAD
 /* hvc_init is triggered from hvc_alloc, i.e. only when actually used */
 static atomic_t hvc_needs_init __read_mostly = ATOMIC_INIT(-1);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int hvc_init(void);
 
 #ifdef CONFIG_MAGIC_SYSRQ
@@ -190,7 +196,11 @@ static struct tty_driver *hvc_console_device(struct console *c, int *index)
 	return hvc_driver;
 }
 
+<<<<<<< HEAD
 static int hvc_console_setup(struct console *co, char *options)
+=======
+static int __init hvc_console_setup(struct console *co, char *options)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {	
 	if (co->index < 0 || co->index >= MAX_NR_HVC_CONSOLES)
 		return -ENODEV;
@@ -846,7 +856,11 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
 	int i;
 
 	/* We wait until a driver actually comes along */
+<<<<<<< HEAD
 	if (atomic_inc_not_zero(&hvc_needs_init)) {
+=======
+	if (!hvc_driver) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		int err = hvc_init();
 		if (err)
 			return ERR_PTR(err);

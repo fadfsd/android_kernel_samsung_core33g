@@ -154,6 +154,7 @@ struct cond_bool_datum {
 struct cond_node;
 
 /*
+<<<<<<< HEAD
  * type set preserves data needed to determine constraint info from
  * policy source. This is not used by the kernel policy but allows
  * utilities such as audit2allow to determine constraint denials.
@@ -165,6 +166,8 @@ struct type_set {
 };
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * The configuration data includes security contexts for
  * initial SIDs, unlabeled file systems, TCP and UDP port numbers,
  * network interfaces, and nodes.  This structure stores the

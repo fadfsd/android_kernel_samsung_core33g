@@ -388,12 +388,20 @@ nocache:
 		addr = ALIGN(first->va_end, align);
 		if (addr < vstart)
 			goto nocache;
+<<<<<<< HEAD
 		if (addr + size < addr)
+=======
+		if (addr + size - 1 < addr)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto overflow;
 
 	} else {
 		addr = ALIGN(vstart, align);
+<<<<<<< HEAD
 		if (addr + size < addr)
+=======
+		if (addr + size - 1 < addr)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto overflow;
 
 		n = vmap_area_root.rb_node;
@@ -420,7 +428,11 @@ nocache:
 		if (addr + cached_hole_size < first->va_start)
 			cached_hole_size = first->va_start - addr;
 		addr = ALIGN(first->va_end, align);
+<<<<<<< HEAD
 		if (addr + size < addr)
+=======
+		if (addr + size - 1 < addr)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto overflow;
 
 		if (list_is_last(&first->list, &vmap_area_list))
@@ -1282,12 +1294,17 @@ void unmap_kernel_range(unsigned long addr, unsigned long size)
 	flush_tlb_kernel_range(addr, end);
 }
 
+<<<<<<< HEAD
 int map_vm_area(struct vm_struct *area, pgprot_t prot, struct page ***pages)
+=======
+int map_vm_area(struct vm_struct *area, pgprot_t prot, struct page **pages)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned long addr = (unsigned long)area->addr;
 	unsigned long end = addr + area->size - PAGE_SIZE;
 	int err;
 
+<<<<<<< HEAD
 	err = vmap_page_range(addr, end, prot, *pages);
 	if (err > 0) {
 		*pages += err;
@@ -1295,6 +1312,11 @@ int map_vm_area(struct vm_struct *area, pgprot_t prot, struct page ***pages)
 	}
 
 	return err;
+=======
+	err = vmap_page_range(addr, end, prot, pages);
+
+	return err > 0 ? 0 : err;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL_GPL(map_vm_area);
 
@@ -1586,7 +1608,11 @@ void *vmap(struct page **pages, unsigned int count,
 	if (!area)
 		return NULL;
 
+<<<<<<< HEAD
 	if (map_vm_area(area, prot, &pages)) {
+=======
+	if (map_vm_area(area, prot, pages)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		vunmap(area->addr);
 		return NULL;
 	}
@@ -1643,7 +1669,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 		area->pages[i] = page;
 	}
 
+<<<<<<< HEAD
 	if (map_vm_area(area, prot, &pages))
+=======
+	if (map_vm_area(area, prot, pages))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto fail;
 	return area->addr;
 
@@ -2625,7 +2655,11 @@ static int s_show(struct seq_file *m, void *p)
 
 	v = va->vm;
 
+<<<<<<< HEAD
 	seq_printf(m, "0x%pK-0x%pK %7ld",
+=======
+	seq_printf(m, "0x%lxK-0x%lxK %7ld",
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		v->addr, v->addr + v->size, v->size);
 
 	if (v->caller)

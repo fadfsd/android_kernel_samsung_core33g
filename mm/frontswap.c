@@ -244,10 +244,15 @@ int __frontswap_store(struct page *page)
 		  the (older) page from frontswap
 		 */
 		inc_frontswap_failed_stores();
+<<<<<<< HEAD
 		if (dup) {
 			__frontswap_clear(sis, offset);
 			frontswap_ops->invalidate_page(type, offset);
 		}
+=======
+		if (dup)
+			__frontswap_clear(sis, offset);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	if (frontswap_writethrough_enabled)
 		/* report failure so swap also writes to swap device */

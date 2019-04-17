@@ -29,7 +29,10 @@
 static int zero;
 static int one = 1;
 static int four = 4;
+<<<<<<< HEAD
 static int gso_max_segs = GSO_MAX_SEGS;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int tcp_retr1_max = 255;
 static int ip_local_port_range_min[] = { 1, 1 };
 static int ip_local_port_range_max[] = { 65535, 65535 };
@@ -138,6 +141,7 @@ static int ipv4_ping_group_range(ctl_table *table, int write,
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Validate changes from /proc interface. */
 static int proc_tcp_default_init_rwnd(ctl_table *ctl, int write,
 				      void __user *buffer,
@@ -153,6 +157,8 @@ static int proc_tcp_default_init_rwnd(ctl_table *ctl, int write,
 	return ret;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int proc_tcp_congestion_control(ctl_table *ctl, int write,
 				       void __user *buffer, size_t *lenp, loff_t *ppos)
 {
@@ -752,7 +758,11 @@ static struct ctl_table ipv4_table[] = {
 		.mode           = 0644,
 		.proc_handler   = proc_dointvec
 	},
+<<<<<<< HEAD
 	{
+=======
+        {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.procname       = "tcp_thin_dupack",
 		.data           = &sysctl_tcp_thin_dupack,
 		.maxlen         = sizeof(int),
@@ -769,6 +779,7 @@ static struct ctl_table ipv4_table[] = {
 		.extra2		= &four,
 	},
 	{
+<<<<<<< HEAD
 		.procname	= "tcp_min_tso_segs",
 		.data		= &sysctl_tcp_min_tso_segs,
 		.maxlen		= sizeof(int),
@@ -785,6 +796,8 @@ static struct ctl_table ipv4_table[] = {
 		.proc_handler   = proc_tcp_default_init_rwnd
 	},
 	{
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		.procname	= "udp_mem",
 		.data		= &sysctl_udp_mem,
 		.maxlen		= sizeof(sysctl_udp_mem),
@@ -873,6 +886,7 @@ static struct ctl_table ipv4_net_table[] = {
 		.mode		= 0644,
 		.proc_handler	= ipv4_tcp_mem,
 	},
+<<<<<<< HEAD
 	{
 		.procname	= "fwmark_reflect",
 		.data		= &init_net.ipv4.sysctl_fwmark_reflect,
@@ -887,6 +901,8 @@ static struct ctl_table ipv4_net_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec,
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	{ }
 };
 

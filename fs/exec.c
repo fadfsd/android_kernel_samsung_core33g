@@ -654,10 +654,17 @@ int setup_arg_pages(struct linux_binprm *bprm,
 	unsigned long rlim_stack;
 
 #ifdef CONFIG_STACK_GROWSUP
+<<<<<<< HEAD
 	/* Limit stack size */
 	stack_base = rlimit_max(RLIMIT_STACK);
 	if (stack_base > STACK_SIZE_MAX)
 		stack_base = STACK_SIZE_MAX;
+=======
+	/* Limit stack size to 1GB */
+	stack_base = rlimit_max(RLIMIT_STACK);
+	if (stack_base > (1 << 30))
+		stack_base = 1 << 30;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Make sure we didn't let the argument array grow too large. */
 	if (vma->vm_end - vma->vm_start > stack_base)
@@ -1220,7 +1227,11 @@ EXPORT_SYMBOL(install_exec_creds);
 /*
  * determine how safe it is to execute the proposed program
  * - the caller must hold ->cred_guard_mutex to protect against
+<<<<<<< HEAD
  *   PTRACE_ATTACH or seccomp thread-sync
+=======
+ *   PTRACE_ATTACH
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 static int check_unsafe_exec(struct linux_binprm *bprm)
 {
@@ -1239,7 +1250,11 @@ static int check_unsafe_exec(struct linux_binprm *bprm)
 	 * This isn't strictly necessary, but it makes it harder for LSMs to
 	 * mess up.
 	 */
+<<<<<<< HEAD
 	if (task_no_new_privs(current))
+=======
+	if (current->no_new_privs)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		bprm->unsafe |= LSM_UNSAFE_NO_NEW_PRIVS;
 
 	n_fs = 1;
@@ -1286,7 +1301,11 @@ int prepare_binprm(struct linux_binprm *bprm)
 	bprm->cred->egid = current_egid();
 
 	if (!(bprm->file->f_path.mnt->mnt_flags & MNT_NOSUID) &&
+<<<<<<< HEAD
 	    !task_no_new_privs(current) &&
+=======
+	    !current->no_new_privs &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	    kuid_has_mapping(bprm->cred->user_ns, inode->i_uid) &&
 	    kgid_has_mapping(bprm->cred->user_ns, inode->i_gid)) {
 		/* Set-uid? */
@@ -1451,6 +1470,135 @@ int search_binary_handler(struct linux_binprm *bprm)
 
 EXPORT_SYMBOL(search_binary_handler);
 
+<<<<<<< HEAD
+=======
+
+#if defined CONFIG_SEC_RESTRICT_FORK
+#if defined CONFIG_SEC_RESTRICT_ROOTING_LOG
+#define PRINT_LOG(...)	printk(KERN_ERR __VA_ARGS__)
+#else
+#define PRINT_LOG(...)
+#endif	// End of CONFIG_SEC_RESTRICT_ROOTING_LOG
+
+#define CHECK_ROOT_UID(x) (x->cred->uid == 0 || x->cred->gid == 0 || \
+			x->cred->euid == 0 || x->cred->egid == 0 || \
+			x->cred->suid == 0 || x->cred->sgid == 0)
+
+/*  sec_check_execpath
+    return value : give task's exec path is matched or not
+*/
+int sec_check_execpath(struct mm_struct *mm, char *denypath)
+{
+	struct file *exe_file;
+	char *path, *pathbuf = NULL;
+	unsigned int path_length = 0, denypath_length = 0;
+	int ret = 0;
+
+	if (mm == NULL)
+		return 0;
+
+	if (!(exe_file = get_mm_exe_file(mm))) {
+		PRINT_LOG("Cannot get exe from task->mm.\n");
+		goto out_nofile;
+	}
+
+	if (!(pathbuf = kmalloc(PATH_MAX, GFP_TEMPORARY))) {
+		PRINT_LOG("failed to kmalloc for pathbuf\n");
+		goto out;
+	}
+
+	path = d_path(&exe_file->f_path, pathbuf, PATH_MAX);
+	if (IS_ERR(path)) {
+		PRINT_LOG("Error get path..\n");
+		goto out;
+	}
+
+	path_length = strlen(path);
+	denypath_length = strlen(denypath);
+
+	if (!strncmp(path, denypath, (path_length < denypath_length) ?
+				path_length : denypath_length)) {
+		ret = 1;
+	}
+out:
+	fput(exe_file);
+out_nofile:
+	if (pathbuf)
+		kfree(pathbuf);
+
+	return ret;
+}
+EXPORT_SYMBOL(sec_check_execpath);
+
+static int sec_restrict_fork(void)
+{
+	struct cred *shellcred;
+	int ret = 0;
+	struct task_struct *parent_tsk;
+	struct mm_struct *parent_mm = NULL;
+	const struct cred *parent_cred;
+
+	read_lock(&tasklist_lock);
+	parent_tsk = current->parent;
+	if (!parent_tsk) {
+		read_unlock(&tasklist_lock);
+		return 0;
+	}
+
+	get_task_struct(parent_tsk);
+	/* holding on to the task struct is enough so just release
+	 * the tasklist lock here */
+	read_unlock(&tasklist_lock);
+
+	if (current->pid == 1 || parent_tsk->pid == 1)
+		goto out;
+
+	/* get current->parent's mm struct to access it's mm
+	 * and to keep it alive */
+	parent_mm = get_task_mm(parent_tsk);
+
+	if (current->mm == NULL || parent_mm == NULL)
+		goto out;
+
+	if (sec_check_execpath(parent_mm, "/sbin/adbd")) {
+		shellcred = prepare_creds();
+		if (!shellcred) {
+			ret = 1;
+			goto out;
+		}
+
+		shellcred->uid = 2000;
+		shellcred->gid = 2000;
+		shellcred->euid = 2000;
+		shellcred->egid = 2000;
+		commit_creds(shellcred);
+		ret = 0;
+		goto out;
+	}
+
+	if (sec_check_execpath(current->mm, "/data/")) {
+		ret = 1;
+		goto out;
+	}
+
+	parent_cred = get_task_cred(parent_tsk);
+	if (!parent_cred)
+		goto out;
+	if (!CHECK_ROOT_UID(parent_tsk))
+	{
+		ret = 1;
+	}
+	put_cred(parent_cred);
+out:
+	if (parent_mm)
+		mmput(parent_mm);
+	put_task_struct(parent_tsk);
+
+	return ret;
+}
+#endif	/* End of CONFIG_SEC_RESTRICT_FORK */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * sys_execve() executes a new program.
  */
@@ -1544,11 +1692,14 @@ static int do_execve_common(const char *filename,
 	if (retval < 0)
 		goto out;
 
+<<<<<<< HEAD
 	if (d_is_su(file->f_dentry) && capable(CAP_SYS_ADMIN)) {
 		current->flags |= PF_SU;
 		su_exec();
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* execve succeeded */
 	current->fs->in_exec = 0;
 	current->in_execve = 0;
@@ -1674,12 +1825,15 @@ int __get_dumpable(unsigned long mm_flags)
 	return (ret > SUID_DUMP_USER) ? SUID_DUMP_ROOT : ret;
 }
 
+<<<<<<< HEAD
 /*
  * This returns the actual value of the suid_dumpable flag. For things
  * that are using this for checking for privilege transitions, it must
  * test against SUID_DUMP_USER rather than treating it as a boolean
  * value.
  */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int get_dumpable(struct mm_struct *mm)
 {
 	return __get_dumpable(mm->flags);
@@ -1693,6 +1847,22 @@ SYSCALL_DEFINE3(execve,
 	struct filename *path = getname(filename);
 	int error = PTR_ERR(path);
 	if (!IS_ERR(path)) {
+<<<<<<< HEAD
+=======
+
+#if defined CONFIG_SEC_RESTRICT_FORK
+		if(CHECK_ROOT_UID(current)){
+			if(sec_restrict_fork()){
+				PRINT_LOG("Restricted making process. PID = %d(%s) "
+								"PPID = %d(%s)\n",
+				current->pid, current->comm,
+				current->parent->pid, current->parent->comm);
+				return -EACCES;
+			}
+		}
+#endif	// End of CONFIG_SEC_RESTRICT_FORK
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		error = do_execve(path->name, argv, envp);
 		putname(path);
 	}

@@ -143,6 +143,7 @@ static struct policydb_compat_info policydb_compat[] = {
 		.sym_num	= SYM_NUM,
 		.ocon_num	= OCON_NUM,
 	},
+<<<<<<< HEAD
 	{
 		.version	= POLICYDB_VERSION_CONSTRAINT_NAMES,
 		.sym_num	= SYM_NUM,
@@ -153,6 +154,8 @@ static struct policydb_compat_info policydb_compat[] = {
 		.sym_num	= SYM_NUM,
 		.ocon_num	= OCON_NUM,
 	},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static struct policydb_compat_info *policydb_lookup_compat(int version)
@@ -623,6 +626,7 @@ static int common_destroy(void *key, void *datum, void *p)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void constraint_expr_destroy(struct constraint_expr *expr)
 {
 	if (expr) {
@@ -636,6 +640,8 @@ static void constraint_expr_destroy(struct constraint_expr *expr)
 	}
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int cls_destroy(void *key, void *datum, void *p)
 {
 	struct class_datum *cladatum;
@@ -651,9 +657,16 @@ static int cls_destroy(void *key, void *datum, void *p)
 		while (constraint) {
 			e = constraint->expr;
 			while (e) {
+<<<<<<< HEAD
 				etmp = e;
 				e = e->next;
 				constraint_expr_destroy(etmp);
+=======
+				ebitmap_destroy(&e->names);
+				etmp = e;
+				e = e->next;
+				kfree(etmp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			ctemp = constraint;
 			constraint = constraint->next;
@@ -664,14 +677,25 @@ static int cls_destroy(void *key, void *datum, void *p)
 		while (constraint) {
 			e = constraint->expr;
 			while (e) {
+<<<<<<< HEAD
 				etmp = e;
 				e = e->next;
 				constraint_expr_destroy(etmp);
+=======
+				ebitmap_destroy(&e->names);
+				etmp = e;
+				e = e->next;
+				kfree(etmp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 			ctemp = constraint;
 			constraint = constraint->next;
 			kfree(ctemp);
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kfree(cladatum->comkey);
 	}
 	kfree(datum);
@@ -1176,6 +1200,7 @@ bad:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void type_set_init(struct type_set *t)
 {
 	ebitmap_init(&t->types);
@@ -1204,6 +1229,10 @@ static int type_set_read(struct type_set *t, void *fp)
 static int read_cons_helper(struct policydb *p,
 				struct constraint_node **nodep,
 				int ncons, int allowxtarget, void *fp)
+=======
+static int read_cons_helper(struct constraint_node **nodep, int ncons,
+			    int allowxtarget, void *fp)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct constraint_node *c, *lc;
 	struct constraint_expr *e, *le;
@@ -1271,6 +1300,7 @@ static int read_cons_helper(struct policydb *p,
 				rc = ebitmap_read(&e->names, fp);
 				if (rc)
 					return rc;
+<<<<<<< HEAD
 				if (p->policyvers >=
 					POLICYDB_VERSION_CONSTRAINT_NAMES) {
 						e->type_names = kzalloc(sizeof
@@ -1283,6 +1313,8 @@ static int read_cons_helper(struct policydb *p,
 					if (rc)
 						return rc;
 				}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				break;
 			default:
 				return -EINVAL;
@@ -1359,7 +1391,11 @@ static int class_read(struct policydb *p, struct hashtab *h, void *fp)
 			goto bad;
 	}
 
+<<<<<<< HEAD
 	rc = read_cons_helper(p, &cladatum->constraints, ncons, 0, fp);
+=======
+	rc = read_cons_helper(&cladatum->constraints, ncons, 0, fp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rc)
 		goto bad;
 
@@ -1369,8 +1405,12 @@ static int class_read(struct policydb *p, struct hashtab *h, void *fp)
 		if (rc)
 			goto bad;
 		ncons = le32_to_cpu(buf[0]);
+<<<<<<< HEAD
 		rc = read_cons_helper(p, &cladatum->validatetrans,
 				ncons, 1, fp);
+=======
+		rc = read_cons_helper(&cladatum->validatetrans, ncons, 1, fp);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (rc)
 			goto bad;
 	}
@@ -2000,6 +2040,7 @@ static int filename_trans_read(struct policydb *p, void *fp)
 		if (rc)
 			goto out;
 
+<<<<<<< HEAD
 		rc = hashtab_insert(p->filename_trans, ft, otype);
 		if (rc) {
 			/*
@@ -2013,6 +2054,9 @@ static int filename_trans_read(struct policydb *p, void *fp)
 			kfree(name);
 			kfree(otype);
 		}
+=======
+		hashtab_insert(p->filename_trans, ft, otype);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	hash_eval(p->filename_trans, "filenametr");
 	return 0;
@@ -2821,6 +2865,7 @@ static int common_write(void *vkey, void *datum, void *ptr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int type_set_write(struct type_set *t, void *fp)
 {
 	int rc;
@@ -2839,6 +2884,8 @@ static int type_set_write(struct type_set *t, void *fp)
 	return 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int write_cons_helper(struct policydb *p, struct constraint_node *node,
 			     void *fp)
 {
@@ -2870,12 +2917,15 @@ static int write_cons_helper(struct policydb *p, struct constraint_node *node,
 				rc = ebitmap_write(&e->names, fp);
 				if (rc)
 					return rc;
+<<<<<<< HEAD
 				if (p->policyvers >=
 					POLICYDB_VERSION_CONSTRAINT_NAMES) {
 					rc = type_set_write(e->type_names, fp);
 					if (rc)
 						return rc;
 				}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				break;
 			default:
 				break;
@@ -3341,10 +3391,17 @@ static int filename_write_helper(void *key, void *data, void *ptr)
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 	buf[0] = cpu_to_le32(ft->stype);
 	buf[1] = cpu_to_le32(ft->ttype);
 	buf[2] = cpu_to_le32(ft->tclass);
 	buf[3] = cpu_to_le32(otype->otype);
+=======
+	buf[0] = ft->stype;
+	buf[1] = ft->ttype;
+	buf[2] = ft->tclass;
+	buf[3] = otype->otype;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	rc = put_entry(buf, sizeof(u32), 4, fp);
 	if (rc)

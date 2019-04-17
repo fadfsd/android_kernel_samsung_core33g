@@ -601,7 +601,11 @@ static long ppp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			if (file == ppp->owner)
 				ppp_shutdown_interface(ppp);
 		}
+<<<<<<< HEAD
 		if (atomic_long_read(&file->f_count) < 2) {
+=======
+		if (atomic_long_read(&file->f_count) <= 2) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			ppp_release(NULL, file);
 			err = 0;
 		} else

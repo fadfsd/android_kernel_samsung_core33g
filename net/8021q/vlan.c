@@ -305,11 +305,17 @@ static void vlan_sync_address(struct net_device *dev,
 static void vlan_transfer_features(struct net_device *dev,
 				   struct net_device *vlandev)
 {
+<<<<<<< HEAD
 	struct vlan_dev_priv *vlan = vlan_dev_priv(vlandev);
 
 	vlandev->gso_max_size = dev->gso_max_size;
 
 	if (vlan_hw_offload_capable(dev->features, vlan->vlan_proto))
+=======
+	vlandev->gso_max_size = dev->gso_max_size;
+
+	if (dev->features & NETIF_F_HW_VLAN_CTAG_TX)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		vlandev->hard_header_len = dev->hard_header_len;
 	else
 		vlandev->hard_header_len = dev->hard_header_len + VLAN_HLEN;

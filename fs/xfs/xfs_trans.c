@@ -1100,7 +1100,10 @@ xfs_trans_apply_sb_deltas(
 		whole = 1;
 	}
 
+<<<<<<< HEAD
 	xfs_trans_buf_set_type(tp, bp, XFS_BLFT_SB_BUF);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (whole)
 		/*
 		 * Log the whole thing, the fields are noncontiguous.

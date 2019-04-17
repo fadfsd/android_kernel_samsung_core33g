@@ -72,9 +72,12 @@ static int pc263_do_insn_bits(struct comedi_device *dev,
 		outb(s->state & 0xFF, dev->iobase);
 		outb(s->state >> 8, dev->iobase + 1);
 	}
+<<<<<<< HEAD
 
 	data[1] = s->state;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return insn->n;
 }
 

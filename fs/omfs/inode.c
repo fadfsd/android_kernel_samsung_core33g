@@ -361,7 +361,11 @@ nomem:
 }
 
 enum {
+<<<<<<< HEAD
 	Opt_uid, Opt_gid, Opt_umask, Opt_dmask, Opt_fmask, Opt_err
+=======
+	Opt_uid, Opt_gid, Opt_umask, Opt_dmask, Opt_fmask
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static const match_table_t tokens = {
@@ -370,7 +374,10 @@ static const match_table_t tokens = {
 	{Opt_umask, "umask=%o"},
 	{Opt_dmask, "dmask=%o"},
 	{Opt_fmask, "fmask=%o"},
+<<<<<<< HEAD
 	{Opt_err, NULL},
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static int parse_options(char *options, struct omfs_sb_info *sbi)

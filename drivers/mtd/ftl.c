@@ -1075,6 +1075,10 @@ static void ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
 			return;
 	}
 
+<<<<<<< HEAD
+=======
+	ftl_freepart(partition);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kfree(partition);
 }
 

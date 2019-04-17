@@ -103,6 +103,11 @@ module_exit(aes_fini);
 
 MODULE_DESCRIPTION("Rijndael (AES) Cipher Algorithm (ASM)");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("aes");
 MODULE_ALIAS_CRYPTO("aes-asm");
+=======
+MODULE_ALIAS("aes");
+MODULE_ALIAS("aes-asm");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_AUTHOR("David McCullough <ucdevel@gmail.com>");

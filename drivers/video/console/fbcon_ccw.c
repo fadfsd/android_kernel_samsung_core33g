@@ -197,8 +197,14 @@ static void ccw_clear_margins(struct vc_data *vc, struct fb_info *info,
 	unsigned int bh = info->var.xres - (vc->vc_rows*ch);
 	unsigned int bs = vc->vc_rows*ch;
 	struct fb_fillrect region;
+<<<<<<< HEAD
 
 	region.color = 0;
+=======
+	int bgshift = (vc->vc_hi_font_mask) ? 13 : 12;
+
+	region.color = attr_bgcol_ec(bgshift,vc,info);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	region.rop = ROP_COPY;
 
 	if (rw && !bottom_only) {

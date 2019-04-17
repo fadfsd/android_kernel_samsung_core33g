@@ -143,6 +143,10 @@ struct stk1160 {
 	int num_alt;
 
 	struct stk1160_isoc_ctl isoc_ctl;
+<<<<<<< HEAD
+=======
+	char urb_buf[255];	 /* urb control msg buffer */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* frame properties */
 	int width;		  /* current frame width */

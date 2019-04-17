@@ -60,6 +60,10 @@ struct uart_ops {
 	void		(*pm)(struct uart_port *, unsigned int state,
 			      unsigned int oldstate);
 	int		(*set_wake)(struct uart_port *, unsigned int state);
+<<<<<<< HEAD
+=======
+	void		(*wake_peer)(struct uart_port *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * Return a string describing the type of the port

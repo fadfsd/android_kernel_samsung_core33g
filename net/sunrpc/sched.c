@@ -254,7 +254,11 @@ static int rpc_wait_bit_killable(void *word)
 {
 	if (fatal_signal_pending(current))
 		return -ERESTARTSYS;
+<<<<<<< HEAD
 	freezable_schedule();
+=======
+	freezable_schedule_unsafe();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

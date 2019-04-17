@@ -295,4 +295,7 @@ module_exit(crypto_pcbc_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("PCBC block cipher algorithm");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("pcbc");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

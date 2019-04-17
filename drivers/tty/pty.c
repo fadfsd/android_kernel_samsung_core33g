@@ -215,9 +215,12 @@ static int pty_signal(struct tty_struct *tty, int sig)
 	unsigned long flags;
 	struct pid *pgrp;
 
+<<<<<<< HEAD
 	if (sig != SIGINT && sig != SIGQUIT && sig != SIGTSTP)
 		return -EINVAL;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (tty->link) {
 		spin_lock_irqsave(&tty->link->ctrl_lock, flags);
 		pgrp = get_pid(tty->link->pgrp);
@@ -290,7 +293,11 @@ static int pty_resize(struct tty_struct *tty,  struct winsize *ws)
 	struct tty_struct *pty = tty->link;
 
 	/* For a PTY we need to lock the tty side */
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
+=======
+	mutex_lock(&tty->winsize_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!memcmp(ws, &tty->winsize, sizeof(*ws)))
 		goto done;
 
@@ -317,7 +324,11 @@ static int pty_resize(struct tty_struct *tty,  struct winsize *ws)
 	tty->winsize = *ws;
 	pty->winsize = *ws;	/* Never used so will go away soon */
 done:
+<<<<<<< HEAD
 	mutex_unlock(&tty->termios_mutex);
+=======
+	mutex_unlock(&tty->winsize_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 

@@ -317,7 +317,10 @@
 #define   PIPE_CONTROL_GLOBAL_GTT_IVB			(1<<24) /* gen7+ */
 #define   PIPE_CONTROL_CS_STALL				(1<<20)
 #define   PIPE_CONTROL_TLB_INVALIDATE			(1<<18)
+<<<<<<< HEAD
 #define   PIPE_CONTROL_MEDIA_STATE_CLEAR		(1<<16)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define   PIPE_CONTROL_QW_WRITE				(1<<14)
 #define   PIPE_CONTROL_DEPTH_STALL			(1<<13)
 #define   PIPE_CONTROL_WRITE_FLUSH			(1<<12)
@@ -909,7 +912,10 @@
 #define   GMBUS_CYCLE_INDEX	(2<<25)
 #define   GMBUS_CYCLE_STOP	(4<<25)
 #define   GMBUS_BYTE_COUNT_SHIFT 16
+<<<<<<< HEAD
 #define   GMBUS_BYTE_COUNT_MAX   256U
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define   GMBUS_SLAVE_INDEX_SHIFT 8
 #define   GMBUS_SLAVE_ADDR_SHIFT 1
 #define   GMBUS_SLAVE_READ	(1<<0)
@@ -1684,6 +1690,7 @@
  * Please check the detailed lore in the commit message for for experimental
  * evidence.
  */
+<<<<<<< HEAD
 #define   PORTD_HOTPLUG_LIVE_STATUS_G4X		(1 << 29)
 #define   PORTC_HOTPLUG_LIVE_STATUS_G4X		(1 << 28)
 #define   PORTB_HOTPLUG_LIVE_STATUS_G4X		(1 << 27)
@@ -1691,6 +1698,11 @@
 #define   PORTD_HOTPLUG_LIVE_STATUS_VLV		(1 << 27)
 #define   PORTC_HOTPLUG_LIVE_STATUS_VLV		(1 << 28)
 #define   PORTB_HOTPLUG_LIVE_STATUS_VLV		(1 << 29)
+=======
+#define   PORTD_HOTPLUG_LIVE_STATUS               (1 << 29)
+#define   PORTC_HOTPLUG_LIVE_STATUS               (1 << 28)
+#define   PORTB_HOTPLUG_LIVE_STATUS               (1 << 27)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define   PORTD_HOTPLUG_INT_STATUS		(3 << 21)
 #define   PORTC_HOTPLUG_INT_STATUS		(3 << 19)
 #define   PORTB_HOTPLUG_INT_STATUS		(3 << 17)

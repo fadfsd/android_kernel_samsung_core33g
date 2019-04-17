@@ -198,7 +198,10 @@ EXPORT_SYMBOL_GPL(btree_init);
 
 void btree_destroy(struct btree_head *head)
 {
+<<<<<<< HEAD
 	mempool_free(head->node, head->mempool);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mempool_destroy(head->mempool);
 	head->mempool = NULL;
 }

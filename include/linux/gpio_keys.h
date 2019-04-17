@@ -15,6 +15,10 @@ struct gpio_keys_button {
 	bool can_disable;
 	int value;		/* axis value for EV_ABS */
 	unsigned int irq;	/* Irq number in case of interrupt keys */
+<<<<<<< HEAD
+=======
+	unsigned long ds_irqflags; /* deepsleep irq flags */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct gpio_keys_platform_data {

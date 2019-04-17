@@ -276,6 +276,7 @@ static int wmt_pctl_dt_node_to_map_pull(struct wmt_pinctrl_data *data,
 	if (!configs)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	switch (pull) {
 	case 0:
 		configs[0] = PIN_CONFIG_BIAS_DISABLE;
@@ -290,6 +291,9 @@ static int wmt_pctl_dt_node_to_map_pull(struct wmt_pinctrl_data *data,
 		configs[0] = PIN_CONFIG_BIAS_DISABLE;
 		dev_err(data->dev, "invalid pull state %d - disabling\n", pull);
 	}
+=======
+	configs[0] = pull;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	map->type = PIN_MAP_TYPE_CONFIGS_PIN;
 	map->data.configs.group_or_pin = data->groups[group];

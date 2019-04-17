@@ -121,7 +121,11 @@
 
 	.macro	get_thread_info, rd
 	mov	\rd, sp
+<<<<<<< HEAD
 	and	\rd, \rd, #~(THREAD_SIZE - 1)	// top of stack
+=======
+	and	\rd, \rd, #~((1 << 13) - 1)	// top of 8K stack
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.endm
 
 /*
@@ -275,6 +279,10 @@ el1_sp_pc:
 	 * Stack or PC alignment exception handling
 	 */
 	mrs	x0, far_el1
+<<<<<<< HEAD
+=======
+	mov	x1, x25
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mov	x2, sp
 	b	do_sp_pc_abort
 el1_undef:

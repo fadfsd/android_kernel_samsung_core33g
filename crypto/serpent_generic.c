@@ -665,6 +665,11 @@ module_exit(serpent_mod_fini);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Serpent and tnepres (kerneli compatible serpent reversed) Cipher Algorithm");
 MODULE_AUTHOR("Dag Arne Osvik <osvik@ii.uib.no>");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("tnepres");
 MODULE_ALIAS_CRYPTO("serpent");
 MODULE_ALIAS_CRYPTO("serpent-generic");
+=======
+MODULE_ALIAS("tnepres");
+MODULE_ALIAS("serpent");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

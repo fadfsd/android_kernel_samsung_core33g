@@ -231,6 +231,7 @@ void tcp_select_initial_window(int __space, __u32 mss,
 	}
 
 	/* Set initial window to a value enough for senders starting with
+<<<<<<< HEAD
 	 * initial congestion window of sysctl_tcp_default_init_rwnd. Place
 	 * a limit on the initial window when mss is larger than 1460.
 	 */
@@ -238,6 +239,16 @@ void tcp_select_initial_window(int __space, __u32 mss,
 		int init_cwnd = sysctl_tcp_default_init_rwnd;
 		if (mss > 1460)
 			init_cwnd = max_t(u32, (1460 * init_cwnd) / mss, 2);
+=======
+	 * initial congestion window of TCP_DEFAULT_INIT_RCVWND. Place
+	 * a limit on the initial window when mss is larger than 1460.
+	 */
+	if (mss > (1 << *rcv_wscale)) {
+		int init_cwnd = TCP_DEFAULT_INIT_RCVWND;
+		if (mss > 1460)
+			init_cwnd =
+			max_t(u32, (1460 * TCP_DEFAULT_INIT_RCVWND) / mss, 2);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* when initializing use the value from init_rcv_wnd
 		 * rather than the default from above
 		 */
@@ -246,8 +257,11 @@ void tcp_select_initial_window(int __space, __u32 mss,
 		else
 			*rcv_wnd = min(*rcv_wnd, init_cwnd * mss);
 	}
+<<<<<<< HEAD
 	
 	*rcv_wnd = 64240;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Set the clamp no higher than max representable value */
 	(*window_clamp) = min(65535U << (*rcv_wscale), *window_clamp);
@@ -687,8 +701,12 @@ static void tcp_tsq_handler(struct sock *sk)
 	if ((1 << sk->sk_state) &
 	    (TCPF_ESTABLISHED | TCPF_FIN_WAIT1 | TCPF_CLOSING |
 	     TCPF_CLOSE_WAIT  | TCPF_LAST_ACK))
+<<<<<<< HEAD
 		tcp_write_xmit(sk, tcp_current_mss(sk), tcp_sk(sk)->nonagle,
 			       0, GFP_ATOMIC);
+=======
+		tcp_write_xmit(sk, tcp_current_mss(sk), 0, 0, GFP_ATOMIC);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 /*
  * One tasklest per cpu tries to send more skbs.
@@ -756,6 +774,7 @@ void tcp_release_cb(struct sock *sk)
 	if (flags & (1UL << TCP_TSQ_DEFERRED))
 		tcp_tsq_handler(sk);
 
+<<<<<<< HEAD
 	/* Here begins the tricky part :
 	 * We are called from release_sock() with :
 	 * 1) BH disabled
@@ -767,6 +786,8 @@ void tcp_release_cb(struct sock *sk)
 	 */
 	sock_release_ownership(sk);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (flags & (1UL << TCP_WRITE_TIMER_DEFERRED)) {
 		tcp_write_timer_handler(sk);
 		__sock_put(sk);
@@ -776,7 +797,11 @@ void tcp_release_cb(struct sock *sk)
 		__sock_put(sk);
 	}
 	if (flags & (1UL << TCP_MTU_REDUCED_DEFERRED)) {
+<<<<<<< HEAD
 		inet_csk(sk)->icsk_af_ops->mtu_reduced(sk);
+=======
+		sk->sk_prot->mtu_reduced(sk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		__sock_put(sk);
 	}
 }
@@ -900,7 +925,12 @@ static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
 
 	skb_orphan(skb);
 	skb->sk = sk;
+<<<<<<< HEAD
 	skb->destructor = tcp_wfree;
+=======
+	skb->destructor = (sysctl_tcp_limit_output_bytes > 0) ?
+			  tcp_wfree : sock_wfree;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	atomic_add(skb->truesize, &sk->sk_wmem_alloc);
 
 	/* Build TCP header and checksum it. */
@@ -989,9 +1019,12 @@ static void tcp_queue_skb(struct sock *sk, struct sk_buff *skb)
 static void tcp_set_skb_tso_segs(const struct sock *sk, struct sk_buff *skb,
 				 unsigned int mss_now)
 {
+<<<<<<< HEAD
 	/* Make sure we own this skb before messing gso_size/gso_segs */
 	WARN_ON_ONCE(skb_cloned(skb));
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (skb->len <= mss_now || !sk_can_gso(sk) ||
 	    skb->ip_summed == CHECKSUM_NONE) {
 		/* Avoid the costly divide in the normal
@@ -1073,7 +1106,13 @@ int tcp_fragment(struct sock *sk, struct sk_buff *skb, u32 len,
 	if (nsize < 0)
 		nsize = 0;
 
+<<<<<<< HEAD
 	if (skb_unclone(skb, GFP_ATOMIC))
+=======
+	if (skb_cloned(skb) &&
+	    skb_is_nonlinear(skb) &&
+	    pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -ENOMEM;
 
 	/* Get a new skb... force flag on. */
@@ -1636,7 +1675,11 @@ static bool tcp_tso_should_defer(struct sock *sk, struct sk_buff *skb)
 
 	/* If a full-sized TSO skb can be sent, do it. */
 	if (limit >= min_t(unsigned int, sk->sk_gso_max_size,
+<<<<<<< HEAD
 			   tp->xmit_size_goal_segs * tp->mss_cache))
+=======
+			   sk->sk_gso_max_segs * tp->mss_cache))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto send_now;
 
 	/* Middle in queue won't get any more data, full sendable already? */
@@ -1845,6 +1888,10 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 	while ((skb = tcp_send_head(sk))) {
 		unsigned int limit;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tso_segs = tcp_init_tso_segs(sk, skb, mss_now);
 		BUG_ON(!tso_segs);
 
@@ -1863,7 +1910,11 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 		if (unlikely(!tcp_snd_wnd_test(tp, skb, mss_now)))
 			break;
 
+<<<<<<< HEAD
 		if (tso_segs == 1 || !sk->sk_gso_max_segs) {
+=======
+		if (tso_segs == 1) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (unlikely(!tcp_nagle_test(tp, skb, mss_now,
 						     (tcp_skb_is_last(sk, skb) ?
 						      nonagle : TCP_NAGLE_PUSH))))
@@ -1873,6 +1924,7 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 				break;
 		}
 
+<<<<<<< HEAD
 		/* TCP Small Queues :
 		 * Control number of packets in qdisc/devices to two packets / or ~1 ms.
 		 * This allows for :
@@ -1901,6 +1953,17 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 
 		limit = mss_now;
 		if (tso_segs > 1 && sk->sk_gso_max_segs && !tcp_urg_mode(tp))
+=======
+		/* TSQ : sk_wmem_alloc accounts skb truesize,
+		 * including skb overhead. But thats OK.
+		 */
+		if (atomic_read(&sk->sk_wmem_alloc) >= sysctl_tcp_limit_output_bytes) {
+			set_bit(TSQ_THROTTLED, &tp->tsq_flags);
+			break;
+		}
+		limit = mss_now;
+		if (tso_segs > 1 && !tcp_urg_mode(tp))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			limit = tcp_mss_split_point(sk, skb, mss_now,
 						    min_t(unsigned int,
 							  cwnd_quota,
@@ -2037,7 +2100,13 @@ void tcp_send_loss_probe(struct sock *sk)
 	if (WARN_ON(!skb || !tcp_skb_pcount(skb)))
 		goto rearm_timer;
 
+<<<<<<< HEAD
 	err = __tcp_retransmit_skb(sk, skb);
+=======
+	/* Probe with zero data doesn't trigger fast recovery. */
+	if (skb->len > 0)
+		err = __tcp_retransmit_skb(sk, skb);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Record snd_nxt for loss detection. */
 	if (likely(!err))
@@ -2358,8 +2427,11 @@ int __tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 		int oldpcount = tcp_skb_pcount(skb);
 
 		if (unlikely(oldpcount > 1)) {
+<<<<<<< HEAD
 			if (skb_unclone(skb, GFP_ATOMIC))
 				return -ENOMEM;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			tcp_init_tso_segs(sk, skb, cur_mss);
 			tcp_adjust_pcount(sk, skb, oldpcount - tcp_skb_pcount(skb));
 		}
@@ -2427,15 +2499,23 @@ int tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 		if (!tp->retrans_stamp)
 			tp->retrans_stamp = TCP_SKB_CB(skb)->when;
 
+<<<<<<< HEAD
+=======
+		tp->undo_retrans += tcp_skb_pcount(skb);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* snd_nxt is stored to detect loss of retransmitted segment,
 		 * see tcp_input.c tcp_sacktag_write_queue().
 		 */
 		TCP_SKB_CB(skb)->ack_seq = tp->snd_nxt;
 	}
+<<<<<<< HEAD
 
 	if (tp->undo_retrans < 0)
 		tp->undo_retrans = 0;
 	tp->undo_retrans += tcp_skb_pcount(skb);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return err;
 }
 
@@ -2572,6 +2652,7 @@ begin_fwd:
 	}
 }
 
+<<<<<<< HEAD
 /* We allow to exceed memory limits for FIN packets to expedite
  * connection tear down and (memory) recovery.
  * Otherwise tcp_send_fin() could be tempted to either delay FIN
@@ -2625,12 +2706,49 @@ coalesce:
 		}
 		skb_reserve(skb, MAX_TCP_HEADER);
 		sk_forced_wmem_schedule(sk, skb->truesize);
+=======
+/* Send a fin.  The caller locks the socket for us.  This cannot be
+ * allowed to fail queueing a FIN frame under any circumstances.
+ */
+void tcp_send_fin(struct sock *sk)
+{
+	struct tcp_sock *tp = tcp_sk(sk);
+	struct sk_buff *skb = tcp_write_queue_tail(sk);
+	int mss_now;
+
+	/* Optimization, tack on the FIN if we have a queue of
+	 * unsent frames.  But be careful about outgoing SACKS
+	 * and IP options.
+	 */
+	mss_now = tcp_current_mss(sk);
+
+	if (tcp_send_head(sk) != NULL) {
+		TCP_SKB_CB(skb)->tcp_flags |= TCPHDR_FIN;
+		TCP_SKB_CB(skb)->end_seq++;
+		tp->write_seq++;
+	} else {
+		/* Socket is locked, keep trying until memory is available. */
+		for (;;) {
+			skb = alloc_skb_fclone(MAX_TCP_HEADER,
+					       sk->sk_allocation);
+			if (skb)
+				break;
+			yield();
+		}
+
+		/* Reserve space for headers and prepare control bits. */
+		skb_reserve(skb, MAX_TCP_HEADER);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* FIN eats a sequence byte, write_seq advanced by tcp_queue_skb(). */
 		tcp_init_nondata_skb(skb, tp->write_seq,
 				     TCPHDR_ACK | TCPHDR_FIN);
 		tcp_queue_skb(sk, skb);
 	}
+<<<<<<< HEAD
 	__tcp_push_pending_frames(sk, tcp_current_mss(sk), TCP_NAGLE_OFF);
+=======
+	__tcp_push_pending_frames(sk, mss_now, TCP_NAGLE_OFF);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* We get here when a process closes a file descriptor (either due to
@@ -2799,8 +2917,11 @@ struct sk_buff *tcp_make_synack(struct sock *sk, struct dst_entry *dst,
 	}
 #endif
 
+<<<<<<< HEAD
 	/* Do not fool tcpdump (if any), clean our debris */
 	skb->tstamp.tv64 = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return skb;
 }
 EXPORT_SYMBOL(tcp_make_synack);
@@ -2900,9 +3021,15 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct tcp_fastopen_request *fo = tp->fastopen_req;
+<<<<<<< HEAD
 	int syn_loss = 0, space, err = 0;
 	unsigned long last_syn_loss = 0;
 	struct sk_buff *syn_data;
+=======
+	int syn_loss = 0, space, i, err = 0, iovlen = fo->data->msg_iovlen;
+	struct sk_buff *syn_data = NULL, *data;
+	unsigned long last_syn_loss = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	tp->rx_opt.mss_clamp = tp->advmss;  /* If MSS is not cached */
 	tcp_fastopen_cache_get(sk, &tp->rx_opt.mss_clamp, &fo->cookie,
@@ -2928,6 +3055,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
 	space = __tcp_mtu_to_mss(sk, inet_csk(sk)->icsk_pmtu_cookie) -
 		MAX_TCP_OPTION_SPACE;
 
+<<<<<<< HEAD
 	space = min_t(size_t, space, fo->size);
 
 	/* limit to order-0 allocations */
@@ -2962,10 +3090,47 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
 	TCP_SKB_CB(syn_data)->seq++;
 	TCP_SKB_CB(syn_data)->tcp_flags = TCPHDR_ACK | TCPHDR_PSH;
 	if (!err) {
+=======
+	syn_data = skb_copy_expand(syn, skb_headroom(syn), space,
+				   sk->sk_allocation);
+	if (syn_data == NULL)
+		goto fallback;
+
+	for (i = 0; i < iovlen && syn_data->len < space; ++i) {
+		struct iovec *iov = &fo->data->msg_iov[i];
+		unsigned char __user *from = iov->iov_base;
+		int len = iov->iov_len;
+
+		if (syn_data->len + len > space)
+			len = space - syn_data->len;
+		else if (i + 1 == iovlen)
+			/* No more data pending in inet_wait_for_connect() */
+			fo->data = NULL;
+
+		if (skb_add_data(syn_data, from, len))
+			goto fallback;
+	}
+
+	/* Queue a data-only packet after the regular SYN for retransmission */
+	data = pskb_copy(syn_data, sk->sk_allocation);
+	if (data == NULL)
+		goto fallback;
+	TCP_SKB_CB(data)->seq++;
+	TCP_SKB_CB(data)->tcp_flags &= ~TCPHDR_SYN;
+	TCP_SKB_CB(data)->tcp_flags = (TCPHDR_ACK|TCPHDR_PSH);
+	tcp_connect_queue_skb(sk, data);
+	fo->copied = data->len;
+
+	if (tcp_transmit_skb(sk, syn_data, 0, sk->sk_allocation) == 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tp->syn_data = (fo->copied > 0);
 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPFASTOPENACTIVE);
 		goto done;
 	}
+<<<<<<< HEAD
+=======
+	syn_data = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 fallback:
 	/* Send a regular SYN with Fast Open cookie request option */
@@ -2974,6 +3139,10 @@ fallback:
 	err = tcp_transmit_skb(sk, syn, 1, sk->sk_allocation);
 	if (err)
 		tp->syn_fastopen = 0;
+<<<<<<< HEAD
+=======
+	kfree_skb(syn_data);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 done:
 	fo->cookie.len = -1;  /* Exclude Fast Open option for SYN retries */
 	return err;
@@ -2993,10 +3162,20 @@ int tcp_connect(struct sock *sk)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	buff = sk_stream_alloc_skb(sk, 0, sk->sk_allocation);
 	if (unlikely(!buff))
 		return -ENOBUFS;
 
+=======
+	buff = alloc_skb_fclone(MAX_TCP_HEADER + 15, sk->sk_allocation);
+	if (unlikely(buff == NULL))
+		return -ENOBUFS;
+
+	/* Reserve space for headers. */
+	skb_reserve(buff, MAX_TCP_HEADER);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tcp_init_nondata_skb(buff, tp->write_seq++, TCPHDR_SYN);
 	tp->retrans_stamp = TCP_SKB_CB(buff)->when = tcp_time_stamp;
 	tcp_connect_queue_skb(sk, buff);
@@ -3145,6 +3324,10 @@ void tcp_send_window_probe(struct sock *sk)
 {
 	if (sk->sk_state == TCP_ESTABLISHED) {
 		tcp_sk(sk)->snd_wl1 = tcp_sk(sk)->rcv_nxt - 1;
+<<<<<<< HEAD
+=======
+		tcp_sk(sk)->snd_nxt = tcp_sk(sk)->write_seq;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tcp_xmit_probe_skb(sk, 0);
 	}
 }

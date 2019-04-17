@@ -32,6 +32,13 @@ obj-$(CONFIG_FB_DEFERRED_IO)   += fb_defio.o
 obj-$(CONFIG_FB_WMT_GE_ROPS)   += wmt_ge_rops.o
 
 # Hardware specific drivers go first
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_FB_SC8825)           += sprdfb/
+obj-$(CONFIG_FB_SCX35)            += sprdfb/
+obj-$(CONFIG_FB_SCX30G)           += sprdfb/
+obj-$(CONFIG_FB_SCX15)            += sprdfb/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-$(CONFIG_FB_AMIGA)            += amifb.o c2p_planar.o
 obj-$(CONFIG_FB_ARC)              += arcfb.o
 obj-$(CONFIG_FB_CLPS711X)         += clps711xfb.o

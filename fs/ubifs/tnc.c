@@ -2875,10 +2875,18 @@ void ubifs_tnc_close(struct ubifs_info *c)
 {
 	tnc_destroy_cnext(c);
 	if (c->zroot.znode) {
+<<<<<<< HEAD
 		long n;
 
 		ubifs_destroy_tnc_subtree(c->zroot.znode);
 		n = atomic_long_read(&c->clean_zn_cnt);
+=======
+		long n, freed;
+
+		n = atomic_long_read(&c->clean_zn_cnt);
+		freed = ubifs_destroy_tnc_subtree(c->zroot.znode);
+		ubifs_assert(freed == n);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		atomic_long_sub(n, &ubifs_clean_zn_cnt);
 	}
 	kfree(c->gap_lebs);

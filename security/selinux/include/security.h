@@ -33,15 +33,22 @@
 #define POLICYDB_VERSION_ROLETRANS	26
 #define POLICYDB_VERSION_NEW_OBJECT_DEFAULTS	27
 #define POLICYDB_VERSION_DEFAULT_TYPE	28
+<<<<<<< HEAD
 #define POLICYDB_VERSION_CONSTRAINT_NAMES	29
 #define POLICYDB_VERSION_XPERMS_IOCTL	30
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Range of policy versions we understand*/
 #define POLICYDB_VERSION_MIN   POLICYDB_VERSION_BASE
 #ifdef CONFIG_SECURITY_SELINUX_POLICYDB_VERSION_MAX
 #define POLICYDB_VERSION_MAX	CONFIG_SECURITY_SELINUX_POLICYDB_VERSION_MAX_VALUE
 #else
+<<<<<<< HEAD
 #define POLICYDB_VERSION_MAX	POLICYDB_VERSION_XPERMS_IOCTL
+=======
+#define POLICYDB_VERSION_MAX	POLICYDB_VERSION_DEFAULT_TYPE
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 /* Mask for just the mount related flags */
@@ -55,7 +62,10 @@
 #define SE_SBINITIALIZED	0x10
 #define SE_SBPROC		0x20
 #define SE_SBLABELSUPP	0x40
+<<<<<<< HEAD
 #define SE_SBGENFS	0x80
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define CONTEXT_STR	"context="
 #define FSCONTEXT_STR	"fscontext="
@@ -105,6 +115,7 @@ struct av_decision {
 	u32 flags;
 };
 
+<<<<<<< HEAD
 #define XPERMS_ALLOWED 1
 #define XPERMS_AUDITALLOW 2
 #define XPERMS_DONTAUDIT 4
@@ -128,15 +139,21 @@ struct extended_perms {
 	struct extended_perms_data drivers; /* flag drivers that are used */
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* definitions of av_decision.flags */
 #define AVD_FLAGS_PERMISSIVE	0x0001
 
 void security_compute_av(u32 ssid, u32 tsid,
+<<<<<<< HEAD
 			 u16 tclass, struct av_decision *avd,
 			 struct extended_perms *xperms);
 
 void security_compute_xperms_decision(u32 ssid, u32 tsid, u16 tclass,
 			 u8 driver, struct extended_perms_decision *xpermd);
+=======
+			 u16 tclass, struct av_decision *avd);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 void security_compute_av_user(u32 ssid, u32 tsid,
 			     u16 tclass, struct av_decision *avd);

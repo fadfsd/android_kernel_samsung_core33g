@@ -37,6 +37,22 @@ enum iio_chan_info_enum {
 	IIO_CHAN_INFO_HARDWAREGAIN,
 	IIO_CHAN_INFO_HYSTERESIS,
 };
+<<<<<<< HEAD
+=======
+#define IIO_CHAN_INFO_SHARED_BIT(type) BIT(type*2)
+#define IIO_CHAN_INFO_SEPARATE_BIT(type) BIT(type*2 + 1)
+
+#define IIO_CHAN_INFO_SCALE_SHARED_BIT			\
+	IIO_CHAN_INFO_SHARED_BIT(IIO_CHAN_INFO_SCALE)
+#define IIO_CHAN_INFO_OFFSET_SEPARATE_BIT			\
+	IIO_CHAN_INFO_SEPARATE_BIT(IIO_CHAN_INFO_OFFSET)
+#define IIO_CHAN_INFO_CALIBSCALE_SEPARATE_BIT			\
+	IIO_CHAN_INFO_SEPARATE_BIT(IIO_CHAN_INFO_CALIBSCALE)
+#define IIO_CHAN_INFO_CALIBSCALE_SHARED_BIT			\
+	IIO_CHAN_INFO_SHARED_BIT(IIO_CHAN_INFO_CALIBSCALE)
+#define IIO_CHAN_INFO_CALIBBIAS_SEPARATE_BIT			\
+	IIO_CHAN_INFO_SEPARATE_BIT(IIO_CHAN_INFO_CALIBBIAS)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 enum iio_endian {
 	IIO_CPU,
@@ -569,6 +585,7 @@ int iio_str_to_fixpoint(const char *str, int fract_mult, int *integer,
 #define IIO_DEGREE_TO_RAD(deg) (((deg) * 314159ULL + 9000000ULL) / 18000000ULL)
 
 /**
+<<<<<<< HEAD
  * IIO_RAD_TO_DEGREE() - Convert rad to degree
  * @rad: A value in rad
  *
@@ -578,6 +595,8 @@ int iio_str_to_fixpoint(const char *str, int fract_mult, int *integer,
 	(((rad) * 18000000ULL + 314159ULL / 2) / 314159ULL)
 
 /**
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * IIO_G_TO_M_S_2() - Convert g to meter / second**2
  * @g: A value in g
  *
@@ -585,6 +604,7 @@ int iio_str_to_fixpoint(const char *str, int fract_mult, int *integer,
  */
 #define IIO_G_TO_M_S_2(g) ((g) * 980665ULL / 100000ULL)
 
+<<<<<<< HEAD
 /**
  * IIO_M_S_2_TO_G() - Convert meter / second**2 to g
  * @ms2: A value in meter / second**2
@@ -593,4 +613,6 @@ int iio_str_to_fixpoint(const char *str, int fract_mult, int *integer,
  */
 #define IIO_M_S_2_TO_G(ms2) (((ms2) * 100000ULL + 980665ULL / 2) / 980665ULL)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _INDUSTRIAL_IO_H_ */

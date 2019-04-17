@@ -280,6 +280,7 @@ struct ext4_io_submit {
 /* Translate # of blks to # of clusters */
 #define EXT4_NUM_B2C(sbi, blks)	(((blks) + (sbi)->s_cluster_ratio - 1) >> \
 				 (sbi)->s_cluster_bits)
+<<<<<<< HEAD
 /* Mask out the low bits to get the starting block of the cluster */
 #define EXT4_PBLK_CMASK(s, pblk) ((pblk) &				\
 				  ~((ext4_fsblk_t) (s)->s_cluster_ratio - 1))
@@ -290,6 +291,8 @@ struct ext4_io_submit {
 				 ((ext4_fsblk_t) (s)->s_cluster_ratio - 1))
 #define EXT4_LBLK_COFF(s, lblk) ((lblk) &				\
 				 ((ext4_lblk_t) (s)->s_cluster_ratio - 1))
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Structure of a blocks group descriptor
@@ -589,7 +592,10 @@ enum {
 #define EXT4_FREE_BLOCKS_NO_QUOT_UPDATE	0x0008
 #define EXT4_FREE_BLOCKS_NOFREE_FIRST_CLUSTER	0x0010
 #define EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER	0x0020
+<<<<<<< HEAD
 #define EXT4_FREE_BLOCKS_RESERVE		0x0040
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Flags used by ext4_discard_partial_page_buffers
@@ -775,8 +781,11 @@ do {									       \
 	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))		       \
 		(einode)->xtime.tv_sec = 				       \
 			(signed)le32_to_cpu((raw_inode)->xtime);	       \
+<<<<<<< HEAD
 	else								       \
 		(einode)->xtime.tv_sec = 0;				       \
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime ## _extra))	       \
 		ext4_decode_extra_time(&(einode)->xtime,		       \
 				       raw_inode->xtime ## _extra);	       \
@@ -2089,7 +2098,10 @@ int do_journal_get_write_access(handle_t *handle,
 #define CONVERT_INLINE_DATA	 2
 
 extern struct inode *ext4_iget(struct super_block *, unsigned long);
+<<<<<<< HEAD
 extern struct inode *ext4_iget_normal(struct super_block *, unsigned long);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern int  ext4_write_inode(struct inode *, struct writeback_control *);
 extern int  ext4_setattr(struct dentry *, struct iattr *);
 extern int  ext4_getattr(struct vfsmount *mnt, struct dentry *dentry,
@@ -2151,7 +2163,16 @@ extern int search_dir(struct buffer_head *bh,
 		      struct inode *dir,
 		      const struct qstr *d_name,
 		      unsigned int offset,
+<<<<<<< HEAD
 		      struct ext4_dir_entry_2 **res_dir);
+=======
+#ifdef CONFIG_SDCARD_FS_CI_SEARCH
+			  struct ext4_dir_entry_2 **res_dir,
+			  char *ci_name_buf);
+#else
+		      struct ext4_dir_entry_2 **res_dir);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern int ext4_generic_delete_entry(handle_t *handle,
 				     struct inode *dir,
 				     struct ext4_dir_entry_2 *de_del,
@@ -2258,12 +2279,28 @@ extern void ext4_group_desc_csum_set(struct super_block *sb, __u32 group,
 				     struct ext4_group_desc *gdp);
 extern int ext4_register_li_request(struct super_block *sb,
 				    ext4_group_t first_not_zeroed);
+<<<<<<< HEAD
 
 static inline int ext4_has_group_desc_csum(struct super_block *sb)
 {
 	return EXT4_HAS_RO_COMPAT_FEATURE(sb,
 					  EXT4_FEATURE_RO_COMPAT_GDT_CSUM) ||
 	       (EXT4_SB(sb)->s_chksum_driver != NULL);
+=======
+/* for debugging, sangwoo2.lee */
+extern void print_iloc_info(struct super_block *sb,
+						struct ext4_iloc iloc);
+extern void print_bh(struct super_block *sb,
+		                  struct buffer_head *bh, int start, int len);
+extern void print_block_data(struct super_block *sb, sector_t blocknr,
+		                  unsigned char *data_to_dump, int start, int len);
+/* for debugging */
+static inline int ext4_has_group_desc_csum(struct super_block *sb)
+{
+	return EXT4_HAS_RO_COMPAT_FEATURE(sb,
+					  EXT4_FEATURE_RO_COMPAT_GDT_CSUM |
+					  EXT4_FEATURE_RO_COMPAT_METADATA_CSUM);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline ext4_fsblk_t ext4_blocks_count(struct ext4_super_block *es)

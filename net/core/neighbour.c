@@ -764,6 +764,12 @@ static void neigh_periodic_work(struct work_struct *work)
 	nht = rcu_dereference_protected(tbl->nht,
 					lockdep_is_held(&tbl->lock));
 
+<<<<<<< HEAD
+=======
+	if (atomic_read(&tbl->entries) < tbl->gc_thresh1)
+		goto out;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 *	periodically recompute ReachableTime from random function
 	 */
@@ -776,9 +782,12 @@ static void neigh_periodic_work(struct work_struct *work)
 				neigh_rand_reach_time(p->base_reachable_time);
 	}
 
+<<<<<<< HEAD
 	if (atomic_read(&tbl->entries) < tbl->gc_thresh1)
 		goto out;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (i = 0 ; i < (1 << nht->hash_shift); i++) {
 		np = &nht->hash_buckets[i];
 
@@ -1274,7 +1283,11 @@ int neigh_compat_output(struct neighbour *neigh, struct sk_buff *skb)
 
 	if (dev_hard_header(skb, dev, ntohs(skb->protocol), NULL, NULL,
 			    skb->len) < 0 &&
+<<<<<<< HEAD
 	    dev_rebuild_header(skb))
+=======
+	    dev->header_ops->rebuild(skb))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 
 	return dev_queue_xmit(skb);

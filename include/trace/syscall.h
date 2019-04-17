@@ -4,7 +4,10 @@
 #include <linux/tracepoint.h>
 #include <linux/unistd.h>
 #include <linux/ftrace_event.h>
+<<<<<<< HEAD
 #include <linux/thread_info.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/ptrace.h>
 
@@ -32,6 +35,7 @@ struct syscall_metadata {
 	struct ftrace_event_call *exit_event;
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_TRACEPOINTS) && defined(CONFIG_HAVE_SYSCALL_TRACEPOINTS)
 static inline void syscall_tracepoint_update(struct task_struct *p)
 {
@@ -46,4 +50,6 @@ static inline void syscall_tracepoint_update(struct task_struct *p)
 }
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* _TRACE_SYSCALL_H */

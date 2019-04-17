@@ -70,10 +70,17 @@ static int addr_doit(struct sk_buff *skb, struct nlmsghdr *nlh)
 	int err;
 	u8 pnaddr;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
 		return -EPERM;
 
 	if (!netlink_capable(skb, CAP_SYS_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+
+	if (!capable(CAP_SYS_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	ASSERT_RTNL();
@@ -233,10 +240,17 @@ static int route_doit(struct sk_buff *skb, struct nlmsghdr *nlh)
 	int err;
 	u8 dst;
 
+<<<<<<< HEAD
 	if (!netlink_capable(skb, CAP_NET_ADMIN))
 		return -EPERM;
 
 	if (!netlink_capable(skb, CAP_SYS_ADMIN))
+=======
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+
+	if (!capable(CAP_SYS_ADMIN))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EPERM;
 
 	ASSERT_RTNL();

@@ -311,12 +311,15 @@ static int balloon(void *_vballoon)
 		else if (diff < 0)
 			leak_balloon(vb, -diff);
 		update_balloon_size(vb);
+<<<<<<< HEAD
 
 		/*
 		 * For large balloon changes, we could spend a lot of time
 		 * and always have work to do.  Be nice if preempt disabled.
 		 */
 		cond_resched();
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return 0;
 }

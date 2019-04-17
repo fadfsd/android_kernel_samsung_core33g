@@ -15,7 +15,11 @@
 #include <linux/usb/composite.h>
 #include <linux/usb/cdc.h>
 
+<<<<<<< HEAD
 #define MAX_U_SERIAL_PORTS	4
+=======
+#define MAX_U_SERIAL_PORTS	8
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct f_serial_opts {
 	struct usb_function_instance func_inst;
@@ -68,4 +72,10 @@ void gserial_disconnect(struct gserial *);
 int gser_bind_config(struct usb_configuration *c, u8 port_num);
 int obex_bind_config(struct usb_configuration *c, u8 port_num);
 
+<<<<<<< HEAD
+=======
+#define ACM_MODEM_PORT		0
+#define ACM_LOGGING_PORT	1
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif /* __U_SERIAL_H */

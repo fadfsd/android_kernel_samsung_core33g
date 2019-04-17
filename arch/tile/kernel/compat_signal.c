@@ -48,7 +48,11 @@ struct compat_rt_sigframe {
 	struct compat_ucontext uc;
 };
 
+<<<<<<< HEAD
 int copy_siginfo_to_user32(struct compat_siginfo __user *to, const siginfo_t *from)
+=======
+int copy_siginfo_to_user32(struct compat_siginfo __user *to, siginfo_t *from)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int err;
 

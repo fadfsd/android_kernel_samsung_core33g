@@ -324,10 +324,26 @@ void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
 	}
 
 	if (!priv->echo_skb[idx]) {
+<<<<<<< HEAD
 
 		skb = can_create_echo_skb(skb);
 		if (!skb)
 			return;
+=======
+		struct sock *srcsk = skb->sk;
+
+		if (atomic_read(&skb->users) != 1) {
+			struct sk_buff *old_skb = skb;
+
+			skb = skb_clone(old_skb, GFP_ATOMIC);
+			kfree_skb(old_skb);
+			if (!skb)
+				return;
+		} else
+			skb_orphan(skb);
+
+		skb->sk = srcsk;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* make settings for echo to reduce code in irq context */
 		skb->protocol = htons(ETH_P_CAN);
@@ -385,7 +401,11 @@ void can_free_echo_skb(struct net_device *dev, unsigned int idx)
 	BUG_ON(idx >= priv->echo_skb_max);
 
 	if (priv->echo_skb[idx]) {
+<<<<<<< HEAD
 		dev_kfree_skb_any(priv->echo_skb[idx]);
+=======
+		kfree_skb(priv->echo_skb[idx]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		priv->echo_skb[idx] = NULL;
 	}
 }
@@ -503,6 +523,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
 	skb->pkt_type = PACKET_BROADCAST;
 	skb->ip_summed = CHECKSUM_UNNECESSARY;
 
+<<<<<<< HEAD
 	skb_reset_mac_header(skb);
 	skb_reset_network_header(skb);
 	skb_reset_transport_header(skb);
@@ -511,6 +532,8 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
 	skb_reset_network_header(skb);
 	skb_reset_transport_header(skb);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	can_skb_reserve(skb);
 	can_skb_prv(skb)->ifindex = dev->ifindex;
 
@@ -651,6 +674,7 @@ static int can_changelink(struct net_device *dev,
 		if (dev->flags & IFF_UP)
 			return -EBUSY;
 		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+<<<<<<< HEAD
 
 		/* check whether changed bits are allowed to be modified */
 		if (cm->mask & ~priv->ctrlmode_supported)
@@ -659,6 +683,12 @@ static int can_changelink(struct net_device *dev,
 		/* clear bits to be modified and copy the flag values */
 		priv->ctrlmode &= ~cm->mask;
 		priv->ctrlmode |= (cm->flags & cm->mask);
+=======
+		if (cm->flags & ~priv->ctrlmode_supported)
+			return -EOPNOTSUPP;
+		priv->ctrlmode &= ~cm->mask;
+		priv->ctrlmode |= cm->flags;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	if (data[IFLA_CAN_BITTIMING]) {
@@ -708,6 +738,7 @@ static size_t can_get_size(const struct net_device *dev)
 	size_t size;
 
 	size = nla_total_size(sizeof(u32));   /* IFLA_CAN_STATE */
+<<<<<<< HEAD
 	size += nla_total_size(sizeof(struct can_ctrlmode));  /* IFLA_CAN_CTRLMODE */
 	size += nla_total_size(sizeof(u32));  /* IFLA_CAN_RESTART_MS */
 	size += nla_total_size(sizeof(struct can_bittiming)); /* IFLA_CAN_BITTIMING */
@@ -716,6 +747,16 @@ static size_t can_get_size(const struct net_device *dev)
 		size += nla_total_size(sizeof(struct can_berr_counter));
 	if (priv->bittiming_const)	      /* IFLA_CAN_BITTIMING_CONST */
 		size += nla_total_size(sizeof(struct can_bittiming_const));
+=======
+	size += sizeof(struct can_ctrlmode);  /* IFLA_CAN_CTRLMODE */
+	size += nla_total_size(sizeof(u32));  /* IFLA_CAN_RESTART_MS */
+	size += sizeof(struct can_bittiming); /* IFLA_CAN_BITTIMING */
+	size += sizeof(struct can_clock);     /* IFLA_CAN_CLOCK */
+	if (priv->do_get_berr_counter)        /* IFLA_CAN_BERR_COUNTER */
+		size += sizeof(struct can_berr_counter);
+	if (priv->bittiming_const)	      /* IFLA_CAN_BITTIMING_CONST */
+		size += sizeof(struct can_bittiming_const);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return size;
 }

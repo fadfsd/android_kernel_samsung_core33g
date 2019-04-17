@@ -447,11 +447,16 @@ static void sata_pmp_quirks(struct ata_port *ap)
 		 * otherwise.  Don't try hard to recover it.
 		 */
 		ap->pmp_link[ap->nr_pmp_links - 1].flags |= ATA_LFLAG_NO_RETRY;
+<<<<<<< HEAD
 	} else if (vendor == 0x197b && (devid == 0x2352 || devid == 0x0325)) {
 		/*
 		 * 0x2352: found in Thermaltake BlackX Duet, jmicron JMB350?
 		 * 0x0325: jmicron JMB394.
 		 */
+=======
+	} else if (vendor == 0x197b && devid == 0x2352) {
+		/* chip found in Thermaltake BlackX Duet, jmicron JMB350? */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		ata_for_each_link(link, ap, EDGE) {
 			/* SRST breaks detection and disks get misclassified
 			 * LPM disabled to avoid potential problems
@@ -460,6 +465,7 @@ static void sata_pmp_quirks(struct ata_port *ap)
 				       ATA_LFLAG_NO_SRST |
 				       ATA_LFLAG_ASSUME_ATA;
 		}
+<<<<<<< HEAD
 	} else if (vendor == 0x11ab && devid == 0x4140) {
 		/* Marvell 4140 quirks */
 		ata_for_each_link(link, ap, EDGE) {
@@ -467,6 +473,8 @@ static void sata_pmp_quirks(struct ata_port *ap)
 			if (link->pmp == 4)
 				link->flags |= ATA_LFLAG_DISABLED;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 

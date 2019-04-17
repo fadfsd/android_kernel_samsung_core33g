@@ -617,4 +617,8 @@ module_exit(serpent_exit);
 
 MODULE_DESCRIPTION("Serpent Cipher Algorithm, AVX optimized");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("serpent");
+=======
+MODULE_ALIAS("serpent");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

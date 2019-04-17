@@ -49,7 +49,11 @@ typedef struct
 	__u32 gprs_high[NUM_GPRS];
 } rt_sigframe32;
 
+<<<<<<< HEAD
 int copy_siginfo_to_user32(compat_siginfo_t __user *to, const siginfo_t *from)
+=======
+int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int err;
 

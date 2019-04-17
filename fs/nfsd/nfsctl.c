@@ -699,11 +699,14 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net)
 	if (err != 0 || fd < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (svc_alien_sock(net, fd)) {
 		printk(KERN_ERR "%s: socket net is different to NFSd's one\n", __func__);
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	err = nfsd_create_serv(net);
 	if (err != 0)
 		return err;

@@ -179,7 +179,11 @@
 #define CS42L52_MICB_CTL			0x11
 #define	CS42L52_MIC_CTL_MIC_SEL_MASK		0xBF
 #define	CS42L52_MIC_CTL_MIC_SEL_SHIFT		6
+<<<<<<< HEAD
 #define CS42L52_MIC_CTL_TYPE_MASK		0x20
+=======
+#define CS42L52_MIC_CTL_TYPE_MASK		0xDF
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define CS42L52_MIC_CTL_TYPE_SHIFT		5
 
 

@@ -211,7 +211,11 @@ static inline void spear310_clk_init(void) { }
 /* array of all spear 320 clock lookups */
 #ifdef CONFIG_MACH_SPEAR320
 
+<<<<<<< HEAD
 #define SPEAR320_CONTROL_REG		(soc_config_base + 0x0010)
+=======
+#define SPEAR320_CONTROL_REG		(soc_config_base + 0x0000)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define SPEAR320_EXT_CTRL_REG		(soc_config_base + 0x0018)
 
 	#define SPEAR320_UARTX_PCLK_MASK		0x1

@@ -21,7 +21,11 @@
 #include "sdcardfs.h"
 
 /* Do not directly use this function. Use OVERRIDE_CRED() instead. */
+<<<<<<< HEAD
 const struct cred * override_fsids(uid_t fsuid, gid_t fsgid)
+=======
+const struct cred * override_fsids(struct sdcardfs_sb_info* sbi)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct cred * cred; 
 	const struct cred * old_cred; 
@@ -30,8 +34,13 @@ const struct cred * override_fsids(uid_t fsuid, gid_t fsgid)
 	if (!cred) 
 		return NULL; 
 
+<<<<<<< HEAD
 	cred->fsuid = fsuid;
 	cred->fsgid = fsgid;
+=======
+	cred->fsuid = sbi->options.fs_low_uid;
+	cred->fsgid = sbi->options.fs_low_gid; 
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	old_cred = override_creds(cred); 
 
@@ -55,9 +64,17 @@ static int sdcardfs_create(struct inode *dir, struct dentry *dentry,
 	struct dentry *lower_dentry;
 	struct dentry *lower_parent_dentry = NULL;
 	struct path lower_path;
+<<<<<<< HEAD
 	const struct cred *saved_cred = NULL;
 
 	if(!check_caller_access_to_name(dir, dentry->d_name.name)) {
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+	const struct cred *saved_cred = NULL;
+
+	int has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+	if(!check_caller_access_to_name(dir, dentry->d_name.name, sbi->options.derive, 1, has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 						 "  dentry: %s, task:%s\n",
 						 __func__, dentry->d_name.name, current->comm);
@@ -154,9 +171,17 @@ static int sdcardfs_unlink(struct inode *dir, struct dentry *dentry)
 	struct inode *lower_dir_inode = sdcardfs_lower_inode(dir);
 	struct dentry *lower_dir_dentry;
 	struct path lower_path;
+<<<<<<< HEAD
 	const struct cred *saved_cred = NULL;
 
 	if(!check_caller_access_to_name(dir, dentry->d_name.name)) {
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+	const struct cred *saved_cred = NULL;
+
+	int has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+	if(!check_caller_access_to_name(dir, dentry->d_name.name, sbi->options.derive, 1, has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 						 "  dentry: %s, task:%s\n",
 						 __func__, dentry->d_name.name, current->comm);
@@ -265,6 +290,10 @@ static int sdcardfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	struct dentry *lower_dentry;
 	struct dentry *lower_parent_dentry = NULL;
 	struct path lower_path;
+<<<<<<< HEAD
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	const struct cred *saved_cred = NULL;
 	struct sdcardfs_inode_info *pi = SDCARDFS_I(dir);
 	char *page_buf;
@@ -273,7 +302,12 @@ static int sdcardfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	int fullpath_namelen;
 	int touch_err = 0;
 
+<<<<<<< HEAD
 	if(!check_caller_access_to_name(dir, dentry->d_name.name)) {
+=======
+	int has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+	if(!check_caller_access_to_name(dir, dentry->d_name.name, sbi->options.derive, 1, has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 						 "  dentry: %s, task:%s\n",
 						 __func__, dentry->d_name.name, current->comm);
@@ -313,6 +347,10 @@ static int sdcardfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 	
 	/* if it is a local obb dentry, setup it with the base obbpath */
 	if(need_graft_path(dentry)) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		err = setup_obb_dentry(dentry, &lower_path);
 		if(err) {
 			/* if the sbi->obbpath is not available, the lower_path won't be 
@@ -342,7 +380,12 @@ static int sdcardfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode
 
 	unlock_dir(lower_parent_dentry);
 
+<<<<<<< HEAD
 	if (!strcasecmp(dentry->d_name.name, "obb") && (pi->perm == PERM_ANDROID))
+=======
+	if ((sbi->options.derive == DERIVE_UNIFIED) && (!strcasecmp(dentry->d_name.name, "obb"))
+		&& (pi->perm == PERM_ANDROID) && (pi->userid == 0))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		make_nomedia_in_obb = 1;
 
 	/* When creating /Android/data and /Android/obb, mark them as .nomedia */
@@ -399,10 +442,19 @@ static int sdcardfs_rmdir(struct inode *dir, struct dentry *dentry)
 	struct dentry *lower_dir_dentry;
 	int err;
 	struct path lower_path;
+<<<<<<< HEAD
 	const struct cred *saved_cred = NULL;
 	//char *path_s = NULL;
 
 	if(!check_caller_access_to_name(dir, dentry->d_name.name)) {
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+	const struct cred *saved_cred = NULL;
+	//char *path_s = NULL;
+
+	int has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+	if(!check_caller_access_to_name(dir, dentry->d_name.name, sbi->options.derive, 1, has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 						 "  dentry: %s, task:%s\n",
 						 __func__, dentry->d_name.name, current->comm);
@@ -497,10 +549,21 @@ static int sdcardfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	struct dentry *trap = NULL;
 	struct dentry *new_parent = NULL;
 	struct path lower_old_path, lower_new_path;
+<<<<<<< HEAD
 	const struct cred *saved_cred = NULL;
 
 	if(!check_caller_access_to_name(old_dir, old_dentry->d_name.name) ||
 		!check_caller_access_to_name(new_dir, new_dentry->d_name.name)) {
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(old_dentry->d_sb);
+	const struct cred *saved_cred = NULL;
+
+	int has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+	if(!check_caller_access_to_name(old_dir, old_dentry->d_name.name,
+			sbi->options.derive, 1, has_rw) ||
+		!check_caller_access_to_name(new_dir, new_dentry->d_name.name,
+			sbi->options.derive, 1, has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 						 "  new_dentry: %s, task:%s\n",
 						 __func__, new_dentry->d_name.name, current->comm);
@@ -694,9 +757,17 @@ static int sdcardfs_getattr(struct vfsmount *mnt, struct dentry *dentry,
 	struct inode *lower_inode;
 	struct path lower_path;
 	struct dentry *parent;
+<<<<<<< HEAD
 
 	parent = dget_parent(dentry);
 	if(!check_caller_access_to_name(parent->d_inode, dentry->d_name.name)) {
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+
+	parent = dget_parent(dentry);
+	if(!check_caller_access_to_name(parent->d_inode, dentry->d_name.name,
+						sbi->options.derive, 0, 0)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 						 "  dentry: %s, task:%s\n",
 						 __func__, dentry->d_name.name, current->comm);
@@ -735,7 +806,13 @@ static int sdcardfs_setattr(struct dentry *dentry, struct iattr *ia)
 	struct inode *lower_inode;
 	struct path lower_path;
 	struct iattr lower_ia;
+<<<<<<< HEAD
 	struct dentry *parent;
+=======
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+	struct dentry *parent;
+	int has_rw;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	inode = dentry->d_inode;
 
@@ -749,8 +826,15 @@ static int sdcardfs_setattr(struct dentry *dentry, struct iattr *ia)
 	/* no vfs_XXX operations required, cred overriding will be skipped. wj*/
 	if (!err) {
 		/* check the Android group ID */
+<<<<<<< HEAD
 		parent = dget_parent(dentry);
 		if(!check_caller_access_to_name(parent->d_inode, dentry->d_name.name)) {
+=======
+		has_rw = get_caller_has_rw_locked(sbi->pkgl_id, sbi->options.derive);
+		parent = dget_parent(dentry);
+		if(!check_caller_access_to_name(parent->d_inode, dentry->d_name.name,
+						sbi->options.derive, 1, has_rw)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			printk(KERN_INFO "%s: need to check the caller's gid in packages.list\n" 
 							 "  dentry: %s, task:%s\n",
 							 __func__, dentry->d_name.name, current->comm);
@@ -782,6 +866,7 @@ static int sdcardfs_setattr(struct dentry *dentry, struct iattr *ia)
 	 * the lower level.
 	 */
 	if (ia->ia_valid & ATTR_SIZE) {
+<<<<<<< HEAD
 		loff_t oldsize;
 		err = inode_newsize_ok(inode, ia->ia_size);
 		if (err)
@@ -795,6 +880,12 @@ static int sdcardfs_setattr(struct dentry *dentry, struct iattr *ia)
 		if (sizeof(ia->ia_size) > sizeof(long))
 			spin_unlock(&inode->i_lock);
 		truncate_pagecache(inode, oldsize, ia->ia_size);
+=======
+		err = inode_newsize_ok(inode, ia->ia_size);
+		if (err)
+			goto out;
+		truncate_setsize(inode, ia->ia_size);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/*
@@ -836,12 +927,15 @@ out_err:
 const struct inode_operations sdcardfs_symlink_iops = {
 	.permission	= sdcardfs_permission,
 	.setattr	= sdcardfs_setattr,
+<<<<<<< HEAD
 #ifdef SDCARD_FS_XATTR
 	.setxattr	= sdcardfs_setxattr,
 	.getxattr	= sdcardfs_getxattr,
 	.listxattr	= sdcardfs_listxattr,
 	.removexattr = sdcardfs_removexattr,
 #endif // SDCARD_FS_XATTR
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* XXX Following operations are implemented, 
 	 *     but FUSE(sdcard) or FAT does not support them
 	 *     These methods are *NOT* perfectly tested. 
@@ -861,12 +955,15 @@ const struct inode_operations sdcardfs_dir_iops = {
 	.rename		= sdcardfs_rename,
 	.setattr	= sdcardfs_setattr,
 	.getattr	= sdcardfs_getattr,
+<<<<<<< HEAD
 #ifdef SDCARD_FS_XATTR
 	.setxattr	= sdcardfs_setxattr,
 	.getxattr	= sdcardfs_getxattr,
 	.listxattr	= sdcardfs_listxattr,
 	.removexattr = sdcardfs_removexattr,
 #endif // SDCARD_FS_XATTR
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* XXX Following operations are implemented, 
 	 *     but FUSE(sdcard) or FAT does not support them
 	 *     These methods are *NOT* perfectly tested. 
@@ -880,10 +977,13 @@ const struct inode_operations sdcardfs_main_iops = {
 	.permission	= sdcardfs_permission, 
 	.setattr	= sdcardfs_setattr, 
 	.getattr	= sdcardfs_getattr,
+<<<<<<< HEAD
 #ifdef SDCARD_FS_XATTR
 	.setxattr	= sdcardfs_setxattr,
 	.getxattr	= sdcardfs_getxattr,
 	.listxattr	= sdcardfs_listxattr,
 	.removexattr = sdcardfs_removexattr,
 #endif // SDCARDFS_XATTR
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };

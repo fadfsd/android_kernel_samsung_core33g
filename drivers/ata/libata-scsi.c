@@ -112,6 +112,7 @@ static const char *ata_lpm_policy_names[] = {
 	[ATA_LPM_MIN_POWER]	= "min_power",
 };
 
+<<<<<<< HEAD
 static ssize_t ata_scsi_lpm_store(struct device *device,
 				  struct device_attribute *attr,
 				  const char *buf, size_t count)
@@ -120,6 +121,14 @@ static ssize_t ata_scsi_lpm_store(struct device *device,
 	struct ata_port *ap = ata_shost_to_port(shost);
 	struct ata_link *link;
 	struct ata_device *dev;
+=======
+static ssize_t ata_scsi_lpm_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	struct Scsi_Host *shost = class_to_shost(dev);
+	struct ata_port *ap = ata_shost_to_port(shost);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	enum ata_lpm_policy policy;
 	unsigned long flags;
 
@@ -135,6 +144,7 @@ static ssize_t ata_scsi_lpm_store(struct device *device,
 		return -EINVAL;
 
 	spin_lock_irqsave(ap->lock, flags);
+<<<<<<< HEAD
 
 	ata_for_each_link(link, ap, EDGE) {
 		ata_for_each_dev(dev, &ap->link, ENABLED) {
@@ -149,6 +159,12 @@ static ssize_t ata_scsi_lpm_store(struct device *device,
 	ata_port_schedule_eh(ap);
 out_unlock:
 	spin_unlock_irqrestore(ap->lock, flags);
+=======
+	ap->target_lpm_policy = policy;
+	ata_port_schedule_eh(ap);
+	spin_unlock_irqrestore(ap->lock, flags);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return count;
 }
 
@@ -2512,8 +2528,12 @@ static unsigned int ata_scsiop_read_cap(struct ata_scsi_args *args, u8 *rbuf)
 		rbuf[14] = (lowest_aligned >> 8) & 0x3f;
 		rbuf[15] = lowest_aligned;
 
+<<<<<<< HEAD
 		if (ata_id_has_trim(args->id) &&
 		    !(dev->horkage & ATA_HORKAGE_NOTRIM)) {
+=======
+		if (ata_id_has_trim(args->id)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			rbuf[14] |= 0x80; /* TPE */
 
 			if (ata_id_has_zero_after_trim(args->id))
@@ -3627,7 +3647,10 @@ int ata_scsi_add_hosts(struct ata_host *host, struct scsi_host_template *sht)
 		shost->max_lun = 1;
 		shost->max_channel = 1;
 		shost->max_cmd_len = 16;
+<<<<<<< HEAD
 		shost->no_write_same = 1;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* Schedule policy is determined by ->qc_defer()
 		 * callback and it needs to see every deferred qc.
@@ -3877,6 +3900,7 @@ void ata_scsi_hotplug(struct work_struct *work)
 		return;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * XXX - UGLY HACK
 	 *
@@ -3898,6 +3922,8 @@ void ata_scsi_hotplug(struct work_struct *work)
 		msleep(10);
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	DPRINTK("ENTER\n");
 	mutex_lock(&ap->scsi_scan_mutex);
 

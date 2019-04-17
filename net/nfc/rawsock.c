@@ -241,6 +241,11 @@ static int rawsock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (!skb)
 		return rc;
 
+<<<<<<< HEAD
+=======
+	msg->msg_namelen = 0;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	copied = skb->len;
 	if (len < copied) {
 		msg->msg_flags |= MSG_TRUNC;

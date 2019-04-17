@@ -159,12 +159,15 @@ static int nsm_mon_unmon(struct nsm_handle *nsm, u32 proc, struct nsm_res *res,
 
 	msg.rpc_proc = &clnt->cl_procinfo[proc];
 	status = rpc_call_sync(clnt, &msg, RPC_TASK_SOFTCONN);
+<<<<<<< HEAD
 	if (status == -ECONNREFUSED) {
 		dprintk("lockd:	NSM upcall RPC failed, status=%d, forcing rebind\n",
 				status);
 		rpc_force_rebind(clnt);
 		status = rpc_call_sync(clnt, &msg, RPC_TASK_SOFTCONN);
 	}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (status < 0)
 		dprintk("lockd: NSM upcall RPC failed, status=%d\n",
 				status);

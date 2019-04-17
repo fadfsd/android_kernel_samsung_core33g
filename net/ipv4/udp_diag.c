@@ -99,13 +99,20 @@ static void udp_dump(struct udp_table *table, struct sk_buff *skb, struct netlin
 	s_slot = cb->args[0];
 	num = s_num = cb->args[1];
 
+<<<<<<< HEAD
 	for (slot = s_slot; slot <= table->mask; s_num = 0, slot++) {
+=======
+	for (slot = s_slot; slot <= table->mask; num = s_num = 0, slot++) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		struct sock *sk;
 		struct hlist_nulls_node *node;
 		struct udp_hslot *hslot = &table->hash[slot];
 
+<<<<<<< HEAD
 		num = 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (hlist_nulls_empty(&hslot->head))
 			continue;
 

@@ -52,12 +52,17 @@ int edac_mc_get_poll_msec(void)
 
 static int edac_set_poll_msec(const char *val, struct kernel_param *kp)
 {
+<<<<<<< HEAD
 	unsigned long l;
+=======
+	long l;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int ret;
 
 	if (!val)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ret = kstrtoul(val, 0, &l);
 	if (ret)
 		return ret;
@@ -66,6 +71,12 @@ static int edac_set_poll_msec(const char *val, struct kernel_param *kp)
 		return -EINVAL;
 
 	*((unsigned long *)kp->arg) = l;
+=======
+	ret = strict_strtol(val, 0, &l);
+	if (ret == -EINVAL || ((int)l != l))
+		return -EINVAL;
+	*((int *)kp->arg) = l;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* notify edac_mc engine to reset the poll period */
 	edac_mc_reset_delay_period(l);

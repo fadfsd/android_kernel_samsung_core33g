@@ -699,6 +699,7 @@ balanced:
 	}
 }
 
+<<<<<<< HEAD
 static void disable_runtime(struct rq *rq)
 {
 	unsigned long flags;
@@ -708,6 +709,8 @@ static void disable_runtime(struct rq *rq)
 	raw_spin_unlock_irqrestore(&rq->lock, flags);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void __enable_runtime(struct rq *rq)
 {
 	rt_rq_iter_t iter;
@@ -732,6 +735,7 @@ static void __enable_runtime(struct rq *rq)
 	}
 }
 
+<<<<<<< HEAD
 static void enable_runtime(struct rq *rq)
 {
 	unsigned long flags;
@@ -763,6 +767,8 @@ int update_runtime(struct notifier_block *nfb, unsigned long action, void *hcpu)
 	}
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int balance_runtime(struct rt_rq *rt_rq)
 {
 	int more = 0;
@@ -892,7 +898,11 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
 
 			if (!once) {
 				once = true;
+<<<<<<< HEAD
 				printk_deferred("sched: RT throttling activated\n");
+=======
+				printk_sched("sched: RT throttling activated\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			}
 		} else {
 			/*
@@ -964,6 +974,7 @@ inc_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 {
 	struct rq *rq = rq_of_rt_rq(rt_rq);
 
+<<<<<<< HEAD
 #ifdef CONFIG_RT_GROUP_SCHED
 	/*
 	 * Change rq's cpupri only if rt_rq is the top queue.
@@ -971,6 +982,8 @@ inc_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 	if (&rq->rt != rt_rq)
 		return;
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rq->online && prio < prev_prio)
 		cpupri_set(&rq->rd->cpupri, rq->cpu, prio);
 }
@@ -980,6 +993,7 @@ dec_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 {
 	struct rq *rq = rq_of_rt_rq(rt_rq);
 
+<<<<<<< HEAD
 #ifdef CONFIG_RT_GROUP_SCHED
 	/*
 	 * Change rq's cpupri only if rt_rq is the top queue.
@@ -987,6 +1001,8 @@ dec_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
 	if (&rq->rt != rt_rq)
 		return;
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (rq->online && rt_rq->highest_prio.curr != prev_prio)
 		cpupri_set(&rq->rd->cpupri, rq->cpu, rt_rq->highest_prio.curr);
 }

@@ -523,11 +523,16 @@ void iwl_mvm_bt_rssi_event(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
 
 	mutex_lock(&mvm->mutex);
 
+<<<<<<< HEAD
 	/*
 	 * Rssi update while not associated - can happen since the statistics
 	 * are handled asynchronously
 	 */
 	if (mvmvif->ap_sta_id == IWL_MVM_STATION_COUNT)
+=======
+	/* Rssi update while not associated ?! */
+	if (WARN_ON_ONCE(mvmvif->ap_sta_id == IWL_MVM_STATION_COUNT))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out_unlock;
 
 	/* No open connection - reports should be disabled */

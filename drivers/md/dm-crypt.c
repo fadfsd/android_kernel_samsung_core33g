@@ -18,7 +18,10 @@
 #include <linux/crypto.h>
 #include <linux/workqueue.h>
 #include <linux/backing-dev.h>
+<<<<<<< HEAD
 #include <linux/percpu.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/atomic.h>
 #include <linux/scatterlist.h>
 #include <asm/page.h>
@@ -44,6 +47,10 @@ struct convert_context {
 	unsigned int idx_out;
 	sector_t cc_sector;
 	atomic_t cc_pending;
+<<<<<<< HEAD
+=======
+	struct ablkcipher_request *req;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /*
@@ -105,6 +112,7 @@ struct iv_lmk_private {
 enum flags { DM_CRYPT_SUSPENDED, DM_CRYPT_KEY_VALID };
 
 /*
+<<<<<<< HEAD
  * Duplicated per-CPU state for cipher.
  */
 struct crypt_cpu {
@@ -114,6 +122,9 @@ struct crypt_cpu {
 /*
  * The fields in here must be read only after initialization,
  * changing state should be in crypt_cpu.
+=======
+ * The fields in here must be read only after initialization.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 struct crypt_config {
 	struct dm_dev *dev;
@@ -143,12 +154,15 @@ struct crypt_config {
 	sector_t iv_offset;
 	unsigned int iv_size;
 
+<<<<<<< HEAD
 	/*
 	 * Duplicated per cpu state. Access through
 	 * per_cpu_ptr() only.
 	 */
 	struct crypt_cpu __percpu *cpu;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* ESSIV: struct crypto_cipher *essiv_tfm */
 	void *iv_private;
 	struct crypto_ablkcipher **tfms;
@@ -184,11 +198,14 @@ static void clone_init(struct dm_crypt_io *, struct bio *);
 static void kcryptd_queue_crypt(struct dm_crypt_io *io);
 static u8 *iv_of_dmreq(struct crypt_config *cc, struct dm_crypt_request *dmreq);
 
+<<<<<<< HEAD
 static struct crypt_cpu *this_crypt_config(struct crypt_config *cc)
 {
 	return this_cpu_ptr(cc->cpu);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Use this to access cipher attributes that are the same for each CPU.
  */
@@ -685,7 +702,11 @@ static int crypt_convert_block(struct crypt_config *cc,
 	struct bio_vec *bv_out = bio_iovec_idx(ctx->bio_out, ctx->idx_out);
 	struct dm_crypt_request *dmreq;
 	u8 *iv;
+<<<<<<< HEAD
 	int r;
+=======
+	int r = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	dmreq = dmreq_of_req(cc, req);
 	iv = iv_of_dmreq(cc, dmreq);
@@ -738,6 +759,7 @@ static void kcryptd_async_done(struct crypto_async_request *async_req,
 static void crypt_alloc_req(struct crypt_config *cc,
 			    struct convert_context *ctx)
 {
+<<<<<<< HEAD
 	struct crypt_cpu *this_cc = this_crypt_config(cc);
 	unsigned key_index = ctx->cc_sector & (cc->tfms_count - 1);
 
@@ -748,6 +770,17 @@ static void crypt_alloc_req(struct crypt_config *cc,
 	ablkcipher_request_set_callback(this_cc->req,
 	    CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
 	    kcryptd_async_done, dmreq_of_req(cc, this_cc->req));
+=======
+	unsigned key_index = ctx->cc_sector & (cc->tfms_count - 1);
+
+	if (!ctx->req)
+		ctx->req = mempool_alloc(cc->req_pool, GFP_NOIO);
+
+	ablkcipher_request_set_tfm(ctx->req, cc->tfms[key_index]);
+	ablkcipher_request_set_callback(ctx->req,
+	    CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+	    kcryptd_async_done, dmreq_of_req(cc, ctx->req));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -756,7 +789,10 @@ static void crypt_alloc_req(struct crypt_config *cc,
 static int crypt_convert(struct crypt_config *cc,
 			 struct convert_context *ctx)
 {
+<<<<<<< HEAD
 	struct crypt_cpu *this_cc = this_crypt_config(cc);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int r;
 
 	atomic_set(&ctx->cc_pending, 1);
@@ -768,7 +804,11 @@ static int crypt_convert(struct crypt_config *cc,
 
 		atomic_inc(&ctx->cc_pending);
 
+<<<<<<< HEAD
 		r = crypt_convert_block(cc, ctx, this_cc->req);
+=======
+		r = crypt_convert_block(cc, ctx, ctx->req);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		switch (r) {
 		/* async */
@@ -777,7 +817,11 @@ static int crypt_convert(struct crypt_config *cc,
 			INIT_COMPLETION(ctx->restart);
 			/* fall through*/
 		case -EINPROGRESS:
+<<<<<<< HEAD
 			this_cc->req = NULL;
+=======
+			ctx->req = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			ctx->cc_sector++;
 			continue;
 
@@ -876,6 +920,10 @@ static struct dm_crypt_io *crypt_io_alloc(struct crypt_config *cc,
 	io->sector = sector;
 	io->error = 0;
 	io->base_io = NULL;
+<<<<<<< HEAD
+=======
+	io->ctx.req = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	atomic_set(&io->io_pending, 0);
 
 	return io;
@@ -901,6 +949,11 @@ static void crypt_dec_pending(struct dm_crypt_io *io)
 	if (!atomic_dec_and_test(&io->io_pending))
 		return;
 
+<<<<<<< HEAD
+=======
+	if (io->ctx.req)
+		mempool_free(io->ctx.req, cc->req_pool);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	mempool_free(io, cc->io_pool);
 
 	if (likely(!base_io))
@@ -1326,8 +1379,11 @@ static int crypt_wipe_key(struct crypt_config *cc)
 static void crypt_dtr(struct dm_target *ti)
 {
 	struct crypt_config *cc = ti->private;
+<<<<<<< HEAD
 	struct crypt_cpu *cpu_cc;
 	int cpu;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ti->private = NULL;
 
@@ -1339,6 +1395,7 @@ static void crypt_dtr(struct dm_target *ti)
 	if (cc->crypt_queue)
 		destroy_workqueue(cc->crypt_queue);
 
+<<<<<<< HEAD
 	if (cc->cpu)
 		for_each_possible_cpu(cpu) {
 			cpu_cc = per_cpu_ptr(cc->cpu, cpu);
@@ -1346,6 +1403,8 @@ static void crypt_dtr(struct dm_target *ti)
 				mempool_free(cpu_cc->req, cc->req_pool);
 		}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	crypt_free_tfms(cc);
 
 	if (cc->bs)
@@ -1364,9 +1423,12 @@ static void crypt_dtr(struct dm_target *ti)
 	if (cc->dev)
 		dm_put_device(ti, cc->dev);
 
+<<<<<<< HEAD
 	if (cc->cpu)
 		free_percpu(cc->cpu);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kzfree(cc->cipher);
 	kzfree(cc->cipher_string);
 
@@ -1421,6 +1483,7 @@ static int crypt_ctr_cipher(struct dm_target *ti,
 	if (tmp)
 		DMWARN("Ignoring unexpected additional cipher options");
 
+<<<<<<< HEAD
 	cc->cpu = __alloc_percpu(sizeof(*(cc->cpu)),
 				 __alignof__(struct crypt_cpu));
 	if (!cc->cpu) {
@@ -1428,6 +1491,8 @@ static int crypt_ctr_cipher(struct dm_target *ti,
 		goto bad_mem;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * For compatibility with the original dm-crypt mapping format, if
 	 * only the cipher name is supplied, use cbc-plain.
@@ -1543,7 +1608,10 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	unsigned int key_size, opt_params;
 	unsigned long long tmpll;
 	int ret;
+<<<<<<< HEAD
 	size_t iv_size_padding;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct dm_arg_set as;
 	const char *opt_string;
 	char dummy;
@@ -1580,6 +1648,7 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 
 	cc->dmreq_start = sizeof(struct ablkcipher_request);
 	cc->dmreq_start += crypto_ablkcipher_reqsize(any_tfm(cc));
+<<<<<<< HEAD
 	cc->dmreq_start = ALIGN(cc->dmreq_start, __alignof__(struct dm_crypt_request));
 
 	if (crypto_ablkcipher_alignmask(any_tfm(cc)) < CRYPTO_MINALIGN) {
@@ -1597,6 +1666,14 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 
 	cc->req_pool = mempool_create_kmalloc_pool(MIN_IOS, cc->dmreq_start +
 			sizeof(struct dm_crypt_request) + iv_size_padding + cc->iv_size);
+=======
+	cc->dmreq_start = ALIGN(cc->dmreq_start, crypto_tfm_ctx_alignment());
+	cc->dmreq_start += crypto_ablkcipher_alignmask(any_tfm(cc)) &
+			   ~(crypto_tfm_ctx_alignment() - 1);
+
+	cc->req_pool = mempool_create_kmalloc_pool(MIN_IOS, cc->dmreq_start +
+			sizeof(struct dm_crypt_request) + cc->iv_size);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!cc->req_pool) {
 		ti->error = "Cannot allocate crypt request mempool";
 		goto bad;

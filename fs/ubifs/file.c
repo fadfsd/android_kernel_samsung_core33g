@@ -1524,8 +1524,12 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
 	}
 
 	wait_for_stable_page(page);
+<<<<<<< HEAD
 	unlock_page(page);
 	return 0;
+=======
+	return VM_FAULT_LOCKED;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 out_unlock:
 	unlock_page(page);

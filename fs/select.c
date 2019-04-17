@@ -27,6 +27,10 @@
 #include <linux/rcupdate.h>
 #include <linux/hrtimer.h>
 #include <linux/sched/rt.h>
+<<<<<<< HEAD
+=======
+#include <linux/freezer.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/uaccess.h>
 
@@ -236,7 +240,12 @@ int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
 
 	set_current_state(state);
 	if (!pwq->triggered)
+<<<<<<< HEAD
 		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+=======
+		rc = freezable_schedule_hrtimeout_range(expires, slack,
+							HRTIMER_MODE_ABS);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	__set_current_state(TASK_RUNNING);
 
 	/*

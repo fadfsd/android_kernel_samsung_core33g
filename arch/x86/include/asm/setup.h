@@ -62,8 +62,11 @@ static inline void x86_ce4100_early_setup(void) { }
 
 #ifndef _SETUP
 
+<<<<<<< HEAD
 #include <asm/espfix.h>
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * This is set up by the setup-routine at boot-time
  */

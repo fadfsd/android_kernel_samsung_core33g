@@ -2249,7 +2249,10 @@ static int isp_probe(struct platform_device *pdev)
 	ret = iommu_attach_device(isp->domain, &pdev->dev);
 	if (ret) {
 		dev_err(&pdev->dev, "can't attach iommu device: %d\n", ret);
+<<<<<<< HEAD
 		ret = -EPROBE_DEFER;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto free_domain;
 	}
 
@@ -2288,7 +2291,10 @@ detach_dev:
 	iommu_detach_device(isp->domain, &pdev->dev);
 free_domain:
 	iommu_domain_free(isp->domain);
+<<<<<<< HEAD
 	isp->domain = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 error_isp:
 	isp_xclk_cleanup(isp);
 	omap3isp_put(isp);

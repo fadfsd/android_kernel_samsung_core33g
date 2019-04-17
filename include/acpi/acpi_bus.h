@@ -97,7 +97,10 @@ enum acpi_hotplug_mode {
 struct acpi_hotplug_profile {
 	struct kobject kobj;
 	bool enabled:1;
+<<<<<<< HEAD
 	bool ignore:1;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	enum acpi_hotplug_mode mode;
 };
 

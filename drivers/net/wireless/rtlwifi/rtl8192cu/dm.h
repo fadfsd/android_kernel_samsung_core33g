@@ -30,6 +30,9 @@
 #include "../rtl8192ce/dm.h"
 
 void rtl92cu_dm_dynamic_txpower(struct ieee80211_hw *hw);
+<<<<<<< HEAD
 void dm_savepowerindex(struct ieee80211_hw *hw);
 void dm_writepowerindex(struct ieee80211_hw *hw, u8 value);
 void dm_restorepowerindex(struct ieee80211_hw *hw);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

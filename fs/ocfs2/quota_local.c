@@ -1303,6 +1303,13 @@ int ocfs2_local_release_dquot(handle_t *handle, struct dquot *dquot)
 	ocfs2_journal_dirty(handle, od->dq_chunk->qc_headerbh);
 
 out:
+<<<<<<< HEAD
+=======
+	/* Clear the read bit so that next time someone uses this
+	 * dquot he reads fresh info from disk and allocates local
+	 * dquot structure */
+	clear_bit(DQ_READ_B, &dquot->dq_flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return status;
 }
 

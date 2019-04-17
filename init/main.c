@@ -75,6 +75,10 @@
 #include <linux/blkdev.h>
 #include <linux/elevator.h>
 #include <linux/random.h>
+<<<<<<< HEAD
+=======
+#include <linux/bootperf.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #include <asm/io.h>
 #include <asm/bugs.h>
@@ -86,6 +90,13 @@
 #include <asm/smp.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SEC_GPIO_DVS
+#include <linux/secgpio_dvs.h>
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int kernel_init(void *);
 
 extern void init_IRQ(void);
@@ -606,10 +617,13 @@ asmlinkage void __init start_kernel(void)
 	if (efi_enabled(EFI_RUNTIME_SERVICES))
 		efi_enter_virtual_mode();
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_X86_ESPFIX64
 	/* Should be run before the first non-init thread is created */
 	init_espfix_bsp();
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	thread_info_cache_init();
 	cred_init();
 	fork_init(totalram_pages);
@@ -668,14 +682,36 @@ static int __init_or_module do_one_initcall_debug(initcall_t fn)
 	unsigned long long duration;
 	int ret;
 
+<<<<<<< HEAD
 	pr_debug("calling  %pF @ %i\n", fn, task_pid_nr(current));
+=======
+	char name[256]={0};
+#ifndef CONFIG_BOOT_PERF
+	pr_debug("calling  %pF @ %i\n", fn, task_pid_nr(current));
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	calltime = ktime_get();
 	ret = fn();
 	rettime = ktime_get();
 	delta = ktime_sub(rettime, calltime);
 	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
+<<<<<<< HEAD
 	pr_debug("initcall %pF returned %d after %lld usecs\n",
 		 fn, ret, duration);
+=======
+#ifdef CONFIG_BOOT_PERF
+	if(duration >1000)
+	{
+		memset(name,0,256);
+		snprintf(name, 255, "%pF", fn);
+		log_boot(name,  duration);
+	}
+
+#else
+	pr_debug("initcall %pF returned %d after %lld usecs\n",
+		 fn, ret, duration);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return ret;
 }
@@ -684,6 +720,12 @@ int __init_or_module do_one_initcall(initcall_t fn)
 {
 	int count = preempt_count();
 	int ret;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_BOOT_PERF
+	initcall_debug =1;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (initcall_debug)
 		ret = do_one_initcall_debug(fn);
@@ -817,6 +859,19 @@ static noinline void __init kernel_init_freeable(void);
 static int __ref kernel_init(void *unused)
 {
 	kernel_init_freeable();
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_SEC_GPIO_DVS
+    /************************ Caution !!! ****************************/
+    /* This function must be located in an appropriate position for INIT state
+     * in accordance with the specification of each BB vendor.
+     */
+    /************************ Caution !!! ****************************/
+    gpio_dvs_check_initgpio();
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* need to finish all async __init code before freeing the memory */
 	async_synchronize_full();
 	free_initmem();

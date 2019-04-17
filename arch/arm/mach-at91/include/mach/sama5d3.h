@@ -65,11 +65,14 @@
 #define SAMA5D3_ID_IRQ0		47	/* Advanced Interrupt Controller (IRQ0) */
 
 /*
+<<<<<<< HEAD
  * System Peripherals
  */
 #define SAMA5D3_BASE_RTC	0xfffffeb0
 
 /*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * Internal Memory
  */
 #define SAMA5D3_SRAM_BASE	0x00300000	/* Internal SRAM base address */

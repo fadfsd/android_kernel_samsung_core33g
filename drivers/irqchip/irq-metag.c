@@ -201,7 +201,11 @@ static int metag_internal_irq_set_affinity(struct irq_data *data,
 	 * one cpu (the interrupt code doesn't support it), so we just
 	 * pick the first cpu we find in 'cpumask'.
 	 */
+<<<<<<< HEAD
 	cpu = cpumask_any_and(cpumask, cpu_online_mask);
+=======
+	cpu = cpumask_any(cpumask);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	thread = cpu_2_hwthread_id[cpu];
 
 	metag_out32(TBI_TRIG_VEC(TBID_SIGNUM_TR1(thread)),

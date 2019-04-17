@@ -52,6 +52,13 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/timer.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SEC_DEBUG_TIMER_LOG
+#include <mach/sec_debug.h>
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 u64 jiffies_64 __cacheline_aligned_in_smp = INITIAL_JIFFIES;
 
 EXPORT_SYMBOL(jiffies_64);
@@ -822,7 +829,11 @@ unsigned long apply_slack(struct timer_list *timer, unsigned long expires)
 
 	bit = find_last_bit(&mask, BITS_PER_LONG);
 
+<<<<<<< HEAD
 	mask = (1UL << bit) - 1;
+=======
+	mask = (1 << bit) - 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	expires_limit = expires_limit & ~(mask);
 
@@ -1112,11 +1123,23 @@ static void call_timer_fn(struct timer_list *timer, void (*fn)(unsigned long),
 	 * call here and in del_timer_sync().
 	 */
 	lock_map_acquire(&lockdep_map);
+<<<<<<< HEAD
 
 	trace_timer_expire_entry(timer);
 	fn(data);
 	trace_timer_expire_exit(timer);
 
+=======
+#ifdef CONFIG_SEC_DEBUG_TIMER_LOG
+	sec_debug_timer_log(5555, (void*)fn);
+#endif
+	trace_timer_expire_entry(timer);
+	fn(data);
+	trace_timer_expire_exit(timer);
+#ifdef CONFIG_SEC_DEBUG_TIMER_LOG
+	sec_debug_timer_log(6666, (void*)fn);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	lock_map_release(&lockdep_map);
 
 	if (preempt_count != preempt_count()) {

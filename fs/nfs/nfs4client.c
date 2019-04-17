@@ -240,11 +240,21 @@ struct nfs_client *nfs4_init_client(struct nfs_client *clp,
 	error = nfs4_discover_server_trunking(clp, &old);
 	if (error < 0)
 		goto error;
+<<<<<<< HEAD
 
 	if (clp != old)
 		clp->cl_preserve_clid = true;
 	nfs_put_client(clp);
 	return old;
+=======
+	nfs_put_client(clp);
+	if (clp != old) {
+		clp->cl_preserve_clid = true;
+		clp = old;
+	}
+
+	return clp;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 error:
 	nfs_mark_client_ready(clp, error);
@@ -311,6 +321,7 @@ int nfs40_walk_client_list(struct nfs_client *new,
 
 	spin_lock(&nn->nfs_client_lock);
 	list_for_each_entry(pos, &nn->nfs_client_list, cl_share_link) {
+<<<<<<< HEAD
 
 		if (pos->rpc_ops != new->rpc_ops)
 			continue;
@@ -321,6 +332,8 @@ int nfs40_walk_client_list(struct nfs_client *new,
 		if (pos->cl_minorversion != new->cl_minorversion)
 			continue;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* If "pos" isn't marked ready, we can't trust the
 		 * remaining fields in "pos" */
 		if (pos->cl_cons_state > NFS_CS_READY) {
@@ -332,14 +345,32 @@ int nfs40_walk_client_list(struct nfs_client *new,
 			prev = pos;
 
 			status = nfs_wait_client_init_complete(pos);
+<<<<<<< HEAD
 			if (status < 0)
 				goto out;
 			status = -NFS4ERR_STALE_CLIENTID;
 			spin_lock(&nn->nfs_client_lock);
+=======
+			spin_lock(&nn->nfs_client_lock);
+			if (status < 0)
+				continue;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 		if (pos->cl_cons_state != NFS_CS_READY)
 			continue;
 
+<<<<<<< HEAD
+=======
+		if (pos->rpc_ops != new->rpc_ops)
+			continue;
+
+		if (pos->cl_proto != new->cl_proto)
+			continue;
+
+		if (pos->cl_minorversion != new->cl_minorversion)
+			continue;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (pos->cl_clientid != new->cl_clientid)
 			continue;
 
@@ -394,14 +425,30 @@ static bool nfs4_match_clientids(struct nfs_client *a, struct nfs_client *b)
 }
 
 /*
+<<<<<<< HEAD
  * Returns true if the server major ids match
  */
 static bool
 nfs4_check_clientid_trunking(struct nfs_client *a, struct nfs_client *b)
+=======
+ * Returns true if the server owners match
+ */
+static bool
+nfs4_match_serverowners(struct nfs_client *a, struct nfs_client *b)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct nfs41_server_owner *o1 = a->cl_serverowner;
 	struct nfs41_server_owner *o2 = b->cl_serverowner;
 
+<<<<<<< HEAD
+=======
+	if (o1->minor_id != o2->minor_id) {
+		dprintk("NFS: --> %s server owner minor IDs do not match\n",
+			__func__);
+		return false;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (o1->major_id_sz != o2->major_id_sz)
 		goto out_major_mismatch;
 	if (memcmp(o1->major_id, o2->major_id, o1->major_id_sz) != 0)
@@ -439,6 +486,7 @@ int nfs41_walk_client_list(struct nfs_client *new,
 
 	spin_lock(&nn->nfs_client_lock);
 	list_for_each_entry(pos, &nn->nfs_client_list, cl_share_link) {
+<<<<<<< HEAD
 
 		if (pos->rpc_ops != new->rpc_ops)
 			continue;
@@ -449,6 +497,8 @@ int nfs41_walk_client_list(struct nfs_client *new,
 		if (pos->cl_minorversion != new->cl_minorversion)
 			continue;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* If "pos" isn't marked ready, we can't trust the
 		 * remaining fields in "pos", especially the client
 		 * ID and serverowner fields.  Wait for CREATE_SESSION
@@ -462,18 +512,27 @@ int nfs41_walk_client_list(struct nfs_client *new,
 			prev = pos;
 
 			status = nfs_wait_client_init_complete(pos);
+<<<<<<< HEAD
 			if (pos->cl_cons_state == NFS_CS_SESSION_INITING) {
+=======
+			if (status == 0) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				nfs4_schedule_lease_recovery(pos);
 				status = nfs4_wait_clnt_recover(pos);
 			}
 			spin_lock(&nn->nfs_client_lock);
 			if (status < 0)
+<<<<<<< HEAD
 				break;
 			status = -NFS4ERR_STALE_CLIENTID;
+=======
+				continue;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 		if (pos->cl_cons_state != NFS_CS_READY)
 			continue;
 
+<<<<<<< HEAD
 		if (!nfs4_match_clientids(pos, new))
 			continue;
 
@@ -483,6 +542,21 @@ int nfs41_walk_client_list(struct nfs_client *new,
 		 * to using the existing nfs_client.
 		 */
 		if (!nfs4_check_clientid_trunking(pos, new))
+=======
+		if (pos->rpc_ops != new->rpc_ops)
+			continue;
+
+		if (pos->cl_proto != new->cl_proto)
+			continue;
+
+		if (pos->cl_minorversion != new->cl_minorversion)
+			continue;
+
+		if (!nfs4_match_clientids(pos, new))
+			continue;
+
+		if (!nfs4_match_serverowners(pos, new))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;
 
 		atomic_inc(&pos->cl_count);

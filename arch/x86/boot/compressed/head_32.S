@@ -50,6 +50,7 @@ ENTRY(efi_pe_entry)
 	pushl	%eax
 	pushl	%esi
 	pushl	%ecx
+<<<<<<< HEAD
 
 	call	reloc
 reloc:
@@ -57,6 +58,8 @@ reloc:
 	subl	$reloc, %ecx
 	movl	%ecx, BP_code32_start(%eax)
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sub	$0x4, %esp
 
 ENTRY(efi_stub_entry)
@@ -70,7 +73,16 @@ ENTRY(efi_stub_entry)
 	hlt
 	jmp	1b
 2:
+<<<<<<< HEAD
 	movl	BP_code32_start(%esi), %eax
+=======
+	call	3f
+3:
+	popl	%eax
+	subl	$3b, %eax
+	subl	BP_pref_address(%esi), %eax
+	add	BP_code32_start(%esi), %eax
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	leal	preferred_addr(%eax), %eax
 	jmp	*%eax
 

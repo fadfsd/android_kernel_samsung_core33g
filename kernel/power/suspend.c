@@ -25,23 +25,41 @@
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
+=======
+#include <linux/rtc.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <trace/events/power.h>
 
 #include "power.h"
 
+<<<<<<< HEAD
 const char *const pm_states[PM_SUSPEND_MAX] = {
 	[PM_SUSPEND_FREEZE]	= "freeze",
+=======
+#ifdef CONFIG_SEC_GPIO_DVS
+#include <linux/secgpio_dvs.h>
+#endif
+
+const char *const pm_states[PM_SUSPEND_MAX] = {
+#ifdef CONFIG_EARLYSUSPEND
+	[PM_SUSPEND_ON]		= "on",
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	[PM_SUSPEND_STANDBY]	= "standby",
 	[PM_SUSPEND_MEM]	= "mem",
 };
 
 static const struct platform_suspend_ops *suspend_ops;
 
+<<<<<<< HEAD
 static bool need_suspend_ops(suspend_state_t state)
 {
 	return !!(state > PM_SUSPEND_FREEZE);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static DECLARE_WAIT_QUEUE_HEAD(suspend_freeze_wait_head);
 static bool suspend_freeze_wake;
 
@@ -76,6 +94,7 @@ EXPORT_SYMBOL_GPL(suspend_set_ops);
 
 bool valid_state(suspend_state_t state)
 {
+<<<<<<< HEAD
 	if (state == PM_SUSPEND_FREEZE) {
 #ifdef CONFIG_PM_DEBUG
 		if (pm_test_level != TEST_NONE &&
@@ -93,6 +112,10 @@ bool valid_state(suspend_state_t state)
 	/*
 	 * PM_SUSPEND_STANDBY and PM_SUSPEND_MEMORY states need lowlevel
 	 * support and need to be valid to the lowlevel
+=======
+	/*
+	 * All states need lowlevel support and need to be valid to the lowlevel
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	 * implementation, no valid callback implies that none are valid.
 	 */
 	return suspend_ops && suspend_ops->valid && suspend_ops->valid(state);
@@ -130,6 +153,7 @@ static int suspend_test(int level)
  * hibernation).  Run suspend notifiers, allocate the "suspend" console and
  * freeze processes.
  */
+<<<<<<< HEAD
 static int suspend_prepare(suspend_state_t state)
 {
 	int error;
@@ -139,6 +163,19 @@ static int suspend_prepare(suspend_state_t state)
 
 	pm_prepare_console();
 
+=======
+static int suspend_prepare(void)
+{
+	int error;
+
+	if (!suspend_ops || !suspend_ops->enter)
+		return -EPERM;
+
+	printk("PM:  before pm_prepare_consol ... \n");
+	pm_prepare_console();
+
+	printk("PM:  before pm_notifier_call_chain  ... \n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	error = pm_notifier_call_chain(PM_SUSPEND_PREPARE);
 	if (error)
 		goto Finish;
@@ -178,7 +215,29 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 {
 	int error;
 
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && suspend_ops->prepare) {
+=======
+#ifdef CONFIG_SEC_GPIO_DVS
+    /************************ Caution !!! ****************************/
+    /* This function must be located in appropriate SLEEP position
+     * in accordance with the specification of each BB vendor.
+     */
+    /************************ Caution !!! ****************************/
+    gpio_dvs_check_sleepgpio();
+#ifdef SECGPIO_SLEEP_DEBUGGING
+    /************************ Caution !!! ****************************/
+    /* This func. must be located in an appropriate position for GPIO SLEEP debugging
+     * in accordance with the specification of each BB vendor, and 
+     * the func. must be called after calling the function "gpio_dvs_check_sleepgpio"
+     */
+    /************************ Caution !!! ****************************/
+    gpio_dvs_set_sleepgpio();
+#endif
+#endif
+
+	if (suspend_ops->prepare) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		error = suspend_ops->prepare();
 		if (error)
 			goto Platform_finish;
@@ -190,7 +249,11 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 		goto Platform_finish;
 	}
 
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && suspend_ops->prepare_late) {
+=======
+	if (suspend_ops->prepare_late) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		error = suspend_ops->prepare_late();
 		if (error)
 			goto Platform_wake;
@@ -199,6 +262,7 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 	if (suspend_test(TEST_PLATFORM))
 		goto Platform_wake;
 
+<<<<<<< HEAD
 	/*
 	 * PM_SUSPEND_FREEZE equals
 	 * frozen processes + suspended devices + idle processors.
@@ -210,6 +274,8 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 		goto Platform_wake;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	error = disable_nonboot_cpus();
 	if (error || suspend_test(TEST_CPUS))
 		goto Enable_cpus;
@@ -234,13 +300,21 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 	enable_nonboot_cpus();
 
  Platform_wake:
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && suspend_ops->wake)
+=======
+	if (suspend_ops->wake)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		suspend_ops->wake();
 
 	dpm_resume_start(PMSG_RESUME);
 
  Platform_finish:
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && suspend_ops->finish)
+=======
+	if (suspend_ops->finish)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		suspend_ops->finish();
 
 	return error;
@@ -255,11 +329,19 @@ int suspend_devices_and_enter(suspend_state_t state)
 	int error;
 	bool wakeup = false;
 
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && !suspend_ops)
 		return -ENOSYS;
 
 	trace_machine_suspend(state);
 	if (need_suspend_ops(state) && suspend_ops->begin) {
+=======
+	if (!suspend_ops)
+		return -ENOSYS;
+
+	trace_machine_suspend(state);
+	if (suspend_ops->begin) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		error = suspend_ops->begin(state);
 		if (error)
 			goto Close;
@@ -278,7 +360,11 @@ int suspend_devices_and_enter(suspend_state_t state)
 
 	do {
 		error = suspend_enter(state, &wakeup);
+<<<<<<< HEAD
 	} while (!error && !wakeup && need_suspend_ops(state)
+=======
+	} while (!error && !wakeup
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		&& suspend_ops->suspend_again && suspend_ops->suspend_again());
 
  Resume_devices:
@@ -288,13 +374,21 @@ int suspend_devices_and_enter(suspend_state_t state)
 	ftrace_start();
 	resume_console();
  Close:
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && suspend_ops->end)
+=======
+	if (suspend_ops->end)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		suspend_ops->end();
 	trace_machine_suspend(PWR_EVENT_EXIT);
 	return error;
 
  Recover_platform:
+<<<<<<< HEAD
 	if (need_suspend_ops(state) && suspend_ops->recover)
+=======
+	if (suspend_ops->recover)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		suspend_ops->recover();
 	goto Resume_devices;
 }
@@ -330,6 +424,7 @@ static int enter_state(suspend_state_t state)
 	if (!mutex_trylock(&pm_mutex))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (state == PM_SUSPEND_FREEZE)
 		freeze_begin();
 
@@ -339,6 +434,12 @@ static int enter_state(suspend_state_t state)
 
 	pr_debug("PM: Preparing system for %s sleep\n", pm_states[state]);
 	error = suspend_prepare(state);
+=======
+	suspend_sys_sync_queue();
+
+	pr_debug("PM: Preparing system for %s sleep\n", pm_states[state]);
+	error = suspend_prepare();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (error)
 		goto Unlock;
 
@@ -358,6 +459,21 @@ static int enter_state(suspend_state_t state)
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+static void pm_suspend_marker(char *annotation)
+{
+	struct timespec ts;
+	struct rtc_time tm;
+
+	getnstimeofday(&ts);
+	rtc_time_to_tm(ts.tv_sec, &tm);
+	pr_info("PM: suspend %s %d-%02d-%02d %02d:%02d:%02d.%09lu UTC\n",
+		annotation, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+		tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * pm_suspend - Externally visible function for suspending the system.
  * @state: System sleep state to enter.
@@ -372,6 +488,10 @@ int pm_suspend(suspend_state_t state)
 	if (state <= PM_SUSPEND_ON || state >= PM_SUSPEND_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	pm_suspend_marker("entry");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	error = enter_state(state);
 	if (error) {
 		suspend_stats.fail++;
@@ -379,6 +499,10 @@ int pm_suspend(suspend_state_t state)
 	} else {
 		suspend_stats.success++;
 	}
+<<<<<<< HEAD
+=======
+	pm_suspend_marker("exit");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return error;
 }
 EXPORT_SYMBOL(pm_suspend);

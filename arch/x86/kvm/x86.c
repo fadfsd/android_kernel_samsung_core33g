@@ -94,9 +94,12 @@ EXPORT_SYMBOL_GPL(kvm_x86_ops);
 static bool ignore_msrs = 0;
 module_param(ignore_msrs, bool, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 unsigned int min_timer_period_us = 500;
 module_param(min_timer_period_us, uint, S_IRUGO | S_IWUSR);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 bool kvm_has_tsc_control;
 EXPORT_SYMBOL_GPL(kvm_has_tsc_control);
 u32  kvm_max_guest_tsc_khz;
@@ -225,6 +228,7 @@ static void kvm_shared_msr_cpu_online(void)
 		shared_msr_update(i, shared_msrs_global.msrs[i]);
 }
 
+<<<<<<< HEAD
 int kvm_set_shared_msr(unsigned slot, u64 value, u64 mask)
 {
 	unsigned int cpu = smp_processor_id();
@@ -238,12 +242,26 @@ int kvm_set_shared_msr(unsigned slot, u64 value, u64 mask)
 	if (err)
 		return 1;
 
+=======
+void kvm_set_shared_msr(unsigned slot, u64 value, u64 mask)
+{
+	unsigned int cpu = smp_processor_id();
+	struct kvm_shared_msrs *smsr = per_cpu_ptr(shared_msrs, cpu);
+
+	if (((value ^ smsr->values[slot].curr) & mask) == 0)
+		return;
+	smsr->values[slot].curr = value;
+	wrmsrl(shared_msrs_global.msrs[slot], value);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!smsr->registered) {
 		smsr->urn.on_user_return = kvm_on_user_return;
 		user_return_notifier_register(&smsr->urn);
 		smsr->registered = true;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL_GPL(kvm_set_shared_msr);
 
@@ -925,6 +943,10 @@ void kvm_enable_efer_bits(u64 mask)
 }
 EXPORT_SYMBOL_GPL(kvm_enable_efer_bits);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Writes msr value into into the appropriate "register".
  * Returns 0 on success, non-0 otherwise.
@@ -932,6 +954,7 @@ EXPORT_SYMBOL_GPL(kvm_enable_efer_bits);
  */
 int kvm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
 {
+<<<<<<< HEAD
 	switch (msr->index) {
 	case MSR_FS_BASE:
 	case MSR_GS_BASE:
@@ -960,6 +983,10 @@ int kvm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
 	return kvm_x86_ops->set_msr(vcpu, msr);
 }
 EXPORT_SYMBOL_GPL(kvm_set_msr);
+=======
+	return kvm_x86_ops->set_msr(vcpu, msr);
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Adapt set_msr() to msr_io()'s calling convention
@@ -1182,12 +1209,17 @@ void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
 {
 #ifdef CONFIG_X86_64
 	bool vcpus_matched;
+<<<<<<< HEAD
+=======
+	bool do_request = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct kvm_arch *ka = &vcpu->kvm->arch;
 	struct pvclock_gtod_data *gtod = &pvclock_gtod_data;
 
 	vcpus_matched = (ka->nr_vcpus_matched_tsc + 1 ==
 			 atomic_read(&vcpu->kvm->online_vcpus));
 
+<<<<<<< HEAD
 	/*
 	 * Once the masterclock is enabled, always perform request in
 	 * order to update it.
@@ -1198,6 +1230,16 @@ void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
 	 */
 	if (ka->use_master_clock ||
 	    (gtod->clock.vclock_mode == VCLOCK_TSC && vcpus_matched))
+=======
+	if (vcpus_matched && gtod->clock.vclock_mode == VCLOCK_TSC)
+		if (!ka->use_master_clock)
+			do_request = 1;
+
+	if (!vcpus_matched && ka->use_master_clock)
+			do_request = 1;
+
+	if (do_request)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		kvm_make_request(KVM_REQ_MASTERCLOCK_UPDATE, vcpu);
 
 	trace_kvm_track_tsc(vcpu->vcpu_id, ka->nr_vcpus_matched_tsc,
@@ -1227,14 +1269,18 @@ void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr)
 	elapsed = ns - kvm->arch.last_tsc_nsec;
 
 	if (vcpu->arch.virtual_tsc_khz) {
+<<<<<<< HEAD
 		int faulted = 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/* n.b - signed multiplication and division required */
 		usdiff = data - kvm->arch.last_tsc_write;
 #ifdef CONFIG_X86_64
 		usdiff = (usdiff * 1000) / vcpu->arch.virtual_tsc_khz;
 #else
 		/* do_div() only does unsigned */
+<<<<<<< HEAD
 		asm("1: idivl %[divisor]\n"
 		    "2: xor %%edx, %%edx\n"
 		    "   movl $0, %[faulted]\n"
@@ -1249,15 +1295,23 @@ void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr)
 		: "=A"(usdiff), [faulted] "=r" (faulted)
 		: "A"(usdiff * 1000), [divisor] "rm"(vcpu->arch.virtual_tsc_khz));
 
+=======
+		asm("idivl %2; xor %%edx, %%edx"
+		: "=A"(usdiff)
+		: "A"(usdiff * 1000), "rm"(vcpu->arch.virtual_tsc_khz));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 		do_div(elapsed, 1000);
 		usdiff -= elapsed;
 		if (usdiff < 0)
 			usdiff = -usdiff;
+<<<<<<< HEAD
 
 		/* idivl overflow => difference is larger than USEC_PER_SEC */
 		if (faulted)
 			usdiff = USEC_PER_SEC;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else
 		usdiff = USEC_PER_SEC; /* disable TSC match window below */
 
@@ -3189,7 +3243,12 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
 		r = -EFAULT;
 		if (copy_from_user(&va, argp, sizeof va))
 			goto out;
+<<<<<<< HEAD
 		r = kvm_lapic_set_vapic_addr(vcpu, va.vapic_addr);
+=======
+		r = 0;
+		kvm_lapic_set_vapic_addr(vcpu, va.vapic_addr);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	}
 	case KVM_X86_SETUP_MCE: {
@@ -4835,7 +4894,11 @@ static int handle_emulation_failure(struct kvm_vcpu *vcpu)
 
 	++vcpu->stat.insn_emulation_fail;
 	trace_kvm_emulate_insn_failed(vcpu);
+<<<<<<< HEAD
 	if (!is_guest_mode(vcpu) && kvm_x86_ops->get_cpl(vcpu) == 0) {
+=======
+	if (!is_guest_mode(vcpu)) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
 		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
 		vcpu->run->internal.ndata = 0;
@@ -5589,6 +5652,39 @@ static void post_kvm_run_save(struct kvm_vcpu *vcpu)
 			!kvm_event_needs_reinjection(vcpu);
 }
 
+<<<<<<< HEAD
+=======
+static int vapic_enter(struct kvm_vcpu *vcpu)
+{
+	struct kvm_lapic *apic = vcpu->arch.apic;
+	struct page *page;
+
+	if (!apic || !apic->vapic_addr)
+		return 0;
+
+	page = gfn_to_page(vcpu->kvm, apic->vapic_addr >> PAGE_SHIFT);
+	if (is_error_page(page))
+		return -EFAULT;
+
+	vcpu->arch.apic->vapic_page = page;
+	return 0;
+}
+
+static void vapic_exit(struct kvm_vcpu *vcpu)
+{
+	struct kvm_lapic *apic = vcpu->arch.apic;
+	int idx;
+
+	if (!apic || !apic->vapic_addr)
+		return;
+
+	idx = srcu_read_lock(&vcpu->kvm->srcu);
+	kvm_release_page_dirty(apic->vapic_page);
+	mark_page_dirty(vcpu->kvm, apic->vapic_addr >> PAGE_SHIFT);
+	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void update_cr8_intercept(struct kvm_vcpu *vcpu)
 {
 	int max_irr, tpr;
@@ -5909,6 +6005,14 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
 	struct kvm *kvm = vcpu->kvm;
 
 	vcpu->srcu_idx = srcu_read_lock(&kvm->srcu);
+<<<<<<< HEAD
+=======
+	r = vapic_enter(vcpu);
+	if (r) {
+		srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
+		return r;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	r = 1;
 	while (r > 0) {
@@ -5966,6 +6070,11 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
 
 	srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
 
+<<<<<<< HEAD
+=======
+	vapic_exit(vcpu);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return r;
 }
 
@@ -6030,7 +6139,11 @@ static int complete_emulated_mmio(struct kvm_vcpu *vcpu)
 		frag->len -= len;
 	}
 
+<<<<<<< HEAD
 	if (vcpu->mmio_cur_fragment >= vcpu->mmio_nr_fragments) {
+=======
+	if (vcpu->mmio_cur_fragment == vcpu->mmio_nr_fragments) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		vcpu->mmio_needed = 0;
 		if (vcpu->mmio_is_write)
 			return 1;

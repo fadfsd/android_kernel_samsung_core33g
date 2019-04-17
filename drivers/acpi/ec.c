@@ -175,10 +175,16 @@ static void start_transaction(struct acpi_ec *ec)
 static void advance_transaction(struct acpi_ec *ec, u8 status)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	struct transaction *t;
 
 	spin_lock_irqsave(&ec->lock, flags);
 	t = ec->curr;
+=======
+	struct transaction *t = ec->curr;
+
+	spin_lock_irqsave(&ec->lock, flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!t)
 		goto unlock;
 	if (t->wlen > t->wi) {

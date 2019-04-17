@@ -263,7 +263,10 @@ struct acpi_object_region_field {
 	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_FIELD_INFO u16 resource_length;
 	union acpi_operand_object *region_obj;	/* Containing op_region object */
 	u8 *resource_buffer;	/* resource_template for serial regions/fields */
+<<<<<<< HEAD
 	u16 pin_number_index;	/* Index relative to previous Connection/Template */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct acpi_object_bank_field {

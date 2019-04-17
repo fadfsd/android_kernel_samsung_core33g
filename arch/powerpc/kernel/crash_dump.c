@@ -108,12 +108,16 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
 			size_t csize, unsigned long offset, int userbuf)
 {
 	void  *vaddr;
+<<<<<<< HEAD
 	phys_addr_t paddr;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!csize)
 		return 0;
 
 	csize = min_t(size_t, csize, PAGE_SIZE);
+<<<<<<< HEAD
 	paddr = pfn << PAGE_SHIFT;
 
 	if (memblock_is_region_memory(paddr, csize)) {
@@ -121,6 +125,14 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
 		csize = copy_oldmem_vaddr(vaddr, buf, csize, offset, userbuf);
 	} else {
 		vaddr = __ioremap(paddr, PAGE_SIZE, 0);
+=======
+
+	if ((min_low_pfn < pfn) && (pfn < max_pfn)) {
+		vaddr = __va(pfn << PAGE_SHIFT);
+		csize = copy_oldmem_vaddr(vaddr, buf, csize, offset, userbuf);
+	} else {
+		vaddr = __ioremap(pfn << PAGE_SHIFT, PAGE_SIZE, 0);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		csize = copy_oldmem_vaddr(vaddr, buf, csize, offset, userbuf);
 		iounmap(vaddr);
 	}

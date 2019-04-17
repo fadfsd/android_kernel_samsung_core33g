@@ -1,4 +1,5 @@
 CC		= $(CROSS_COMPILE)gcc
+<<<<<<< HEAD
 BUILD_OUTPUT	:= $(CURDIR)
 PREFIX		:= /usr
 DESTDIR		:=
@@ -10,6 +11,15 @@ endif
 turbostat : turbostat.c
 CFLAGS +=	-Wall
 CFLAGS +=	-DMSRHEADER='"../../../../arch/x86/include/uapi/asm/msr-index.h"'
+=======
+BUILD_OUTPUT	:= $(PWD)
+PREFIX		:= /usr
+DESTDIR		:=
+
+turbostat : turbostat.c
+CFLAGS +=	-Wall
+CFLAGS +=	-I../../../../arch/x86/include/uapi/
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 %: %.c
 	@mkdir -p $(BUILD_OUTPUT)

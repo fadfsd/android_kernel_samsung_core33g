@@ -856,10 +856,13 @@ intel_enable_tv(struct intel_encoder *encoder)
 	struct drm_device *dev = encoder->base.dev;
 	struct drm_i915_private *dev_priv = dev->dev_private;
 
+<<<<<<< HEAD
 	/* Prevents vblank waits from timing out in intel_tv_detect_type() */
 	intel_wait_for_vblank(encoder->base.dev,
 			      to_intel_crtc(encoder->base.crtc)->pipe);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	I915_WRITE(TV_CTL, I915_READ(TV_CTL) | TV_ENC_ENABLE);
 }
 

@@ -14,7 +14,10 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include "u_serial.h"
 #include "gadget_chips.h"
 
@@ -49,8 +52,13 @@ static struct usb_interface_descriptor gser_interface_desc = {
 	/* .bInterfaceNumber = DYNAMIC */
 	.bNumEndpoints =	2,
 	.bInterfaceClass =	USB_CLASS_VENDOR_SPEC,
+<<<<<<< HEAD
 	.bInterfaceSubClass =	0,
 	.bInterfaceProtocol =	0,
+=======
+	.bInterfaceSubClass =	0x10,
+	.bInterfaceProtocol =	0x01,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* .iInterface = DYNAMIC */
 };
 
@@ -168,6 +176,10 @@ static int gser_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		}
 	}
 	gserial_connect(&gser->port, gser->port_num);
+<<<<<<< HEAD
+=======
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -353,6 +365,45 @@ static void gser_unbind(struct usb_configuration *c, struct usb_function *f)
 {
 	usb_free_all_descriptors(f);
 }
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_SPRD_DWC
+static int gser_setup(struct usb_composite_dev *cdev, const struct usb_ctrlrequest *ctrl)
+{
+	u16 w_length = le16_to_cpu(ctrl->wLength);
+	int value = -EOPNOTSUPP;
+
+	DBG(cdev, "%s\n", __func__);
+	/* Handle Bulk-only class-specific requests */
+	if ((ctrl->bRequestType & USB_TYPE_MASK) == USB_TYPE_CLASS) {
+		switch (ctrl->bRequest) {
+			case 0x22:
+				value = 0;
+				break;
+		}
+	}
+
+	/* respond with data transfer or status phase? */
+	if (value >= 0) {
+		int rc;
+		cdev->req->zero = value < w_length;
+		cdev->req->length = value;
+		rc = usb_ep_queue(cdev->gadget->ep0, cdev->req, GFP_ATOMIC);
+		if (rc < 0)
+			printk("%s setup response queue error\n", __func__);
+	}
+
+	if (value == -EOPNOTSUPP)
+		VDBG(cdev,
+				"unknown class-specific control req "
+				"%02x.%02x v%04x i%04x l%u\n",
+				ctrl->bRequestType, ctrl->bRequest,
+				le16_to_cpu(ctrl->wValue), le16_to_cpu(ctrl->wIndex),
+				le16_to_cpu(ctrl->wLength));
+	return value;
+}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct usb_function *gser_alloc(struct usb_function_instance *fi)
 {

@@ -232,6 +232,7 @@ static inline unsigned long regs_get_kernel_stack_nth(struct pt_regs *regs,
 
 #define ARCH_HAS_USER_SINGLE_STEP_INFO
 
+<<<<<<< HEAD
 /*
  * When hitting ptrace_stop(), we cannot return using SYSRET because
  * that does not restore the full CPU state, only a minimal set.  The
@@ -248,6 +249,8 @@ static inline unsigned long regs_get_kernel_stack_nth(struct pt_regs *regs,
 	false;								\
 })
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct user_desc;
 extern int do_get_thread_area(struct task_struct *p, int idx,
 			      struct user_desc __user *info);

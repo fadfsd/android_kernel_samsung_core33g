@@ -313,8 +313,12 @@ int iwl_mvm_scan_request(struct iwl_mvm *mvm,
 
 	iwl_mvm_scan_fill_ssids(cmd, req);
 
+<<<<<<< HEAD
 	cmd->tx_cmd.tx_flags = cpu_to_le32(TX_CMD_FLG_SEQ_CTL |
 					   TX_CMD_FLG_BT_DIS);
+=======
+	cmd->tx_cmd.tx_flags = cpu_to_le32(TX_CMD_FLG_SEQ_CTL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	cmd->tx_cmd.sta_id = mvm->aux_sta.sta_id;
 	cmd->tx_cmd.life_time = cpu_to_le32(TX_CMD_LIFE_TIME_INFINITE);
 	cmd->tx_cmd.rate_n_flags =

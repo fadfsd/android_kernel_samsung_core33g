@@ -1249,4 +1249,21 @@ config RTC_DRV_HID_SENSOR_TIME
 	  rtc-hid-sensor-time.
 
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_SPRD
+	tristate "Spreadtrum RTC"
+	help
+	  Real Timer driver for SC8800G on chip RTC
+
+config RTC_START_YEAR
+	int "set rtc count start year"
+	default "2012"
+	depends on RTC_DRV_SPRD
+	help
+	  This will set rtc default time.
+
+	  System time will start from this setting.
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endif # RTC_CLASS

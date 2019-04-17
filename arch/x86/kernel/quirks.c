@@ -529,7 +529,11 @@ static void quirk_amd_nb_node(struct pci_dev *dev)
 		return;
 
 	pci_read_config_dword(nb_ht, 0x60, &val);
+<<<<<<< HEAD
 	node = pcibus_to_node(dev->bus) | (val & 7);
+=======
+	node = val & 7;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * Some hardware may return an invalid node ID,
 	 * so check it first:

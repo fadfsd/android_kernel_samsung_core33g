@@ -74,7 +74,10 @@ static void __unhash_process(struct task_struct *p, bool group_dead)
 		__this_cpu_dec(process_counts);
 	}
 	list_del_rcu(&p->thread_group);
+<<<<<<< HEAD
 	list_del_rcu(&p->thread_node);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -455,6 +458,10 @@ static void exit_mm(struct task_struct * tsk)
 {
 	struct mm_struct *mm = tsk->mm;
 	struct core_state *core_state;
+<<<<<<< HEAD
+=======
+	int mm_released;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	mm_release(tsk, mm);
 	if (!mm)
@@ -500,7 +507,14 @@ static void exit_mm(struct task_struct * tsk)
 	enter_lazy_tlb(mm, current);
 	task_unlock(tsk);
 	mm_update_next_owner(mm);
+<<<<<<< HEAD
 	mmput(mm);
+=======
+
+	mm_released = mmput(mm);
+	if (mm_released)
+		set_tsk_thread_flag(tsk, TIF_MM_RELEASED);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -571,6 +585,12 @@ static void reparent_leader(struct task_struct *father, struct task_struct *p,
 				struct list_head *dead)
 {
 	list_move_tail(&p->sibling, &p->real_parent->children);
+<<<<<<< HEAD
+=======
+
+	if (p->exit_state == EXIT_DEAD)
+		return;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * If this is a threaded reparent there is no need to
 	 * notify anyone anything has happened.
@@ -578,6 +598,7 @@ static void reparent_leader(struct task_struct *father, struct task_struct *p,
 	if (same_thread_group(p->real_parent, father))
 		return;
 
+<<<<<<< HEAD
 	/*
 	 * We don't want people slaying init.
 	 *
@@ -591,6 +612,11 @@ static void reparent_leader(struct task_struct *father, struct task_struct *p,
 	if (p->exit_state == EXIT_DEAD)
 		return;
 
+=======
+	/* We don't want people slaying init.  */
+	p->exit_signal = SIGCHLD;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* If it has exited notify the new parent about this child's death. */
 	if (!p->ptrace &&
 	    p->exit_state == EXIT_ZOMBIE && thread_group_empty(p)) {
@@ -761,11 +787,14 @@ void do_exit(long code)
 	}
 
 	exit_signals(tsk);  /* sets PF_EXITING */
+<<<<<<< HEAD
 
 	if (tsk->flags & PF_SU) {
 		su_exit();
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * tsk->flags are checked in the futex code to protect against
 	 * an exiting task cleaning up the robust pi futexes.
@@ -807,8 +836,11 @@ void do_exit(long code)
 	exit_shm(tsk);
 	exit_files(tsk);
 	exit_fs(tsk);
+<<<<<<< HEAD
 	if (group_dead)
 		disassociate_ctty(1);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	exit_task_namespaces(tsk);
 	exit_task_work(tsk);
 	check_stack_usage();
@@ -824,9 +856,19 @@ void do_exit(long code)
 
 	cgroup_exit(tsk, 1);
 
+<<<<<<< HEAD
 	module_put(task_thread_info(tsk)->exec_domain->module);
 
 	proc_exit_connector(tsk);
+=======
+	if (group_dead)
+		disassociate_ctty(1);
+
+	module_put(task_thread_info(tsk)->exec_domain->module);
+
+	proc_exit_connector(tsk);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * FIXME: do that only when needed, using sched_exit tracepoint
 	 */
@@ -846,7 +888,11 @@ void do_exit(long code)
 	/*
 	 * Make sure we are holding no locks:
 	 */
+<<<<<<< HEAD
 	debug_check_no_locks_held(tsk);
+=======
+	debug_check_no_locks_held();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * We can do this unlocked here. The futex code uses this flag
 	 * just to verify whether the pi state cleanup has been done

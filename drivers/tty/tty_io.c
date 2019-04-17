@@ -629,6 +629,14 @@ static void __tty_hangup(struct tty_struct *tty, int exit_session)
 
 	tty_lock(tty);
 
+<<<<<<< HEAD
+=======
+	if (test_bit(TTY_HUPPED, &tty->flags)) {
+		tty_unlock(tty);
+		return;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* some functions below drop BTM, so we need this bit */
 	set_bit(TTY_HUPPING, &tty->flags);
 
@@ -664,7 +672,10 @@ static void __tty_hangup(struct tty_struct *tty, int exit_session)
 
 	spin_lock_irq(&tty->ctrl_lock);
 	clear_bit(TTY_THROTTLED, &tty->flags);
+<<<<<<< HEAD
 	clear_bit(TTY_PUSH, &tty->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 	put_pid(tty->session);
 	put_pid(tty->pgrp);
@@ -992,8 +1003,13 @@ EXPORT_SYMBOL(start_tty);
 /* We limit tty time update visibility to every 8 seconds or so. */
 static void tty_update_time(struct timespec *time)
 {
+<<<<<<< HEAD
 	unsigned long sec = get_seconds();
 	if (abs(sec - time->tv_sec) & ~7)
+=======
+	unsigned long sec = get_seconds() & ~7;
+	if ((long)(sec - time->tv_sec) > 0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		time->tv_sec = sec;
 }
 
@@ -1267,6 +1283,7 @@ static void pty_line_name(struct tty_driver *driver, int index, char *p)
  *
  *	Locking: None
  */
+<<<<<<< HEAD
 static ssize_t tty_line_name(struct tty_driver *driver, int index, char *p)
 {
 	if (driver->flags & TTY_DRIVER_UNNUMBERED_NODE)
@@ -1274,6 +1291,14 @@ static ssize_t tty_line_name(struct tty_driver *driver, int index, char *p)
 	else
 		return sprintf(p, "%s%d", driver->name,
 			       index + driver->name_base);
+=======
+static void tty_line_name(struct tty_driver *driver, int index, char *p)
+{
+	if (driver->flags & TTY_DRIVER_UNNUMBERED_NODE)
+		strcpy(p, driver->name);
+	else
+		sprintf(p, "%s%d", driver->name, index + driver->name_base);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -1390,8 +1415,12 @@ static int tty_reopen(struct tty_struct *tty)
 	struct tty_driver *driver = tty->driver;
 
 	if (test_bit(TTY_CLOSING, &tty->flags) ||
+<<<<<<< HEAD
 			test_bit(TTY_HUPPING, &tty->flags) ||
 			test_bit(TTY_LDISC_CHANGING, &tty->flags))
+=======
+			test_bit(TTY_HUPPING, &tty->flags))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EIO;
 
 	if (driver->type == TTY_DRIVER_TYPE_PTY &&
@@ -1407,7 +1436,11 @@ static int tty_reopen(struct tty_struct *tty)
 	}
 	tty->count++;
 
+<<<<<<< HEAD
 	WARN_ON(!test_bit(TTY_LDISC, &tty->flags));
+=======
+	WARN_ON(!tty->ldisc);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return 0;
 }
@@ -1698,7 +1731,10 @@ int tty_release(struct inode *inode, struct file *filp)
 	int	pty_master, tty_closing, o_tty_closing, do_sleep;
 	int	idx;
 	char	buf[64];
+<<<<<<< HEAD
 	long	timeout = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (tty_paranoia_check(tty, inode, __func__))
 		return 0;
@@ -1783,11 +1819,15 @@ int tty_release(struct inode *inode, struct file *filp)
 				__func__, tty_name(tty, buf));
 		tty_unlock_pair(tty, o_tty);
 		mutex_unlock(&tty_mutex);
+<<<<<<< HEAD
 		schedule_timeout_killable(timeout);
 		if (timeout < 120 * HZ)
 			timeout = 2 * timeout + 1;
 		else
 			timeout = MAX_SCHEDULE_TIMEOUT;
+=======
+		schedule();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/*
@@ -2089,6 +2129,10 @@ retry_open:
 			filp->f_op = &tty_fops;
 		goto retry_open;
 	}
+<<<<<<< HEAD
+=======
+	clear_bit(TTY_HUPPED, &tty->flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	tty_unlock(tty);
 
 
@@ -2137,6 +2181,11 @@ static unsigned int tty_poll(struct file *filp, poll_table *wait)
 	if (tty_paranoia_check(tty, file_inode(filp), "tty_poll"))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	pr_debug("[TTY_DEBUG tty_poll]pid %d\n",current->pid);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ld = tty_ldisc_ref_wait(tty);
 	if (ld->ops->poll)
 		ret = (ld->ops->poll)(tty, filp, wait);
@@ -2147,6 +2196,10 @@ static unsigned int tty_poll(struct file *filp, poll_table *wait)
 static int __tty_fasync(int fd, struct file *filp, int on)
 {
 	struct tty_struct *tty = file_tty(filp);
+<<<<<<< HEAD
+=======
+	struct tty_ldisc *ldisc;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long flags;
 	int retval = 0;
 
@@ -2157,11 +2210,25 @@ static int __tty_fasync(int fd, struct file *filp, int on)
 	if (retval <= 0)
 		goto out;
 
+<<<<<<< HEAD
 	if (on) {
 		enum pid_type type;
 		struct pid *pid;
 		if (!waitqueue_active(&tty->read_wait))
 			tty->minimum_to_wake = 1;
+=======
+	ldisc = tty_ldisc_ref(tty);
+	if (ldisc) {
+		if (ldisc->ops->fasync)
+			ldisc->ops->fasync(tty, on);
+		tty_ldisc_deref(ldisc);
+	}
+
+	if (on) {
+		enum pid_type type;
+		struct pid *pid;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		spin_lock_irqsave(&tty->ctrl_lock, flags);
 		if (tty->pgrp) {
 			pid = tty->pgrp;
@@ -2174,6 +2241,7 @@ static int __tty_fasync(int fd, struct file *filp, int on)
 		spin_unlock_irqrestore(&tty->ctrl_lock, flags);
 		retval = __f_setown(filp, pid, type, 0);
 		put_pid(pid);
+<<<<<<< HEAD
 		if (retval)
 			goto out;
 	} else {
@@ -2181,6 +2249,9 @@ static int __tty_fasync(int fd, struct file *filp, int on)
 			tty->minimum_to_wake = N_TTY_BUF_SIZE;
 	}
 	retval = 0;
+=======
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 out:
 	return retval;
 }
@@ -2245,9 +2316,15 @@ static int tiocgwinsz(struct tty_struct *tty, struct winsize __user *arg)
 {
 	int err;
 
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
 	err = copy_to_user(arg, &tty->winsize, sizeof(*arg));
 	mutex_unlock(&tty->termios_mutex);
+=======
+	mutex_lock(&tty->winsize_mutex);
+	err = copy_to_user(arg, &tty->winsize, sizeof(*arg));
+	mutex_unlock(&tty->winsize_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return err ? -EFAULT: 0;
 }
@@ -2268,7 +2345,11 @@ int tty_do_resize(struct tty_struct *tty, struct winsize *ws)
 	unsigned long flags;
 
 	/* Lock the tty */
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
+=======
+	mutex_lock(&tty->winsize_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!memcmp(ws, &tty->winsize, sizeof(*ws)))
 		goto done;
 	/* Get the PID values and reference them so we can
@@ -2283,7 +2364,11 @@ int tty_do_resize(struct tty_struct *tty, struct winsize *ws)
 
 	tty->winsize = *ws;
 done:
+<<<<<<< HEAD
 	mutex_unlock(&tty->termios_mutex);
+=======
+	mutex_unlock(&tty->winsize_mutex);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 EXPORT_SYMBOL(tty_do_resize);
@@ -3022,8 +3107,15 @@ void initialize_tty_struct(struct tty_struct *tty,
 	tty->session = NULL;
 	tty->pgrp = NULL;
 	mutex_init(&tty->legacy_mutex);
+<<<<<<< HEAD
 	mutex_init(&tty->termios_mutex);
 	mutex_init(&tty->ldisc_mutex);
+=======
+	mutex_init(&tty->throttle_mutex);
+	init_rwsem(&tty->termios_rwsem);
+	mutex_init(&tty->winsize_mutex);
+	init_ldsem(&tty->ldisc_sem);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	init_waitqueue_head(&tty->write_wait);
 	init_waitqueue_head(&tty->read_wait);
 	INIT_WORK(&tty->hangup_work, do_tty_hangup);
@@ -3544,6 +3636,7 @@ static ssize_t show_cons_active(struct device *dev,
 		if (i >= ARRAY_SIZE(cs))
 			break;
 	}
+<<<<<<< HEAD
 	while (i--) {
 		int index = cs[i]->index;
 		struct tty_driver *drv = cs[i]->device(cs[i], &index);
@@ -3557,6 +3650,11 @@ static ssize_t show_cons_active(struct device *dev,
 
 		count += sprintf(buf + count, "%c", i ? ' ':'\n');
 	}
+=======
+	while (i--)
+		count += sprintf(buf + count, "%s%d%c",
+				 cs[i]->name, cs[i]->index, i ? ' ':'\n');
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	console_unlock();
 
 	return count;

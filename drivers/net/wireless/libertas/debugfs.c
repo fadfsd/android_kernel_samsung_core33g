@@ -913,10 +913,14 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 	char *p2;
 	struct debug_data *d = f->private_data;
 
+<<<<<<< HEAD
 	if (cnt == 0)
 		return 0;
 
 	pdata = kmalloc(cnt + 1, GFP_KERNEL);
+=======
+	pdata = kmalloc(cnt, GFP_KERNEL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (pdata == NULL)
 		return 0;
 
@@ -925,7 +929,10 @@ static ssize_t lbs_debugfs_write(struct file *f, const char __user *buf,
 		kfree(pdata);
 		return 0;
 	}
+<<<<<<< HEAD
 	pdata[cnt] = '\0';
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	p0 = pdata;
 	for (i = 0; i < num_of_items; i++) {

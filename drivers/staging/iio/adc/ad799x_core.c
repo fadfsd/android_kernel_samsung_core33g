@@ -644,8 +644,12 @@ static int ad799x_probe(struct i2c_client *client,
 	return 0;
 
 error_free_irq:
+<<<<<<< HEAD
 	if (client->irq > 0)
 		free_irq(client->irq, indio_dev);
+=======
+	free_irq(client->irq, indio_dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 error_cleanup_ring:
 	ad799x_ring_cleanup(indio_dev);
 error_disable_reg:

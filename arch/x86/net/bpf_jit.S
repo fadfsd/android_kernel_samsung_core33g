@@ -140,7 +140,11 @@ bpf_slow_path_byte_msh:
 	push	%r9;						\
 	push	SKBDATA;					\
 /* rsi already has offset */					\
+<<<<<<< HEAD
 	mov	$SIZE,%edx;	/* size */			\
+=======
+	mov	$SIZE,%ecx;	/* size */			\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	call	bpf_internal_load_pointer_neg_helper;		\
 	test	%rax,%rax;					\
 	pop	SKBDATA;					\

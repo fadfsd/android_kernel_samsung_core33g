@@ -246,7 +246,11 @@ static int z_compress(void *arg, unsigned char *rptr, unsigned char *obuf,
 	/*
 	 * See if we managed to reduce the size of the packet.
 	 */
+<<<<<<< HEAD
 	if (olen < isize && olen <= osize) {
+=======
+	if (olen < isize) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		state->stats.comp_bytes += olen;
 		state->stats.comp_packets++;
 	} else {

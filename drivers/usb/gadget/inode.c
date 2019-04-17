@@ -1509,7 +1509,11 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 		}
 		break;
 
+<<<<<<< HEAD
 #ifndef	CONFIG_USB_PXA25X
+=======
+#ifndef	CONFIG_USB_GADGET_PXA25X
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* PXA automagically handles this request too */
 	case USB_REQ_GET_CONFIGURATION:
 		if (ctrl->bRequestType != 0x80)

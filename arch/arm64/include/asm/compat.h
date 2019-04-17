@@ -33,8 +33,13 @@ typedef s32		compat_ssize_t;
 typedef s32		compat_time_t;
 typedef s32		compat_clock_t;
 typedef s32		compat_pid_t;
+<<<<<<< HEAD
 typedef u16		__compat_uid_t;
 typedef u16		__compat_gid_t;
+=======
+typedef u32		__compat_uid_t;
+typedef u32		__compat_gid_t;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 typedef u16		__compat_uid16_t;
 typedef u16		__compat_gid16_t;
 typedef u32		__compat_uid32_t;

@@ -131,10 +131,19 @@ static int wm8775_s_routing(struct v4l2_subdev *sd,
 		return -EINVAL;
 	}
 	state->input = input;
+<<<<<<< HEAD
 	if (v4l2_ctrl_g_ctrl(state->mute))
 		return 0;
 	if (!v4l2_ctrl_g_ctrl(state->vol))
 		return 0;
+=======
+	if (!v4l2_ctrl_g_ctrl(state->mute))
+		return 0;
+	if (!v4l2_ctrl_g_ctrl(state->vol))
+		return 0;
+	if (!v4l2_ctrl_g_ctrl(state->bal))
+		return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	wm8775_set_audio(sd, 1);
 	return 0;
 }

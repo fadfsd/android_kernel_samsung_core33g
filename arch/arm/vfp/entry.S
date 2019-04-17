@@ -19,7 +19,11 @@
 @  r9  = normal "successful" return address
 @  r10 = this threads thread_info structure
 @  lr  = unrecognised instruction return address
+<<<<<<< HEAD
 @  IRQs disabled.
+=======
+@  IRQs enabled.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 @
 ENTRY(do_vfp)
 #ifdef CONFIG_PREEMPT_COUNT
@@ -27,7 +31,10 @@ ENTRY(do_vfp)
 	add	r11, r4, #1		@ increment it
 	str	r11, [r10, #TI_PREEMPT]
 #endif
+<<<<<<< HEAD
 	enable_irq
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  	ldr	r4, .LCvfp
 	ldr	r11, [r10, #TI_CPU]	@ CPU number
 	add	r10, r10, #TI_VFPSTATE	@ r10 = workspace

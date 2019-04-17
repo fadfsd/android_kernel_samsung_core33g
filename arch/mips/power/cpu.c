@@ -7,7 +7,11 @@
  * Author: Hu Hongbing <huhb@lemote.com>
  *	   Wu Zhangjin <wuzhangjin@gmail.com>
  */
+<<<<<<< HEAD
 #include <asm/sections.h>
+=======
+#include <asm/suspend.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <asm/fpu.h>
 #include <asm/dsp.h>
 

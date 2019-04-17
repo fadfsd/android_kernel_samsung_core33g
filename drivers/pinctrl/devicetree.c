@@ -92,7 +92,11 @@ static int dt_remember_or_free_map(struct pinctrl *p, const char *statename,
 	dt_map->num_maps = num_maps;
 	list_add_tail(&dt_map->node, &p->dt_maps);
 
+<<<<<<< HEAD
 	return pinctrl_register_map(map, num_maps, false);
+=======
+	return pinctrl_register_map(map, num_maps, false, true);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 struct pinctrl_dev *of_pinctrl_get(struct device_node *np)

@@ -105,7 +105,11 @@ restore_sigcontext (struct sigcontext __user *sc, struct sigscratch *scr)
 }
 
 int
+<<<<<<< HEAD
 copy_siginfo_to_user (siginfo_t __user *to, const siginfo_t *from)
+=======
+copy_siginfo_to_user (siginfo_t __user *to, siginfo_t *from)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	if (!access_ok(VERIFY_WRITE, to, sizeof(siginfo_t)))
 		return -EFAULT;

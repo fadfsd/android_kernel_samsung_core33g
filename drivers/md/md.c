@@ -1118,7 +1118,10 @@ static int super_90_validate(struct mddev *mddev, struct md_rdev *rdev)
 	rdev->raid_disk = -1;
 	clear_bit(Faulty, &rdev->flags);
 	clear_bit(In_sync, &rdev->flags);
+<<<<<<< HEAD
 	clear_bit(Bitmap_sync, &rdev->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	clear_bit(WriteMostly, &rdev->flags);
 
 	if (mddev->raid_disks == 0) {
@@ -1197,8 +1200,11 @@ static int super_90_validate(struct mddev *mddev, struct md_rdev *rdev)
 		 */
 		if (ev1 < mddev->bitmap->events_cleared)
 			return 0;
+<<<<<<< HEAD
 		if (ev1 < mddev->events)
 			set_bit(Bitmap_sync, &rdev->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		if (ev1 < mddev->events)
 			/* just a hot-add of a new device, leave raid_disk at -1 */
@@ -1607,7 +1613,10 @@ static int super_1_validate(struct mddev *mddev, struct md_rdev *rdev)
 	rdev->raid_disk = -1;
 	clear_bit(Faulty, &rdev->flags);
 	clear_bit(In_sync, &rdev->flags);
+<<<<<<< HEAD
 	clear_bit(Bitmap_sync, &rdev->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	clear_bit(WriteMostly, &rdev->flags);
 
 	if (mddev->raid_disks == 0) {
@@ -1690,8 +1699,11 @@ static int super_1_validate(struct mddev *mddev, struct md_rdev *rdev)
 		 */
 		if (ev1 < mddev->bitmap->events_cleared)
 			return 0;
+<<<<<<< HEAD
 		if (ev1 < mddev->events)
 			set_bit(Bitmap_sync, &rdev->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		if (ev1 < mddev->events)
 			/* just a hot-add of a new device, leave raid_disk at -1 */
@@ -2835,7 +2847,10 @@ slot_store(struct md_rdev *rdev, const char *buf, size_t len)
 		else
 			rdev->saved_raid_disk = -1;
 		clear_bit(In_sync, &rdev->flags);
+<<<<<<< HEAD
 		clear_bit(Bitmap_sync, &rdev->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		err = rdev->mddev->pers->
 			hot_add_disk(rdev->mddev, rdev);
 		if (err) {
@@ -3626,7 +3641,10 @@ level_store(struct mddev *mddev, const char *buf, size_t len)
 		mddev->in_sync = 1;
 		del_timer_sync(&mddev->safemode_timer);
 	}
+<<<<<<< HEAD
 	blk_set_stacking_limits(&mddev->queue->limits);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pers->run(mddev);
 	set_bit(MD_CHANGE_DEVS, &mddev->flags);
 	mddev_resume(mddev);
@@ -5628,9 +5646,15 @@ static int get_bitmap_file(struct mddev * mddev, void __user * arg)
 	int err = -ENOMEM;
 
 	if (md_allow_write(mddev))
+<<<<<<< HEAD
 		file = kzalloc(sizeof(*file), GFP_NOIO);
 	else
 		file = kzalloc(sizeof(*file), GFP_KERNEL);
+=======
+		file = kmalloc(sizeof(*file), GFP_NOIO);
+	else
+		file = kmalloc(sizeof(*file), GFP_KERNEL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!file)
 		goto out;
@@ -5768,7 +5792,10 @@ static int add_new_disk(struct mddev * mddev, mdu_disk_info_t *info)
 			    info->raid_disk < mddev->raid_disks) {
 				rdev->raid_disk = info->raid_disk;
 				set_bit(In_sync, &rdev->flags);
+<<<<<<< HEAD
 				clear_bit(Bitmap_sync, &rdev->flags);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			} else
 				rdev->raid_disk = -1;
 		} else
@@ -6221,7 +6248,11 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
 	    mddev->ctime         != info->ctime         ||
 	    mddev->level         != info->level         ||
 /*	    mddev->layout        != info->layout        || */
+<<<<<<< HEAD
 	    mddev->persistent	 != !info->not_persistent ||
+=======
+	    !mddev->persistent	 != info->not_persistent||
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	    mddev->chunk_sectors != info->chunk_size >> 9 ||
 	    /* ignore bottom 8 bits of state, and allow SB_BITMAP_PRESENT to change */
 	    ((state^info->state) & 0xfffffe00)
@@ -7338,10 +7369,15 @@ void md_do_sync(struct md_thread *thread)
 	/* just incase thread restarts... */
 	if (test_bit(MD_RECOVERY_DONE, &mddev->recovery))
 		return;
+<<<<<<< HEAD
 	if (mddev->ro) {/* never try to sync a read-only array */
 		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
 		return;
 	}
+=======
+	if (mddev->ro) /* never try to sync a read-only array */
+		return;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (test_bit(MD_RECOVERY_SYNC, &mddev->recovery)) {
 		if (test_bit(MD_RECOVERY_CHECK, &mddev->recovery))
@@ -7447,6 +7483,7 @@ void md_do_sync(struct md_thread *thread)
 			    rdev->recovery_offset < j)
 				j = rdev->recovery_offset;
 		rcu_read_unlock();
+<<<<<<< HEAD
 
 		/* If there is a bitmap, we need to make sure all
 		 * writes that started before we added a spare
@@ -7460,6 +7497,8 @@ void md_do_sync(struct md_thread *thread)
 			mddev->pers->quiesce(mddev, 1);
 			mddev->pers->quiesce(mddev, 0);
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	printk(KERN_INFO "md: %s of RAID array %s\n", desc, mdname(mddev));
@@ -7717,8 +7756,12 @@ static int remove_and_add_spares(struct mddev *mddev,
 		if (test_bit(Faulty, &rdev->flags))
 			continue;
 		if (mddev->ro &&
+<<<<<<< HEAD
 		    ! (rdev->saved_raid_disk >= 0 &&
 		       !test_bit(Bitmap_sync, &rdev->flags)))
+=======
+		    rdev->saved_raid_disk < 0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;
 
 		rdev->recovery_offset = 0;
@@ -7799,6 +7842,7 @@ void md_check_recovery(struct mddev *mddev)
 			 * As we only add devices that are already in-sync,
 			 * we can activate the spares immediately.
 			 */
+<<<<<<< HEAD
 			remove_and_add_spares(mddev, NULL);
 			/* There is no thread, but we need to call
 			 * ->spare_active and clear saved_raid_disk
@@ -7806,6 +7850,11 @@ void md_check_recovery(struct mddev *mddev)
 			set_bit(MD_RECOVERY_INTR, &mddev->recovery);
 			md_reap_sync_thread(mddev);
 			clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+=======
+			clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+			remove_and_add_spares(mddev, NULL);
+			mddev->pers->spare_active(mddev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			goto unlock;
 		}
 
@@ -8101,7 +8150,10 @@ static int md_set_badblocks(struct badblocks *bb, sector_t s, int sectors,
 	u64 *p;
 	int lo, hi;
 	int rv = 1;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (bb->shift < 0)
 		/* badblocks are disabled */
@@ -8116,7 +8168,11 @@ static int md_set_badblocks(struct badblocks *bb, sector_t s, int sectors,
 		sectors = next - s;
 	}
 
+<<<<<<< HEAD
 	write_seqlock_irqsave(&bb->lock, flags);
+=======
+	write_seqlock_irq(&bb->lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	p = bb->page;
 	lo = 0;
@@ -8232,7 +8288,11 @@ static int md_set_badblocks(struct badblocks *bb, sector_t s, int sectors,
 	bb->changed = 1;
 	if (!acknowledged)
 		bb->unacked_exist = 1;
+<<<<<<< HEAD
 	write_sequnlock_irqrestore(&bb->lock, flags);
+=======
+	write_sequnlock_irq(&bb->lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return rv;
 }
@@ -8497,8 +8557,12 @@ static int md_notify_reboot(struct notifier_block *this,
 		if (mddev_trylock(mddev)) {
 			if (mddev->pers)
 				__md_stop_writes(mddev);
+<<<<<<< HEAD
 			if (mddev->persistent)
 				mddev->safemode = 2;
+=======
+			mddev->safemode = 2;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			mddev_unlock(mddev);
 		}
 		need_delay = 1;

@@ -795,6 +795,7 @@ static int hvfb_remove(struct hv_device *hdev)
 }
 
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(pci_stub_id_table) = {
 	{
 		.vendor      = PCI_VENDOR_ID_MICROSOFT,
@@ -803,13 +804,18 @@ static DEFINE_PCI_DEVICE_TABLE(pci_stub_id_table) = {
 	{ /* end of list */ }
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static const struct hv_vmbus_device_id id_table[] = {
 	/* Synthetic Video Device GUID */
 	{HV_SYNTHVID_GUID},
 	{}
 };
 
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(pci, pci_stub_id_table);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 MODULE_DEVICE_TABLE(vmbus, id_table);
 
 static struct hv_driver hvfb_drv = {
@@ -819,6 +825,7 @@ static struct hv_driver hvfb_drv = {
 	.remove = hvfb_remove,
 };
 
+<<<<<<< HEAD
 static int hvfb_pci_stub_probe(struct pci_dev *pdev,
 			       const struct pci_device_id *ent)
 {
@@ -851,11 +858,20 @@ static int __init hvfb_drv_init(void)
 	}
 
 	return 0;
+=======
+
+static int __init hvfb_drv_init(void)
+{
+	return vmbus_driver_register(&hvfb_drv);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void __exit hvfb_drv_exit(void)
 {
+<<<<<<< HEAD
 	pci_unregister_driver(&hvfb_pci_stub_driver);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	vmbus_driver_unregister(&hvfb_drv);
 }
 

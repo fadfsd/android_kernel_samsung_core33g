@@ -930,7 +930,11 @@ static unsigned int cache_poll(struct file *filp, poll_table *wait,
 	poll_wait(filp, &queue_wait, wait);
 
 	/* alway allow write */
+<<<<<<< HEAD
 	mask = POLLOUT | POLLWRNORM;
+=======
+	mask = POLL_OUT | POLLWRNORM;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!rp)
 		return mask;

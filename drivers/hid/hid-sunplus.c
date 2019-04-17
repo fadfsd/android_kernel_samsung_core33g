@@ -24,7 +24,11 @@
 static __u8 *sp_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 		unsigned int *rsize)
 {
+<<<<<<< HEAD
 	if (*rsize >= 112 && rdesc[104] == 0x26 && rdesc[105] == 0x80 &&
+=======
+	if (*rsize >= 107 && rdesc[104] == 0x26 && rdesc[105] == 0x80 &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			rdesc[106] == 0x03) {
 		hid_info(hdev, "fixing up Sunplus Wireless Desktop report descriptor\n");
 		rdesc[105] = rdesc[110] = 0x03;

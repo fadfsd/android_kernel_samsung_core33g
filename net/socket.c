@@ -215,13 +215,20 @@ static int move_addr_to_user(struct sockaddr_storage *kaddr, int klen,
 	int err;
 	int len;
 
+<<<<<<< HEAD
 	BUG_ON(klen > sizeof(struct sockaddr_storage));
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	err = get_user(len, ulen);
 	if (err)
 		return err;
 	if (len > klen)
 		len = klen;
+<<<<<<< HEAD
 	if (len < 0)
+=======
+	if (len < 0 || len > sizeof(struct sockaddr_storage))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 	if (len) {
 		if (audit_sockaddr(klen, kaddr))
@@ -1833,10 +1840,15 @@ SYSCALL_DEFINE6(recvfrom, int, fd, void __user *, ubuf, size_t, size,
 	msg.msg_iov = &iov;
 	iov.iov_len = size;
 	iov.iov_base = ubuf;
+<<<<<<< HEAD
 	/* Save some cycles and don't copy the address if not needed */
 	msg.msg_name = addr ? (struct sockaddr *)&address : NULL;
 	/* We assume all kernel code knows the size of sockaddr_storage */
 	msg.msg_namelen = 0;
+=======
+	msg.msg_name = (struct sockaddr *)&address;
+	msg.msg_namelen = sizeof(address);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (sock->file->f_flags & O_NONBLOCK)
 		flags |= MSG_DONTWAIT;
 	err = sock_recvmsg(sock, &msg, size, flags);
@@ -1959,6 +1971,7 @@ struct used_address {
 	unsigned int name_len;
 };
 
+<<<<<<< HEAD
 static int copy_msghdr_from_user(struct msghdr *kmsg,
 				 struct msghdr __user *umsg)
 {
@@ -1973,6 +1986,8 @@ static int copy_msghdr_from_user(struct msghdr *kmsg,
 	return 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
 			 struct msghdr *msg_sys, unsigned int flags,
 			 struct used_address *used_address)
@@ -1988,12 +2003,20 @@ static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
 	int err, ctl_len, total_len;
 
 	err = -EFAULT;
+<<<<<<< HEAD
 	if (MSG_CMSG_COMPAT & flags)
 		err = get_compat_msghdr(msg_sys, msg_compat);
 	else
 		err = copy_msghdr_from_user(msg_sys, msg);
 	if (err)
 		return err;
+=======
+	if (MSG_CMSG_COMPAT & flags) {
+		if (get_compat_msghdr(msg_sys, msg_compat))
+			return -EFAULT;
+	} else if (copy_from_user(msg_sys, msg, sizeof(struct msghdr)))
+		return -EFAULT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (msg_sys->msg_iovlen > UIO_FASTIOV) {
 		err = -EMSGSIZE;
@@ -2198,12 +2221,20 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 	struct sockaddr __user *uaddr;
 	int __user *uaddr_len;
 
+<<<<<<< HEAD
 	if (MSG_CMSG_COMPAT & flags)
 		err = get_compat_msghdr(msg_sys, msg_compat);
 	else
 		err = copy_msghdr_from_user(msg_sys, msg);
 	if (err)
 		return err;
+=======
+	if (MSG_CMSG_COMPAT & flags) {
+		if (get_compat_msghdr(msg_sys, msg_compat))
+			return -EFAULT;
+	} else if (copy_from_user(msg_sys, msg, sizeof(struct msghdr)))
+		return -EFAULT;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (msg_sys->msg_iovlen > UIO_FASTIOV) {
 		err = -EMSGSIZE;
@@ -2216,6 +2247,7 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 			goto out;
 	}
 
+<<<<<<< HEAD
 	/* Save the user-mode address (verify_iovec will change the
 	 * kernel msghdr to use the kernel address space)
 	 */
@@ -2224,6 +2256,18 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 	if (MSG_CMSG_COMPAT & flags)
 		err = verify_compat_iovec(msg_sys, iov, &addr, VERIFY_WRITE);
 	else
+=======
+	/*
+	 *      Save the user-mode address (verify_iovec will change the
+	 *      kernel msghdr to use the kernel address space)
+	 */
+
+	uaddr = (__force void __user *)msg_sys->msg_name;
+	uaddr_len = COMPAT_NAMELEN(msg);
+	if (MSG_CMSG_COMPAT & flags) {
+		err = verify_compat_iovec(msg_sys, iov, &addr, VERIFY_WRITE);
+	} else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		err = verify_iovec(msg_sys, iov, &addr, VERIFY_WRITE);
 	if (err < 0)
 		goto out_freeiov;
@@ -2232,9 +2276,12 @@ static int ___sys_recvmsg(struct socket *sock, struct msghdr __user *msg,
 	cmsg_ptr = (unsigned long)msg_sys->msg_control;
 	msg_sys->msg_flags = flags & (MSG_CMSG_CLOEXEC|MSG_CMSG_COMPAT);
 
+<<<<<<< HEAD
 	/* We assume all kernel code knows the size of sockaddr_storage */
 	msg_sys->msg_namelen = 0;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (sock->file->f_flags & O_NONBLOCK)
 		flags |= MSG_DONTWAIT;
 	err = (nosec ? sock_recvmsg_nosec : sock_recvmsg)(sock, msg_sys,

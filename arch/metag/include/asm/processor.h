@@ -22,8 +22,11 @@
 /* Add an extra page of padding at the top of the stack for the guard page. */
 #define STACK_TOP	(TASK_SIZE - PAGE_SIZE)
 #define STACK_TOP_MAX	STACK_TOP
+<<<<<<< HEAD
 /* Maximum virtual space for stack */
 #define STACK_SIZE_MAX	(1 << 28)	/* 256 MB */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* This decides where the kernel will search for a free chunk of vm
  * space during mmap's.
@@ -149,8 +152,13 @@ extern void exit_thread(void);
 
 unsigned long get_wchan(struct task_struct *p);
 
+<<<<<<< HEAD
 #define	KSTK_EIP(tsk)	(task_pt_regs(tsk)->ctx.CurrPC)
 #define	KSTK_ESP(tsk)	(task_pt_regs(tsk)->ctx.AX[0].U0)
+=======
+#define	KSTK_EIP(tsk)	((tsk)->thread.kernel_context->CurrPC)
+#define	KSTK_ESP(tsk)	((tsk)->thread.kernel_context->AX[0].U0)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define user_stack_pointer(regs)        ((regs)->ctx.AX[0].U0)
 

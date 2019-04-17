@@ -387,7 +387,11 @@ void sctp_association_free(struct sctp_association *asoc)
 	/* Only real associations count against the endpoint, so
 	 * don't bother for if this is a temporary association.
 	 */
+<<<<<<< HEAD
 	if (!list_empty(&asoc->asocs)) {
+=======
+	if (!asoc->temp) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		list_del(&asoc->asocs);
 
 		/* Decrement the backlog value for a TCP-style listening
@@ -1213,7 +1217,10 @@ void sctp_assoc_update(struct sctp_association *asoc,
 	asoc->c = new->c;
 	asoc->peer.rwnd = new->peer.rwnd;
 	asoc->peer.sack_needed = new->peer.sack_needed;
+<<<<<<< HEAD
 	asoc->peer.auth_capable = new->peer.auth_capable;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	asoc->peer.i = new->peer.i;
 	sctp_tsnmap_init(&asoc->peer.tsn_map, SCTP_TSN_MAP_INITIAL,
 			 asoc->peer.i.initial_tsn, GFP_ATOMIC);
@@ -1297,6 +1304,10 @@ void sctp_assoc_update(struct sctp_association *asoc,
 	asoc->peer.peer_hmacs = new->peer.peer_hmacs;
 	new->peer.peer_hmacs = NULL;
 
+<<<<<<< HEAD
+=======
+	sctp_auth_key_put(asoc->asoc_shared_key);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sctp_auth_asoc_init_active_key(asoc, GFP_ATOMIC);
 }
 

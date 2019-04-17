@@ -218,6 +218,7 @@ static void hid_lg4ff_set_autocenter_default(struct input_dev *dev, u16 magnitud
 	struct list_head *report_list = &hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct hid_report *report = list_entry(report_list->next, struct hid_report, list);
 	__s32 *value = report->field[0]->value;
+<<<<<<< HEAD
 	__u32 expand_a, expand_b;
 
 	/* De-activate Auto-Center */
@@ -258,6 +259,14 @@ static void hid_lg4ff_set_autocenter_default(struct input_dev *dev, u16 magnitud
 	value[2] = 0x00;
 	value[3] = 0x00;
 	value[4] = 0x00;
+=======
+
+	value[0] = 0xfe;
+	value[1] = 0x0d;
+	value[2] = magnitude >> 13;
+	value[3] = magnitude >> 13;
+	value[4] = magnitude >> 8;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	value[5] = 0x00;
 	value[6] = 0x00;
 
@@ -574,6 +583,20 @@ int lg4ff_init(struct hid_device *hid)
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+=======
+	/* Check if autocentering is available and
+	 * set the centering force to zero by default */
+	if (test_bit(FF_AUTOCENTER, dev->ffbit)) {
+		if (rev_maj == FFEX_REV_MAJ && rev_min == FFEX_REV_MIN)	/* Formula Force EX expects different autocentering command */
+			dev->ff->set_autocenter = hid_lg4ff_set_autocenter_ffex;
+		else
+			dev->ff->set_autocenter = hid_lg4ff_set_autocenter_default;
+
+		dev->ff->set_autocenter(dev, 0);
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Get private driver data */
 	drv_data = hid_get_drvdata(hid);
 	if (!drv_data) {
@@ -594,6 +617,7 @@ int lg4ff_init(struct hid_device *hid)
 	entry->max_range = lg4ff_devices[i].max_range;
 	entry->set_range = lg4ff_devices[i].set_range;
 
+<<<<<<< HEAD
 	/* Check if autocentering is available and
 	 * set the centering force to zero by default */
 	if (test_bit(FF_AUTOCENTER, dev->ffbit)) {
@@ -605,6 +629,8 @@ int lg4ff_init(struct hid_device *hid)
 		dev->ff->set_autocenter(dev, 0);
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Create sysfs interface */
 	error = device_create_file(&hid->dev, &dev_attr_range);
 	if (error)

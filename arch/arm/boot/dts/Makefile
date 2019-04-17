@@ -1,5 +1,8 @@
 ifeq ($(CONFIG_OF),y)
+<<<<<<< HEAD
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 # Keep at91 dtb files sorted alphabetically for each SoC
 # rm9200
 dtb-$(CONFIG_ARCH_AT91) += at91rm9200ek.dtb
@@ -210,13 +213,33 @@ dtb-$(CONFIG_ARCH_VT8500) += vt8500-bv07.dtb \
 	wm8850-w70v2.dtb
 dtb-$(CONFIG_ARCH_ZYNQ) += zynq-zc702.dtb
 
+<<<<<<< HEAD
 targets += dtbs
 targets += $(dtb-y)
+=======
+dtb-$(CONFIG_MACH_GOYAVE3G) += sprd-scx35_goyave3g_rev04.dtb
+dtb-$(CONFIG_MACH_GOYAVEWIFI) += sprd-scx35_goyavewifi_rev04.dtb
+
+
+DTB_NAMES := $(subst $\",,$(CONFIG_BUILD_ARM_APPENDED_DTB_IMAGE_NAMES))
+ifneq ($(DTB_NAMES),)
+DTB_LIST := $(addsuffix .dtb,$(DTB_NAMES))
+else
+DTB_LIST := $(dtb-y)
+endif
+
+targets += dtbs
+targets += $(DTB_LIST)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 endif
 
 # *.dtb used to be generated in the directory above. Clean out the
 # old build results so people don't accidentally use them.
+<<<<<<< HEAD
 dtbs: $(addprefix $(obj)/, $(dtb-y))
+=======
+dtbs: $(addprefix $(obj)/, $(DTB_LIST))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	$(Q)rm -f $(obj)/../*.dtb
 
 clean-files := *.dtb

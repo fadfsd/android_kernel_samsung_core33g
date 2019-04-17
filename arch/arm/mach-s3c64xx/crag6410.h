@@ -14,7 +14,10 @@
 #include <linux/gpio.h>
 
 #define GLENFARCLAS_PMIC_IRQ_BASE	IRQ_BOARD_START
+<<<<<<< HEAD
 #define BANFF_PMIC_IRQ_BASE		(IRQ_BOARD_START + 64)
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define PCA935X_GPIO_BASE		GPIO_BOARD_START
 #define CODEC_GPIO_BASE			(GPIO_BOARD_START + 8)

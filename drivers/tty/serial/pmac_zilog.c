@@ -2051,9 +2051,12 @@ static int __init pmz_console_init(void)
 	/* Probe ports */
 	pmz_probe();
 
+<<<<<<< HEAD
 	if (pmz_ports_count == 0)
 		return -ENODEV;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* TODO: Autoprobe console based on OF */
 	/* pmz_console.index = i; */
 	register_console(&pmz_console);

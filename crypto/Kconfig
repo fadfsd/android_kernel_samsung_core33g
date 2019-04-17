@@ -1361,6 +1361,7 @@ config CRYPTO_842
 	help
 	  This is the 842 algorithm.
 
+<<<<<<< HEAD
 config CRYPTO_LZ4
 	tristate "LZ4 compression algorithm"
 	select CRYPTO_ALGAPI
@@ -1377,6 +1378,8 @@ config CRYPTO_LZ4HC
 	help
 	  This is the LZ4 high compression mode algorithm.
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 comment "Random Number Generation"
 
 config CRYPTO_ANSI_CPRNG

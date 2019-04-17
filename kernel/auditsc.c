@@ -733,6 +733,7 @@ static enum audit_state audit_filter_task(struct task_struct *tsk, char **key)
 	return AUDIT_BUILD_CONTEXT;
 }
 
+<<<<<<< HEAD
 static int audit_in_mask(const struct audit_krule *rule, unsigned long val)
 {
 	int word, bit;
@@ -749,6 +750,8 @@ static int audit_in_mask(const struct audit_krule *rule, unsigned long val)
 	return rule->mask[word] & bit;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* At syscall entry and exit time, this filter is called if the
  * audit_state is not low enough that auditing cannot take place, but is
  * also not high enough that we already know we have to write an audit
@@ -766,8 +769,16 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
 
 	rcu_read_lock();
 	if (!list_empty(list)) {
+<<<<<<< HEAD
 		list_for_each_entry_rcu(e, list, list) {
 			if (audit_in_mask(&e->rule, ctx->major) &&
+=======
+		int word = AUDIT_WORD(ctx->major);
+		int bit  = AUDIT_BIT(ctx->major);
+
+		list_for_each_entry_rcu(e, list, list) {
+			if ((e->rule.mask[word] & bit) == bit &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			    audit_filter_rules(tsk, &e->rule, ctx, NULL,
 					       &state, false)) {
 				rcu_read_unlock();
@@ -787,16 +798,30 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
 static int audit_filter_inode_name(struct task_struct *tsk,
 				   struct audit_names *n,
 				   struct audit_context *ctx) {
+<<<<<<< HEAD
+=======
+	int word, bit;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int h = audit_hash_ino((u32)n->ino);
 	struct list_head *list = &audit_inode_hash[h];
 	struct audit_entry *e;
 	enum audit_state state;
 
+<<<<<<< HEAD
+=======
+	word = AUDIT_WORD(ctx->major);
+	bit  = AUDIT_BIT(ctx->major);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (list_empty(list))
 		return 0;
 
 	list_for_each_entry_rcu(e, list, list) {
+<<<<<<< HEAD
 		if (audit_in_mask(&e->rule, ctx->major) &&
+=======
+		if ((e->rule.mask[word] & bit) == bit &&
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		    audit_filter_rules(tsk, &e->rule, ctx, n, &state, false)) {
 			ctx->current_state = state;
 			return 1;
@@ -1408,11 +1433,16 @@ static void audit_log_exit(struct audit_context *context, struct task_struct *ts
 	}
 
 	i = 0;
+<<<<<<< HEAD
 	list_for_each_entry(n, &context->names_list, list) {
 		if (n->hidden)
 			continue;
 		audit_log_name(context, n, NULL, i++, &call_panic);
 	}
+=======
+	list_for_each_entry(n, &context->names_list, list)
+		audit_log_name(context, n, NULL, i++, &call_panic);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Send end of event record to help user space know we are finished */
 	ab = audit_log_start(context, GFP_KERNEL, AUDIT_EOE);
@@ -1781,15 +1811,25 @@ void audit_putname(struct filename *name)
  * __audit_inode - store the inode and device from a lookup
  * @name: name being audited
  * @dentry: dentry being audited
+<<<<<<< HEAD
  * @flags: attributes for this particular entry
  */
 void __audit_inode(struct filename *name, const struct dentry *dentry,
 		   unsigned int flags)
+=======
+ * @parent: does this dentry represent the parent?
+ */
+void __audit_inode(struct filename *name, const struct dentry *dentry,
+		   unsigned int parent)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	struct audit_context *context = current->audit_context;
 	const struct inode *inode = dentry->d_inode;
 	struct audit_names *n;
+<<<<<<< HEAD
 	bool parent = flags & AUDIT_INODE_PARENT;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!context->in_syscall)
 		return;
@@ -1844,8 +1884,11 @@ out:
 	if (parent) {
 		n->name_len = n->name ? parent_len(n->name->name) : AUDIT_NAME_FULL;
 		n->type = AUDIT_TYPE_PARENT;
+<<<<<<< HEAD
 		if (flags & AUDIT_INODE_HIDDEN)
 			n->hidden = true;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		n->name_len = AUDIT_NAME_FULL;
 		n->type = AUDIT_TYPE_NORMAL;

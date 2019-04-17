@@ -16,6 +16,7 @@
 	char *tmp;						\
 								\
 	tmp = kmalloc(sizeof(format) + max_alloc, GFP_ATOMIC);	\
+<<<<<<< HEAD
 	if (likely(tmp)) {					\
 		sprintf(tmp, format, param);			\
 		strcat(str, tmp);				\
@@ -23,6 +24,11 @@
 	} else {						\
 		strcat(str, "kmalloc failure in SPRINTFCAT");	\
 	}							\
+=======
+	sprintf(tmp, format, param);				\
+	strcat(str, tmp);					\
+	kfree(tmp);						\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void report_jump_idx(u32 status, char *outstr)

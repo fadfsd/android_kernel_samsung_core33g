@@ -254,7 +254,10 @@ struct acpi_create_field_info {
 	u32 field_bit_position;
 	u32 field_bit_length;
 	u16 resource_length;
+<<<<<<< HEAD
 	u16 pin_number_index;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	u8 field_flags;
 	u8 attribute;
 	u8 field_type;

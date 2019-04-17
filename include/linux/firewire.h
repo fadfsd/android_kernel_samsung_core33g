@@ -200,7 +200,10 @@ struct fw_device {
 	unsigned irmc:1;
 	unsigned bc_implemented:2;
 
+<<<<<<< HEAD
 	work_func_t workfn;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct delayed_work work;
 	struct fw_attribute_group attribute_group;
 };

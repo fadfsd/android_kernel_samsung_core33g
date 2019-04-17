@@ -74,12 +74,15 @@ static int sdcardfs_d_revalidate(struct dentry *dentry, unsigned int flags)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (dentry == lower_dentry) {
 		err = 0;
 		panic("sdcardfs: dentry is equal to lower_dentry\n");
 		goto out;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (dentry < lower_dentry) {
 		spin_lock(&dentry->d_lock);
 		spin_lock(&lower_dentry->d_lock);
@@ -179,6 +182,7 @@ static int sdcardfs_cmp_ci(const struct dentry *parent,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int sdcardfs_d_delete(const struct dentry * dentry)
 {
 	return dentry->d_inode && !S_ISDIR(dentry->d_inode->i_mode);
@@ -186,6 +190,9 @@ static int sdcardfs_d_delete(const struct dentry * dentry)
 
 const struct dentry_operations sdcardfs_ci_dops = {
 	.d_delete	= sdcardfs_d_delete,
+=======
+const struct dentry_operations sdcardfs_ci_dops = {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.d_revalidate	= sdcardfs_d_revalidate,
 	.d_release	= sdcardfs_d_release,
 	.d_hash 	= sdcardfs_hash_ci, 

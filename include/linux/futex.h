@@ -55,11 +55,15 @@ union futex_key {
 #ifdef CONFIG_FUTEX
 extern void exit_robust_list(struct task_struct *curr);
 extern void exit_pi_state_list(struct task_struct *curr);
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_FUTEX_CMPXCHG
 #define futex_cmpxchg_enabled 1
 #else
 extern int futex_cmpxchg_enabled;
 #endif
+=======
+extern int futex_cmpxchg_enabled;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #else
 static inline void exit_robust_list(struct task_struct *curr)
 {

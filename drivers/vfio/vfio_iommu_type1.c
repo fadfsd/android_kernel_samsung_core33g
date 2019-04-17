@@ -138,12 +138,20 @@ static bool is_invalid_reserved_pfn(unsigned long pfn)
 	if (pfn_valid(pfn)) {
 		bool reserved;
 		struct page *tail = pfn_to_page(pfn);
+<<<<<<< HEAD
 		struct page *head = compound_head(tail);
+=======
+		struct page *head = compound_trans_head(tail);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		reserved = !!(PageReserved(head));
 		if (head != tail) {
 			/*
 			 * "head" is not a dangling pointer
+<<<<<<< HEAD
 			 * (compound_head takes care of that)
+=======
+			 * (compound_trans_head takes care of that)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			 * but the hugepage may have been split
 			 * from under us (and we may not hold a
 			 * reference count on the head page so it can

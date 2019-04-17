@@ -110,6 +110,19 @@ static inline void __cpuinit arch_counter_set_user_access(void)
 	asm volatile("msr	cntkctl_el1, %0" : : "r" (cntkctl));
 }
 
+<<<<<<< HEAD
+=======
+static inline u64 arch_counter_get_cntpct(void)
+{
+	u64 cval;
+
+	isb();
+	asm volatile("mrs %0, cntpct_el0" : "=r" (cval));
+
+	return cval;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline u64 arch_counter_get_cntvct(void)
 {
 	u64 cval;

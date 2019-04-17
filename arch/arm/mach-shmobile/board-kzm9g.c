@@ -332,7 +332,11 @@ static struct platform_device lcdc_device = {
 	.resource	= lcdc_resources,
 	.dev	= {
 		.platform_data	= &lcdc_info,
+<<<<<<< HEAD
 		.coherent_dma_mask = DMA_BIT_MASK(32),
+=======
+		.coherent_dma_mask = ~0,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 };
 

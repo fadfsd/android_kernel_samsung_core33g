@@ -376,9 +376,12 @@ static void __init at91sam9g45_initialize(void)
 	arm_pm_restart = at91sam9g45_restart;
 	at91_extern_irq = (1 << AT91SAM9G45_ID_IRQ0);
 
+<<<<<<< HEAD
 	at91_sysirq_mask_rtc(AT91SAM9G45_BASE_RTC);
 	at91_sysirq_mask_rtt(AT91SAM9G45_BASE_RTT);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Register GPIO subsystem */
 	at91_gpio_init(at91sam9g45_gpio, 5);
 }

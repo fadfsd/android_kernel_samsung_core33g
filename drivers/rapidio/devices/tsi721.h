@@ -678,7 +678,10 @@ struct tsi721_bdma_chan {
 	struct list_head	free_list;
 	dma_cookie_t		completed_cookie;
 	struct tasklet_struct	tasklet;
+<<<<<<< HEAD
 	bool			active;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 #endif /* CONFIG_RAPIDIO_DMA_ENGINE */

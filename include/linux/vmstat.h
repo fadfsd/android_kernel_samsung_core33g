@@ -143,7 +143,10 @@ static inline unsigned long zone_page_state_snapshot(struct zone *zone,
 }
 
 extern unsigned long global_reclaimable_pages(void);
+<<<<<<< HEAD
 extern unsigned long zone_reclaimable_pages(struct zone *zone);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #ifdef CONFIG_NUMA
 /*

@@ -35,6 +35,7 @@
 #define smp_mb()	barrier()
 #define smp_rmb()	barrier()
 #define smp_wmb()	barrier()
+<<<<<<< HEAD
 
 #define smp_store_release(p, v)						\
 do {									\
@@ -89,6 +90,12 @@ do {									\
 	___p1;								\
 })
 
+=======
+#else
+#define smp_mb()	asm volatile("dmb ish" : : : "memory")
+#define smp_rmb()	asm volatile("dmb ishld" : : : "memory")
+#define smp_wmb()	asm volatile("dmb ishst" : : : "memory")
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif
 
 #define read_barrier_depends()		do { } while(0)

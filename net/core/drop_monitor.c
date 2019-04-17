@@ -64,6 +64,10 @@ static struct genl_family net_drop_monitor_family = {
 	.hdrsize        = 0,
 	.name           = "NET_DM",
 	.version        = 2,
+<<<<<<< HEAD
+=======
+	.maxattr        = NET_DM_CMD_MAX,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 static DEFINE_PER_CPU(struct per_cpu_dm_data, dm_cpu_data);

@@ -387,7 +387,11 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
 		iph->check   = 0;
 		iph->tot_len = htons(length);
 		if (!iph->id)
+<<<<<<< HEAD
 			ip_select_ident(skb, NULL);
+=======
+			ip_select_ident(skb, &rt->dst, NULL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
 	}

@@ -2,7 +2,11 @@
 # Makefile for the linux kernel.
 #
 
+<<<<<<< HEAD
 obj-y		:= irq.o gpio.o setup.o sysirq_mask.o
+=======
+obj-y		:= irq.o gpio.o setup.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 obj-m		:=
 obj-n		:=
 obj-		:=

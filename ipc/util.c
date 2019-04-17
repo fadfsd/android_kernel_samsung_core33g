@@ -17,6 +17,7 @@
  *            Pavel Emelianov <xemul@openvz.org>
  *
  * General sysv ipc locking scheme:
+<<<<<<< HEAD
  *	rcu_read_lock()
  *          obtain the ipc object (kern_ipc_perm) by looking up the id in an idr
  *	    tree.
@@ -38,6 +39,14 @@
  *
  *  Note that sems have a special fast path that avoids kern_ipc_perm.lock -
  *  see sem_lock().
+=======
+ *  when doing ipc id lookups, take the ids->rwsem
+ *      rcu_read_lock()
+ *          obtain the ipc object (kern_ipc_perm)
+ *          perform security, capabilities, auditing and permission checks, etc.
+ *          acquire the ipc lock (kern_ipc_perm.lock) throught ipc_lock_object()
+ *             perform data updates (ie: SET, RMID, LOCK/UNLOCK commands)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 
 #include <linux/mm.h>

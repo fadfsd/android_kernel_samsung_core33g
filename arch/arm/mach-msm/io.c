@@ -172,7 +172,11 @@ void __init msm_map_msm7x30_io(void)
 }
 #endif /* CONFIG_ARCH_MSM7X30 */
 
+<<<<<<< HEAD
 void __iomem *__msm_ioremap_caller(phys_addr_t phys_addr, size_t size,
+=======
+void __iomem *__msm_ioremap_caller(unsigned long phys_addr, size_t size,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				   unsigned int mtype, void *caller)
 {
 	if (mtype == MT_DEVICE) {

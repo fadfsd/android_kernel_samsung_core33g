@@ -55,7 +55,10 @@
 #define SMB2_NTLMV2_SESSKEY_SIZE (16)
 #define SMB2_HMACSHA256_SIZE (32)
 
+<<<<<<< HEAD
 /* Maximum buffer size value we can send with 1 credit */
 #define SMB2_MAX_BUFFER_SIZE 65536
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif	/* _SMB2_GLOB_H */

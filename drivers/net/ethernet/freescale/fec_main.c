@@ -371,8 +371,11 @@ fec_enet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 	else
 		bdp = fec_enet_get_nextdesc(bdp, fep->bufdesc_ex);
 
+<<<<<<< HEAD
 	skb_tx_timestamp(skb);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	fep->cur_tx = bdp;
 
 	if (fep->cur_tx == fep->dirty_tx)
@@ -381,6 +384,11 @@ fec_enet_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 	/* Trigger transmission start */
 	writel(0, fep->hwp + FEC_X_DES_ACTIVE);
 
+<<<<<<< HEAD
+=======
+	skb_tx_timestamp(skb);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return NETDEV_TX_OK;
 }
 

@@ -3400,6 +3400,7 @@ void rt2800_link_tuner(struct rt2x00_dev *rt2x00dev, struct link_qual *qual,
 
 	vgc = rt2800_get_default_vgc(rt2x00dev);
 
+<<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT5592)) {
 		if (qual->rssi > -65)
 			vgc += 0x20;
@@ -3407,6 +3408,12 @@ void rt2800_link_tuner(struct rt2x00_dev *rt2x00dev, struct link_qual *qual,
 		if (qual->rssi > -80)
 			vgc += 0x10;
 	}
+=======
+	if (rt2x00_rt(rt2x00dev, RT5592) && qual->rssi > -65)
+		vgc += 0x20;
+	else if (qual->rssi > -80)
+		vgc += 0x10;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	rt2800_set_vgc(rt2x00dev, qual, vgc);
 }

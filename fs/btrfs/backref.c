@@ -1347,10 +1347,16 @@ int extent_from_logical(struct btrfs_fs_info *fs_info, u64 logical,
  * returns <0 on error
  */
 static int __get_extent_inline_ref(unsigned long *ptr, struct extent_buffer *eb,
+<<<<<<< HEAD
 				   struct btrfs_key *key,
 				   struct btrfs_extent_item *ei, u32 item_size,
 				   struct btrfs_extent_inline_ref **out_eiref,
 				   int *out_type)
+=======
+				struct btrfs_extent_item *ei, u32 item_size,
+				struct btrfs_extent_inline_ref **out_eiref,
+				int *out_type)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	unsigned long end;
 	u64 flags;
@@ -1360,6 +1366,7 @@ static int __get_extent_inline_ref(unsigned long *ptr, struct extent_buffer *eb,
 		/* first call */
 		flags = btrfs_extent_flags(eb, ei);
 		if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
+<<<<<<< HEAD
 			if (key->type == BTRFS_METADATA_ITEM_KEY) {
 				/* a skinny metadata extent */
 				*out_eiref =
@@ -1370,16 +1377,29 @@ static int __get_extent_inline_ref(unsigned long *ptr, struct extent_buffer *eb,
 				*out_eiref =
 				   (struct btrfs_extent_inline_ref *)(info + 1);
 			}
+=======
+			info = (struct btrfs_tree_block_info *)(ei + 1);
+			*out_eiref =
+				(struct btrfs_extent_inline_ref *)(info + 1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		} else {
 			*out_eiref = (struct btrfs_extent_inline_ref *)(ei + 1);
 		}
 		*ptr = (unsigned long)*out_eiref;
+<<<<<<< HEAD
 		if ((unsigned long)(*ptr) >= (unsigned long)ei + item_size)
+=======
+		if ((void *)*ptr >= (void *)ei + item_size)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			return -ENOENT;
 	}
 
 	end = (unsigned long)ei + item_size;
+<<<<<<< HEAD
 	*out_eiref = (struct btrfs_extent_inline_ref *)(*ptr);
+=======
+	*out_eiref = (struct btrfs_extent_inline_ref *)*ptr;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	*out_type = btrfs_extent_inline_ref_type(eb, *out_eiref);
 
 	*ptr += btrfs_extent_inline_ref_size(*out_type);
@@ -1398,8 +1418,13 @@ static int __get_extent_inline_ref(unsigned long *ptr, struct extent_buffer *eb,
  * <0 on error.
  */
 int tree_backref_for_extent(unsigned long *ptr, struct extent_buffer *eb,
+<<<<<<< HEAD
 			    struct btrfs_key *key, struct btrfs_extent_item *ei,
 			    u32 item_size, u64 *out_root, u8 *out_level)
+=======
+				struct btrfs_extent_item *ei, u32 item_size,
+				u64 *out_root, u8 *out_level)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int ret;
 	int type;
@@ -1410,8 +1435,13 @@ int tree_backref_for_extent(unsigned long *ptr, struct extent_buffer *eb,
 		return 1;
 
 	while (1) {
+<<<<<<< HEAD
 		ret = __get_extent_inline_ref(ptr, eb, key, ei, item_size,
 					      &eiref, &type);
+=======
+		ret = __get_extent_inline_ref(ptr, eb, ei, item_size,
+						&eiref, &type);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (ret < 0)
 			return ret;
 

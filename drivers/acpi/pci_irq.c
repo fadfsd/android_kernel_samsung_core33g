@@ -432,7 +432,10 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
 				 pin_name(pin));
 		}
 
+<<<<<<< HEAD
 		kfree(entry);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return 0;
 	}
 

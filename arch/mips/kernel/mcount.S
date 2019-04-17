@@ -123,11 +123,15 @@ NESTED(_mcount, PT_SIZE, ra)
 	 nop
 #endif
 	b	ftrace_stub
+<<<<<<< HEAD
 #ifdef CONFIG_32BIT
 	 addiu sp, sp, 8
 #else
 	 nop
 #endif
+=======
+	 nop
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static_trace:
 	MCOUNT_SAVE_REGS
@@ -137,9 +141,12 @@ static_trace:
 	 move	a1, AT		/* arg2: parent's return address */
 
 	MCOUNT_RESTORE_REGS
+<<<<<<< HEAD
 #ifdef CONFIG_32BIT
 	addiu sp, sp, 8
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.globl ftrace_stub
 ftrace_stub:
 	RETURN_BACK
@@ -188,11 +195,14 @@ NESTED(ftrace_graph_caller, PT_SIZE, ra)
 	jal	prepare_ftrace_return
 	 nop
 	MCOUNT_RESTORE_REGS
+<<<<<<< HEAD
 #ifndef CONFIG_DYNAMIC_FTRACE
 #ifdef CONFIG_32BIT
 	addiu sp, sp, 8
 #endif
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	RETURN_BACK
 	END(ftrace_graph_caller)
 

@@ -253,7 +253,10 @@ struct ar9170 {
 	atomic_t rx_work_urbs;
 	atomic_t rx_pool_urbs;
 	kernel_ulong_t features;
+<<<<<<< HEAD
 	bool usb_ep_cmd_is_bulk;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* firmware settings */
 	struct completion fw_load_wait;

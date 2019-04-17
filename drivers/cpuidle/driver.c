@@ -251,8 +251,12 @@ struct cpuidle_driver *cpuidle_driver_ref(void)
 	spin_lock(&cpuidle_driver_lock);
 
 	drv = cpuidle_get_driver();
+<<<<<<< HEAD
 	if (drv)
 		drv->refcnt++;
+=======
+	drv->refcnt++;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_unlock(&cpuidle_driver_lock);
 	return drv;

@@ -295,6 +295,7 @@ static inline int restore_fpu_checking(struct task_struct *tsk)
 	/* AMD K7/K8 CPUs don't save/restore FDP/FIP/FOP unless an exception
 	   is pending.  Clear the x87 state here by setting it to fixed
 	   values. "m" is a random variable that should be in L1 */
+<<<<<<< HEAD
 	if (unlikely(static_cpu_has(X86_FEATURE_FXSAVE_LEAK))) {
 		asm volatile(
 			"fnclex\n\t"
@@ -302,6 +303,14 @@ static inline int restore_fpu_checking(struct task_struct *tsk)
 			"fildl %P[addr]"	/* set F?P to defined value */
 			: : [addr] "m" (tsk->thread.fpu.has_fpu));
 	}
+=======
+	alternative_input(
+		ASM_NOP8 ASM_NOP2,
+		"emms\n\t"		/* clear stack tags */
+		"fildl %P[addr]",	/* set F?P to defined value */
+		X86_FEATURE_FXSAVE_LEAK,
+		[addr] "m" (tsk->thread.fpu.has_fpu));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return fpu_restore_checking(&tsk->thread.fpu);
 }
@@ -370,7 +379,11 @@ static inline void drop_fpu(struct task_struct *tsk)
 	preempt_disable();
 	tsk->fpu_counter = 0;
 	__drop_fpu(tsk);
+<<<<<<< HEAD
 	clear_stopped_child_used_math(tsk);
+=======
+	clear_used_math();
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	preempt_enable();
 }
 

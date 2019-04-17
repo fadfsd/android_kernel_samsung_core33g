@@ -114,6 +114,10 @@
 #include <linux/mount.h>
 #include <net/checksum.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+=======
+#include <linux/freezer.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct hlist_head unix_socket_table[2 * UNIX_HASH_SIZE];
 EXPORT_SYMBOL_GPL(unix_socket_table);
@@ -160,8 +164,14 @@ static inline void unix_set_secdata(struct scm_cookie *scm, struct sk_buff *skb)
 
 static inline unsigned int unix_hash_fold(__wsum n)
 {
+<<<<<<< HEAD
 	unsigned int hash = (__force unsigned int)csum_fold(n);
 
+=======
+	unsigned int hash = (__force unsigned int)n;
+
+	hash ^= hash>>16;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	hash ^= hash>>8;
 	return hash&(UNIX_HASH_SIZE-1);
 }
@@ -528,6 +538,7 @@ static int unix_seqpacket_sendmsg(struct kiocb *, struct socket *,
 static int unix_seqpacket_recvmsg(struct kiocb *, struct socket *,
 				  struct msghdr *, size_t, int);
 
+<<<<<<< HEAD
 static int unix_set_peek_off(struct sock *sk, int val)
 {
 	struct unix_sock *u = unix_sk(sk);
@@ -539,6 +550,15 @@ static int unix_set_peek_off(struct sock *sk, int val)
 	mutex_unlock(&u->readlock);
 
 	return 0;
+=======
+static void unix_set_peek_off(struct sock *sk, int val)
+{
+	struct unix_sock *u = unix_sk(sk);
+
+	mutex_lock(&u->readlock);
+	sk->sk_peek_off = val;
+	mutex_unlock(&u->readlock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 
@@ -716,9 +736,13 @@ static int unix_autobind(struct socket *sock)
 	int err;
 	unsigned int retries = 0;
 
+<<<<<<< HEAD
 	err = mutex_lock_interruptible(&u->readlock);
 	if (err)
 		return err;
+=======
+	mutex_lock(&u->readlock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = 0;
 	if (u->addr)
@@ -877,9 +901,13 @@ static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 		goto out;
 	addr_len = err;
 
+<<<<<<< HEAD
 	err = mutex_lock_interruptible(&u->readlock);
 	if (err)
 		goto out;
+=======
+	mutex_lock(&u->readlock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	err = -EINVAL;
 	if (u->addr)
@@ -1252,6 +1280,7 @@ static int unix_socketpair(struct socket *socka, struct socket *sockb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void unix_sock_inherit_flags(const struct socket *old,
 				    struct socket *new)
 {
@@ -1261,6 +1290,8 @@ static void unix_sock_inherit_flags(const struct socket *old,
 		set_bit(SOCK_PASSSEC, &new->flags);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int unix_accept(struct socket *sock, struct socket *newsock, int flags)
 {
 	struct sock *sk = sock->sk;
@@ -1295,7 +1326,10 @@ static int unix_accept(struct socket *sock, struct socket *newsock, int flags)
 	/* attach accepted sock to socket */
 	unix_state_lock(tsk);
 	newsock->state = SS_CONNECTED;
+<<<<<<< HEAD
 	unix_sock_inherit_flags(sock, newsock);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	sock_graft(tsk, newsock);
 	unix_state_unlock(tsk);
 	return 0;
@@ -1768,6 +1802,10 @@ static void unix_copy_addr(struct msghdr *msg, struct sock *sk)
 {
 	struct unix_sock *u = unix_sk(sk);
 
+<<<<<<< HEAD
+=======
+	msg->msg_namelen = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (u->addr) {
 		msg->msg_namelen = u->addr->len;
 		memcpy(msg->msg_name, u->addr->name, u->addr->len);
@@ -1791,12 +1829,20 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (flags&MSG_OOB)
 		goto out;
 
+<<<<<<< HEAD
 	err = mutex_lock_interruptible(&u->readlock);
 	if (unlikely(err)) {
 		/* recvmsg() in non blocking mode is supposed to return -EAGAIN
 		 * sk_rcvtimeo is not honored by mutex_lock_interruptible()
 		 */
 		err = noblock ? -EAGAIN : -ERESTARTSYS;
+=======
+	msg->msg_namelen = 0;
+
+	err = mutex_lock_interruptible(&u->readlock);
+	if (err) {
+		err = sock_intr_errno(sock_rcvtimeo(sk, noblock));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out;
 	}
 
@@ -1896,12 +1942,17 @@ static long unix_stream_data_wait(struct sock *sk, long timeo,
 
 		set_bit(SOCK_ASYNC_WAITDATA, &sk->sk_socket->flags);
 		unix_state_unlock(sk);
+<<<<<<< HEAD
 		timeo = schedule_timeout(timeo);
 		unix_state_lock(sk);
 
 		if (sock_flag(sk, SOCK_DEAD))
 			break;
 
+=======
+		timeo = freezable_schedule_timeout(timeo);
+		unix_state_lock(sk);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		clear_bit(SOCK_ASYNC_WAITDATA, &sk->sk_socket->flags);
 	}
 
@@ -1920,7 +1971,10 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct unix_sock *u = unix_sk(sk);
 	struct sockaddr_un *sunaddr = msg->msg_name;
 	int copied = 0;
+<<<<<<< HEAD
 	int noblock = flags & MSG_DONTWAIT;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int check_creds = 0;
 	int target;
 	int err = 0;
@@ -1936,7 +1990,13 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 		goto out;
 
 	target = sock_rcvlowat(sk, flags&MSG_WAITALL, size);
+<<<<<<< HEAD
 	timeo = sock_rcvtimeo(sk, noblock);
+=======
+	timeo = sock_rcvtimeo(sk, flags&MSG_DONTWAIT);
+
+	msg->msg_namelen = 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Lock the socket to prevent queue disordering
 	 * while sleeps in memcpy_tomsg
@@ -1948,11 +2008,16 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 	err = mutex_lock_interruptible(&u->readlock);
+<<<<<<< HEAD
 	if (unlikely(err)) {
 		/* recvmsg() in non blocking mode is supposed to return -EAGAIN
 		 * sk_rcvtimeo is not honored by mutex_lock_interruptible()
 		 */
 		err = noblock ? -EAGAIN : -ERESTARTSYS;
+=======
+	if (err) {
+		err = sock_intr_errno(timeo);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		goto out;
 	}
 
@@ -1961,10 +2026,13 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 		struct sk_buff *skb, *last;
 
 		unix_state_lock(sk);
+<<<<<<< HEAD
 		if (sock_flag(sk, SOCK_DEAD)) {
 			err = -ECONNRESET;
 			goto unlock;
 		}
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		last = skb = skb_peek(&sk->sk_receive_queue);
 again:
 		if (skb == NULL) {

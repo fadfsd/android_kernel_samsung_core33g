@@ -21,6 +21,13 @@
 #include <linux/usb/composite.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+#include "multi_config.h"
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * The code in this file is utility code, used to build a gadget driver
  * from one or more "function" drivers, one or more "configuration"
@@ -373,7 +380,15 @@ static int config_buf(struct usb_configuration *config,
 	c->bDescriptorType = type;
 	/* wTotalLength is written later */
 	c->bNumInterfaces = config->next_interface_id;
+<<<<<<< HEAD
 	c->bConfigurationValue = config->bConfigurationValue;
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+	c->bConfigurationValue = get_config_number() + 1;
+#else
+	c->bConfigurationValue = config->bConfigurationValue;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	c->iConfiguration = config->iConfiguration;
 	c->bmAttributes = USB_CONFIG_ATT_ONE | config->bmAttributes;
 	c->bMaxPower = encode_bMaxPower(speed, config);
@@ -391,6 +406,17 @@ static int config_buf(struct usb_configuration *config,
 	/* add each function's descriptors */
 	list_for_each_entry(f, &config->functions, list) {
 		struct usb_descriptor_header **descriptors;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+		if (!is_available_function(f->name)) {
+			USB_DBG("skip f->%s\n", f->name);
+			continue;
+		} else {
+			USB_DBG("f->%s\n", f->name);
+		}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		switch (speed) {
 		case USB_SPEED_SUPER:
@@ -407,12 +433,28 @@ static int config_buf(struct usb_configuration *config,
 			continue;
 		status = usb_descriptor_fillbuf(next, len,
 			(const struct usb_descriptor_header **) descriptors);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+		if (change_conf(f, next, len, config, speed) < 0) {
+			printk("failed to change configuration\n");
+			return -EINVAL;
+		}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (status < 0)
 			return status;
 		len -= status;
 		next += status;
 	}
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+	set_interface_count(config, c);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	len = next - buf;
 	c->wTotalLength = cpu_to_le16(len);
 	return len;
@@ -440,6 +482,12 @@ static int config_desc(struct usb_composite_dev *cdev, unsigned w_value)
 
 	/* This is a lookup by config *INDEX* */
 	w_value &= 0xff;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+	w_value = set_config_number(w_value);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_for_each_entry(c, &cdev->configs, list) {
 		/* ignore configs that won't work at this speed */
 		switch (speed) {
@@ -492,6 +540,12 @@ static int count_configs(struct usb_composite_dev *cdev, unsigned type)
 				continue;
 		}
 		count++;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+		count = count_multi_config(c, count);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return count;
 }
@@ -528,7 +582,11 @@ static int bos_desc(struct usb_composite_dev *cdev)
 	usb_ext->bLength = USB_DT_USB_EXT_CAP_SIZE;
 	usb_ext->bDescriptorType = USB_DT_DEVICE_CAPABILITY;
 	usb_ext->bDevCapabilityType = USB_CAP_TYPE_EXT;
+<<<<<<< HEAD
 	usb_ext->bmAttributes = cpu_to_le32(USB_LPM_SUPPORT | USB_BESL_SUPPORT);
+=======
+	usb_ext->bmAttributes = cpu_to_le32(USB_LPM_SUPPORT);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * The Superspeed USB Capability descriptor shall be implemented by all
@@ -593,7 +651,10 @@ static void reset_config(struct usb_composite_dev *cdev)
 		bitmap_zero(f->endpoints, 32);
 	}
 	cdev->config = NULL;
+<<<<<<< HEAD
 	cdev->delayed_status = 0;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int set_config(struct usb_composite_dev *cdev,
@@ -607,7 +668,16 @@ static int set_config(struct usb_composite_dev *cdev,
 
 	if (number) {
 		list_for_each_entry(c, &cdev->configs, list) {
+<<<<<<< HEAD
 			if (c->bConfigurationValue == number) {
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+			if (c->bConfigurationValue == number ||
+					check_config(number)) {
+#else
+			if (c->bConfigurationValue == number) {
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				/*
 				 * We disable the FDs of the previous
 				 * configuration only if the new configuration
@@ -755,6 +825,10 @@ int usb_add_config(struct usb_composite_dev *cdev,
 			config->bConfigurationValue,
 			config->label, config);
 
+<<<<<<< HEAD
+=======
+	printk("%s(%d) %s \n",current->comm, current->pid,__func__);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	status = usb_add_config_only(cdev, config);
 	if (status)
 		goto done;
@@ -774,7 +848,11 @@ int usb_add_config(struct usb_composite_dev *cdev,
 				/* may free memory for "f" */
 			}
 		}
+<<<<<<< HEAD
 		list_del(&config->list);
+=======
+		__list_del_entry(&config->list);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		config->cdev = NULL;
 	} else {
 		unsigned	i;
@@ -812,7 +890,11 @@ done:
 }
 EXPORT_SYMBOL_GPL(usb_add_config);
 
+<<<<<<< HEAD
 static void remove_config(struct usb_composite_dev *cdev,
+=======
+static void unbind_config(struct usb_composite_dev *cdev,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			      struct usb_configuration *config)
 {
 	while (!list_empty(&config->functions)) {
@@ -827,7 +909,10 @@ static void remove_config(struct usb_composite_dev *cdev,
 			/* may free memory for "f" */
 		}
 	}
+<<<<<<< HEAD
 	list_del(&config->list);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (config->unbind) {
 		DBG(cdev, "unbind config '%s'/%p\n", config->label, config);
 		config->unbind(config);
@@ -854,9 +939,17 @@ void usb_remove_config(struct usb_composite_dev *cdev,
 	if (cdev->config == config)
 		reset_config(cdev);
 
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&cdev->lock, flags);
 
 	remove_config(cdev, config);
+=======
+	__list_del_entry(&config->list);
+	printk("%s(%d) %s \n",current->comm,current->pid,__func__);
+	spin_unlock_irqrestore(&cdev->lock, flags);
+
+	unbind_config(cdev, config);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*-------------------------------------------------------------------------*/
@@ -939,6 +1032,17 @@ static int get_string(struct usb_composite_dev *cdev,
 				collect_langs(sp, s->wData);
 
 			list_for_each_entry(f, &c->functions, list) {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+				if (!is_available_function(f->name)) {
+					USB_DBG("skip f->%s\n", f->name);
+					continue;
+				} else {
+					USB_DBG("f->%s\n", f->name);
+				}
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				sp = f->strings;
 				if (sp)
 					collect_langs(sp, s->wData);
@@ -1260,6 +1364,10 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 
 			value = min(w_length, (u16) sizeof cdev->desc);
 			memcpy(req->buf, &cdev->desc, value);
+<<<<<<< HEAD
+=======
+			printk(KERN_DEBUG "usb: GET_DES\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			break;
 		case USB_DT_DEVICE_QUALIFIER:
 			if (!gadget_is_dualspeed(gadget) ||
@@ -1280,6 +1388,12 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 				value = min(w_length, (u16) value);
 			break;
 		case USB_DT_STRING:
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+			set_string_mode(w_length);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			value = get_string(cdev, req->buf,
 					w_index, w_value & 0xff);
 			if (value >= 0)
@@ -1309,13 +1423,27 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
 		spin_lock(&cdev->lock);
 		value = set_config(cdev, ctrl, w_value);
 		spin_unlock(&cdev->lock);
+<<<<<<< HEAD
+=======
+		printk(KERN_DEBUG "usb: SET_CON\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	case USB_REQ_GET_CONFIGURATION:
 		if (ctrl->bRequestType != USB_DIR_IN)
 			goto unknown;
+<<<<<<< HEAD
 		if (cdev->config)
 			*(u8 *)req->buf = cdev->config->bConfigurationValue;
 		else
+=======
+		if (cdev->config){
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+			*(u8 *)req->buf = get_config_number() + 1;
+#else
+			*(u8 *)req->buf = cdev->config->bConfigurationValue;
+#endif
+		}else
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			*(u8 *)req->buf = 0;
 		value = min(w_length, (u16) 1);
 		break;
@@ -1484,6 +1612,12 @@ void composite_disconnect(struct usb_gadget *gadget)
 {
 	struct usb_composite_dev	*cdev = get_gadget_data(gadget);
 	unsigned long			flags;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_ANDROID_SAMSUNG_COMPOSITE
+	set_string_mode(0);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* REVISIT:  should we have config and device level
 	 * disconnect callbacks?
@@ -1493,6 +1627,15 @@ void composite_disconnect(struct usb_gadget *gadget)
 		reset_config(cdev);
 	if (cdev->driver->disconnect)
 		cdev->driver->disconnect(cdev);
+<<<<<<< HEAD
+=======
+	if(cdev->delayed_status !=0)
+	{
+		INFO(cdev,"delayed status mismatch .. resetting\n");
+		cdev->delayed_status = 0;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	spin_unlock_irqrestore(&cdev->lock, flags);
 }
 
@@ -1525,7 +1668,12 @@ static void __composite_unbind(struct usb_gadget *gadget, bool unbind_driver)
 		struct usb_configuration	*c;
 		c = list_first_entry(&cdev->configs,
 				struct usb_configuration, list);
+<<<<<<< HEAD
 		remove_config(cdev, c);
+=======
+		list_del(&c->list);
+		unbind_config(cdev, c);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	if (cdev->driver->unbind && unbind_driver)
 		cdev->driver->unbind(cdev);

@@ -885,8 +885,11 @@ long do_msgrcv(int msqid, void __user *buf, size_t bufsz, long msgtyp, int msgfl
 		return -EINVAL;
 
 	if (msgflg & MSG_COPY) {
+<<<<<<< HEAD
 		if ((msgflg & MSG_EXCEPT) || !(msgflg & IPC_NOWAIT))
 			return -EINVAL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		copy = prepare_copy(buf, min_t(size_t, bufsz, ns->msg_ctlmax));
 		if (IS_ERR(copy))
 			return PTR_ERR(copy);

@@ -862,7 +862,11 @@ lowpan_process_data(struct sk_buff *skb)
 	 * Traffic class carried in-line
 	 * ECN + DSCP (1 byte), Flow Label is elided
 	 */
+<<<<<<< HEAD
 	case 2: /* 10b */
+=======
+	case 1: /* 10b */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (lowpan_fetch_skb_u8(skb, &tmp))
 			goto drop;
 
@@ -875,7 +879,11 @@ lowpan_process_data(struct sk_buff *skb)
 	 * Flow Label carried in-line
 	 * ECN + 2-bit Pad + Flow Label (3 bytes), DSCP is elided
 	 */
+<<<<<<< HEAD
 	case 1: /* 01b */
+=======
+	case 2: /* 01b */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		if (lowpan_fetch_skb_u8(skb, &tmp))
 			goto drop;
 
@@ -1173,6 +1181,7 @@ static struct header_ops lowpan_header_ops = {
 	.create	= lowpan_header_create,
 };
 
+<<<<<<< HEAD
 static struct lock_class_key lowpan_tx_busylock;
 static struct lock_class_key lowpan_netdev_xmit_lock_key;
 
@@ -1194,6 +1203,9 @@ static int lowpan_dev_init(struct net_device *dev)
 
 static const struct net_device_ops lowpan_netdev_ops = {
 	.ndo_init		= lowpan_dev_init,
+=======
+static const struct net_device_ops lowpan_netdev_ops = {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	.ndo_start_xmit		= lowpan_xmit,
 	.ndo_set_mac_address	= lowpan_set_address,
 };

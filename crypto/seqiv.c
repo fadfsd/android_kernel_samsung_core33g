@@ -362,4 +362,7 @@ module_exit(seqiv_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Sequence Number IV Generator");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("seqiv");
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

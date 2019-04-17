@@ -437,7 +437,11 @@ static struct platform_device lcdc0_device = {
 	.id		= 0,
 	.dev	= {
 		.platform_data	= &lcdc0_info,
+<<<<<<< HEAD
 		.coherent_dma_mask = DMA_BIT_MASK(32),
+=======
+		.coherent_dma_mask = ~0,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 };
 
@@ -534,7 +538,11 @@ static struct platform_device hdmi_lcdc_device = {
 	.id		= 1,
 	.dev	= {
 		.platform_data	= &hdmi_lcdc_info,
+<<<<<<< HEAD
 		.coherent_dma_mask = DMA_BIT_MASK(32),
+=======
+		.coherent_dma_mask = ~0,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	},
 };
 

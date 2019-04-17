@@ -112,4 +112,12 @@ config BLOCK_COMPAT
 	depends on BLOCK && COMPAT
 	default y
 
+<<<<<<< HEAD
+=======
+config BLOCK_SUPPORT_STLOG
+ 	bool "Enable storage log"
+	depends on BLOCK && PROC_STLOG
+	default y
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 source block/Kconfig.iosched

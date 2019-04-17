@@ -510,8 +510,12 @@ static int aac_send_raw_srb(struct aac_dev* dev, void __user * arg)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
 	if ((fibsize < (sizeof(struct user_aac_srb) - sizeof(struct user_sgentry))) ||
 	    (fibsize > (dev->max_fib_size - sizeof(struct aac_fibhdr)))) {
+=======
+	if (fibsize > (dev->max_fib_size - sizeof(struct aac_fibhdr))) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		rcode = -EINVAL;
 		goto cleanup;
 	}

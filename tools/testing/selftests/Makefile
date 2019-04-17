@@ -4,7 +4,10 @@ TARGETS += efivarfs
 TARGETS += kcmp
 TARGETS += memory-hotplug
 TARGETS += mqueue
+<<<<<<< HEAD
 TARGETS += mount
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 TARGETS += net
 TARGETS += ptrace
 TARGETS += vm

@@ -110,7 +110,11 @@ void __init init_IRQ(void)
 #endif
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_STACKOVERFLOW
+=======
+#ifdef DEBUG_STACKOVERFLOW
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void check_stack_overflow(void)
 {
 	unsigned long sp;

@@ -41,6 +41,17 @@
 #include <asm/tlbflush.h>
 #include "internal.h"
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OPTIMIZE_KSM
+#include <asm/checksum.h>
+#endif
+
+#ifdef CONFIG_ADAPTIVE_KSM
+#include <linux/earlysuspend.h>
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifdef CONFIG_NUMA
 #define NUMA(x)		(x)
 #define DO_NUMA(x)	do { (x); } while (0)
@@ -49,6 +60,58 @@
 #define DO_NUMA(x)	do { } while (0)
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ADAPTIVE_KSM
+#define __AKSM_DEBUG__ 0
+
+#define AKSM_FULL_SCAN_NONE		0
+#define AKSM_FULL_SCAN_START		1
+#define AKSM_FULL_SCAN_END			2
+
+#define AKSM_MEM_NORMAL_ZONE		1
+#define AKSM_MEM_WARN_ZONE		2
+#define AKSM_MEM_CRITICAL_ZONE		3
+#define AKSM_MEM_BOOT_ZONE		4
+
+#define AKSM_PAGES_TO_SCAN			60
+#define AKSM_CHECK_MEM_INTERVAL 	10000
+
+#define AKSM_PAGES_TO_SCAN_BOOT		200
+#define AKSM_CHECK_MEM_INTERVAL_BOOT 	6000
+
+#define AKSM_PAGES_TO_SCAN_WARN			20
+#define AKSM_CHECK_MEM_INTERVAL_WARN 	7000
+
+#define AKSM_PAGES_TO_SCAN_CRITICAL		30
+#define AKSM_CHECK_MEM_INTERVAL_CRITICAL	5000
+
+#define AKSM_SLEEP_TIME_PER_SCAN_IDLE	500 // in case of only QCOM 1000
+#define AKSM_SLEEP_TIME_PER_SCAN_NON_IDLE	1
+
+#define print_aksm(x,a...)    if(AKSM_Klog_enabled) printk(x,##a);
+
+static unsigned int AKSM_mem_status=0;
+static unsigned int AKSM_full_scan_staus=0;
+static unsigned int AKSM_early_suspended = 0;
+static unsigned int AKSM_arm_stable_tree_onboot=1;
+static unsigned int AKSM_sleep_time_per_scan=1;
+
+#if __AKSM_DEBUG__
+static char AKSM_Klog_enabled=1;
+#else
+static char AKSM_Klog_enabled=0;
+#endif
+
+static unsigned int aksm_minfree_warn = 30720; //120MB
+static unsigned int aksm_minfree_critical = 10240; //40MB
+
+unsigned int  check_mem_status(void);
+extern int get_minfree_high_value(void);
+void set_AKSM_level(void);
+#endif  // CONFIG_ADAPTIVE_KSM
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * A few notes about the KSM scanning process,
  * to make it easier to understand the data structures below:
@@ -144,6 +207,12 @@ struct stable_node {
 #ifdef CONFIG_NUMA
 	int nid;
 #endif
+<<<<<<< HEAD
+=======
+#if __AKSM_DEBUG__
+	unsigned int num_linked;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /**
@@ -236,7 +305,15 @@ static int ksm_nr_node_ids = 1;
 #define KSM_RUN_MERGE	1
 #define KSM_RUN_UNMERGE	2
 #define KSM_RUN_OFFLINE	4
+<<<<<<< HEAD
 static unsigned long ksm_run = KSM_RUN_STOP;
+=======
+#ifndef CONFIG_ADAPTIVE_KSM
+static unsigned long ksm_run = KSM_RUN_STOP;
+#else
+static unsigned long ksm_run = KSM_RUN_MERGE;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static void wait_while_offlining(void);
 
 static DECLARE_WAIT_QUEUE_HEAD(ksm_thread_wait);
@@ -376,7 +453,11 @@ static int break_ksm(struct vm_area_struct *vma, unsigned long addr)
 		else
 			ret = VM_FAULT_WRITE;
 		put_page(page);
+<<<<<<< HEAD
 	} while (!(ret & (VM_FAULT_WRITE | VM_FAULT_SIGBUS | VM_FAULT_SIGSEGV | VM_FAULT_OOM)));
+=======
+	} while (!(ret & (VM_FAULT_WRITE | VM_FAULT_SIGBUS | VM_FAULT_OOM)));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * We must loop because handle_mm_fault() may back out if there's
 	 * any difficulty e.g. if pte accessed bit gets updated concurrently.
@@ -444,7 +525,11 @@ static void break_cow(struct rmap_item *rmap_item)
 static struct page *page_trans_compound_anon(struct page *page)
 {
 	if (PageTransCompound(page)) {
+<<<<<<< HEAD
 		struct page *head = compound_head(page);
+=======
+		struct page *head = compound_trans_head(page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		/*
 		 * head may actually be splitted and freed from under
 		 * us but it's ok here.
@@ -498,7 +583,18 @@ static void remove_node_from_stable_tree(struct stable_node *stable_node)
 
 	hlist_for_each_entry(rmap_item, &stable_node->hlist, hlist) {
 		if (rmap_item->hlist.next)
+<<<<<<< HEAD
 			ksm_pages_sharing--;
+=======
+#if __AKSM_DEBUG__
+		{
+			ksm_pages_sharing--;
+			stable_node->num_linked --;
+		}
+#else
+			ksm_pages_sharing--;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else
 			ksm_pages_shared--;
 		put_anon_vma(rmap_item->anon_vma);
@@ -626,7 +722,18 @@ static void remove_rmap_item_from_tree(struct rmap_item *rmap_item)
 		put_page(page);
 
 		if (stable_node->hlist.first)
+<<<<<<< HEAD
 			ksm_pages_sharing--;
+=======
+#if __AKSM_DEBUG__
+		{
+			ksm_pages_sharing--;
+			stable_node->num_linked --;
+		}
+#else
+			ksm_pages_sharing--;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		else
 			ksm_pages_shared--;
 
@@ -829,11 +936,26 @@ static u32 calc_checksum(struct page *page)
 {
 	u32 checksum;
 	void *addr = kmap_atomic(page);
+<<<<<<< HEAD
 	checksum = jhash2(addr, PAGE_SIZE / 4, 17);
+=======
+#ifdef CONFIG_OPTIMIZE_KSM
+	checksum = csum_partial(addr, PAGE_SIZE / 4, 17);
+#else
+	checksum = jhash2(addr, PAGE_SIZE / 4, 17);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kunmap_atomic(addr);
 	return checksum;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KSM_ASSEMBLY_MEMCMP
+extern int memcmpksm(const void *,const void *,__kernel_size_t);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static int memcmp_pages(struct page *page1, struct page *page2)
 {
 	char *addr1, *addr2;
@@ -841,7 +963,15 @@ static int memcmp_pages(struct page *page1, struct page *page2)
 
 	addr1 = kmap_atomic(page1);
 	addr2 = kmap_atomic(page2);
+<<<<<<< HEAD
 	ret = memcmp(addr1, addr2, PAGE_SIZE);
+=======
+#ifdef CONFIG_KSM_ASSEMBLY_MEMCMP
+	ret = memcmpksm(addr1, addr2, PAGE_SIZE);
+#else
+	ret = memcmp(addr1, addr2, PAGE_SIZE);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kunmap_atomic(addr2);
 	kunmap_atomic(addr1);
 	return ret;
@@ -1302,6 +1432,12 @@ static struct stable_node *stable_tree_insert(struct page *kpage)
 	rb_link_node(&stable_node->node, parent, new);
 	rb_insert_color(&stable_node->node, root);
 
+<<<<<<< HEAD
+=======
+#if __AKSM_DEBUG__
+	stable_node->num_linked=0;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return stable_node;
 }
 
@@ -1340,6 +1476,21 @@ struct rmap_item *unstable_tree_search_insert(struct rmap_item *rmap_item,
 
 		cond_resched();
 		tree_rmap_item = rb_entry(*new, struct rmap_item, node);
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_ADAPTIVE_KSM
+		parent = *new;
+		if((rmap_item -> address & PAGE_MASK) < (tree_rmap_item -> address & PAGE_MASK)){
+			new = &parent->rb_left;
+			continue;
+		} else if ((rmap_item -> address & PAGE_MASK) > (tree_rmap_item -> address & PAGE_MASK)){
+			new = &parent->rb_right;
+			continue;
+		}
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		tree_page = get_mergeable_page(tree_rmap_item);
 		if (IS_ERR_OR_NULL(tree_page))
 			return NULL;
@@ -1399,7 +1550,18 @@ static void stable_tree_append(struct rmap_item *rmap_item,
 	hlist_add_head(&rmap_item->hlist, &stable_node->hlist);
 
 	if (rmap_item->hlist.next)
+<<<<<<< HEAD
 		ksm_pages_sharing++;
+=======
+#if __AKSM_DEBUG__
+	{
+		ksm_pages_sharing++;
+		stable_node->num_linked++;
+	}
+#else
+		ksm_pages_sharing++;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	else
 		ksm_pages_shared++;
 }
@@ -1684,9 +1846,142 @@ next_mm:
 		goto next_mm;
 
 	ksm_scan.seqnr++;
+<<<<<<< HEAD
 	return NULL;
 }
 
+=======
+
+#ifdef CONFIG_ADAPTIVE_KSM
+	if(ksm_scan.seqnr == 6) {
+		AKSM_arm_stable_tree_onboot=0;
+		set_AKSM_level();
+	}
+	AKSM_full_scan_staus=AKSM_FULL_SCAN_END;
+#endif
+
+	return NULL;
+}
+
+#ifdef CONFIG_ADAPTIVE_KSM
+
+static void ksm_early_suspend(struct early_suspend *h)
+{
+	AKSM_early_suspended=1;
+}
+
+static void ksm_late_resume(struct early_suspend *h)
+{
+	AKSM_early_suspended=0;
+}
+
+static struct early_suspend ksm_early_suspend_desc = {
+	.level = EARLY_SUSPEND_LEVEL_STOP_DRAWING,
+	.suspend = ksm_early_suspend,
+	.resume = ksm_late_resume,
+};
+
+#if __AKSM_DEBUG__
+static inline void  print_pages(struct stable_node *node)
+{
+	int count;
+	struct page *page;
+	unsigned int *data;
+	page=get_ksm_page(node,false);
+	data = (int *)kmap_atomic(page);
+	for(count=0;count<1024;count=count+4)
+		print_aksm("KSM###[%.3d] %.8x %.8x %.8x %.8x\n", count, *(data+count), *(data+count+1),*(data+count+2),*(data+count+3) );
+	kunmap_atomic(data);
+	return;
+}
+
+static void AKSM_show_stable_pages(void)
+{
+	struct stable_node *stable_node;
+	struct rb_node *node;
+	int nid;
+
+	print_aksm("ksm### show hot nodes\n");
+	for (nid = 0; nid < ksm_nr_node_ids; nid++) {
+		node = rb_first(root_stable_tree + nid);
+		while (node) {
+			stable_node = rb_entry(node, struct stable_node, node);
+			print_aksm("ksm### stable node %p linked %d pages\n",stable_node, stable_node->num_linked);
+			if(stable_node->num_linked > 256)
+				print_pages(stable_node);
+			node = rb_next(node);
+			cond_resched();
+		}
+	}
+
+}
+#else
+static void AKSM_show_stable_pages(void) {}
+#endif
+
+void set_AKSM_level(void)
+{
+	aksm_minfree_critical = get_minfree_high_value() + global_page_state(NR_SHMEM) + total_swapcache_pages();
+	aksm_minfree_warn = aksm_minfree_critical * 2;
+}
+
+unsigned int  check_mem_status(void)
+{
+
+	unsigned int available_mem = global_page_state(NR_FREE_PAGES)  - totalreserve_pages
+								+ global_page_state(NR_FILE_PAGES)
+								- global_page_state(NR_SHMEM)
+								- total_swapcache_pages();   /* pages */
+
+
+	if(AKSM_arm_stable_tree_onboot)
+	{
+			set_user_nice(current, 5);
+			ksm_thread_pages_to_scan = AKSM_PAGES_TO_SCAN_BOOT;
+			ksm_thread_sleep_millisecs = AKSM_CHECK_MEM_INTERVAL_BOOT;
+			AKSM_mem_status = AKSM_MEM_BOOT_ZONE;
+			AKSM_sleep_time_per_scan = AKSM_SLEEP_TIME_PER_SCAN_NON_IDLE;
+	}
+	else 
+	{
+		if (available_mem   < aksm_minfree_critical)
+		{
+			set_user_nice(current, 13);
+			ksm_thread_pages_to_scan = AKSM_PAGES_TO_SCAN_CRITICAL;
+			ksm_thread_sleep_millisecs = AKSM_CHECK_MEM_INTERVAL_CRITICAL;
+			AKSM_mem_status = AKSM_MEM_CRITICAL_ZONE;
+			AKSM_sleep_time_per_scan = AKSM_SLEEP_TIME_PER_SCAN_NON_IDLE;
+		}
+		else if (available_mem  < aksm_minfree_warn)
+		{
+			set_user_nice(current, 7);
+			ksm_thread_pages_to_scan = AKSM_PAGES_TO_SCAN_WARN;
+			ksm_thread_sleep_millisecs = AKSM_CHECK_MEM_INTERVAL_WARN;
+			AKSM_mem_status = AKSM_MEM_WARN_ZONE;
+			AKSM_sleep_time_per_scan = AKSM_SLEEP_TIME_PER_SCAN_NON_IDLE;
+		}
+		else
+		{
+			set_user_nice(current, 19);
+			ksm_thread_pages_to_scan = AKSM_PAGES_TO_SCAN;
+			ksm_thread_sleep_millisecs = AKSM_CHECK_MEM_INTERVAL;
+			AKSM_mem_status = AKSM_MEM_NORMAL_ZONE;
+			AKSM_sleep_time_per_scan = AKSM_SLEEP_TIME_PER_SCAN_IDLE;
+		}
+	}
+
+	if(AKSM_full_scan_staus == AKSM_FULL_SCAN_NONE)
+		print_aksm("available_mem : %d, AKSM_mem_status : %d\n",available_mem,AKSM_mem_status);
+
+	return AKSM_mem_status;
+
+}
+
+#endif
+
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /**
  * ksm_do_scan  - the ksm scanner main worker function.
  * @scan_npages - number of pages we want to scan before we return.
@@ -1714,9 +2009,51 @@ static int ksmd_should_run(void)
 static int ksm_scan_thread(void *nothing)
 {
 	set_freezable();
+<<<<<<< HEAD
 	set_user_nice(current, 5);
 
 	while (!kthread_should_stop()) {
+=======
+#ifdef CONFIG_ADAPTIVE_KSM
+	set_user_nice(current, 19);
+#else
+	set_user_nice(current, 5);
+#endif
+
+	while (!kthread_should_stop()) {
+#ifdef CONFIG_ADAPTIVE_KSM
+		if(check_mem_status())
+			if ((ksmd_should_run())&&(!AKSM_early_suspended))
+			{
+				print_aksm("Full Scan Started, AKSM_mem_status : %d\n",AKSM_mem_status);
+				AKSM_full_scan_staus=AKSM_FULL_SCAN_START;
+			}
+
+		while(AKSM_full_scan_staus)
+		{
+			mutex_lock(&ksm_thread_mutex);
+			wait_while_offlining();
+			ksm_do_scan(ksm_thread_pages_to_scan);
+			mutex_unlock(&ksm_thread_mutex);
+			check_mem_status();
+
+			if((AKSM_early_suspended) || (AKSM_full_scan_staus==AKSM_FULL_SCAN_END))
+			{
+				print_aksm("Full Scan Ended,AKSM_early_suspended : %d, AKSM_full_scan_staus : %d, AKSM_mem_status : %d\n",AKSM_early_suspended,AKSM_full_scan_staus,AKSM_mem_status);
+				AKSM_show_stable_pages();
+				AKSM_full_scan_staus=AKSM_FULL_SCAN_NONE;
+				break;
+			}
+			schedule_timeout_interruptible(msecs_to_jiffies(AKSM_sleep_time_per_scan));
+		}
+
+		print_aksm("ksm_pages_shared : %ld, ksm_pages_sharing : %ld, ksm_pages_unshared : %ld\n",ksm_pages_shared,ksm_pages_sharing,ksm_pages_unshared);
+		try_to_freeze();
+		schedule_timeout_interruptible(
+				msecs_to_jiffies(ksm_thread_sleep_millisecs));
+
+#else //CONFIG_ADAPTIVE_KSM
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		mutex_lock(&ksm_thread_mutex);
 		wait_while_offlining();
 		if (ksmd_should_run())
@@ -1732,6 +2069,10 @@ static int ksm_scan_thread(void *nothing)
 			wait_event_freezable(ksm_thread_wait,
 				ksmd_should_run() || kthread_should_stop());
 		}
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	return 0;
 }
@@ -2198,7 +2539,13 @@ static ssize_t sleep_millisecs_store(struct kobject *kobj,
 	if (err || msecs > UINT_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ksm_thread_sleep_millisecs = msecs;
+=======
+#ifndef CONFIG_ADAPTIVE_KSM
+	ksm_thread_sleep_millisecs = msecs;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return count;
 }
@@ -2221,7 +2568,13 @@ static ssize_t pages_to_scan_store(struct kobject *kobj,
 	if (err || nr_pages > UINT_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ksm_thread_pages_to_scan = nr_pages;
+=======
+#ifndef CONFIG_ADAPTIVE_KSM
+	ksm_thread_pages_to_scan = nr_pages;
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	return count;
 }
@@ -2378,6 +2731,82 @@ static ssize_t full_scans_show(struct kobject *kobj,
 }
 KSM_ATTR_RO(full_scans);
 
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_ADAPTIVE_KSM
+static ssize_t aksm_minfree_critical_store(struct kobject *kobj,
+				   struct kobj_attribute *attr,
+				   const char *buf, size_t count)
+{
+	int err;
+	unsigned long aksm_minfree;
+
+	err = strict_strtoul(buf, 10, &aksm_minfree);
+	if (err || aksm_minfree > UINT_MAX)
+		return -EINVAL;
+
+	aksm_minfree_critical = aksm_minfree;
+
+	return count;
+}
+static ssize_t aksm_minfree_critical_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *buf)
+{
+
+		return sprintf(buf, "%u\n", aksm_minfree_critical);
+		}
+KSM_ATTR(aksm_minfree_critical);
+
+static ssize_t aksm_minfree_warn_store(struct kobject *kobj,
+				   struct kobj_attribute *attr,
+				   const char *buf, size_t count)
+{
+	int err;
+	unsigned long aksm_minfree;
+
+	err = strict_strtoul(buf, 10, &aksm_minfree);
+	if (err || aksm_minfree > UINT_MAX)
+		return -EINVAL;
+
+	aksm_minfree_warn = aksm_minfree;
+
+	return count;
+	}
+static ssize_t aksm_minfree_warn_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *buf)
+{
+
+		return sprintf(buf, "%u\n", aksm_minfree_warn);
+}
+KSM_ATTR(aksm_minfree_warn);
+
+static ssize_t AKSM_Klog_enable_store(struct kobject *kobj,
+				   struct kobj_attribute *attr,
+				   const char *buf, size_t count)
+{
+	int err;
+	unsigned long enableklog;
+
+	err = strict_strtoul(buf, 10, &enableklog);
+	if (err || enableklog > UINT_MAX)
+		return -EINVAL;
+
+	AKSM_Klog_enabled = enableklog;
+
+	return count;
+}
+static ssize_t AKSM_Klog_enable_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *buf)
+{
+
+		return sprintf(buf, "AKSM_Klog_enabled : %d\n", AKSM_Klog_enabled);
+}
+
+KSM_ATTR(AKSM_Klog_enable);
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static struct attribute *ksm_attrs[] = {
 	&sleep_millisecs_attr.attr,
 	&pages_to_scan_attr.attr,
@@ -2390,6 +2819,14 @@ static struct attribute *ksm_attrs[] = {
 #ifdef CONFIG_NUMA
 	&merge_across_nodes_attr.attr,
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ADAPTIVE_KSM
+	&aksm_minfree_critical_attr.attr,
+	&aksm_minfree_warn_attr.attr,
+	&AKSM_Klog_enable_attr.attr,
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	NULL,
 };
 
@@ -2408,6 +2845,16 @@ static int __init ksm_init(void)
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ADAPTIVE_KSM
+	register_early_suspend(&ksm_early_suspend_desc);
+	ksm_thread_pages_to_scan = AKSM_PAGES_TO_SCAN;
+	ksm_thread_sleep_millisecs = AKSM_CHECK_MEM_INTERVAL;
+
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ksm_thread = kthread_run(ksm_scan_thread, NULL, "ksmd");
 	if (IS_ERR(ksm_thread)) {
 		printk(KERN_ERR "ksm: creating kthread failed\n");

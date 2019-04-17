@@ -935,12 +935,15 @@ xfs_qm_dqiter_bufs(
 		if (error)
 			break;
 
+<<<<<<< HEAD
 		/*
 		 * A corrupt buffer might not have a verifier attached, so
 		 * make sure we have the correct one attached before writeback
 		 * occurs.
 		 */
 		bp->b_ops = &xfs_dquot_buf_ops;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		xfs_qm_reset_dqcounts(mp, bp, firstid, type);
 		xfs_buf_delwri_queue(bp, buffer_list);
 		xfs_buf_relse(bp);
@@ -1024,7 +1027,11 @@ xfs_qm_dqiterate(
 					xfs_buf_readahead(mp->m_ddev_targp,
 					       XFS_FSB_TO_DADDR(mp, rablkno),
 					       mp->m_quotainfo->qi_dqchunklen,
+<<<<<<< HEAD
 					       &xfs_dquot_buf_ops);
+=======
+					       NULL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 					rablkno++;
 				}
 			}

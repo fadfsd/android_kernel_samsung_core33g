@@ -96,6 +96,7 @@ typedef struct sensor_power_info {
 #ifndef BOOLEAN
 #define BOOLEAN 					char
 #endif
+<<<<<<< HEAD
 
 typedef enum {
 	SENSOR_OTP_PARAM_NORMAL = 0x00,
@@ -120,6 +121,8 @@ typedef struct _sensor_otp_param_tag {
 	struct _sensor_otp_data_info_tag lsc;
 } SENSOR_OTP_PARAM_T, *SENSOR_OTP_PARAM_T_PTR;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #define SENSOR_IOC_MAGIC			'R'
 
 #define SENSOR_IO_PD                _IOW(SENSOR_IOC_MAGIC, 0,  BOOLEAN)

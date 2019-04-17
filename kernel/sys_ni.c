@@ -209,6 +209,9 @@ cond_syscall(compat_sys_open_by_handle_at);
 
 /* compare kernel pointers */
 cond_syscall(sys_kcmp);
+<<<<<<< HEAD
 
 /* operate on Secure Computing state */
 cond_syscall(sys_seccomp);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

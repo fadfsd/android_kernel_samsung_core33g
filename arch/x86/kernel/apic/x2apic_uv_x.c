@@ -98,7 +98,11 @@ static int __init early_get_pnodeid(void)
 		break;
 	case UV3_HUB_PART_NUMBER:
 	case UV3_HUB_PART_NUMBER_X:
+<<<<<<< HEAD
 		uv_min_hub_revision_id += UV3_HUB_REVISION_BASE;
+=======
+		uv_min_hub_revision_id += UV3_HUB_REVISION_BASE - 1;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		break;
 	}
 

@@ -185,6 +185,7 @@ static inline unsigned long __ffs64(u64 word)
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 #ifndef set_mask_bits
 #define set_mask_bits(ptr, _mask, _bits)	\
 ({								\
@@ -200,6 +201,8 @@ static inline unsigned long __ffs64(u64 word)
 })
 #endif
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #ifndef find_last_bit
 /**
  * find_last_bit - find the last set bit in a memory region

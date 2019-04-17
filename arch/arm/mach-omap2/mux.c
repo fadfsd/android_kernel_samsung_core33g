@@ -183,10 +183,15 @@ static int __init _omap_mux_get_by_name(struct omap_mux_partition *partition,
 		m0_entry = mux->muxnames[0];
 
 		/* First check for full name in mode0.muxmode format */
+<<<<<<< HEAD
 		if (mode0_len)
 			if (strncmp(muxname, m0_entry, mode0_len) ||
 			    (strlen(m0_entry) != mode0_len))
 				continue;
+=======
+		if (mode0_len && strncmp(muxname, m0_entry, mode0_len))
+			continue;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 		/* Then check for muxmode only */
 		for (i = 0; i < OMAP_MUX_NR_MODES; i++) {

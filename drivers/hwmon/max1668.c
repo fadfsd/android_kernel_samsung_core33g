@@ -243,7 +243,11 @@ static ssize_t set_temp_min(struct device *dev,
 	data->temp_min[index] = clamp_val(temp/1000, -128, 127);
 	if (i2c_smbus_write_byte_data(client,
 					MAX1668_REG_LIML_WR(index),
+<<<<<<< HEAD
 					data->temp_min[index]))
+=======
+					data->temp_max[index]))
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		count = -EIO;
 	mutex_unlock(&data->update_lock);
 

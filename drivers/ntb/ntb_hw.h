@@ -127,8 +127,11 @@ struct ntb_device {
 	unsigned char link_status;
 	struct delayed_work hb_timer;
 	unsigned long last_ts;
+<<<<<<< HEAD
 
 	struct dentry *debugfs_dir;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 /**
@@ -157,6 +160,7 @@ static inline struct pci_dev *ntb_query_pdev(struct ntb_device *ndev)
 	return ndev->pdev;
 }
 
+<<<<<<< HEAD
 /**
  * ntb_query_debugfs() - return the debugfs pointer
  * @ndev: pointer to ntb_device instance
@@ -171,6 +175,8 @@ static inline struct dentry *ntb_query_debugfs(struct ntb_device *ndev)
 	return ndev->debugfs_dir;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct ntb_device *ntb_register_transport(struct pci_dev *pdev,
 					  void *transport);
 void ntb_unregister_transport(struct ntb_device *ndev);

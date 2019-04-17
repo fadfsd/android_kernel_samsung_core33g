@@ -30,7 +30,10 @@ enum clock_event_nofitiers {
 #include <linux/notifier.h>
 
 struct clock_event_device;
+<<<<<<< HEAD
 struct module;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /* Clock event mode commands */
 enum clock_event_mode {
@@ -84,7 +87,10 @@ enum clock_event_mode {
  * @irq:		IRQ number (only for non CPU local devices)
  * @cpumask:		cpumask to indicate for which CPUs this device works
  * @list:		list head for the management code
+<<<<<<< HEAD
  * @owner:		module reference
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 struct clock_event_device {
 	void			(*event_handler)(struct clock_event_device *);
@@ -114,7 +120,10 @@ struct clock_event_device {
 	int			irq;
 	const struct cpumask	*cpumask;
 	struct list_head	list;
+<<<<<<< HEAD
 	struct module		*owner;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 } ____cacheline_aligned;
 
 /*
@@ -153,6 +162,10 @@ extern void clockevents_exchange_device(struct clock_event_device *old,
 					struct clock_event_device *new);
 extern void clockevents_set_mode(struct clock_event_device *dev,
 				 enum clock_event_mode mode);
+<<<<<<< HEAD
+=======
+extern int clockevents_register_notifier(struct notifier_block *nb);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern int clockevents_program_event(struct clock_event_device *dev,
 				     ktime_t expires, bool force);
 

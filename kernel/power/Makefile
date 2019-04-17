@@ -10,6 +10,15 @@ obj-$(CONFIG_PM_TEST_SUSPEND)	+= suspend_test.o
 obj-$(CONFIG_HIBERNATION)	+= hibernate.o snapshot.o swap.o user.o \
 				   block_io.o
 obj-$(CONFIG_PM_AUTOSLEEP)	+= autosleep.o
+<<<<<<< HEAD
 obj-$(CONFIG_PM_WAKELOCKS)	+= wakelock.o
+=======
+obj-$(CONFIG_WAKELOCK)		+= wakelock.o
+obj-$(CONFIG_USER_WAKELOCK)	+= userwakelock.o
+obj-$(CONFIG_EARLYSUSPEND)	+= earlysuspend.o
+obj-$(CONFIG_CONSOLE_EARLYSUSPEND)	+= consoleearlysuspend.o
+obj-$(CONFIG_FB_EARLYSUSPEND)	+= fbearlysuspend.o
+obj-$(CONFIG_SUSPEND_TIME)	+= suspend_time.o
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 obj-$(CONFIG_MAGIC_SYSRQ)	+= poweroff.o

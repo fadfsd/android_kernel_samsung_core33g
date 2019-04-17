@@ -27,7 +27,16 @@
 #include <asm/byteorder.h>
 #include <asm/memory.h>
 #include <asm-generic/pci_iomap.h>
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_SPRD_DEBUG
+#include <linux/regs_debug.h>
+#endif
+#ifdef CONFIG_SEC_DEBUG
+#include <linux/regs_debug.h>
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * ISA I/O bus memory addresses are 1:1 with the physical address.
  */
@@ -47,6 +56,10 @@ extern void __raw_readsb(const void __iomem *addr, void *data, int bytelen);
 extern void __raw_readsw(const void __iomem *addr, void *data, int wordlen);
 extern void __raw_readsl(const void __iomem *addr, void *data, int longlen);
 
+<<<<<<< HEAD
+=======
+#if !defined(CONFIG_SPRD_DEBUG) && !defined(CONFIG_SEC_DEBUG)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #if __LINUX_ARM_ARCH__ < 6
 /*
  * Half-word accesses are problematic with RiscPC due to limitations of
@@ -109,6 +122,179 @@ static inline u32 __raw_readl(const volatile void __iomem *addr)
 		       "=r" (val));
 	return val;
 }
+<<<<<<< HEAD
+=======
+#else
+extern struct sprd_debug_regs_access *sprd_debug_last_regs_access;
+extern struct sec_debug_regs_access *sec_debug_last_regs_access;
+#if __LINUX_ARM_ARCH__ < 6
+/*
+ * Half-word accesses are problematic with RiscPC due to limitations of
+ * the bus. Rather than special-case the machine, just let the compiler
+ * generate the access for CPUs prior to ARMv6.
+ */
+#if defined(CONFIG_SPRD_DEBUG)
+#define __raw_writew(v,a)  ({sprd_debug_regs_write_start(v, a); \
+               __chk_io_ptr(a); \
+               *(volatile unsigned short __force  *)(a) = (v); \
+               sprd_debug_regs_access_done(); \
+               })
+#define __raw_readw(a)     ({sprd_debug_regs_read_start(a);\
+               volatile unsigned short v;  \
+               __chk_io_ptr(a); \
+               v = *(volatile unsigned short __force  *)(a); \
+               sprd_debug_regs_access_done(); \
+               v;\
+               })
+#endif
+#if defined(CONFIG_SEC_DEBUG)
+#define __raw_writew(v,a)  ({if(sec_debug_last_regs_access) sec_debug_regs_write_start(v, a); \
+               __chk_io_ptr(a); \
+               *(volatile unsigned short __force  *)(a) = (v); \
+               if(sec_debug_last_regs_access) sec_debug_regs_access_done(); \
+               })
+#define __raw_readw(a)     ({if(sec_debug_last_regs_access) sec_debug_regs_read_start(a);\
+               volatile unsigned short v;  \
+               __chk_io_ptr(a); \
+               v = *(volatile unsigned short __force  *)(a); \
+               if(sec_debug_last_regs_access) sec_debug_regs_access_done(); \
+               v;\
+               })
+#endif
+#else
+/*
+ * When running under a hypervisor, we want to avoid I/O accesses with
+ * writeback addressing modes as these incur a significant performance
+ * overhead (the address generation must be emulated in software).
+ */
+#if defined(CONFIG_SPRD_DEBUG)
+static inline void __raw_writew(u16 val, volatile void __iomem *addr)
+{
+	sprd_debug_regs_write_start(val, addr);
+	asm volatile("strh %1, %0"
+		     : "+Q" (*(volatile u16 __force *)addr)
+		     : "r" (val));
+	sprd_debug_regs_access_done();
+}
+
+static inline u16 __raw_readw(const volatile void __iomem *addr)
+{
+	u16 val;
+	sprd_debug_regs_read_start(addr);
+	asm volatile("ldrh %1, %0"
+		     : "+Q" (*(volatile u16 __force *)addr),
+		       "=r" (val));
+	sprd_debug_regs_access_done();
+	return val;
+}
+#endif
+#if defined(CONFIG_SEC_DEBUG)
+static inline void __raw_writew(u16 val, volatile void __iomem *addr)
+{
+	if(sec_debug_last_regs_access) sec_debug_regs_write_start(val, addr);
+	asm volatile("strh %1, %0"
+		     : "+Q" (*(volatile u16 __force *)addr)
+		     : "r" (val));
+	if(sec_debug_last_regs_access) sec_debug_regs_access_done();
+}
+
+static inline u16 __raw_readw(const volatile void __iomem *addr)
+{
+	u16 val;
+	if(sec_debug_last_regs_access) sec_debug_regs_read_start(addr);
+	asm volatile("ldrh %1, %0"
+		     : "+Q" (*(volatile u16 __force *)addr),
+		       "=r" (val));
+	if(sec_debug_last_regs_access) sec_debug_regs_access_done();
+	return val;
+}
+#endif
+#endif
+#if defined(CONFIG_SPRD_DEBUG)
+static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
+{
+	sprd_debug_regs_write_start(val, addr);
+	asm volatile("strb %1, %0"
+		     : "+Qo" (*(volatile u8 __force *)addr)
+		     : "r" (val));
+	sprd_debug_regs_access_done();
+}
+
+static inline void __raw_writel(u32 val, volatile void __iomem *addr)
+{
+	sprd_debug_regs_write_start(val, addr);
+	asm volatile("str %1, %0"
+		     : "+Qo" (*(volatile u32 __force *)addr)
+		     : "r" (val));
+	sprd_debug_regs_access_done();
+}
+
+static inline u8 __raw_readb(const volatile void __iomem *addr)
+{
+	u8 val;
+	sprd_debug_regs_read_start(addr);
+	asm volatile("ldrb %1, %0"
+		     : "+Qo" (*(volatile u8 __force *)addr),
+		       "=r" (val));
+	sprd_debug_regs_access_done();
+	return val;
+}
+
+static inline u32 __raw_readl(const volatile void __iomem *addr)
+{
+	u32 val;
+	sprd_debug_regs_read_start(addr);
+	asm volatile("ldr %1, %0"
+		     : "+Qo" (*(volatile u32 __force *)addr),
+		       "=r" (val));
+	sprd_debug_regs_access_done();
+	return val;
+}
+#endif
+#if defined(CONFIG_SEC_DEBUG)
+static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
+{
+	if(sec_debug_last_regs_access) sec_debug_regs_write_start(val, addr);
+	asm volatile("strb %1, %0"
+		     : "+Qo" (*(volatile u8 __force *)addr)
+		     : "r" (val));
+	if(sec_debug_last_regs_access) sec_debug_regs_access_done();
+}
+
+static inline void __raw_writel(u32 val, volatile void __iomem *addr)
+{
+	if(sec_debug_last_regs_access) sec_debug_regs_write_start(val, addr);
+	asm volatile("str %1, %0"
+		     : "+Qo" (*(volatile u32 __force *)addr)
+		     : "r" (val));
+	if(sec_debug_last_regs_access) sec_debug_regs_access_done();
+}
+
+static inline u8 __raw_readb(const volatile void __iomem *addr)
+{
+	u8 val;
+	if(sec_debug_last_regs_access) sec_debug_regs_read_start(addr);
+	asm volatile("ldrb %1, %0"
+		     : "+Qo" (*(volatile u8 __force *)addr),
+		       "=r" (val));
+	if(sec_debug_last_regs_access) sec_debug_regs_access_done();
+	return val;
+}
+
+static inline u32 __raw_readl(const volatile void __iomem *addr)
+{
+	u32 val;
+	if(sec_debug_last_regs_access) sec_debug_regs_read_start(addr);
+	asm volatile("ldr %1, %0"
+		     : "+Qo" (*(volatile u32 __force *)addr),
+		       "=r" (val));
+	if(sec_debug_last_regs_access) sec_debug_regs_access_done();
+	return val;
+}
+#endif
+
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * Architecture ioremap implementation.
@@ -130,6 +316,7 @@ static inline u32 __raw_readl(const volatile void __iomem *addr)
  */
 extern void __iomem *__arm_ioremap_pfn_caller(unsigned long, unsigned long,
 	size_t, unsigned int, void *);
+<<<<<<< HEAD
 extern void __iomem *__arm_ioremap_caller(phys_addr_t, size_t, unsigned int,
 	void *);
 
@@ -140,6 +327,18 @@ extern void __iounmap(volatile void __iomem *addr);
 extern void __arm_iounmap(volatile void __iomem *addr);
 
 extern void __iomem * (*arch_ioremap_caller)(phys_addr_t, size_t,
+=======
+extern void __iomem *__arm_ioremap_caller(unsigned long, size_t, unsigned int,
+	void *);
+
+extern void __iomem *__arm_ioremap_pfn(unsigned long, unsigned long, size_t, unsigned int);
+extern void __iomem *__arm_ioremap(unsigned long, size_t, unsigned int);
+extern void __iomem *__arm_ioremap_exec(unsigned long, size_t, bool cached);
+extern void __iounmap(volatile void __iomem *addr);
+extern void __arm_iounmap(volatile void __iomem *addr);
+
+extern void __iomem * (*arch_ioremap_caller)(unsigned long, size_t,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int, void *);
 extern void (*arch_iounmap)(volatile void __iomem *);
 

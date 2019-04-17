@@ -431,7 +431,10 @@ static int qxl_sync_obj_flush(void *sync_obj)
 
 static void qxl_sync_obj_unref(void **sync_obj)
 {
+<<<<<<< HEAD
 	*sync_obj = NULL;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static void *qxl_sync_obj_ref(void *sync_obj)

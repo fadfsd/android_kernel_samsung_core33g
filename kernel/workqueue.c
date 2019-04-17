@@ -48,6 +48,16 @@
 #include <linux/moduleparam.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SPRD_DEBUG
+#include <mach/sprd_debug.h>
+#endif
+#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
+#include <mach/sec_debug.h>
+#endif
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include "workqueue_internal.h"
 
 enum {
@@ -295,9 +305,12 @@ static DEFINE_HASHTABLE(unbound_pool_hash, UNBOUND_POOL_HASH_ORDER);
 /* I: attributes used when instantiating standard unbound pools on demand */
 static struct workqueue_attrs *unbound_std_wq_attrs[NR_STD_WORKER_POOLS];
 
+<<<<<<< HEAD
 /* I: attributes used when instantiating ordered pools on demand */
 static struct workqueue_attrs *ordered_wq_attrs[NR_STD_WORKER_POOLS];
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 struct workqueue_struct *system_wq __read_mostly;
 EXPORT_SYMBOL(system_wq);
 struct workqueue_struct *system_highpri_wq __read_mostly;
@@ -1823,12 +1836,15 @@ static void destroy_worker(struct worker *worker)
 	if (worker->flags & WORKER_IDLE)
 		pool->nr_idle--;
 
+<<<<<<< HEAD
 	/*
 	 * Once WORKER_DIE is set, the kworker may destroy itself at any
 	 * point.  Pin to ensure the task stays until we're done with it.
 	 */
 	get_task_struct(worker->task);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	list_del_init(&worker->entry);
 	worker->flags |= WORKER_DIE;
 
@@ -1837,7 +1853,10 @@ static void destroy_worker(struct worker *worker)
 	spin_unlock_irq(&pool->lock);
 
 	kthread_stop(worker->task);
+<<<<<<< HEAD
 	put_task_struct(worker->task);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kfree(worker);
 
 	spin_lock_irq(&pool->lock);
@@ -1881,12 +1900,15 @@ static void send_mayday(struct work_struct *work)
 
 	/* mayday mayday mayday */
 	if (list_empty(&pwq->mayday_node)) {
+<<<<<<< HEAD
 		/*
 		 * If @pwq is for an unbound wq, its base ref may be put at
 		 * any time due to an attribute change.  Pin @pwq until the
 		 * rescuer is done with it.
 		 */
 		get_pwq(pwq);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		list_add_tail(&pwq->mayday_node, &wq->maydays);
 		wake_up_process(wq->rescuer->task);
 	}
@@ -1934,13 +1956,26 @@ static void pool_mayday_timeout(unsigned long __pool)
  * spin_lock_irq(pool->lock) which may be released and regrabbed
  * multiple times.  Does GFP_KERNEL allocations.  Called only from
  * manager.
+<<<<<<< HEAD
  */
 static void maybe_create_worker(struct worker_pool *pool)
+=======
+ *
+ * RETURNS:
+ * %false if no action was taken and pool->lock stayed locked, %true
+ * otherwise.
+ */
+static bool maybe_create_worker(struct worker_pool *pool)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 __releases(&pool->lock)
 __acquires(&pool->lock)
 {
 	if (!need_to_create_worker(pool))
+<<<<<<< HEAD
 		return;
+=======
+		return false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 restart:
 	spin_unlock_irq(&pool->lock);
 
@@ -1957,7 +1992,11 @@ restart:
 			start_worker(worker);
 			if (WARN_ON_ONCE(need_to_create_worker(pool)))
 				goto restart;
+<<<<<<< HEAD
 			return;
+=======
+			return true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 
 		if (!need_to_create_worker(pool))
@@ -1974,7 +2013,11 @@ restart:
 	spin_lock_irq(&pool->lock);
 	if (need_to_create_worker(pool))
 		goto restart;
+<<<<<<< HEAD
 	return;
+=======
+	return true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -1987,9 +2030,21 @@ restart:
  * LOCKING:
  * spin_lock_irq(pool->lock) which may be released and regrabbed
  * multiple times.  Called only from manager.
+<<<<<<< HEAD
  */
 static void maybe_destroy_workers(struct worker_pool *pool)
 {
+=======
+ *
+ * RETURNS:
+ * %false if no action was taken and pool->lock stayed locked, %true
+ * otherwise.
+ */
+static bool maybe_destroy_workers(struct worker_pool *pool)
+{
+	bool ret = false;
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	while (too_many_workers(pool)) {
 		struct worker *worker;
 		unsigned long expires;
@@ -2003,7 +2058,14 @@ static void maybe_destroy_workers(struct worker_pool *pool)
 		}
 
 		destroy_worker(worker);
+<<<<<<< HEAD
 	}
+=======
+		ret = true;
+	}
+
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -2023,14 +2085,23 @@ static void maybe_destroy_workers(struct worker_pool *pool)
  * multiple times.  Does GFP_KERNEL allocations.
  *
  * RETURNS:
+<<<<<<< HEAD
  * %false if the pool doesn't need management and the caller can safely
  * start processing works, %true if management function was performed and
  * the conditions that the caller verified before calling the function may
  * no longer be true.
+=======
+ * spin_lock_irq(pool->lock) which may be released and regrabbed
+ * multiple times.  Does GFP_KERNEL allocations.
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  */
 static bool manage_workers(struct worker *worker)
 {
 	struct worker_pool *pool = worker->pool;
+<<<<<<< HEAD
+=======
+	bool ret = false;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * Managership is governed by two mutexes - manager_arb and
@@ -2054,7 +2125,11 @@ static bool manage_workers(struct worker *worker)
 	 * manager_mutex.
 	 */
 	if (!mutex_trylock(&pool->manager_arb))
+<<<<<<< HEAD
 		return false;
+=======
+		return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/*
 	 * With manager arbitration won, manager_mutex would be free in
@@ -2064,6 +2139,10 @@ static bool manage_workers(struct worker *worker)
 		spin_unlock_irq(&pool->lock);
 		mutex_lock(&pool->manager_mutex);
 		spin_lock_irq(&pool->lock);
+<<<<<<< HEAD
+=======
+		ret = true;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	pool->flags &= ~POOL_MANAGE_WORKERS;
@@ -2072,12 +2151,21 @@ static bool manage_workers(struct worker *worker)
 	 * Destroy and then create so that may_start_working() is true
 	 * on return.
 	 */
+<<<<<<< HEAD
 	maybe_destroy_workers(pool);
 	maybe_create_worker(pool);
 
 	mutex_unlock(&pool->manager_mutex);
 	mutex_unlock(&pool->manager_arb);
 	return true;
+=======
+	ret |= maybe_destroy_workers(pool);
+	ret |= maybe_create_worker(pool);
+
+	mutex_unlock(&pool->manager_mutex);
+	mutex_unlock(&pool->manager_arb);
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -2173,7 +2261,22 @@ __acquires(&pool->lock)
 	lock_map_acquire_read(&pwq->wq->lockdep_map);
 	lock_map_acquire(&lockdep_map);
 	trace_workqueue_execute_start(work);
+<<<<<<< HEAD
 	worker->current_func(work);
+=======
+
+#ifdef CONFIG_SPRD_DEBUG
+	sprd_debug_work_log(worker, work, worker->current_func);
+#endif
+#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
+	sec_debug_work_log(worker, work, worker->current_func, 1);
+#endif
+
+	worker->current_func(work);
+#ifdef CONFIG_SEC_DEBUG_SCHED_LOG
+	sec_debug_work_log(worker, work, worker->current_func, 2);
+#endif
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * While we must be careful to not use "work" after this, the trace
 	 * point will only record its address.
@@ -2349,7 +2452,10 @@ static int rescuer_thread(void *__rescuer)
 	struct worker *rescuer = __rescuer;
 	struct workqueue_struct *wq = rescuer->rescue_wq;
 	struct list_head *scheduled = &rescuer->scheduled;
+<<<<<<< HEAD
 	bool should_stop;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	set_user_nice(current, RESCUER_NICE_LEVEL);
 
@@ -2361,6 +2467,7 @@ static int rescuer_thread(void *__rescuer)
 repeat:
 	set_current_state(TASK_INTERRUPTIBLE);
 
+<<<<<<< HEAD
 	/*
 	 * By the time the rescuer is requested to stop, the workqueue
 	 * shouldn't have any work pending, but @wq->maydays may still have
@@ -2370,6 +2477,13 @@ repeat:
 	 * list is always empty on exit.
 	 */
 	should_stop = kthread_should_stop();
+=======
+	if (kthread_should_stop()) {
+		__set_current_state(TASK_RUNNING);
+		rescuer->task->flags &= ~PF_WQ_WORKER;
+		return 0;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* see whether any pwq is asking for help */
 	spin_lock_irq(&wq_mayday_lock);
@@ -2401,12 +2515,15 @@ repeat:
 		process_scheduled_works(rescuer);
 
 		/*
+<<<<<<< HEAD
 		 * Put the reference grabbed by send_mayday().  @pool won't
 		 * go away while we're holding its lock.
 		 */
 		put_pwq(pwq);
 
 		/*
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		 * Leave this pool.  If keep_working() is %true, notify a
 		 * regular worker; otherwise, we end up with 0 concurrency
 		 * and stalling the execution.
@@ -2421,12 +2538,15 @@ repeat:
 
 	spin_unlock_irq(&wq_mayday_lock);
 
+<<<<<<< HEAD
 	if (should_stop) {
 		__set_current_state(TASK_RUNNING);
 		rescuer->task->flags &= ~PF_WQ_WORKER;
 		return 0;
 	}
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* rescuers should never participate in concurrency management */
 	WARN_ON_ONCE(!(rescuer->flags & WORKER_NOT_RUNNING));
 	schedule();
@@ -2861,6 +2981,7 @@ bool flush_work(struct work_struct *work)
 }
 EXPORT_SYMBOL_GPL(flush_work);
 
+<<<<<<< HEAD
 struct cwt_wait {
 	wait_queue_t		wait;
 	struct work_struct	*work;
@@ -2878,12 +2999,17 @@ static int cwt_wakefn(wait_queue_t *wait, unsigned mode, int sync, void *key)
 static bool __cancel_work_timer(struct work_struct *work, bool is_dwork)
 {
 	static DECLARE_WAIT_QUEUE_HEAD(cancel_waitq);
+=======
+static bool __cancel_work_timer(struct work_struct *work, bool is_dwork)
+{
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned long flags;
 	int ret;
 
 	do {
 		ret = try_to_grab_pending(work, is_dwork, &flags);
 		/*
+<<<<<<< HEAD
 		 * If someone else is already canceling, wait for it to
 		 * finish.  flush_work() doesn't work for PREEMPT_NONE
 		 * because we may get scheduled between @work's completion
@@ -2912,6 +3038,13 @@ static bool __cancel_work_timer(struct work_struct *work, bool is_dwork)
 				schedule();
 			finish_wait(&cancel_waitq, &cwait.wait);
 		}
+=======
+		 * If someone else is canceling, wait for the same event it
+		 * would be waiting for before retrying.
+		 */
+		if (unlikely(ret == -ENOENT))
+			flush_work(work);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} while (unlikely(ret < 0));
 
 	/* tell other tasks trying to grab @work to back off */
@@ -2920,6 +3053,7 @@ static bool __cancel_work_timer(struct work_struct *work, bool is_dwork)
 
 	flush_work(work);
 	clear_work_data(work);
+<<<<<<< HEAD
 
 	/*
 	 * Paired with prepare_to_wait() above so that either
@@ -2930,6 +3064,8 @@ static bool __cancel_work_timer(struct work_struct *work, bool is_dwork)
 	if (waitqueue_active(&cancel_waitq))
 		__wake_up(&cancel_waitq, TASK_NORMAL, 1, work);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 
@@ -3408,7 +3544,10 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
 		}
 	}
 
+<<<<<<< HEAD
 	dev_set_uevent_suppress(&wq_dev->dev, false);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	kobject_uevent(&wq_dev->dev.kobj, KOBJ_ADD);
 	return 0;
 }
@@ -4102,8 +4241,12 @@ static void wq_update_unbound_numa(struct workqueue_struct *wq, int cpu,
 	if (!pwq) {
 		pr_warning("workqueue: allocation failed while updating NUMA affinity of \"%s\"\n",
 			   wq->name);
+<<<<<<< HEAD
 		mutex_lock(&wq->mutex);
 		goto use_dfl_pwq;
+=======
+		goto out_unlock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	/*
@@ -4129,7 +4272,11 @@ out_unlock:
 static int alloc_and_link_pwqs(struct workqueue_struct *wq)
 {
 	bool highpri = wq->flags & WQ_HIGHPRI;
+<<<<<<< HEAD
 	int cpu, ret;
+=======
+	int cpu;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (!(wq->flags & WQ_UNBOUND)) {
 		wq->cpu_pwqs = alloc_percpu(struct pool_workqueue);
@@ -4149,6 +4296,7 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
 			mutex_unlock(&wq->mutex);
 		}
 		return 0;
+<<<<<<< HEAD
 	} else if (wq->flags & __WQ_ORDERED) {
 		ret = apply_workqueue_attrs(wq, ordered_wq_attrs[highpri]);
 		/* there should only be single pwq for ordering guarantee */
@@ -4156,6 +4304,8 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
 			      wq->pwqs.prev != &wq->dfl_pwq->pwqs_node),
 		     "ordering guarantee broken for workqueue %s\n", wq->name);
 		return ret;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} else {
 		return apply_workqueue_attrs(wq, unbound_std_wq_attrs[highpri]);
 	}
@@ -5003,7 +5153,11 @@ static void __init wq_numa_init(void)
 	BUG_ON(!tbl);
 
 	for_each_node(node)
+<<<<<<< HEAD
 		BUG_ON(!zalloc_cpumask_var_node(&tbl[node], GFP_KERNEL,
+=======
+		BUG_ON(!alloc_cpumask_var_node(&tbl[node], GFP_KERNEL,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				node_online(node) ? node : NUMA_NO_NODE));
 
 	for_each_possible_cpu(cpu) {
@@ -5067,13 +5221,18 @@ static int __init init_workqueues(void)
 		}
 	}
 
+<<<<<<< HEAD
 	/* create default unbound and ordered wq attrs */
+=======
+	/* create default unbound wq attrs */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	for (i = 0; i < NR_STD_WORKER_POOLS; i++) {
 		struct workqueue_attrs *attrs;
 
 		BUG_ON(!(attrs = alloc_workqueue_attrs(GFP_KERNEL)));
 		attrs->nice = std_nice[i];
 		unbound_std_wq_attrs[i] = attrs;
+<<<<<<< HEAD
 
 		/*
 		 * An ordered wq should have only one pwq as ordering is
@@ -5084,6 +5243,8 @@ static int __init init_workqueues(void)
 		attrs->nice = std_nice[i];
 		attrs->no_numa = true;
 		ordered_wq_attrs[i] = attrs;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 
 	system_wq = alloc_workqueue("events", 0, 0);

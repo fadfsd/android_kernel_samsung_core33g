@@ -1441,7 +1441,13 @@ module_exit(crypto_gcm_module_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Galois/Counter Mode");
 MODULE_AUTHOR("Mikko Herranen <mh1@iki.fi>");
+<<<<<<< HEAD
 MODULE_ALIAS_CRYPTO("gcm_base");
 MODULE_ALIAS_CRYPTO("rfc4106");
 MODULE_ALIAS_CRYPTO("rfc4543");
 MODULE_ALIAS_CRYPTO("gcm");
+=======
+MODULE_ALIAS("gcm_base");
+MODULE_ALIAS("rfc4106");
+MODULE_ALIAS("rfc4543");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

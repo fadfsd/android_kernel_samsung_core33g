@@ -17,6 +17,7 @@
 #include <linux/slab.h>
 #include <linux/crc32.h>
 #include <linux/magic.h>
+<<<<<<< HEAD
 #include <linux/kobject.h>
 #include <linux/sched.h>
 #include <linux/vmalloc.h>
@@ -61,6 +62,8 @@ struct f2fs_fault_info {
 extern char *fault_name[FAULT_MAX];
 #define IS_FAULT_SET(fi, type) (fi->inject_type & (1 << (type)))
 #endif
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * For mount options
@@ -72,6 +75,7 @@ extern char *fault_name[FAULT_MAX];
 #define F2FS_MOUNT_XATTR_USER		0x00000010
 #define F2FS_MOUNT_POSIX_ACL		0x00000020
 #define F2FS_MOUNT_DISABLE_EXT_IDENTIFY	0x00000040
+<<<<<<< HEAD
 #define F2FS_MOUNT_INLINE_XATTR		0x00000080
 #define F2FS_MOUNT_INLINE_DATA		0x00000100
 #define F2FS_MOUNT_INLINE_DENTRY	0x00000200
@@ -84,6 +88,8 @@ extern char *fault_name[FAULT_MAX];
 #define F2FS_MOUNT_FAULT_INJECTION	0x00010000
 #define F2FS_MOUNT_ADAPTIVE		0x00020000
 #define F2FS_MOUNT_LFS			0x00040000
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #define clear_opt(sbi, option)	(sbi->mount_opt.opt &= ~F2FS_MOUNT_##option)
 #define set_opt(sbi, option)	(sbi->mount_opt.opt |= F2FS_MOUNT_##option)
@@ -93,16 +99,21 @@ extern char *fault_name[FAULT_MAX];
 		typecheck(unsigned long long, b) &&			\
 		((long long)((a) - (b)) > 0))
 
+<<<<<<< HEAD
 typedef u32 block_t;	/*
 			 * should not change u32, since it is the on-disk block
 			 * address format, __le32.
 			 */
+=======
+typedef u64 block_t;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 typedef u32 nid_t;
 
 struct f2fs_mount_info {
 	unsigned int	opt;
 };
 
+<<<<<<< HEAD
 #define F2FS_FEATURE_ENCRYPT	0x0001
 #define F2FS_FEATURE_BLKZONED	0x0002
 
@@ -179,6 +190,16 @@ static inline struct timespec current_time(struct inode *inode)
 	}    
 
 	return timespec_trunc(now, inode->i_sb->s_time_gran);
+=======
+static inline __u32 f2fs_crc32(void *buff, size_t len)
+{
+	return crc32_le(F2FS_SUPER_MAGIC, buff, len);
+}
+
+static inline bool f2fs_crc_valid(__u32 blk_crc, void *buff, size_t buff_size)
+{
+	return f2fs_crc32(buff, buff_size) == blk_crc;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -189,6 +210,7 @@ enum {
 	SIT_BITMAP
 };
 
+<<<<<<< HEAD
 enum {
 	CP_UMOUNT,
 	CP_FASTBOOT,
@@ -233,16 +255,26 @@ enum {
 };
 
 struct ino_entry {
+=======
+/* for the list of orphan inodes */
+struct orphan_inode_entry {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct list_head list;	/* list head */
 	nid_t ino;		/* inode number */
 };
 
+<<<<<<< HEAD
 /* for the list of inodes to be GCed */
 struct inode_entry {
+=======
+/* for the list of directory inodes */
+struct dir_inode_entry {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct list_head list;	/* list head */
 	struct inode *inode;	/* vfs inode pointer */
 };
 
+<<<<<<< HEAD
 /* for the list of blockaddresses to be discarded */
 struct discard_entry {
 	struct list_head list;	/* list head */
@@ -250,10 +282,13 @@ struct discard_entry {
 	int len;		/* # of consecutive blocks of the discard */
 };
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* for the list of fsync inodes, used only during recovery */
 struct fsync_inode_entry {
 	struct list_head list;	/* list head */
 	struct inode *inode;	/* vfs inode pointer */
+<<<<<<< HEAD
 	block_t blkaddr;	/* block address locating the last fsync */
 	block_t last_dentry;	/* block address locating the last dentry */
 };
@@ -323,11 +358,44 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
 #define F2FS_GOING_DOWN_METASYNC	0x1	/* going down with metadata */
 #define F2FS_GOING_DOWN_NOSYNC		0x2	/* going down */
 #define F2FS_GOING_DOWN_METAFLUSH	0x3	/* going down with meta flush */
+=======
+	block_t blkaddr;	/* block address locating the last inode */
+};
+
+#define nats_in_cursum(sum)		(le16_to_cpu(sum->n_nats))
+#define sits_in_cursum(sum)		(le16_to_cpu(sum->n_sits))
+
+#define nat_in_journal(sum, i)		(sum->nat_j.entries[i].ne)
+#define nid_in_journal(sum, i)		(sum->nat_j.entries[i].nid)
+#define sit_in_journal(sum, i)		(sum->sit_j.entries[i].se)
+#define segno_in_journal(sum, i)	(sum->sit_j.entries[i].segno)
+
+static inline int update_nats_in_cursum(struct f2fs_summary_block *rs, int i)
+{
+	int before = nats_in_cursum(rs);
+	rs->n_nats = cpu_to_le16(before + i);
+	return before;
+}
+
+static inline int update_sits_in_cursum(struct f2fs_summary_block *rs, int i)
+{
+	int before = sits_in_cursum(rs);
+	rs->n_sits = cpu_to_le16(before + i);
+	return before;
+}
+
+/*
+ * ioctl commands
+ */
+#define F2FS_IOC_GETFLAGS               FS_IOC_GETFLAGS
+#define F2FS_IOC_SETFLAGS               FS_IOC_SETFLAGS
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
 /*
  * ioctl commands in 32 bit emulation
  */
+<<<<<<< HEAD
 #define F2FS_IOC32_GETFLAGS		FS_IOC32_GETFLAGS
 #define F2FS_IOC32_SETFLAGS		FS_IOC32_SETFLAGS
 #define F2FS_IOC32_GETVERSION		FS_IOC32_GETVERSION
@@ -384,11 +452,26 @@ static inline void make_dentry_ptr(struct inode *inode,
  */
 #define XATTR_NODE_OFFSET	((((unsigned int)-1) << OFFSET_BIT_SHIFT) \
 				>> OFFSET_BIT_SHIFT)
+=======
+#define F2FS_IOC32_GETFLAGS             FS_IOC32_GETFLAGS
+#define F2FS_IOC32_SETFLAGS             FS_IOC32_SETFLAGS
+#endif
+
+/*
+ * For INODE and NODE manager
+ */
+#define XATTR_NODE_OFFSET	(-1)	/*
+					 * store xattrs to one node block per
+					 * file keeping -1 as its node offset to
+					 * distinguish from index node blocks.
+					 */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 enum {
 	ALLOC_NODE,			/* allocate a new node page if needed */
 	LOOKUP_NODE,			/* look up a node without readahead */
 	LOOKUP_NODE_RA,			/*
 					 * look up a node with readahead called
+<<<<<<< HEAD
 					 * by get_data_block.
 					 */
 };
@@ -456,10 +539,27 @@ struct f2fs_map_blocks {
 #define F2FS_GET_BLOCK_PRE_DIO		4
 #define F2FS_GET_BLOCK_PRE_AIO		5
 
+=======
+					 * by get_datablock_ro.
+					 */
+};
+
+#define F2FS_LINK_MAX		32000	/* maximum link count per file */
+
+/* for in-memory extent cache entry */
+struct extent_info {
+	rwlock_t ext_lock;	/* rwlock for consistency */
+	unsigned int fofs;	/* start offset in a file */
+	u32 blk_addr;		/* start block address of the extent */
+	unsigned int len;	/* length of the extent */
+};
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * i_advise uses FADVISE_XXX_BIT. We can add additional hints later.
  */
 #define FADVISE_COLD_BIT	0x01
+<<<<<<< HEAD
 #define FADVISE_LOST_PINO_BIT	0x02
 #define FADVISE_ENCRYPT_BIT	0x04
 #define FADVISE_ENC_NAME_BIT	0x08
@@ -480,18 +580,25 @@ struct f2fs_map_blocks {
 #define file_set_keep_isize(inode) set_file(inode, FADVISE_KEEP_SIZE_BIT)
 
 #define DEF_DIR_LEVEL		0
+=======
+#define FADVISE_CP_BIT		0x02
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 struct f2fs_inode_info {
 	struct inode vfs_inode;		/* serve a vfs inode */
 	unsigned long i_flags;		/* keep an inode flags for ioctl */
 	unsigned char i_advise;		/* use to give file attribute hints */
+<<<<<<< HEAD
 	unsigned char i_dir_level;	/* use for dentry level for large dir */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int i_current_depth;	/* use only in directory structure */
 	unsigned int i_pino;		/* parent inode number */
 	umode_t i_acl_mode;		/* keep file acl mode temporarily */
 
 	/* Use below internally in f2fs*/
 	unsigned long flags;		/* use to pass per-file flags */
+<<<<<<< HEAD
 	struct rw_semaphore i_sem;	/* protect fi info */
 	struct percpu_counter dirty_pages;	/* # of dirty pages */
 	f2fs_hash_t chash;		/* hash value of given file name */
@@ -514,11 +621,29 @@ static inline void get_extent_info(struct extent_info *ext,
 	ext->fofs = le32_to_cpu(i_ext->fofs);
 	ext->blk = le32_to_cpu(i_ext->blk);
 	ext->len = le32_to_cpu(i_ext->len);
+=======
+	atomic_t dirty_dents;		/* # of dirty dentry pages */
+	f2fs_hash_t chash;		/* hash value of given file name */
+	unsigned int clevel;		/* maximum level of given file name */
+	nid_t i_xattr_nid;		/* node id that contains xattrs */
+	struct extent_info ext;		/* in-memory extent cache entry */
+};
+
+static inline void get_extent_info(struct extent_info *ext,
+					struct f2fs_extent i_ext)
+{
+	write_lock(&ext->ext_lock);
+	ext->fofs = le32_to_cpu(i_ext.fofs);
+	ext->blk_addr = le32_to_cpu(i_ext.blk_addr);
+	ext->len = le32_to_cpu(i_ext.len);
+	write_unlock(&ext->ext_lock);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void set_raw_extent(struct extent_info *ext,
 					struct f2fs_extent *i_ext)
 {
+<<<<<<< HEAD
 	i_ext->fofs = cpu_to_le32(ext->fofs);
 	i_ext->blk = cpu_to_le32(ext->blk);
 	i_ext->len = cpu_to_le32(ext->len);
@@ -596,6 +721,31 @@ struct f2fs_nm_info {
 	struct list_head nid_list[MAX_NID_LIST];/* lists for free nids */
 	unsigned int nid_cnt[MAX_NID_LIST];	/* the number of free node id */
 	spinlock_t nid_list_lock;	/* protect nid lists ops */
+=======
+	read_lock(&ext->ext_lock);
+	i_ext->fofs = cpu_to_le32(ext->fofs);
+	i_ext->blk_addr = cpu_to_le32(ext->blk_addr);
+	i_ext->len = cpu_to_le32(ext->len);
+	read_unlock(&ext->ext_lock);
+}
+
+struct f2fs_nm_info {
+	block_t nat_blkaddr;		/* base disk address of NAT */
+	nid_t max_nid;			/* maximum possible node ids */
+	nid_t next_scan_nid;		/* the next nid to be scanned */
+
+	/* NAT cache management */
+	struct radix_tree_root nat_root;/* root of the nat entry cache */
+	rwlock_t nat_tree_lock;		/* protect nat_tree_lock */
+	unsigned int nat_cnt;		/* the # of cached nat entries */
+	struct list_head nat_entries;	/* cached nat entry list (clean) */
+	struct list_head dirty_nat_entries; /* cached nat entry list (dirty) */
+
+	/* free node ids management */
+	struct list_head free_nid_list;	/* a list for free nids */
+	spinlock_t free_nid_list_lock;	/* protect free nid list */
+	unsigned int fcnt;		/* the number of free node id */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct mutex build_lock;	/* lock for build free nids */
 
 	/* for checkpoint */
@@ -615,9 +765,12 @@ struct dnode_of_data {
 	nid_t nid;			/* node id of the direct node block */
 	unsigned int ofs_in_node;	/* data offset in the node page */
 	bool inode_page_locked;		/* inode page is locked or not */
+<<<<<<< HEAD
 	bool node_changed;		/* is node block changed */
 	char cur_level;			/* level of hole node page */
 	char max_level;			/* level of current page located */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	block_t	data_blkaddr;		/* block address of the node block */
 };
 
@@ -655,6 +808,7 @@ enum {
 	CURSEG_HOT_NODE,	/* direct node blocks of directory files */
 	CURSEG_WARM_NODE,	/* direct node blocks of normal files */
 	CURSEG_COLD_NODE,	/* indirect node blocks */
+<<<<<<< HEAD
 	NO_CHECK_TYPE,
 };
 
@@ -670,6 +824,9 @@ struct flush_cmd_control {
 	atomic_t submit_flush;			/* # of issued flushes */
 	struct llist_head issue_list;		/* list for command issue */
 	struct llist_node *dispatch_list;	/* list for command dispatch */
+=======
+	NO_CHECK_TYPE
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 };
 
 struct f2fs_sm_info {
@@ -678,6 +835,12 @@ struct f2fs_sm_info {
 	struct dirty_seglist_info *dirty_info;	/* dirty segment information */
 	struct curseg_info *curseg_array;	/* active segment information */
 
+<<<<<<< HEAD
+=======
+	struct list_head wblist_head;	/* list of under-writeback pages */
+	spinlock_t wblist_lock;		/* lock for checkpoint */
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	block_t seg0_blkaddr;		/* block address of 0'th segment */
 	block_t main_blkaddr;		/* start block address of main area */
 	block_t ssa_blkaddr;		/* start block address of SSA area */
@@ -686,6 +849,7 @@ struct f2fs_sm_info {
 	unsigned int main_segments;	/* # of segments in main area */
 	unsigned int reserved_segments;	/* # of reserved segments */
 	unsigned int ovp_segments;	/* # of overprovision segments */
+<<<<<<< HEAD
 
 	/* a threshold to reclaim prefree segments */
 	unsigned int rec_prefree_segments;
@@ -710,6 +874,20 @@ struct f2fs_sm_info {
 };
 
 /*
+=======
+};
+
+/*
+ * For directory operation
+ */
+#define	NODE_DIR1_BLOCK		(ADDRS_PER_INODE + 1)
+#define	NODE_DIR2_BLOCK		(ADDRS_PER_INODE + 2)
+#define	NODE_IND1_BLOCK		(ADDRS_PER_INODE + 3)
+#define	NODE_IND2_BLOCK		(ADDRS_PER_INODE + 4)
+#define	NODE_DIND_BLOCK		(ADDRS_PER_INODE + 5)
+
+/*
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * For superblock
  */
 /*
@@ -718,6 +896,7 @@ struct f2fs_sm_info {
  * f2fs monitors the number of several block types such as on-writeback,
  * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
  */
+<<<<<<< HEAD
 #define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
 enum count_type {
 	F2FS_DIRTY_DENTS,
@@ -728,11 +907,30 @@ enum count_type {
 	F2FS_DIRTY_IMETA,
 	F2FS_WB_CP_DATA,
 	F2FS_WB_DATA,
+=======
+enum count_type {
+	F2FS_WRITEBACK,
+	F2FS_DIRTY_DENTS,
+	F2FS_DIRTY_NODES,
+	F2FS_DIRTY_META,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	NR_COUNT_TYPE,
 };
 
 /*
+<<<<<<< HEAD
  * The below are the page types of bios used in submit_bio().
+=======
+ * Uses as sbi->fs_lock[NR_GLOBAL_LOCKS].
+ * The checkpoint procedure blocks all the locks in this fs_lock array.
+ * Some FS operations grab free locks, and if there is no free lock,
+ * then wait to grab a lock in a round-robin manner.
+ */
+#define NR_GLOBAL_LOCKS	8
+
+/*
+ * The below are the page types of bios used in submti_bio().
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
  * The available types are:
  * DATA			User data pages. It operates as async mode.
  * NODE			Node pages. It operates as async mode.
@@ -742,13 +940,17 @@ enum count_type {
  *			with waiting the bio's completion
  * ...			Only can be used with META.
  */
+<<<<<<< HEAD
 #define PAGE_TYPE_OF_BIO(type)	((type) > META ? META : (type))
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 enum page_type {
 	DATA,
 	NODE,
 	META,
 	NR_PAGE_TYPE,
 	META_FLUSH,
+<<<<<<< HEAD
 	INMEM,		/* the below types are used by tracepoints only. */
 	INMEM_DROP,
 	INMEM_REVOKE,
@@ -840,6 +1042,15 @@ struct f2fs_sb_info {
 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
 	unsigned int log_blocks_per_blkz;	/* log2 F2FS blocks per zone */
 #endif
+=======
+};
+
+struct f2fs_sb_info {
+	struct super_block *sb;			/* pointer to VFS super block */
+	struct buffer_head *raw_super_buf;	/* buffer head of raw sb */
+	struct f2fs_super_block *raw_super;	/* raw super block pointer */
+	int s_dirty;				/* dirty flag for checkpoint */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* for node-related operations */
 	struct f2fs_nm_info *nm_info;		/* node manager */
@@ -847,6 +1058,7 @@ struct f2fs_sb_info {
 
 	/* for segment-related operations */
 	struct f2fs_sm_info *sm_info;		/* segment manager */
+<<<<<<< HEAD
 
 	/* for bio operations */
 	struct f2fs_bio_info read_io;			/* for read bios */
@@ -885,6 +1097,34 @@ struct f2fs_sb_info {
 	atomic_t total_ext_node;		/* extent info count */
 
 	/* basic filesystem units */
+=======
+	struct bio *bio[NR_PAGE_TYPE];		/* bios to merge */
+	sector_t last_block_in_bio[NR_PAGE_TYPE];	/* last block number */
+	struct rw_semaphore bio_sem;		/* IO semaphore */
+
+	/* for checkpoint */
+	struct f2fs_checkpoint *ckpt;		/* raw checkpoint pointer */
+	struct inode *meta_inode;		/* cache meta blocks */
+	struct mutex cp_mutex;			/* checkpoint procedure lock */
+	struct mutex fs_lock[NR_GLOBAL_LOCKS];	/* blocking FS operations */
+	struct mutex node_write;		/* locking node writes */
+	struct mutex writepages;		/* mutex for writepages() */
+	unsigned char next_lock_num;		/* round-robin global locks */
+	int por_doing;				/* recovery is doing or not */
+	int on_build_free_nids;			/* build_free_nids is doing */
+
+	/* for orphan inode management */
+	struct list_head orphan_inode_list;	/* orphan inode list */
+	struct mutex orphan_inode_mutex;	/* for orphan inode list */
+	unsigned int n_orphans;			/* # of orphan inodes */
+
+	/* for directory inode management */
+	struct list_head dir_inode_list;	/* dir inode list */
+	spinlock_t dir_inode_lock;		/* for dir inode list lock */
+	unsigned int n_dirty_dirs;		/* # of dir inodes */
+
+	/* basic file system units */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int log_sectors_per_block;	/* log2 sectors per block */
 	unsigned int log_blocksize;		/* log2 block size */
 	unsigned int blocksize;			/* block size */
@@ -898,6 +1138,7 @@ struct f2fs_sb_info {
 	unsigned int total_sections;		/* total section count */
 	unsigned int total_node_count;		/* total node block count */
 	unsigned int total_valid_node_count;	/* valid node block count */
+<<<<<<< HEAD
 	loff_t max_file_blocks;			/* max block index of file */
 	int active_logs;			/* # of active logs */
 	int dir_level;				/* directory level */
@@ -915,6 +1156,17 @@ struct f2fs_sb_info {
 
 	/* valid inode count */
 	struct percpu_counter total_valid_inode_count;
+=======
+	unsigned int total_valid_inode_count;	/* valid inode count */
+	int active_logs;			/* # of active logs */
+
+	block_t user_block_count;		/* # of user blocks */
+	block_t total_valid_block_count;	/* # of valid blocks */
+	block_t alloc_valid_block_count;	/* # of allocated blocks */
+	block_t last_valid_block_count;		/* for recovery */
+	u32 s_next_generation;			/* for NFS support */
+	atomic_t nr_pages[NR_COUNT_TYPE];	/* # of pages, see count_type */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	struct f2fs_mount_info mount_opt;	/* mount options */
 
@@ -923,13 +1175,17 @@ struct f2fs_sb_info {
 	struct f2fs_gc_kthread	*gc_thread;	/* GC thread */
 	unsigned int cur_victim_sec;		/* current victim section num */
 
+<<<<<<< HEAD
 	/* maximum # of trials to find a victim segment for SSR and GC */
 	unsigned int max_victim_search;
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/*
 	 * for stat information.
 	 * one is for the LFS mode, and the other is for the SSR mode.
 	 */
+<<<<<<< HEAD
 #ifdef CONFIG_F2FS_STAT_FS
 	struct f2fs_stat_info *stat_info;	/* FS status information */
 	unsigned int segment_count[2];		/* # of allocated segments */
@@ -1059,6 +1315,20 @@ static inline bool f2fs_crc_valid(struct f2fs_sb_info *sbi, __u32 blk_crc,
 	return f2fs_crc32(sbi, buf, buf_size) == blk_crc;
 }
 
+=======
+	struct f2fs_stat_info *stat_info;	/* FS status information */
+	unsigned int segment_count[2];		/* # of allocated segments */
+	unsigned int block_count[2];		/* # of allocated blocks */
+	unsigned int last_victim[2];		/* last victim segment # */
+	int total_hit_ext, read_hit_ext;	/* extent cache hit ratio */
+	int bg_gc;				/* background gc calls */
+	spinlock_t stat_lock;			/* lock for stat operations */
+};
+
+/*
+ * Inline functions
+ */
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline struct f2fs_inode_info *F2FS_I(struct inode *inode)
 {
 	return container_of(inode, struct f2fs_inode_info, vfs_inode);
@@ -1069,6 +1339,7 @@ static inline struct f2fs_sb_info *F2FS_SB(struct super_block *sb)
 	return sb->s_fs_info;
 }
 
+<<<<<<< HEAD
 static inline struct f2fs_sb_info *F2FS_I_SB(struct inode *inode)
 {
 	return F2FS_SB(inode->i_sb);
@@ -1084,6 +1355,8 @@ static inline struct f2fs_sb_info *F2FS_P_SB(struct page *page)
 	return F2FS_M_SB(page->mapping);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline struct f2fs_super_block *F2FS_RAW_SUPER(struct f2fs_sb_info *sbi)
 {
 	return (struct f2fs_super_block *)(sbi->raw_super);
@@ -1094,6 +1367,7 @@ static inline struct f2fs_checkpoint *F2FS_CKPT(struct f2fs_sb_info *sbi)
 	return (struct f2fs_checkpoint *)(sbi->ckpt);
 }
 
+<<<<<<< HEAD
 static inline struct f2fs_node *F2FS_NODE(struct page *page)
 {
 	return (struct f2fs_node *)page_address(page);
@@ -1104,6 +1378,8 @@ static inline struct f2fs_inode *F2FS_INODE(struct page *page)
 	return &((struct f2fs_node *)page_address(page))->i;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline struct f2fs_nm_info *NM_I(struct f2fs_sb_info *sbi)
 {
 	return (struct f2fs_nm_info *)(sbi->nm_info);
@@ -1129,6 +1405,7 @@ static inline struct dirty_seglist_info *DIRTY_I(struct f2fs_sb_info *sbi)
 	return (struct dirty_seglist_info *)(SM_I(sbi)->dirty_info);
 }
 
+<<<<<<< HEAD
 static inline struct address_space *META_MAPPING(struct f2fs_sb_info *sbi)
 {
 	return sbi->meta_inode->i_mapping;
@@ -1176,10 +1453,32 @@ static inline void __set_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f)
 	unsigned int ckpt_flags;
 
 	ckpt_flags = le32_to_cpu(cp->ckpt_flags);
+=======
+static inline void F2FS_SET_SB_DIRT(struct f2fs_sb_info *sbi)
+{
+	sbi->s_dirty = 1;
+}
+
+static inline void F2FS_RESET_SB_DIRT(struct f2fs_sb_info *sbi)
+{
+	sbi->s_dirty = 0;
+}
+
+static inline bool is_set_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f)
+{
+	unsigned int ckpt_flags = le32_to_cpu(cp->ckpt_flags);
+	return ckpt_flags & f;
+}
+
+static inline void set_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f)
+{
+	unsigned int ckpt_flags = le32_to_cpu(cp->ckpt_flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ckpt_flags |= f;
 	cp->ckpt_flags = cpu_to_le32(ckpt_flags);
 }
 
+<<<<<<< HEAD
 static inline void set_ckpt_flags(struct f2fs_sb_info *sbi, unsigned int f)
 {
 	spin_lock(&sbi->cp_lock);
@@ -1192,10 +1491,16 @@ static inline void __clear_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f
 	unsigned int ckpt_flags;
 
 	ckpt_flags = le32_to_cpu(cp->ckpt_flags);
+=======
+static inline void clear_ckpt_flags(struct f2fs_checkpoint *cp, unsigned int f)
+{
+	unsigned int ckpt_flags = le32_to_cpu(cp->ckpt_flags);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ckpt_flags &= (~f);
 	cp->ckpt_flags = cpu_to_le32(ckpt_flags);
 }
 
+<<<<<<< HEAD
 static inline void clear_ckpt_flags(struct f2fs_sb_info *sbi, unsigned int f)
 {
 	spin_lock(&sbi->cp_lock);
@@ -1243,6 +1548,42 @@ static inline bool __exist_node_summaries(struct f2fs_sb_info *sbi)
 {
 	return (is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG) ||
 			is_set_ckpt_flags(sbi, CP_FASTBOOT_FLAG));
+=======
+static inline void mutex_lock_all(struct f2fs_sb_info *sbi)
+{
+	int i = 0;
+	for (; i < NR_GLOBAL_LOCKS; i++)
+		mutex_lock(&sbi->fs_lock[i]);
+}
+
+static inline void mutex_unlock_all(struct f2fs_sb_info *sbi)
+{
+	int i = 0;
+	for (; i < NR_GLOBAL_LOCKS; i++)
+		mutex_unlock(&sbi->fs_lock[i]);
+}
+
+static inline int mutex_lock_op(struct f2fs_sb_info *sbi)
+{
+	unsigned char next_lock = sbi->next_lock_num % NR_GLOBAL_LOCKS;
+	int i = 0;
+
+	for (; i < NR_GLOBAL_LOCKS; i++)
+		if (mutex_trylock(&sbi->fs_lock[i]))
+			return i;
+
+	mutex_lock(&sbi->fs_lock[next_lock]);
+	sbi->next_lock_num++;
+	return next_lock;
+}
+
+static inline void mutex_unlock_op(struct f2fs_sb_info *sbi, int ilock)
+{
+	if (ilock < 0)
+		return;
+	BUG_ON(ilock >= NR_GLOBAL_LOCKS);
+	mutex_unlock(&sbi->fs_lock[ilock]);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
@@ -1250,9 +1591,14 @@ static inline bool __exist_node_summaries(struct f2fs_sb_info *sbi)
  */
 static inline int check_nid_range(struct f2fs_sb_info *sbi, nid_t nid)
 {
+<<<<<<< HEAD
 	if (unlikely(nid < F2FS_ROOT_INO(sbi)))
 		return -EINVAL;
 	if (unlikely(nid >= NM_I(sbi)->max_nid))
+=======
+	WARN_ON((nid >= NM_I(sbi)->max_nid));
+	if (nid >= NM_I(sbi)->max_nid)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return -EINVAL;
 	return 0;
 }
@@ -1265,6 +1611,7 @@ static inline int check_nid_range(struct f2fs_sb_info *sbi, nid_t nid)
 static inline int F2FS_HAS_BLOCKS(struct inode *inode)
 {
 	if (F2FS_I(inode)->i_xattr_nid)
+<<<<<<< HEAD
 		return inode->i_blocks > F2FS_DEFAULT_ALLOCATED_BLOCKS + 1;
 	else
 		return inode->i_blocks > F2FS_DEFAULT_ALLOCATED_BLOCKS;
@@ -1310,20 +1657,57 @@ static inline bool inc_valid_block_count(struct f2fs_sb_info *sbi,
 }
 
 static inline void dec_valid_block_count(struct f2fs_sb_info *sbi,
+=======
+		return (inode->i_blocks > F2FS_DEFAULT_ALLOCATED_BLOCKS + 1);
+	else
+		return (inode->i_blocks > F2FS_DEFAULT_ALLOCATED_BLOCKS);
+}
+
+static inline bool inc_valid_block_count(struct f2fs_sb_info *sbi,
+				 struct inode *inode, blkcnt_t count)
+{
+	block_t	valid_block_count;
+
+	spin_lock(&sbi->stat_lock);
+	valid_block_count =
+		sbi->total_valid_block_count + (block_t)count;
+	if (valid_block_count > sbi->user_block_count) {
+		spin_unlock(&sbi->stat_lock);
+		return false;
+	}
+	inode->i_blocks += count;
+	sbi->total_valid_block_count = valid_block_count;
+	sbi->alloc_valid_block_count += (block_t)count;
+	spin_unlock(&sbi->stat_lock);
+	return true;
+}
+
+static inline int dec_valid_block_count(struct f2fs_sb_info *sbi,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 						struct inode *inode,
 						blkcnt_t count)
 {
 	spin_lock(&sbi->stat_lock);
+<<<<<<< HEAD
 	f2fs_bug_on(sbi, sbi->total_valid_block_count < (block_t) count);
 	f2fs_bug_on(sbi, inode->i_blocks < count);
 	sbi->total_valid_block_count -= (block_t)count;
 	spin_unlock(&sbi->stat_lock);
 	f2fs_i_blocks_write(inode, count, false);
+=======
+	BUG_ON(sbi->total_valid_block_count < (block_t) count);
+	BUG_ON(inode->i_blocks < count);
+	inode->i_blocks -= count;
+	sbi->total_valid_block_count -= (block_t)count;
+	spin_unlock(&sbi->stat_lock);
+	return 0;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void inc_page_count(struct f2fs_sb_info *sbi, int count_type)
 {
 	atomic_inc(&sbi->nr_pages[count_type]);
+<<<<<<< HEAD
 
 	if (count_type == F2FS_DIRTY_DATA || count_type == F2FS_INMEM_PAGES ||
 		count_type == F2FS_WB_CP_DATA || count_type == F2FS_WB_DATA)
@@ -1337,6 +1721,14 @@ static inline void inode_inc_dirty_pages(struct inode *inode)
 	percpu_counter_inc(&F2FS_I(inode)->dirty_pages);
 	inc_page_count(F2FS_I_SB(inode), S_ISDIR(inode->i_mode) ?
 				F2FS_DIRTY_DENTS : F2FS_DIRTY_DATA);
+=======
+	F2FS_SET_SB_DIRT(sbi);
+}
+
+static inline void inode_inc_dirty_dents(struct inode *inode)
+{
+	atomic_inc(&F2FS_I(inode)->dirty_dents);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void dec_page_count(struct f2fs_sb_info *sbi, int count_type)
@@ -1344,6 +1736,7 @@ static inline void dec_page_count(struct f2fs_sb_info *sbi, int count_type)
 	atomic_dec(&sbi->nr_pages[count_type]);
 }
 
+<<<<<<< HEAD
 static inline void inode_dec_dirty_pages(struct inode *inode)
 {
 	if (!S_ISDIR(inode->i_mode) && !S_ISREG(inode->i_mode) &&
@@ -1356,10 +1749,19 @@ static inline void inode_dec_dirty_pages(struct inode *inode)
 }
 
 static inline s64 get_pages(struct f2fs_sb_info *sbi, int count_type)
+=======
+static inline void inode_dec_dirty_dents(struct inode *inode)
+{
+	atomic_dec(&F2FS_I(inode)->dirty_dents);
+}
+
+static inline int get_pages(struct f2fs_sb_info *sbi, int count_type)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	return atomic_read(&sbi->nr_pages[count_type]);
 }
 
+<<<<<<< HEAD
 static inline s64 get_dirty_pages(struct inode *inode)
 {
 	return percpu_counter_sum_positive(&F2FS_I(inode)->dirty_pages);
@@ -1372,16 +1774,32 @@ static inline int get_blocktype_secs(struct f2fs_sb_info *sbi, int block_type)
 						sbi->log_blocks_per_seg;
 
 	return segs / sbi->segs_per_sec;
+=======
+static inline int get_blocktype_secs(struct f2fs_sb_info *sbi, int block_type)
+{
+	unsigned int pages_per_sec = sbi->segs_per_sec *
+					(1 << sbi->log_blocks_per_seg);
+	return ((get_pages(sbi, block_type) + pages_per_sec - 1)
+			>> sbi->log_blocks_per_seg) / sbi->segs_per_sec;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline block_t valid_user_blocks(struct f2fs_sb_info *sbi)
 {
+<<<<<<< HEAD
 	return sbi->total_valid_block_count;
 }
 
 static inline block_t discard_blocks(struct f2fs_sb_info *sbi)
 {
 	return sbi->discard_blks;
+=======
+	block_t ret;
+	spin_lock(&sbi->stat_lock);
+	ret = sbi->total_valid_block_count;
+	spin_unlock(&sbi->stat_lock);
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline unsigned long __bitmap_size(struct f2fs_sb_info *sbi, int flag)
@@ -1397,6 +1815,7 @@ static inline unsigned long __bitmap_size(struct f2fs_sb_info *sbi, int flag)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline block_t __cp_payload(struct f2fs_sb_info *sbi)
 {
 	return le32_to_cpu(F2FS_RAW_SUPER(sbi)->cp_payload);
@@ -1417,10 +1836,19 @@ static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
 			le32_to_cpu(ckpt->sit_ver_bitmap_bytesize) : 0;
 		return &ckpt->sit_nat_version_bitmap + offset;
 	}
+=======
+static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
+{
+	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
+	int offset = (flag == NAT_BITMAP) ?
+			le32_to_cpu(ckpt->sit_ver_bitmap_bytesize) : 0;
+	return &ckpt->sit_nat_version_bitmap + offset;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline block_t __start_cp_addr(struct f2fs_sb_info *sbi)
 {
+<<<<<<< HEAD
 	block_t start_addr = le32_to_cpu(F2FS_RAW_SUPER(sbi)->cp_blkaddr);
 
 	if (sbi->cur_cp_pack == 2)
@@ -1440,6 +1868,22 @@ static inline block_t __start_cp_next_addr(struct f2fs_sb_info *sbi)
 static inline void __set_cp_next_pack(struct f2fs_sb_info *sbi)
 {
 	sbi->cur_cp_pack = (sbi->cur_cp_pack == 1) ? 2 : 1;
+=======
+	block_t start_addr;
+	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
+	unsigned long long ckpt_version = le64_to_cpu(ckpt->checkpoint_ver);
+
+	start_addr = le32_to_cpu(F2FS_RAW_SUPER(sbi)->cp_blkaddr);
+
+	/*
+	 * odd numbered checkpoint should at cp segment 0
+	 * and even segent must be at cp segment 1
+	 */
+	if (!(ckpt_version & 1))
+		start_addr += sbi->blocks_per_seg;
+
+	return start_addr;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline block_t __start_sum_addr(struct f2fs_sb_info *sbi)
@@ -1448,26 +1892,44 @@ static inline block_t __start_sum_addr(struct f2fs_sb_info *sbi)
 }
 
 static inline bool inc_valid_node_count(struct f2fs_sb_info *sbi,
+<<<<<<< HEAD
 						struct inode *inode)
+=======
+						struct inode *inode,
+						unsigned int count)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	block_t	valid_block_count;
 	unsigned int valid_node_count;
 
 	spin_lock(&sbi->stat_lock);
 
+<<<<<<< HEAD
 	valid_block_count = sbi->total_valid_block_count + 1;
 	if (unlikely(valid_block_count > sbi->user_block_count)) {
+=======
+	valid_block_count = sbi->total_valid_block_count + (block_t)count;
+	sbi->alloc_valid_block_count += (block_t)count;
+	valid_node_count = sbi->total_valid_node_count + count;
+
+	if (valid_block_count > sbi->user_block_count) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		spin_unlock(&sbi->stat_lock);
 		return false;
 	}
 
+<<<<<<< HEAD
 	valid_node_count = sbi->total_valid_node_count + 1;
 	if (unlikely(valid_node_count > sbi->total_node_count)) {
+=======
+	if (valid_node_count > sbi->total_node_count) {
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		spin_unlock(&sbi->stat_lock);
 		return false;
 	}
 
 	if (inode)
+<<<<<<< HEAD
 		f2fs_i_blocks_write(inode, 1, true);
 
 	sbi->total_valid_node_count++;
@@ -1475,10 +1937,18 @@ static inline bool inc_valid_node_count(struct f2fs_sb_info *sbi,
 	spin_unlock(&sbi->stat_lock);
 
 	percpu_counter_inc(&sbi->alloc_valid_block_count);
+=======
+		inode->i_blocks += count;
+	sbi->total_valid_node_count = valid_node_count;
+	sbi->total_valid_block_count = valid_block_count;
+	spin_unlock(&sbi->stat_lock);
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return true;
 }
 
 static inline void dec_valid_node_count(struct f2fs_sb_info *sbi,
+<<<<<<< HEAD
 						struct inode *inode)
 {
 	spin_lock(&sbi->stat_lock);
@@ -1490,17 +1960,40 @@ static inline void dec_valid_node_count(struct f2fs_sb_info *sbi,
 	f2fs_i_blocks_write(inode, 1, false);
 	sbi->total_valid_node_count--;
 	sbi->total_valid_block_count--;
+=======
+						struct inode *inode,
+						unsigned int count)
+{
+	spin_lock(&sbi->stat_lock);
+
+	BUG_ON(sbi->total_valid_block_count < count);
+	BUG_ON(sbi->total_valid_node_count < count);
+	BUG_ON(inode->i_blocks < count);
+
+	inode->i_blocks -= count;
+	sbi->total_valid_node_count -= count;
+	sbi->total_valid_block_count -= (block_t)count;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_unlock(&sbi->stat_lock);
 }
 
 static inline unsigned int valid_node_count(struct f2fs_sb_info *sbi)
 {
+<<<<<<< HEAD
 	return sbi->total_valid_node_count;
+=======
+	unsigned int ret;
+	spin_lock(&sbi->stat_lock);
+	ret = sbi->total_valid_node_count;
+	spin_unlock(&sbi->stat_lock);
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void inc_valid_inode_count(struct f2fs_sb_info *sbi)
 {
+<<<<<<< HEAD
 	percpu_counter_inc(&sbi->total_valid_inode_count);
 }
 
@@ -1538,10 +2031,35 @@ static inline void f2fs_copy_page(struct page *src, struct page *dst)
 	memcpy(dst_kaddr, src_kaddr, PAGE_SIZE);
 	kunmap(dst);
 	kunmap(src);
+=======
+	spin_lock(&sbi->stat_lock);
+	BUG_ON(sbi->total_valid_inode_count == sbi->total_node_count);
+	sbi->total_valid_inode_count++;
+	spin_unlock(&sbi->stat_lock);
+}
+
+static inline int dec_valid_inode_count(struct f2fs_sb_info *sbi)
+{
+	spin_lock(&sbi->stat_lock);
+	BUG_ON(!sbi->total_valid_inode_count);
+	sbi->total_valid_inode_count--;
+	spin_unlock(&sbi->stat_lock);
+	return 0;
+}
+
+static inline unsigned int valid_inode_count(struct f2fs_sb_info *sbi)
+{
+	unsigned int ret;
+	spin_lock(&sbi->stat_lock);
+	ret = sbi->total_valid_inode_count;
+	spin_unlock(&sbi->stat_lock);
+	return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void f2fs_put_page(struct page *page, int unlock)
 {
+<<<<<<< HEAD
 	if (!page)
 		return;
 
@@ -1550,6 +2068,16 @@ static inline void f2fs_put_page(struct page *page, int unlock)
 		unlock_page(page);
 	}
 	put_page(page);
+=======
+	if (!page || IS_ERR(page))
+		return;
+
+	if (unlock) {
+		BUG_ON(!PageLocked(page));
+		unlock_page(page);
+	}
+	page_cache_release(page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static inline void f2fs_put_dnode(struct dnode_of_data *dn)
@@ -1563,6 +2091,7 @@ static inline void f2fs_put_dnode(struct dnode_of_data *dn)
 }
 
 static inline struct kmem_cache *f2fs_kmem_cache_create(const char *name,
+<<<<<<< HEAD
 					size_t size)
 {
 	return kmem_cache_create(name, size, 0, SLAB_RECLAIM_ACCOUNT, NULL);
@@ -1595,13 +2124,22 @@ static inline void f2fs_radix_tree_insert(struct radix_tree_root *root,
 {
 	while (radix_tree_insert(root, index, item))
 		cond_resched();
+=======
+					size_t size, void (*ctor)(void *))
+{
+	return kmem_cache_create(name, size, 0, SLAB_RECLAIM_ACCOUNT, ctor);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 #define RAW_IS_INODE(p)	((p)->footer.nid == (p)->footer.ino)
 
 static inline bool IS_INODE(struct page *page)
 {
+<<<<<<< HEAD
 	struct f2fs_node *p = F2FS_NODE(page);
+=======
+	struct f2fs_node *p = (struct f2fs_node *)page_address(page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return RAW_IS_INODE(p);
 }
 
@@ -1615,7 +2153,11 @@ static inline block_t datablock_addr(struct page *node_page,
 {
 	struct f2fs_node *raw_node;
 	__le32 *addr_array;
+<<<<<<< HEAD
 	raw_node = F2FS_NODE(node_page);
+=======
+	raw_node = (struct f2fs_node *)page_address(node_page);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	addr_array = blkaddr_in_node(raw_node);
 	return le32_to_cpu(addr_array[offset]);
 }
@@ -1629,6 +2171,7 @@ static inline int f2fs_test_bit(unsigned int nr, char *addr)
 	return mask & *addr;
 }
 
+<<<<<<< HEAD
 static inline void f2fs_set_bit(unsigned int nr, char *addr)
 {
 	int mask;
@@ -1648,6 +2191,9 @@ static inline void f2fs_clear_bit(unsigned int nr, char *addr)
 }
 
 static inline int f2fs_test_and_set_bit(unsigned int nr, char *addr)
+=======
+static inline int f2fs_set_bit(unsigned int nr, char *addr)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int mask;
 	int ret;
@@ -1659,7 +2205,11 @@ static inline int f2fs_test_and_set_bit(unsigned int nr, char *addr)
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline int f2fs_test_and_clear_bit(unsigned int nr, char *addr)
+=======
+static inline int f2fs_clear_bit(unsigned int nr, char *addr)
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 {
 	int mask;
 	int ret;
@@ -1671,6 +2221,7 @@ static inline int f2fs_test_and_clear_bit(unsigned int nr, char *addr)
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline void f2fs_change_bit(unsigned int nr, char *addr)
 {
 	int mask;
@@ -2034,17 +2585,63 @@ static inline void f2fs_kvfree(void *ptr)
 	(pgofs - ADDRS_PER_INODE(inode) + ADDRS_PER_BLOCK) /	\
 	ADDRS_PER_BLOCK * ADDRS_PER_BLOCK + ADDRS_PER_INODE(inode))
 
+=======
+/* used for f2fs_inode_info->flags */
+enum {
+	FI_NEW_INODE,		/* indicate newly allocated inode */
+	FI_INC_LINK,		/* need to increment i_nlink */
+	FI_ACL_MODE,		/* indicate acl mode */
+	FI_NO_ALLOC,		/* should not allocate any blocks */
+};
+
+static inline void set_inode_flag(struct f2fs_inode_info *fi, int flag)
+{
+	set_bit(flag, &fi->flags);
+}
+
+static inline int is_inode_flag_set(struct f2fs_inode_info *fi, int flag)
+{
+	return test_bit(flag, &fi->flags);
+}
+
+static inline void clear_inode_flag(struct f2fs_inode_info *fi, int flag)
+{
+	clear_bit(flag, &fi->flags);
+}
+
+static inline void set_acl_inode(struct f2fs_inode_info *fi, umode_t mode)
+{
+	fi->i_acl_mode = mode;
+	set_inode_flag(fi, FI_ACL_MODE);
+}
+
+static inline int cond_clear_inode_flag(struct f2fs_inode_info *fi, int flag)
+{
+	if (is_inode_flag_set(fi, FI_ACL_MODE)) {
+		clear_inode_flag(fi, FI_ACL_MODE);
+		return 1;
+	}
+	return 0;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * file.c
  */
 int f2fs_sync_file(struct file *, loff_t, loff_t, int);
 void truncate_data_blocks(struct dnode_of_data *);
+<<<<<<< HEAD
 int truncate_blocks(struct inode *, u64, bool);
 int f2fs_truncate(struct inode *);
 int f2fs_getattr(struct vfsmount *, struct dentry *, struct kstat *);
 int f2fs_setattr(struct dentry *, struct iattr *);
 int truncate_hole(struct inode *, pgoff_t, pgoff_t);
 int truncate_data_blocks_range(struct dnode_of_data *, int);
+=======
+void f2fs_truncate(struct inode *);
+int f2fs_setattr(struct dentry *, struct iattr *);
+int truncate_hole(struct inode *, pgoff_t, pgoff_t);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 long f2fs_ioctl(struct file *, unsigned int, unsigned long);
 long f2fs_compat_ioctl(struct file *, unsigned int, unsigned long);
 
@@ -2053,6 +2650,7 @@ long f2fs_compat_ioctl(struct file *, unsigned int, unsigned long);
  */
 void f2fs_set_inode_flags(struct inode *);
 struct inode *f2fs_iget(struct super_block *, unsigned long);
+<<<<<<< HEAD
 struct inode *f2fs_iget_retry(struct super_block *, unsigned long);
 int try_to_free_nats(struct f2fs_sb_info *, int);
 int update_inode(struct inode *, struct page *);
@@ -2060,6 +2658,12 @@ int update_inode_page(struct inode *);
 int f2fs_write_inode(struct inode *, struct writeback_control *);
 void f2fs_evict_inode(struct inode *);
 void handle_failed_inode(struct inode *);
+=======
+void update_inode(struct inode *, struct page *);
+int update_inode_page(struct inode *);
+int f2fs_write_inode(struct inode *, struct writeback_control *);
+void f2fs_evict_inode(struct inode *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * namei.c
@@ -2069,6 +2673,7 @@ struct dentry *f2fs_get_parent(struct dentry *child);
 /*
  * dir.c
  */
+<<<<<<< HEAD
 void set_de_type(struct f2fs_dir_entry *, umode_t);
 unsigned char get_de_type(struct f2fs_dir_entry *);
 struct f2fs_dir_entry *find_target_dentry(struct fscrypt_name *,
@@ -2103,17 +2708,35 @@ int __f2fs_add_link(struct inode *, const struct qstr *, struct inode *, nid_t,
 void f2fs_delete_entry(struct f2fs_dir_entry *, struct page *, struct inode *,
 							struct inode *);
 int f2fs_do_tmpfile(struct inode *, struct inode *);
+=======
+struct f2fs_dir_entry *f2fs_find_entry(struct inode *, struct qstr *,
+							struct page **);
+struct f2fs_dir_entry *f2fs_parent_dir(struct inode *, struct page **);
+ino_t f2fs_inode_by_name(struct inode *, struct qstr *);
+void f2fs_set_link(struct inode *, struct f2fs_dir_entry *,
+				struct page *, struct inode *);
+void init_dent_inode(const struct qstr *, struct page *);
+int __f2fs_add_link(struct inode *, const struct qstr *, struct inode *);
+void f2fs_delete_entry(struct f2fs_dir_entry *, struct page *, struct inode *);
+int f2fs_make_empty(struct inode *, struct inode *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 bool f2fs_empty_dir(struct inode *);
 
 static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
 {
+<<<<<<< HEAD
 	return __f2fs_add_link(d_inode(dentry->d_parent), &dentry->d_name,
 				inode, inode->i_ino, inode->i_mode);
+=======
+	return __f2fs_add_link(dentry->d_parent->d_inode, &dentry->d_name,
+				inode);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /*
  * super.c
  */
+<<<<<<< HEAD
 int f2fs_inode_dirtied(struct inode *, bool);
 void f2fs_inode_synced(struct inode *);
 int f2fs_commit_super(struct f2fs_sb_info *, bool);
@@ -2121,11 +2744,20 @@ int f2fs_sync_fs(struct super_block *, int);
 extern __printf(3, 4)
 void f2fs_msg(struct super_block *, const char *, const char *, ...);
 int sanity_check_ckpt(struct f2fs_sb_info *sbi);
+=======
+int f2fs_sync_fs(struct super_block *, int);
+extern __printf(3, 4)
+void f2fs_msg(struct super_block *, const char *, const char *, ...);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * hash.c
  */
+<<<<<<< HEAD
 f2fs_hash_t f2fs_dentry_hash(const struct qstr *);
+=======
+f2fs_hash_t f2fs_dentry_hash(const char *, size_t);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * node.c
@@ -2133,6 +2765,7 @@ f2fs_hash_t f2fs_dentry_hash(const struct qstr *);
 struct dnode_of_data;
 struct node_info;
 
+<<<<<<< HEAD
 bool available_free_memory(struct f2fs_sb_info *, int);
 int need_dentry_mark(struct f2fs_sb_info *, nid_t);
 bool is_checkpointed_node(struct f2fs_sb_info *, nid_t);
@@ -2160,6 +2793,25 @@ void alloc_nid_failed(struct f2fs_sb_info *, nid_t);
 int try_to_free_nids(struct f2fs_sb_info *, int);
 void recover_inline_xattr(struct inode *, struct page *);
 void recover_xattr_data(struct inode *, struct page *, block_t);
+=======
+int is_checkpointed_node(struct f2fs_sb_info *, nid_t);
+void get_node_info(struct f2fs_sb_info *, nid_t, struct node_info *);
+int get_dnode_of_data(struct dnode_of_data *, pgoff_t, int);
+int truncate_inode_blocks(struct inode *, pgoff_t);
+int remove_inode_page(struct inode *);
+int new_inode_page(struct inode *, const struct qstr *);
+struct page *new_node_page(struct dnode_of_data *, unsigned int);
+void ra_node_page(struct f2fs_sb_info *, nid_t);
+struct page *get_node_page(struct f2fs_sb_info *, pgoff_t);
+struct page *get_node_page_ra(struct page *, int);
+void sync_inode_page(struct dnode_of_data *);
+int sync_node_pages(struct f2fs_sb_info *, nid_t, struct writeback_control *);
+bool alloc_nid(struct f2fs_sb_info *, nid_t *);
+void alloc_nid_done(struct f2fs_sb_info *, nid_t);
+void alloc_nid_failed(struct f2fs_sb_info *, nid_t);
+void recover_node_page(struct f2fs_sb_info *, struct page *,
+		struct f2fs_summary *, struct node_info *, block_t);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int recover_inode_page(struct f2fs_sb_info *, struct page *);
 int restore_node_summary(struct f2fs_sb_info *, unsigned int,
 				struct f2fs_summary_block *);
@@ -2172,6 +2824,7 @@ void destroy_node_manager_caches(void);
 /*
  * segment.c
  */
+<<<<<<< HEAD
 void register_inmem_page(struct inode *, struct page *);
 void drop_inmem_pages(struct inode *);
 int commit_inmem_pages(struct inode *);
@@ -2210,10 +2863,39 @@ int build_segment_manager(struct f2fs_sb_info *);
 void destroy_segment_manager(struct f2fs_sb_info *);
 int __init create_segment_manager_caches(void);
 void destroy_segment_manager_caches(void);
+=======
+void f2fs_balance_fs(struct f2fs_sb_info *);
+void invalidate_blocks(struct f2fs_sb_info *, block_t);
+void locate_dirty_segment(struct f2fs_sb_info *, unsigned int);
+void clear_prefree_segments(struct f2fs_sb_info *);
+int npages_for_summary_flush(struct f2fs_sb_info *);
+void allocate_new_segments(struct f2fs_sb_info *);
+struct page *get_sum_page(struct f2fs_sb_info *, unsigned int);
+struct bio *f2fs_bio_alloc(struct block_device *, int);
+void f2fs_submit_bio(struct f2fs_sb_info *, enum page_type, bool sync);
+void write_meta_page(struct f2fs_sb_info *, struct page *);
+void write_node_page(struct f2fs_sb_info *, struct page *, unsigned int,
+					block_t, block_t *);
+void write_data_page(struct inode *, struct page *, struct dnode_of_data*,
+					block_t, block_t *);
+void rewrite_data_page(struct f2fs_sb_info *, struct page *, block_t);
+void recover_data_page(struct f2fs_sb_info *, struct page *,
+				struct f2fs_summary *, block_t, block_t);
+void rewrite_node_page(struct f2fs_sb_info *, struct page *,
+				struct f2fs_summary *, block_t, block_t);
+void write_data_summaries(struct f2fs_sb_info *, block_t);
+void write_node_summaries(struct f2fs_sb_info *, block_t);
+int lookup_journal_in_cursum(struct f2fs_summary_block *,
+					int, unsigned int, int);
+void flush_sit_entries(struct f2fs_sb_info *);
+int build_segment_manager(struct f2fs_sb_info *);
+void destroy_segment_manager(struct f2fs_sb_info *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * checkpoint.c
  */
+<<<<<<< HEAD
 void f2fs_stop_checkpoint(struct f2fs_sb_info *, bool);
 struct page *grab_meta_page(struct f2fs_sb_info *, pgoff_t);
 struct page *get_meta_page(struct f2fs_sb_info *, pgoff_t);
@@ -2238,12 +2920,28 @@ void remove_dirty_inode(struct inode *);
 int sync_dirty_inodes(struct f2fs_sb_info *, enum inode_type);
 int write_checkpoint(struct f2fs_sb_info *, struct cp_control *);
 void init_ino_entry_info(struct f2fs_sb_info *);
+=======
+struct page *grab_meta_page(struct f2fs_sb_info *, pgoff_t);
+struct page *get_meta_page(struct f2fs_sb_info *, pgoff_t);
+long sync_meta_pages(struct f2fs_sb_info *, enum page_type, long);
+int check_orphan_space(struct f2fs_sb_info *);
+void add_orphan_inode(struct f2fs_sb_info *, nid_t);
+void remove_orphan_inode(struct f2fs_sb_info *, nid_t);
+int recover_orphan_inodes(struct f2fs_sb_info *);
+int get_valid_checkpoint(struct f2fs_sb_info *);
+void set_dirty_dir_page(struct inode *, struct page *);
+void remove_dirty_dir_inode(struct inode *);
+void sync_dirty_dir_inodes(struct f2fs_sb_info *);
+void write_checkpoint(struct f2fs_sb_info *, bool);
+void init_orphan_info(struct f2fs_sb_info *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 int __init create_checkpoint_caches(void);
 void destroy_checkpoint_caches(void);
 
 /*
  * data.c
  */
+<<<<<<< HEAD
 void f2fs_submit_merged_bio(struct f2fs_sb_info *, enum page_type, int);
 void f2fs_submit_merged_bio_cond(struct f2fs_sb_info *, struct inode *,
 				struct page *, nid_t, enum page_type, int);
@@ -2270,20 +2968,41 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *, u64, u64);
 void f2fs_set_page_dirty_nobuffers(struct page *);
 void f2fs_invalidate_page(struct page *, unsigned long);
 int f2fs_release_page(struct page *, gfp_t);
+=======
+int reserve_new_block(struct dnode_of_data *);
+void update_extent_cache(block_t, struct dnode_of_data *);
+struct page *find_data_page(struct inode *, pgoff_t, bool);
+struct page *get_lock_data_page(struct inode *, pgoff_t);
+struct page *get_new_data_page(struct inode *, pgoff_t, bool);
+int f2fs_readpage(struct f2fs_sb_info *, struct page *, block_t, int);
+int do_write_data_page(struct page *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * gc.c
  */
 int start_gc_thread(struct f2fs_sb_info *);
 void stop_gc_thread(struct f2fs_sb_info *);
+<<<<<<< HEAD
 block_t start_bidx_of_node(unsigned int, struct inode *);
 int f2fs_gc(struct f2fs_sb_info *, bool, bool);
 void build_gc_manager(struct f2fs_sb_info *);
+=======
+block_t start_bidx_of_node(unsigned int);
+int f2fs_gc(struct f2fs_sb_info *);
+void build_gc_manager(struct f2fs_sb_info *);
+int __init create_gc_caches(void);
+void destroy_gc_caches(void);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 /*
  * recovery.c
  */
+<<<<<<< HEAD
 int recover_fsync_data(struct f2fs_sb_info *, bool);
+=======
+int recover_fsync_data(struct f2fs_sb_info *);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 bool space_for_roll_forward(struct f2fs_sb_info *);
 
 /*
@@ -2293,6 +3012,7 @@ bool space_for_roll_forward(struct f2fs_sb_info *);
 struct f2fs_stat_info {
 	struct list_head stat_list;
 	struct f2fs_sb_info *sbi;
+<<<<<<< HEAD
 	int all_area_segs, sit_area_segs, nat_area_segs, ssa_area_segs;
 	int main_area_segs, main_area_sections, main_area_zones;
 	unsigned long long hit_largest, hit_cached, hit_rbtree;
@@ -2306,21 +3026,39 @@ struct f2fs_stat_info {
 	int bg_gc, nr_wb_cp_data, nr_wb_data;
 	int inline_xattr, inline_inode, inline_dir, orphans;
 	unsigned int valid_count, valid_node_count, valid_inode_count, discard_blks;
+=======
+	struct mutex stat_lock;
+	int all_area_segs, sit_area_segs, nat_area_segs, ssa_area_segs;
+	int main_area_segs, main_area_sections, main_area_zones;
+	int hit_ext, total_ext;
+	int ndirty_node, ndirty_dent, ndirty_dirs, ndirty_meta;
+	int nats, sits, fnids;
+	int total_count, utilization;
+	int bg_gc;
+	unsigned int valid_count, valid_node_count, valid_inode_count;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	unsigned int bimodal, avg_vblocks;
 	int util_free, util_valid, util_invalid;
 	int rsvd_segs, overp_segs;
 	int dirty_count, node_pages, meta_pages;
+<<<<<<< HEAD
 	int prefree_count, call_count, cp_count, bg_cp_count;
 	int tot_segs, node_segs, data_segs, free_segs, free_secs;
 	int bg_node_segs, bg_data_segs;
 	int tot_blks, data_blks, node_blks;
 	int bg_data_blks, bg_node_blks;
+=======
+	int prefree_count, call_count;
+	int tot_segs, node_segs, data_segs, free_segs, free_secs;
+	int tot_blks, data_blks, node_blks;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	int curseg[NR_CURSEG_TYPE];
 	int cursec[NR_CURSEG_TYPE];
 	int curzone[NR_CURSEG_TYPE];
 
 	unsigned int segment_count[2];
 	unsigned int block_count[2];
+<<<<<<< HEAD
 	unsigned int inplace_count;
 	unsigned long long base_mem, cache_mem, page_mem;
 };
@@ -2387,11 +3125,27 @@ static inline struct f2fs_stat_info *F2FS_STAT(struct f2fs_sb_info *sbi)
 			si->node_segs++;				\
 			si->bg_node_segs += (gc_type == BG_GC) ? 1 : 0;	\
 		}							\
+=======
+	unsigned base_mem, cache_mem;
+};
+
+#define stat_inc_call_count(si)	((si)->call_count++)
+
+#define stat_inc_seg_count(sbi, type)					\
+	do {								\
+		struct f2fs_stat_info *si = sbi->stat_info;		\
+		(si)->tot_segs++;					\
+		if (type == SUM_TYPE_DATA)				\
+			si->data_segs++;				\
+		else							\
+			si->node_segs++;				\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} while (0)
 
 #define stat_inc_tot_blk_count(si, blks)				\
 	(si->tot_blks += (blks))
 
+<<<<<<< HEAD
 #define stat_inc_data_blk_count(sbi, blks, gc_type)			\
 	do {								\
 		struct f2fs_stat_info *si = F2FS_STAT(sbi);		\
@@ -2406,10 +3160,25 @@ static inline struct f2fs_stat_info *F2FS_STAT(struct f2fs_sb_info *sbi)
 		stat_inc_tot_blk_count(si, blks);			\
 		si->node_blks += (blks);				\
 		si->bg_node_blks += (gc_type == BG_GC) ? (blks) : 0;	\
+=======
+#define stat_inc_data_blk_count(sbi, blks)				\
+	do {								\
+		struct f2fs_stat_info *si = sbi->stat_info;		\
+		stat_inc_tot_blk_count(si, blks);			\
+		si->data_blks += (blks);				\
+	} while (0)
+
+#define stat_inc_node_blk_count(sbi, blks)				\
+	do {								\
+		struct f2fs_stat_info *si = sbi->stat_info;		\
+		stat_inc_tot_blk_count(si, blks);			\
+		si->node_blks += (blks);				\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	} while (0)
 
 int f2fs_build_stats(struct f2fs_sb_info *);
 void f2fs_destroy_stats(struct f2fs_sb_info *);
+<<<<<<< HEAD
 int __init f2fs_create_root_stats(void);
 void f2fs_destroy_root_stats(void);
 #else
@@ -2440,6 +3209,20 @@ void f2fs_destroy_root_stats(void);
 static inline int f2fs_build_stats(struct f2fs_sb_info *sbi) { return 0; }
 static inline void f2fs_destroy_stats(struct f2fs_sb_info *sbi) { }
 static inline int __init f2fs_create_root_stats(void) { return 0; }
+=======
+void __init f2fs_create_root_stats(void);
+void f2fs_destroy_root_stats(void);
+#else
+#define stat_inc_call_count(si)
+#define stat_inc_seg_count(si, type)
+#define stat_inc_tot_blk_count(si, blks)
+#define stat_inc_data_blk_count(si, blks)
+#define stat_inc_node_blk_count(sbi, blks)
+
+static inline int f2fs_build_stats(struct f2fs_sb_info *sbi) { return 0; }
+static inline void f2fs_destroy_stats(struct f2fs_sb_info *sbi) { }
+static inline void __init f2fs_create_root_stats(void) { }
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static inline void f2fs_destroy_root_stats(void) { }
 #endif
 
@@ -2451,6 +3234,7 @@ extern const struct address_space_operations f2fs_node_aops;
 extern const struct address_space_operations f2fs_meta_aops;
 extern const struct inode_operations f2fs_dir_inode_operations;
 extern const struct inode_operations f2fs_symlink_inode_operations;
+<<<<<<< HEAD
 extern const struct inode_operations f2fs_encrypted_symlink_inode_operations;
 extern const struct inode_operations f2fs_special_inode_operations;
 extern struct kmem_cache *inode_entry_slab;
@@ -2605,4 +3389,7 @@ static inline bool f2fs_may_encrypt(struct inode *inode)
 #define fscrypt_fname_disk_to_usr	fscrypt_notsupp_fname_disk_to_usr
 #define fscrypt_fname_usr_to_disk	fscrypt_notsupp_fname_usr_to_disk
 #endif
+=======
+extern const struct inode_operations f2fs_special_inode_operations;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #endif

@@ -123,15 +123,50 @@ static int uhid_hid_input(struct input_dev *input, unsigned int type,
 	struct uhid_device *uhid = hid->driver_data;
 	unsigned long flags;
 	struct uhid_event *ev;
+<<<<<<< HEAD
+=======
+	struct hid_field *field;
+	struct hid_report *report;
+	int offset;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	ev = kzalloc(sizeof(*ev), GFP_ATOMIC);
 	if (!ev)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ev->type = UHID_OUTPUT_EV;
 	ev->u.output_ev.type = type;
 	ev->u.output_ev.code = code;
 	ev->u.output_ev.value = value;
+=======
+	switch (type) {
+	case EV_LED:
+		offset = hidinput_find_field(hid, type, code, &field);
+		if (offset == -1) {
+			hid_warn(input, "event field not found\n");
+			kfree(ev);
+			return -1;
+		}
+
+		hid_set_field(field, offset, value);
+
+		report = field->report;
+
+		ev->type = UHID_OUTPUT;
+		ev->u.output.rtype = UHID_OUTPUT_REPORT;
+		hid_output_report(report, ev->u.output.data);
+		ev->u.output.size = ((report->size - 1) >> 3) + 1 +
+							(report->id > 0);
+		break;
+
+	default:
+		ev->type = UHID_OUTPUT_EV;
+		ev->u.output_ev.type = type;
+		ev->u.output_ev.code = code;
+		ev->u.output_ev.value = value;
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	spin_lock_irqsave(&uhid->qlock, flags);
 	uhid_queue(uhid, ev);
@@ -312,7 +347,11 @@ static int uhid_event_from_user(const char __user *buffer, size_t len,
 			 */
 			struct uhid_create_req_compat *compat;
 
+<<<<<<< HEAD
 			compat = kzalloc(sizeof(*compat), GFP_KERNEL);
+=======
+			compat = kmalloc(sizeof(*compat), GFP_KERNEL);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			if (!compat)
 				return -ENOMEM;
 

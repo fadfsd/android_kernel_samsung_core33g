@@ -193,7 +193,10 @@ struct team {
 	bool user_carrier_enabled;
 	bool queue_override_enabled;
 	struct list_head *qom_lists; /* array of queue override mapping lists */
+<<<<<<< HEAD
 	bool port_mtu_change_allowed;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	long mode_priv[TEAM_MODE_PRIV_LONGS];
 };
 

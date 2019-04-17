@@ -649,8 +649,13 @@ struct hid_driver {
 	int (*input_mapped)(struct hid_device *hdev,
 			struct hid_input *hidinput, struct hid_field *field,
 			struct hid_usage *usage, unsigned long **bit, int *max);
+<<<<<<< HEAD
 	void (*input_configured)(struct hid_device *hdev,
 				 struct hid_input *hidinput);
+=======
+	int (*input_configured)(struct hid_device *hdev,
+				struct hid_input *hidinput);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	void (*feature_mapping)(struct hid_device *hdev,
 			struct hid_field *field,
 			struct hid_usage *usage);

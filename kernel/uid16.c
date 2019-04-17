@@ -176,8 +176,11 @@ SYSCALL_DEFINE2(setgroups16, int, gidsetsize, old_gid_t __user *, grouplist)
 	struct group_info *group_info;
 	int retval;
 
+<<<<<<< HEAD
 	if (!may_setgroups())
 		return -EPERM;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if ((unsigned)gidsetsize > NGROUPS_MAX)
 		return -EINVAL;
 

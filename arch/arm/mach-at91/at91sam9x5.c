@@ -318,11 +318,14 @@ static void __init at91sam9x5_map_io(void)
 	at91_init_sram(0, AT91SAM9X5_SRAM_BASE, AT91SAM9X5_SRAM_SIZE);
 }
 
+<<<<<<< HEAD
 static void __init at91sam9x5_initialize(void)
 {
 	at91_sysirq_mask_rtc(AT91SAM9X5_BASE_RTC);
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /* --------------------------------------------------------------------
  *  Interrupt initialization
  * -------------------------------------------------------------------- */
@@ -330,5 +333,8 @@ static void __init at91sam9x5_initialize(void)
 AT91_SOC_START(at91sam9x5)
 	.map_io = at91sam9x5_map_io,
 	.register_clocks = at91sam9x5_register_clocks,
+<<<<<<< HEAD
 	.init = at91sam9x5_initialize,
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 AT91_SOC_END

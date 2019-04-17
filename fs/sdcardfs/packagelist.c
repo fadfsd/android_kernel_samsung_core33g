@@ -19,6 +19,10 @@
  */
 
 #include "sdcardfs.h"
+<<<<<<< HEAD
+=======
+#include "strtok.h"
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/hashtable.h>
 #include <linux/syscalls.h>
 #include <linux/kthread.h>
@@ -35,8 +39,16 @@ struct hashtable_entry {
 
 struct packagelist_data {
 	DECLARE_HASHTABLE(package_to_appid,8);
+<<<<<<< HEAD
 	struct mutex hashtable_lock;
 	struct task_struct *thread_id;
+=======
+	DECLARE_HASHTABLE(appid_with_rw,7);
+	struct mutex hashtable_lock;
+	struct task_struct *thread_id;
+	gid_t write_gid;
+	char *strtok_last;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	char read_buf[STRING_BUF_SIZE];
 	char event_buf[STRING_BUF_SIZE];
 	char app_name_buf[STRING_BUF_SIZE];
@@ -62,6 +74,37 @@ static unsigned int str_hash(void *key) {
 	return h;
 }
 
+<<<<<<< HEAD
+=======
+static int contain_appid_key(struct packagelist_data *pkgl_dat, void *appid) {
+        struct hashtable_entry *hash_cur;
+
+        hash_for_each_possible(pkgl_dat->appid_with_rw,	hash_cur, hlist, (unsigned int)appid)
+                if (appid == hash_cur->key)
+                        return 1;
+	return 0;
+}
+
+/* Return if the calling UID holds sdcard_rw. */
+int get_caller_has_rw_locked(void *pkgl_id, derive_t derive) {
+	struct packagelist_data *pkgl_dat = (struct packagelist_data *)pkgl_id;
+	appid_t appid;
+	int ret;
+	
+	/* No additional permissions enforcement */
+	if (derive == DERIVE_NONE) {
+		return 1;
+	}
+
+	appid = multiuser_get_app_id(current_fsuid());
+	mutex_lock(&pkgl_dat->hashtable_lock);
+	ret = contain_appid_key(pkgl_dat, (void *)appid);
+	mutex_unlock(&pkgl_dat->hashtable_lock);
+	//printk(KERN_INFO "sdcardfs: %s: appid=%d, ret=%d\n", __func__, (int)appid, ret);
+	return ret;
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 appid_t get_appid(void *pkgl_id, const char *app_name)
 {
 	struct packagelist_data *pkgl_dat = (struct packagelist_data *)pkgl_id;
@@ -88,7 +131,13 @@ appid_t get_appid(void *pkgl_id, const char *app_name)
 /* Kernel has already enforced everything we returned through
  * derive_permissions_locked(), so this is used to lock down access
  * even further, such as enforcing that apps hold sdcard_rw. */
+<<<<<<< HEAD
 int check_caller_access_to_name(struct inode *parent_node, const char* name) {
+=======
+int check_caller_access_to_name(struct inode *parent_node, const char* name,
+					derive_t derive, int w_ok, int has_rw) {
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Always block security-sensitive files at root */
 	if (parent_node && SDCARDFS_I(parent_node)->perm == PERM_ROOT) {
 		if (!strcasecmp(name, "autorun.inf")
@@ -98,12 +147,33 @@ int check_caller_access_to_name(struct inode *parent_node, const char* name) {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* No additional permissions enforcement */
+	if (derive == DERIVE_NONE) {
+		return 1;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Root always has access; access for any other UIDs should always
 	 * be controlled through packages.list. */
 	if (current_fsuid() == 0) {
 		return 1;
 	}
 
+<<<<<<< HEAD
+=======
+	/* If asking to write, verify that caller either owns the
+	 * parent or holds sdcard_rw. */
+	if (w_ok) {
+		if (parent_node &&
+			(current_fsuid() == SDCARDFS_I(parent_node)->d_uid)) {
+			return 1;
+		}
+		return has_rw;
+	}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* No extra permissions to enforce */
 	return 1;
 }
@@ -148,10 +218,38 @@ static void remove_str_to_int(struct hashtable_entry *h_entry) {
 	kmem_cache_free(hashtable_entry_cachep, h_entry);
 }
 
+<<<<<<< HEAD
 /*static void remove_int_to_null(struct hashtable_entry *h_entry) {
 	//printk(KERN_INFO "sdcardfs: %s: %d: %d\n", __func__, (int)h_entry->key, h_entry->value);
 	kmem_cache_free(hashtable_entry_cachep, h_entry);
 }*/
+=======
+static int insert_int_to_null(struct packagelist_data *pkgl_dat, void *key, int value) {
+	struct hashtable_entry *hash_cur;
+	struct hashtable_entry *new_entry;
+
+	//printk(KERN_INFO "sdcardfs: %s: %d: %d\n", __func__, (int)key, value);
+	hash_for_each_possible(pkgl_dat->appid_with_rw,	hash_cur, hlist, (unsigned int)key) {
+		if (key == hash_cur->key) {
+			hash_cur->value = value;
+			return 0;
+		}
+	}
+	new_entry = kmem_cache_alloc(hashtable_entry_cachep, GFP_KERNEL);
+	if (!new_entry)
+		return -ENOMEM;
+	new_entry->key = key;
+	new_entry->value = value;
+	hash_add(pkgl_dat->appid_with_rw, &new_entry->hlist,
+			(unsigned int)new_entry->key);
+	return 0;
+}
+
+static void remove_int_to_null(struct hashtable_entry *h_entry) {
+	//printk(KERN_INFO "sdcardfs: %s: %d: %d\n", __func__, (int)h_entry->key, h_entry->value);
+	kmem_cache_free(hashtable_entry_cachep, h_entry);
+}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 static void remove_all_hashentrys(struct packagelist_data *pkgl_dat)
 {
@@ -161,8 +259,16 @@ static void remove_all_hashentrys(struct packagelist_data *pkgl_dat)
 
 	hash_for_each_safe(pkgl_dat->package_to_appid, i, h_t, hash_cur, hlist)
 		remove_str_to_int(hash_cur);
+<<<<<<< HEAD
 
 	hash_init(pkgl_dat->package_to_appid);
+=======
+	hash_for_each_safe(pkgl_dat->appid_with_rw, i, h_t, hash_cur, hlist)
+                remove_int_to_null(hash_cur);
+
+	hash_init(pkgl_dat->package_to_appid);
+	hash_init(pkgl_dat->appid_with_rw);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int read_package_list(struct packagelist_data *pkgl_dat) {
@@ -186,8 +292,15 @@ static int read_package_list(struct packagelist_data *pkgl_dat) {
 	while ((read_amount = sys_read(fd, pkgl_dat->read_buf,
 					sizeof(pkgl_dat->read_buf))) > 0) {
 		int appid;
+<<<<<<< HEAD
 		int one_line_len = 0;
 		int additional_read;
+=======
+		char *token;
+		int one_line_len = 0;
+		int additional_read;
+		unsigned long ret_gid;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	
 		while (one_line_len < read_amount) {
 			if (pkgl_dat->read_buf[one_line_len] == '\n') {
@@ -209,6 +322,24 @@ static int read_package_list(struct packagelist_data *pkgl_dat) {
 				mutex_unlock(&pkgl_dat->hashtable_lock);
 				return ret;
 			}
+<<<<<<< HEAD
+=======
+
+			token = strtok_r(pkgl_dat->gids_buf, ",", &pkgl_dat->strtok_last);
+			while (token != NULL) {
+				if (!kstrtoul(token, 10, &ret_gid) &&
+						(ret_gid == pkgl_dat->write_gid)) {
+					ret = insert_int_to_null(pkgl_dat, (void *)appid, 1);
+					if (ret) {
+						sys_close(fd);
+						mutex_unlock(&pkgl_dat->hashtable_lock);
+						return ret;
+					}
+					break;
+				}
+				token = strtok_r(NULL, ",", &pkgl_dat->strtok_last);
+			}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	}
 
@@ -237,7 +368,11 @@ static int packagelist_reader(void *thread_data)
 
 	while (!kthread_should_stop()) {
 		if (signal_pending(current)) {
+<<<<<<< HEAD
 			msleep(100);
+=======
+			ssleep(1);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			continue;
 		}
 
@@ -299,6 +434,7 @@ interruptable_sleep:
 	return res;
 }
 
+<<<<<<< HEAD
 void * packagelist_create(void)
 {
 	struct packagelist_data *pkgl_dat;
@@ -307,11 +443,22 @@ void * packagelist_create(void)
 	pkgl_dat = kmalloc(sizeof(*pkgl_dat), GFP_KERNEL | __GFP_ZERO);
 	if (!pkgl_dat) {
 		printk(KERN_ERR "sdcardfs: creating kthread failed\n");
+=======
+void * packagelist_create(gid_t write_gid)
+{
+	struct packagelist_data *pkgl_dat;
+        struct task_struct *packagelist_thread;
+
+	pkgl_dat = kmalloc(sizeof(*pkgl_dat), GFP_KERNEL | __GFP_ZERO);
+	if (!pkgl_dat) {
+                printk(KERN_ERR "sdcardfs: creating kthread failed\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		return ERR_PTR(-ENOMEM);
 	}
 
 	mutex_init(&pkgl_dat->hashtable_lock);
 	hash_init(pkgl_dat->package_to_appid);
+<<<<<<< HEAD
 
 	packagelist_thread = kthread_run(packagelist_reader, (void *)pkgl_dat, "pkgld");
 	if (IS_ERR(packagelist_thread)) {
@@ -319,6 +466,17 @@ void * packagelist_create(void)
 		kfree(pkgl_dat);
 		return packagelist_thread;
 	}
+=======
+	hash_init(pkgl_dat->appid_with_rw);
+	pkgl_dat->write_gid = write_gid;
+
+        packagelist_thread = kthread_run(packagelist_reader, (void *)pkgl_dat, "pkgld");
+        if (IS_ERR(packagelist_thread)) {
+                printk(KERN_ERR "sdcardfs: creating kthread failed\n");
+		kfree(pkgl_dat);
+		return packagelist_thread;
+        }
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pkgl_dat->thread_id = packagelist_thread;	
 
 	printk(KERN_INFO "sdcardfs: created packagelist pkgld/%d\n",
@@ -357,3 +515,8 @@ void packagelist_exit(void)
 	if (hashtable_entry_cachep)
 		kmem_cache_destroy(hashtable_entry_cachep);
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource

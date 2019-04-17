@@ -37,6 +37,7 @@ struct wm5110_priv {
 	struct arizona_fll fll[2];
 };
 
+<<<<<<< HEAD
 static const struct reg_default wm5110_sysclk_revd_patch[] = {
 	{ 0x3093, 0x1001 },
 	{ 0x30E3, 0x1301 },
@@ -126,6 +127,8 @@ static int wm5110_sysclk_ev(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
 static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
 static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
@@ -475,7 +478,11 @@ static const struct snd_kcontrol_new wm5110_aec_loopback_mux =
 
 static const struct snd_soc_dapm_widget wm5110_dapm_widgets[] = {
 SND_SOC_DAPM_SUPPLY("SYSCLK", ARIZONA_SYSTEM_CLOCK_1, ARIZONA_SYSCLK_ENA_SHIFT,
+<<<<<<< HEAD
 		    0, wm5110_sysclk_ev, SND_SOC_DAPM_POST_PMU),
+=======
+		    0, NULL, 0),
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 SND_SOC_DAPM_SUPPLY("ASYNCCLK", ARIZONA_ASYNC_CLOCK_1,
 		    ARIZONA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
 SND_SOC_DAPM_SUPPLY("OPCLK", ARIZONA_OUTPUT_SYSTEM_CLOCK,
@@ -945,7 +952,11 @@ static const struct snd_soc_dapm_route wm5110_dapm_routes[] = {
 	{ "HPOUT2R", NULL, "OUT2R" },
 
 	{ "HPOUT3L", NULL, "OUT3L" },
+<<<<<<< HEAD
 	{ "HPOUT3R", NULL, "OUT3R" },
+=======
+	{ "HPOUT3R", NULL, "OUT3L" },
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	{ "SPKOUTLN", NULL, "OUT4L" },
 	{ "SPKOUTLP", NULL, "OUT4L" },

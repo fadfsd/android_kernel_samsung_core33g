@@ -156,7 +156,11 @@
 		/* Select the best insn combination to perform the   */	\
 		/* actual __m * __n / (__p << 64) operation.         */	\
 		if (!__c) {						\
+<<<<<<< HEAD
 			asm (	"umull	%Q0, %R0, %Q1, %Q2\n\t"		\
+=======
+			asm (	"umull	%Q0, %R0, %1, %Q2\n\t"		\
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 				"mov	%Q0, #0"			\
 				: "=&r" (__res)				\
 				: "r" (__m), "r" (__n)			\

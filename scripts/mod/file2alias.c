@@ -208,8 +208,13 @@ static void do_usb_entry(void *symval,
 				range_lo < 0x9 ? "[%X-9" : "[%X",
 				range_lo);
 			sprintf(alias + strlen(alias),
+<<<<<<< HEAD
 				range_hi > 0xA ? "A-%X]" : "%X]",
 				range_hi);
+=======
+				range_hi > 0xA ? "a-%X]" : "%X]",
+				range_lo);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		}
 	}
 	if (bcdDevice_initial_digits < (sizeof(bcdDevice_lo) * 2 - 1))

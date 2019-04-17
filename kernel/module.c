@@ -1866,9 +1866,13 @@ static void free_module(struct module *mod)
 
 	/* We leave it in list to prevent duplicate loads, but make sure
 	 * that noone uses it while it's being deconstructed. */
+<<<<<<< HEAD
 	mutex_lock(&module_mutex);
 	mod->state = MODULE_STATE_UNFORMED;
 	mutex_unlock(&module_mutex);
+=======
+	mod->state = MODULE_STATE_UNFORMED;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	/* Remove dynamic debug info */
 	ddebug_remove_module(mod->name);
@@ -3281,9 +3285,12 @@ static int load_module(struct load_info *info, const char __user *uargs,
 
 	dynamic_debug_setup(info->debug, info->num_debug);
 
+<<<<<<< HEAD
 	/* Ftrace init must be called in the MODULE_STATE_UNFORMED state */
 	ftrace_module_init(mod);
 
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	/* Finally it's fully formed, ready to start executing. */
 	err = complete_formation(mod, info);
 	if (err)
@@ -3830,7 +3837,11 @@ void print_modules(void)
 	list_for_each_entry_rcu(mod, &modules, list) {
 		if (mod->state == MODULE_STATE_UNFORMED)
 			continue;
+<<<<<<< HEAD
 		printk(" %s%s", mod->name, module_flags(mod, buf));
+=======
+		printk(" %s%s[start=0x%lx,size=%d]", mod->name, module_flags(mod, buf), mod->module_core, mod->core_size);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 	preempt_enable();
 	if (last_unloaded_module[0])

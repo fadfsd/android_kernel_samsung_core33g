@@ -32,6 +32,10 @@ static inline void copy_siginfo(struct siginfo *to, struct siginfo *from)
 
 #endif
 
+<<<<<<< HEAD
 extern int copy_siginfo_to_user(struct siginfo __user *to, const struct siginfo *from);
+=======
+extern int copy_siginfo_to_user(struct siginfo __user *to, struct siginfo *from);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 #endif

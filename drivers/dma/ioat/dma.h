@@ -370,7 +370,10 @@ bool ioat_cleanup_preamble(struct ioat_chan_common *chan,
 void ioat_kobject_add(struct ioatdma_device *device, struct kobj_type *type);
 void ioat_kobject_del(struct ioatdma_device *device);
 int ioat_dma_setup_interrupts(struct ioatdma_device *device);
+<<<<<<< HEAD
 void ioat_stop(struct ioat_chan_common *chan);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 extern const struct sysfs_ops ioat_sysfs_ops;
 extern struct ioat_sysfs_entry ioat_version_attr;
 extern struct ioat_sysfs_entry ioat_cap_attr;

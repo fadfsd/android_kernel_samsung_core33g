@@ -220,8 +220,12 @@ static int nfsd_startup_generic(int nrservs)
 	 */
 	ret = nfsd_racache_init(2*nrservs);
 	if (ret)
+<<<<<<< HEAD
 		goto dec_users;
 
+=======
+		return ret;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	ret = nfs4_state_start();
 	if (ret)
 		goto out_racache;
@@ -229,8 +233,11 @@ static int nfsd_startup_generic(int nrservs)
 
 out_racache:
 	nfsd_racache_shutdown();
+<<<<<<< HEAD
 dec_users:
 	nfsd_users--;
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return ret;
 }
 

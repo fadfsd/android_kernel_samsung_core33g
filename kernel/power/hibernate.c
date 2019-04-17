@@ -491,6 +491,7 @@ int hibernation_restore(int platform_mode)
 	error = dpm_suspend_start(PMSG_QUIESCE);
 	if (!error) {
 		error = resume_target_kernel(platform_mode);
+<<<<<<< HEAD
 		/*
 		 * The above should either succeed and jump to the new kernel,
 		 * or return with an error. Otherwise things are just
@@ -499,6 +500,10 @@ int hibernation_restore(int platform_mode)
 		BUG_ON(!error);
 	}
 	dpm_resume_end(PMSG_RECOVER);
+=======
+		dpm_resume_end(PMSG_RECOVER);
+	}
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	pm_restore_gfp_mask();
 	ftrace_start();
 	resume_console();

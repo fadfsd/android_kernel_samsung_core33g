@@ -81,7 +81,10 @@ _GLOBAL(relocate)
 
 6:	blr
 
+<<<<<<< HEAD
 .balign 8
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 p_dyn:	.llong	__dynamic_start - 0b
 p_rela:	.llong	__rela_dyn_start - 0b
 p_st:	.llong	_stext - 0b

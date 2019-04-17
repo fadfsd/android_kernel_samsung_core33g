@@ -299,6 +299,10 @@ struct mlx4_en_cq {
 	struct mlx4_cq          mcq;
 	struct mlx4_hwq_resources wqres;
 	int                     ring;
+<<<<<<< HEAD
+=======
+	spinlock_t              lock;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	struct net_device      *dev;
 	struct napi_struct	napi;
 	int size;

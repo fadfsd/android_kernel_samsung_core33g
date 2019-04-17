@@ -574,11 +574,17 @@ il4965_translate_rx_status(struct il_priv *il, u32 decrypt_in)
 	return decrypt_out;
 }
 
+<<<<<<< HEAD
 #define SMALL_PACKET_SIZE 256
 
 static void
 il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
 			       u32 len, u32 ampdu_status, struct il_rx_buf *rxb,
+=======
+static void
+il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
+			       u16 len, u32 ampdu_status, struct il_rx_buf *rxb,
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 			       struct ieee80211_rx_status *stats)
 {
 	struct sk_buff *skb;
@@ -595,12 +601,17 @@ il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
 	    il_set_decrypted_flag(il, hdr, ampdu_status, stats))
 		return;
 
+<<<<<<< HEAD
 	skb = dev_alloc_skb(SMALL_PACKET_SIZE);
+=======
+	skb = dev_alloc_skb(128);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (!skb) {
 		IL_ERR("dev_alloc_skb failed\n");
 		return;
 	}
 
+<<<<<<< HEAD
 	if (len <= SMALL_PACKET_SIZE) {
 		memcpy(skb_put(skb, len), hdr, len);
 	} else {
@@ -609,11 +620,20 @@ il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
 		il->alloc_rxb_page--;
 		rxb->page = NULL;
 	}
+=======
+	skb_add_rx_frag(skb, 0, rxb->page, (void *)hdr - rxb_addr(rxb), len,
+			len);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	il_update_stats(il, false, fc, len);
 	memcpy(IEEE80211_SKB_RXCB(skb), stats, sizeof(*stats));
 
 	ieee80211_rx(il->hw, skb);
+<<<<<<< HEAD
+=======
+	il->alloc_rxb_page--;
+	rxb->page = NULL;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /* Called for N_RX (legacy ABG frames), or

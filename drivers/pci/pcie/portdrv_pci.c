@@ -223,6 +223,10 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
 static void pcie_portdrv_remove(struct pci_dev *dev)
 {
 	pcie_port_device_remove(dev);
+<<<<<<< HEAD
+=======
+	pci_disable_device(dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 static int error_detected_iter(struct device *device, void *data)

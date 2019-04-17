@@ -76,7 +76,10 @@ void clear_page_mlock(struct page *page)
  */
 void mlock_vma_page(struct page *page)
 {
+<<<<<<< HEAD
 	/* Serialize with page migration */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	BUG_ON(!PageLocked(page));
 
 	if (!TestSetPageMlocked(page)) {
@@ -107,7 +110,10 @@ unsigned int munlock_vma_page(struct page *page)
 {
 	unsigned int page_mask = 0;
 
+<<<<<<< HEAD
 	/* For try_to_munlock() and to serialize with page migration */
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	BUG_ON(!PageLocked(page));
 
 	if (TestClearPageMlocked(page)) {
@@ -289,7 +295,12 @@ static int mlock_fixup(struct vm_area_struct *vma, struct vm_area_struct **prev,
 
 	pgoff = vma->vm_pgoff + ((start - vma->vm_start) >> PAGE_SHIFT);
 	*prev = vma_merge(mm, *prev, start, end, newflags, vma->anon_vma,
+<<<<<<< HEAD
 			  vma->vm_file, pgoff, vma_policy(vma));
+=======
+			  vma->vm_file, pgoff, vma_policy(vma),
+			  vma_get_anon_name(vma));
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	if (*prev) {
 		vma = *prev;
 		goto success;

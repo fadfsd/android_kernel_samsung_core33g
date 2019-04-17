@@ -11,7 +11,10 @@
 #define FRAM_VERSION	"1.0"
 
 #include <linux/miscdevice.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/proc_fs.h>
 #include <linux/mm.h>
 #include <linux/io.h>

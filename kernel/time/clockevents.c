@@ -15,6 +15,10 @@
 #include <linux/hrtimer.h>
 #include <linux/init.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/notifier.h>
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 #include <linux/smp.h>
 
 #include "tick-internal.h"
@@ -22,6 +26,7 @@
 /* The registered clock event devices */
 static LIST_HEAD(clockevent_devices);
 static LIST_HEAD(clockevents_released);
+<<<<<<< HEAD
 /* Protection for the above */
 static DEFINE_RAW_SPINLOCK(clockevents_lock);
 
@@ -30,11 +35,31 @@ static u64 cev_delta2ns(unsigned long latch, struct clock_event_device *evt,
 {
 	u64 clc = (u64) latch << evt->shift;
 	u64 rnd;
+=======
+
+/* Notification for clock events */
+static RAW_NOTIFIER_HEAD(clockevents_chain);
+
+/* Protection for the above */
+static DEFINE_RAW_SPINLOCK(clockevents_lock);
+
+/**
+ * clockevents_delta2ns - Convert a latch value (device ticks) to nanoseconds
+ * @latch:	value to convert
+ * @evt:	pointer to clock event device descriptor
+ *
+ * Math helper, returns latch value converted to nanoseconds (bound checked)
+ */
+u64 clockevent_delta2ns(unsigned long latch, struct clock_event_device *evt)
+{
+	u64 clc = (u64) latch << evt->shift;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	if (unlikely(!evt->mult)) {
 		evt->mult = 1;
 		WARN_ON(1);
 	}
+<<<<<<< HEAD
 	rnd = (u64) evt->mult - 1;
 
 	/*
@@ -83,6 +108,16 @@ static u64 cev_delta2ns(unsigned long latch, struct clock_event_device *evt,
 u64 clockevent_delta2ns(unsigned long latch, struct clock_event_device *evt)
 {
 	return cev_delta2ns(latch, evt, false);
+=======
+
+	do_div(clc, evt->mult);
+	if (clc < 1000)
+		clc = 1000;
+	if (clc > KTIME_MAX)
+		clc = KTIME_MAX;
+
+	return clc;
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 EXPORT_SYMBOL_GPL(clockevent_delta2ns);
 
@@ -138,8 +173,12 @@ static int clockevents_increase_min_delta(struct clock_event_device *dev)
 {
 	/* Nothing to do if we already reached the limit */
 	if (dev->min_delta_ns >= MIN_DELTA_LIMIT) {
+<<<<<<< HEAD
 		printk_deferred(KERN_WARNING
 				"CE: Reprogramming failure. Giving up\n");
+=======
+		printk(KERN_WARNING "CE: Reprogramming failure. Giving up\n");
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		dev->next_event.tv64 = KTIME_MAX;
 		return -ETIME;
 	}
@@ -152,10 +191,16 @@ static int clockevents_increase_min_delta(struct clock_event_device *dev)
 	if (dev->min_delta_ns > MIN_DELTA_LIMIT)
 		dev->min_delta_ns = MIN_DELTA_LIMIT;
 
+<<<<<<< HEAD
 	printk_deferred(KERN_WARNING
 			"CE: %s increased min_delta_ns to %llu nsec\n",
 			dev->name ? dev->name : "?",
 			(unsigned long long) dev->min_delta_ns);
+=======
+	printk(KERN_WARNING "CE: %s increased min_delta_ns to %llu nsec\n",
+	       dev->name ? dev->name : "?",
+	       (unsigned long long) dev->min_delta_ns);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	return 0;
 }
 
@@ -264,6 +309,33 @@ int clockevents_program_event(struct clock_event_device *dev, ktime_t expires,
 	return (rc && force) ? clockevents_program_min_delta(dev) : rc;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * clockevents_register_notifier - register a clock events change listener
+ */
+int clockevents_register_notifier(struct notifier_block *nb)
+{
+	unsigned long flags;
+	int ret;
+
+	raw_spin_lock_irqsave(&clockevents_lock, flags);
+	ret = raw_notifier_chain_register(&clockevents_chain, nb);
+	raw_spin_unlock_irqrestore(&clockevents_lock, flags);
+
+	return ret;
+}
+
+/*
+ * Notify about a clock event change. Called with clockevents_lock
+ * held.
+ */
+static void clockevents_do_notify(unsigned long reason, void *dev)
+{
+	raw_notifier_call_chain(&clockevents_chain, reason, dev);
+}
+
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 /*
  * Called after a notify add to make devices available which were
  * released from the notifier call.
@@ -277,7 +349,11 @@ static void clockevents_notify_released(void)
 				 struct clock_event_device, list);
 		list_del(&dev->list);
 		list_add(&dev->list, &clockevent_devices);
+<<<<<<< HEAD
 		tick_check_new_device(dev);
+=======
+		clockevents_do_notify(CLOCK_EVT_NOTIFY_ADD, dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	}
 }
 
@@ -298,7 +374,11 @@ void clockevents_register_device(struct clock_event_device *dev)
 	raw_spin_lock_irqsave(&clockevents_lock, flags);
 
 	list_add(&dev->list, &clockevent_devices);
+<<<<<<< HEAD
 	tick_check_new_device(dev);
+=======
+	clockevents_do_notify(CLOCK_EVT_NOTIFY_ADD, dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 	clockevents_notify_released();
 
 	raw_spin_unlock_irqrestore(&clockevents_lock, flags);
@@ -325,8 +405,13 @@ void clockevents_config(struct clock_event_device *dev, u32 freq)
 		sec = 600;
 
 	clockevents_calc_mult_shift(dev, freq, sec);
+<<<<<<< HEAD
 	dev->min_delta_ns = cev_delta2ns(dev->min_delta_ticks, dev, false);
 	dev->max_delta_ns = cev_delta2ns(dev->max_delta_ticks, dev, true);
+=======
+	dev->min_delta_ns = clockevent_delta2ns(dev->min_delta_ticks, dev);
+	dev->max_delta_ns = clockevent_delta2ns(dev->max_delta_ticks, dev);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 }
 
 /**
@@ -394,7 +479,10 @@ void clockevents_exchange_device(struct clock_event_device *old,
 	 * released list and do a notify add later.
 	 */
 	if (old) {
+<<<<<<< HEAD
 		module_put(old->owner);
+=======
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 		clockevents_set_mode(old, CLOCK_EVT_MODE_UNUSED);
 		list_del(&old->list);
 		list_add(&old->list, &clockevents_released);
@@ -442,7 +530,11 @@ void clockevents_notify(unsigned long reason, void *arg)
 	int cpu;
 
 	raw_spin_lock_irqsave(&clockevents_lock, flags);
+<<<<<<< HEAD
 	tick_notify(reason, arg);
+=======
+	clockevents_do_notify(reason, arg);
+>>>>>>> a8f179a4cb19... core33g: Import SM-T113NU_SEA_KK_Opensource
 
 	switch (reason) {
 	case CLOCK_EVT_NOTIFY_CPU_DEAD:
